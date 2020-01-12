@@ -39,13 +39,14 @@ namespace Chromino.Controllers
 
 
         [HttpPost]
-        public IActionResult StartNew(int player1Id, int? player2Id, int? player3Id, int? player4Id, int? player5Id, int? player6Id, int? player7Id, int? player8Id)
+        public IActionResult StartNew(int? player1Id, int? player2Id, int? player3Id, int? player4Id, int? player5Id, int? player6Id, int? player7Id, int? player8Id)
         {
-            //TODO test player Bot
-            Player bot = PlayerDAL.Bot();
-
             List<Player> players = new List<Player>(8);
-            players.Add(PlayerDAL.Detail(player1Id));
+            if (player1Id != null)
+                players.Add(PlayerDAL.Detail((int)player1Id));
+            else
+                players.Add(PlayerDAL.Bot());
+            // todo factorize
             if (player2Id != null)
                 players.Add(PlayerDAL.Detail((int)player2Id));
             if (player3Id != null)
