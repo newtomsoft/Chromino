@@ -1,5 +1,7 @@
 # ChrominoCommunity
-chromino inline game. official real game by Asmodee :  https://fr.asmodee.com/fr/games/chromino/
+Chromino inline game.
+Official real game by Asmodee is here :  https://fr.asmodee.com/fr/games/chromino/
+But no inline game so this is one :)
 
 How To :
 - clone projet,
