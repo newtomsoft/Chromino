@@ -1,0 +1,17 @@
+
+dotnet tool install --global dotnet-ef
+
+
+
+Creation / migrations  de tables : Projet Data
+
+
+Nuget :
+Microsoft.Extensions.Configuration.Json
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Design
+
+commandes :
+dotnet ef migrations add MaMigration
+dotnet ef database update

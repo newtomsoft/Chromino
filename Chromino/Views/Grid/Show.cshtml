@@ -1,0 +1,296 @@
+﻿@using Data.Enumeration;
+@using  Data.ViewModel;
+
+@model GameViewModel;
+
+@{
+    ViewData["Title"] = "Grid";
+    string gameStatus;
+}
+
+<style>
+
+    .grid_chromino {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+        .grid_chromino .squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
+            width: 30px;
+            height: 30px;
+            border-color: black;
+        }
+
+        .grid_chromino .squareOpenAll {
+            background-color: white;
+        }
+
+        .grid_chromino .squareOpenRight {
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-left: 2px;
+            border-left-style: solid;
+            border-top: 2px;
+            border-top-style: solid;
+            border-right: 1px;
+            border-right-style: solid;
+            border-right-color: slategray;
+        }
+
+        .grid_chromino .squareOpenBottom {
+            border-right: 2px;
+            border-right-style: solid;
+            border-left: 2px;
+            border-left-style: solid;
+            border-top: 2px;
+            border-top-style: solid;
+            border-bottom: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: slategray;
+        }
+
+        .grid_chromino .squareOpenLeft {
+            border-right: 2px;
+            border-right-style: solid;
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-top: 2px;
+            border-top-style: solid;
+        }
+
+        .grid_chromino .squareOpenTop {
+            border-right: 2px;
+            border-right-style: solid;
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-left: 2px;
+            border-left-style: solid;
+        }
+
+        .grid_chromino .squareOpenTopBotom {
+            border-right: 2px;
+            border-right-style: solid;
+            border-left: 2px;
+            border-left-style: solid;
+            border-bottom: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: slategray;
+        }
+
+        .grid_chromino .squareOpenLeftRight {
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-top: 2px;
+            border-top-style: solid;
+            border-right: 1px;
+            border-right-style: solid;
+            border-right-color: slategray;
+        }
+
+        .grid_chromino .squareOpenBottomLeftTop {
+            border-right: 2px;
+            border-right-style: solid;
+            border-bottom: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: slategray;
+        }
+
+        .grid_chromino .squareOpenRightLeftTop {
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-right: 1px;
+            border-right-style: solid;
+            border-right-color: slategray;
+        }
+
+        .grid_chromino .squareOpenLeftTop {
+            border-right: 2px;
+            border-right-style: solid;
+            border-bottom: 2px;
+            border-bottom-style: solid;
+        }
+
+        .grid_chromino .squareOpenBottomLeft {
+            border-right: 2px;
+            border-right-style: solid;
+            border-top: 2px;
+            border-top-style: solid;
+            border-bottom: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: slategray;
+        }
+
+        .grid_chromino .squareOpenRightTop {
+            border-bottom: 2px;
+            border-bottom-style: solid;
+            border-left: 2px;
+            border-left-style: solid;
+            border-right: 1px;
+            border-right-style: solid;
+            border-right-color: slategray;
+        }
+</style>
+
+<div>
+    <a asp-controller="Game" asp-action="ContinueRandomGame" asp-route-id="@ViewBag.GameId">Continue game</a>
+</div>
+
+@switch (Model.GameStatus)
+{
+    case GameStatus.Finished:
+        gameStatus = "finished";
+        break;
+
+    case GameStatus.Aborted:
+        gameStatus = "aborted";
+        break;
+
+    case GameStatus.InProgress:
+        gameStatus = "in progress";
+        break;
+
+    case GameStatus.InPause:
+    default:
+        gameStatus = "in pause";
+        break;
+}
+<p>Game is @gameStatus  -  Chrominos in game : @Model.ChrominosInGame  -  Chrominos in stack : @Model.ChrominosInStack</p>
+@for (int i = 0; i < Model.PlayerNumberChrominos.Count; i++)
+{
+    <p>Player @(i+1)  : @Model.PlayerNumberChrominos[i] in hand</p>
+}
+<br>
+
+@for (int j = 0; j < Model.LinesNumber; j++)
+{
+    <div class="grid_chromino">
+        @for (int i = 0; i < Model.ColumnsNumber; i++)
+        {
+            int index = i + j * Model.ColumnsNumber;
+            OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
+            bool leftClosed = false;
+            bool topClosed = false;
+
+            if (openEdge != OpenEdge.All && openEdge != OpenEdge.Left && openEdge != OpenEdge.RightLeft)
+                leftClosed = true;
+
+            if (openEdge != OpenEdge.All && openEdge != OpenEdge.Top && openEdge != OpenEdge.BottomTop)
+                topClosed = true;
+
+            if (leftClosed && i > 0)
+            {
+                int leftIndex = (i - 1) + j * Model.ColumnsNumber;
+                OpenEdge leftOpenEdge = Model.SquaresViewModel[leftIndex].Edge;
+                if (leftOpenEdge != OpenEdge.All && leftOpenEdge != OpenEdge.Right && leftOpenEdge != OpenEdge.RightLeft)
+                {
+                    // border à afficher en commun => il est déjà affiché donc on ne l'affiche pas
+                    openEdge = openEdge switch
+                    {
+                        OpenEdge.BottomTop => OpenEdge.BottomLeftTop,
+                        OpenEdge.Right => OpenEdge.RightLeft,
+                        OpenEdge.Top => OpenEdge.LeftTop,
+                        _ => OpenEdge.BottomLeft,
+                    };
+                }
+            }
+            if (topClosed && j > 0)
+            {
+                int topIndex = i + (j - 1) * Model.ColumnsNumber;
+                OpenEdge topOpenEdge = Model.SquaresViewModel[topIndex].Edge;
+                if (topOpenEdge != OpenEdge.All && topOpenEdge != OpenEdge.Bottom && topOpenEdge != OpenEdge.BottomTop)
+                {
+                    // border à afficher en commun => il est déjà affiché donc on ne l'affiche pas
+                    openEdge = openEdge switch
+                    {
+                        OpenEdge.RightLeft => OpenEdge.RightLeftTop,
+                        OpenEdge.Right => OpenEdge.RightTop,
+                        OpenEdge.Left => OpenEdge.LeftTop,
+                        OpenEdge.BottomLeft => OpenEdge.BottomLeftTop,
+                        _ => OpenEdge.BottomTop,
+                    };
+                }
+            }
+
+            SquareViewModelState state = Model.SquaresViewModel[index].State;
+            string styleColor;
+            switch (state)
+            {
+                case SquareViewModelState.Free:
+                    styleColor = "style=background-color:white";
+                    openEdge = OpenEdge.All;
+                    break;
+                case SquareViewModelState.Blue:
+                    styleColor = "style=background-color:blue";
+                    break;
+                case SquareViewModelState.Green:
+                    styleColor = "style=background-color:green";
+                    break;
+                case SquareViewModelState.Purple:
+                    styleColor = "style=background-color:purple";
+                    break;
+                case SquareViewModelState.Red:
+                    styleColor = "style=background-color:red";
+                    break;
+                case SquareViewModelState.Yellow:
+                    styleColor = "style=background-color:yellow";
+                    break;
+                case SquareViewModelState.Cameleon:
+                default:
+                    styleColor = "style=background-color:burlywood";
+                    break;
+            }
+            switch (openEdge)
+            {
+                case OpenEdge.Right:
+                    <div class="squareOpenRight" @styleColor></div>
+                    break;
+                case OpenEdge.Bottom:
+                    <div class="squareOpenBottom" @styleColor></div>
+                    break;
+                case OpenEdge.Left:
+                    <div class="squareOpenLeft" @styleColor></div>
+                    break;
+                case OpenEdge.Top:
+                    <div class="squareOpenTop" @styleColor></div>
+                    break;
+                case OpenEdge.BottomTop:
+                    <div class="squareOpenTopBotom" @styleColor></div>
+                    break;
+                case OpenEdge.RightLeft:
+                    <div class="squareOpenLeftRight" @styleColor></div>
+                    break;
+                case OpenEdge.BottomLeftTop:
+                    <div class="squareOpenBottomLeftTop" @styleColor></div>
+                    break;
+                case OpenEdge.RightLeftTop:
+                    <div class="squareOpenRightLeftTop" @styleColor></div>
+                    break;
+                case OpenEdge.LeftTop:
+                    <div class="squareOpenLeftTop" @styleColor></div>
+                    break;
+                case OpenEdge.BottomLeft:
+                    <div class="squareOpenBottomLeft" @styleColor></div>
+                    break;
+                case OpenEdge.RightTop:
+                    <div class="squareOpenRightTop" @styleColor></div>
+                    break;
+                case OpenEdge.All:
+                default:
+                    <div class="squareOpenAll"></div>
+                    break;
+            }
+        }
+    </div>
+}
+
+
+@if (Model.GameStatus != GameStatus.Finished && Model.GameStatus != GameStatus.Aborted)
+{
+    <script>
+            window.onload = function () { continueRandomGame(); }
+
+            function continueRandomGame() {
+        location.assign("@Url.Action("ContinueRandomGame", "Game", new { id = ViewBag.GameId })");
+        }
+    </script>
+}
