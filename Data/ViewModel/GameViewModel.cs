@@ -10,6 +10,8 @@ namespace Data.ViewModel
 {
     public class GameViewModel
     {
+        public int GameId { get; set; }
+        public bool AutoPlay { get; set; }
         public List<Square> Squares { get; set; }
         public int XMin { get; set; }
         public int XMax { get; set; }
@@ -24,8 +26,10 @@ namespace Data.ViewModel
         public List<int> PlayerNumberChrominos { get; set; }
         public GameStatus GameStatus { get; set; }
 
-        public GameViewModel(List<Square> squares, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos)
+        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos)
         {
+            AutoPlay = autoPlay;
+            GameId = gameId;
             ChrominosInGame = chrominosInGame;
             ChrominosInStack = chrominosInStack;
             PlayerNumberChrominos = playerNumberChrominos;

@@ -25,6 +25,190 @@ a {
     border-color: #1861ac;
 }
 
+
+
+#gameArea {
+    height: 85vm;
+    width: 85vm; /* IE9 fallback */
+    width: 85vmin;
+    height: 85vmin;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    justify-content: center;
+}
+
+.gameLineArea {
+    height: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+    .gameLineArea .squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
+        width: 30px;
+        border-color: black;
+    }
+
+    .gameLineArea .squareOpenAll {
+        background-color: white;
+    }
+
+    .gameLineArea .squareOpenRight {
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-left: 2px;
+        border-left-style: solid;
+        border-top: 2px;
+        border-top-style: solid;
+        border-right: 1px;
+        border-right-style: solid;
+        border-right-color: slategray;
+    }
+
+    .gameLineArea .squareOpenBottom {
+        border-right: 2px;
+        border-right-style: solid;
+        border-left: 2px;
+        border-left-style: solid;
+        border-top: 2px;
+        border-top-style: solid;
+        border-bottom: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: slategray;
+    }
+
+    .gameLineArea .squareOpenLeft {
+        border-right: 2px;
+        border-right-style: solid;
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-top: 2px;
+        border-top-style: solid;
+    }
+
+    .gameLineArea .squareOpenTop {
+        border-right: 2px;
+        border-right-style: solid;
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-left: 2px;
+        border-left-style: solid;
+    }
+
+    .gameLineArea .squareOpenTopBotom {
+        border-right: 2px;
+        border-right-style: solid;
+        border-left: 2px;
+        border-left-style: solid;
+        border-bottom: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: slategray;
+    }
+
+    .gameLineArea .squareOpenLeftRight {
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-top: 2px;
+        border-top-style: solid;
+        border-right: 1px;
+        border-right-style: solid;
+        border-right-color: slategray;
+    }
+
+    .gameLineArea .squareOpenBottomLeftTop {
+        border-right: 2px;
+        border-right-style: solid;
+        border-bottom: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: slategray;
+    }
+
+    .gameLineArea .squareOpenRightLeftTop {
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-right: 1px;
+        border-right-style: solid;
+        border-right-color: slategray;
+    }
+
+    .gameLineArea .squareOpenLeftTop {
+        border-right: 2px;
+        border-right-style: solid;
+        border-bottom: 2px;
+        border-bottom-style: solid;
+    }
+
+    .gameLineArea .squareOpenBottomLeft {
+        border-right: 2px;
+        border-right-style: solid;
+        border-top: 2px;
+        border-top-style: solid;
+        border-bottom: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: slategray;
+    }
+
+    .gameLineArea .squareOpenRightTop {
+        border-bottom: 2px;
+        border-bottom-style: solid;
+        border-left: 2px;
+        border-left-style: solid;
+        border-right: 1px;
+        border-right-style: solid;
+        border-right-color: slategray;
+    }
+
+@media screen and (orientation: portrait) {
+    #toolbar {
+        position: fixed;
+        top: 0px;
+        height: 100px;
+        width: 100%;
+    }
+
+    #handPlayer {
+        position: fixed;
+        bottom: 0px;
+        height: 100px;
+        width: 100%;
+    }
+}
+
+
+@media screen and (orientation: landscape) {
+    #toolbar {
+        position: fixed;
+        left: 0px;
+        width: 100px;
+        height: 100%;
+    }
+
+    #handPlayer {
+        position: fixed;
+        right: 0px;
+        width: 100px;
+        height: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

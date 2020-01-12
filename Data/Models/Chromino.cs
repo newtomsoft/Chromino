@@ -18,8 +18,5 @@ namespace Data.Models
         public Color SecondColor { get; set; }
         public Color ThirdColor { get; set; }
         public int Points { get; set; }
-
-  
-       
     }
 }

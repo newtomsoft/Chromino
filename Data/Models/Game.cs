@@ -21,5 +21,7 @@ namespace Data.Models
 
         public GameStatus Status { get; set; }
 
+        public bool AutoPlay { get; set; }
+
     }
 }

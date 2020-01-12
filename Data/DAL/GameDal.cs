@@ -48,7 +48,7 @@ namespace Data.DAL
         public Game AddGame()
         {
             string guid = Guid.NewGuid().ToString("N");
-            Game game = new Game { CreateDate = DateTime.Now, Guid = guid };
+            Game game = new Game { CreateDate = DateTime.Now, Guid = guid, AutoPlay = false };
             Ctx.Games.Add(game);
             Ctx.SaveChanges();
             return Details(guid);
@@ -64,13 +64,14 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public GameStatus Status(int id)
+        public void SetAutoPlay(int id, bool autoPlay)
         {
-            GameStatus status = (from g in Ctx.Games
-                                 where g.Id == id
-                                 select g.Status).FirstOrDefault();
+            Game game = (from g in Ctx.Games
+                         where g.Id == id
+                         select g).FirstOrDefault();
 
-            return status;
+            game.AutoPlay = autoPlay;
+            Ctx.SaveChanges();
         }
     }
 }

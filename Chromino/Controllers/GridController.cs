@@ -38,13 +38,23 @@ namespace Chromino.Controllers
                 numberChrominosInHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
             }
 
-            GameStatus gameStatus = GameDal.Status(id);
+            Game game = GameDal.Details(id);
+            GameStatus gameStatus = game.Status;
+            bool autoPlay = game.AutoPlay;
 
             List<Square> grids = GridDal.List(id);
-            GameViewModel gameViewModel = new GameViewModel(grids, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand);
-            ViewBag.GameId = id;
+            GameViewModel gameViewModel = new GameViewModel(id, grids, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand);
 
             return View(gameViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AutoPlay(int gameId, bool autoPlay)
+        {
+            if (autoPlay)
+                GameDal.SetAutoPlay(gameId, autoPlay);
+
+            return RedirectToAction("Show", new { id = gameId });
         }
     }
 }
