@@ -53,8 +53,6 @@ namespace Data.Core
             ChangePlayerTurn();
         }
 
-
-
         public void ChangePlayerTurn()
         {
             if (GamePlayers.Count == 1)
@@ -139,7 +137,7 @@ namespace Data.Core
                 }
             }
 
-            // cherche un chromino dans la main du joueur correspondant à un possibleSpace
+            // cherche un chromino dans la main du joueur correspondant à un possiblesPosition
             possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList();
             List<GameChromino> hand = ChrominoGameDal.PlayerListByPriority(GameId, Players[0].Id);
             GameChromino goodChrominoGame = null;
@@ -147,21 +145,21 @@ namespace Data.Core
 
             foreach (GameChromino chrominoGame in hand)
             {
-                foreach (PossiblesPositions possibleSpace in possiblesPositions)
+                foreach (PossiblesPositions possiblePosition in possiblesPositions)
                 {
                     Chromino chromino = ChrominoDal.Details(chrominoGame.ChrominoId);
 
-                    if ((chromino.FirstColor == possibleSpace.FirstColor || possibleSpace.FirstColor == Color.Cameleon) && (chromino.SecondColor == possibleSpace.SecondColor || chromino.SecondColor == Color.Cameleon || possibleSpace.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possibleSpace.ThirdColor || possibleSpace.ThirdColor == Color.Cameleon))
+                    if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon))
                     {
-                        chrominoGame.Orientation = possibleSpace.Orientation;
-                        firstCoordinate = possibleSpace.Coordinate;
+                        chrominoGame.Orientation = possiblePosition.Orientation;
+                        firstCoordinate = possiblePosition.Coordinate;
                         goodChrominoGame = chrominoGame;
                         break;
                     }
-                    else if ((chromino.FirstColor == possibleSpace.ThirdColor || possibleSpace.ThirdColor == Color.Cameleon) && (chromino.SecondColor == possibleSpace.SecondColor || chromino.SecondColor == Color.Cameleon || possibleSpace.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possibleSpace.FirstColor || possibleSpace.FirstColor == Color.Cameleon))
+                    else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon))
                     {
-                        firstCoordinate = possibleSpace.Coordinate.GetNextCoordinate(possibleSpace.Orientation).GetNextCoordinate(possibleSpace.Orientation);
-                        chrominoGame.Orientation = possibleSpace.Orientation switch
+                        firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
+                        chrominoGame.Orientation = possiblePosition.Orientation switch
                         {
                             Orientation.Horizontal => Orientation.HorizontalFlip,
                             Orientation.HorizontalFlip => Orientation.Horizontal,
@@ -198,7 +196,7 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// retourne la couleur possible à cette endroit
+        /// retourne la couleur possible à cet endroit
         /// </summary>
         /// <param name="coordinate"></param>
         /// <param name="adjacentChrominos"></param>
