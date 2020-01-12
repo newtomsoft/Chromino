@@ -8,19 +8,19 @@ using Data.Enumeration;
 
 namespace Data.DAL
 {
-    public class SquareDAL
+    public class SquareDal
     {
         private readonly DefaultContext Ctx;
 
-        public SquareDAL(DefaultContext context)
+        public SquareDal(DefaultContext context)
         {
             Ctx = context;
         }
 
         public bool PutChromino(GameChromino chromino_Game, Coordinate firstCoordinate, bool firstChromino = false)
         {
-            ChrominoDal chrominoDAL = new ChrominoDal(Ctx);
-            Chromino chromino = chrominoDAL.Details(chromino_Game.ChrominoId);
+            ChrominoDal chrominoDal = new ChrominoDal(Ctx);
+            Chromino chromino = chrominoDal.Details(chromino_Game.ChrominoId);
 
             ComputeOffset((Orientation)chromino_Game.Orientation, out int offsetX, out int offsetY);
 
@@ -44,7 +44,7 @@ namespace Data.DAL
                 {
                     n1 = 0; n2 = 0; n3 = 0;
                 }
-                //not the best method for validate first chromino position...
+                // todo not the best method for validate first chromino position...
 
                 if (!firstChromino && ((n1 = GetNumberSameColorsAround(gameId, firstCoordinate, chromino.FirstColor)) == -1 || (n2 = GetNumberSameColorsAround(gameId, secondCoordinate, chromino.SecondColor)) == -1 || (n3 = GetNumberSameColorsAround(gameId, thirdCoordinate, chromino.ThirdColor)) == -1))
                 {
@@ -88,9 +88,9 @@ namespace Data.DAL
                             break;
                     }
 
-                    Ctx.Grids.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
-                    Ctx.Grids.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
-                    Ctx.Grids.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
 
                     chromino_Game.XPosition = firstCoordinate.X;
                     chromino_Game.YPosition = firstCoordinate.Y;
@@ -135,9 +135,9 @@ namespace Data.DAL
 
         public bool IsFree(int gameId, Coordinate coordinate)
         {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId && grids.X == coordinate.X && grids.Y == coordinate.Y
-                          select grids).FirstOrDefault();
+            var result = (from s in Ctx.Squares
+                          where s.GameId == gameId && s.X == coordinate.X && s.Y == coordinate.Y
+                          select s).FirstOrDefault();
 
             if (result == null)
                 return true;
@@ -147,9 +147,9 @@ namespace Data.DAL
 
         public Color? GetColor(int gameId, Coordinate coordinate)
         {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId && grids.X == coordinate.X && grids.Y == coordinate.Y
-                          select grids).FirstOrDefault();
+            var result = (from s in Ctx.Squares
+                          where s.GameId == gameId && s.X == coordinate.X && s.Y == coordinate.Y
+                          select s).FirstOrDefault();
 
             if (result != null)
                 return result.Color;
@@ -159,66 +159,11 @@ namespace Data.DAL
 
         public List<Square> List(int gameId)
         {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId
-                          select grids).ToList();
+            var result = (from s in Ctx.Squares
+                          where s.GameId == gameId
+                          select s).ToList();
 
             return result;
-        }
-
-        public int GetXMin(int gameId)
-        {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId
-                          select grids.X).Min();
-
-            return result;
-
-        }
-
-        public int GetYMin(int gameId)
-        {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId
-                          select grids.Y).Min();
-
-            return result;
-
-        }
-
-        public int GetXMax(int gameId)
-        {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId
-                          select grids.X).Max();
-
-            return result;
-
-        }
-
-        public int GetYMax(int gameId)
-        {
-            var result = (from grids in Ctx.Grids
-                          where grids.GameId == gameId
-                          select grids.Y).Max();
-
-            return result;
-
-        }
-
-        /// <summary>
-        /// For test only
-        /// </summary>
-        /// <param name="chromino_Game"></param>
-        public void RandomPutChromino(GameChromino chromino_Game)
-        {
-            Random random = new Random();
-            bool put = false;
-            while (!put)
-            {
-                Coordinate coordinate = new Coordinate(random.Next(-10, 10), random.Next(-10, 10));
-                put = PutChromino(chromino_Game, coordinate);
-            }
         }
 
         private void ComputeOffset(Orientation orientation, out int offsetX, out int offsetY)

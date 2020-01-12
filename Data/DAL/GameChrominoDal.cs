@@ -17,19 +17,10 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public int InGame(int gameId)
+        public int StatusNumber(int gameId, ChrominoStatus status)
         {
             int nbChrominos = (from cg in Ctx.Chrominos_Games
-                               where cg.GameId == gameId && cg.State == ChrominoStatus.InGame
-                               select cg).Count();
-
-            return nbChrominos;
-        }
-
-        public int InStack(int gameId)
-        {
-            int nbChrominos = (from cg in Ctx.Chrominos_Games
-                               where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
+                               where cg.GameId == gameId && cg.State == status
                                select cg).Count();
 
             return nbChrominos;
@@ -37,8 +28,8 @@ namespace Data.DAL
 
         public void Add(int gameId)
         {
-            ChrominoDal chrominoDAL = new ChrominoDal(Ctx);
-            List<Chromino> chrominos = chrominoDAL.List();
+            ChrominoDal chrominoDal = new ChrominoDal(Ctx);
+            List<Chromino> chrominos = chrominoDal.List();
             List<GameChromino> chrominosGames = new List<GameChromino>();
             foreach (Chromino chromino in chrominos)
             {

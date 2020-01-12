@@ -14,11 +14,11 @@ namespace Chromino.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ChrominoDal ChrominoDAL;
+        private readonly ChrominoDal ChrominoDal;
 
         public HomeController(DefaultContext ctx)
         {
-            ChrominoDAL = new ChrominoDal(ctx);
+            ChrominoDal = new ChrominoDal(ctx);
 
         }
 

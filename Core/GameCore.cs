@@ -10,12 +10,12 @@ namespace Data.Core
     public class GameCore
     {
         private const int MaxChrominoInHand = 8;
-        private readonly GameChrominoDal ChrominoGameDAL;
-        private readonly ChrominoDal ChrominoDAL;
-        private readonly SquareDAL SquareDAL;
-        private readonly PlayerDal PlayerDAL;
-        private readonly GamePlayerDal GamePlayerDAL;
-        private readonly GameDal GameDAL;
+        private readonly GameChrominoDal ChrominoGameDal;
+        private readonly ChrominoDal ChrominoDal;
+        private readonly SquareDal SquareDal;
+        private readonly PlayerDal PlayerDal;
+        private readonly GamePlayerDal GamePlayerDal;
+        private readonly GameDal GameDal;
         private int GameId { get; set; }
         public List<Square> Squares { get; set; }
         public List<Player> Players { get; set; }
@@ -23,14 +23,14 @@ namespace Data.Core
 
         public GameCore(DefaultContext ctx, int gameId, List<Player> listPlayers)
         {
-            GameDAL = new GameDal(ctx);
-            ChrominoGameDAL = new GameChrominoDal(ctx);
-            ChrominoDAL = new ChrominoDal(ctx);
-            SquareDAL = new SquareDAL(ctx);
-            PlayerDAL = new PlayerDal(ctx);
-            GamePlayerDAL = new GamePlayerDal(ctx);
+            GameDal = new GameDal(ctx);
+            ChrominoGameDal = new GameChrominoDal(ctx);
+            ChrominoDal = new ChrominoDal(ctx);
+            SquareDal = new SquareDal(ctx);
+            PlayerDal = new PlayerDal(ctx);
+            GamePlayerDal = new GamePlayerDal(ctx);
             GameId = gameId;
-            Squares = SquareDAL.List(GameId);
+            Squares = SquareDal.List(GameId);
             Players = listPlayers;
             InitGamePlayers();
         }
@@ -40,15 +40,15 @@ namespace Data.Core
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
             {
-                GamePlayers.Add(GamePlayerDAL.GamePlayer(GameId, player.Id));
+                GamePlayers.Add(GamePlayerDal.GamePlayer(GameId, player.Id));
             }
         }
 
         public void BeginGame()
         {
-            GameDAL.SetStatus(GameId, GameStatus.InProgress);
-            GameChromino firstChromino = ChrominoGameDAL.RandomFirstChromino(GameId);
-            SquareDAL.PutChromino(firstChromino, new Coordinate(0, 0).GetPreviousCoordinate((Orientation)firstChromino.Orientation), true);
+            GameDal.SetStatus(GameId, GameStatus.InProgress);
+            GameChromino firstChromino = ChrominoGameDal.RandomFirstChromino(GameId);
+            SquareDal.PutChromino(firstChromino, new Coordinate(0, 0).GetPreviousCoordinate((Orientation)firstChromino.Orientation), true);
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -116,7 +116,7 @@ namespace Data.Core
                     {
                         Coordinate secondCoordinate = coordinate.GetNextCoordinate(orientation);
                         Coordinate thirdCoordinate = secondCoordinate.GetNextCoordinate(orientation);
-                        if (SquareDAL.IsFree(GameId, secondCoordinate) && SquareDAL.IsFree(GameId, thirdCoordinate))
+                        if (SquareDal.IsFree(GameId, secondCoordinate) && SquareDal.IsFree(GameId, thirdCoordinate))
                         {
                             //calcul si chromino posable et dans quelle position
                             Color? secondColor = OkColorFor(secondCoordinate, out int adjacentChrominoSecondColor);
@@ -141,7 +141,7 @@ namespace Data.Core
 
             // cherche un chromino dans la main du joueur correspondant à un possibleSpace
             possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList();
-            List<GameChromino> hand = ChrominoGameDAL.PlayerListByPriority(GameId, Players[0].Id);
+            List<GameChromino> hand = ChrominoGameDal.PlayerListByPriority(GameId, Players[0].Id);
             GameChromino goodChrominoGame = null;
             Coordinate firstCoordinate = null;
 
@@ -149,7 +149,7 @@ namespace Data.Core
             {
                 foreach (PossiblesPositions possibleSpace in possiblesPositions)
                 {
-                    Chromino chromino = ChrominoDAL.Details(chrominoGame.ChrominoId);
+                    Chromino chromino = ChrominoDal.Details(chrominoGame.ChrominoId);
 
                     if ((chromino.FirstColor == possibleSpace.FirstColor || possibleSpace.FirstColor == Color.Cameleon) && (chromino.SecondColor == possibleSpace.SecondColor || chromino.SecondColor == Color.Cameleon || possibleSpace.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possibleSpace.ThirdColor || possibleSpace.ThirdColor == Color.Cameleon))
                     {
@@ -178,20 +178,20 @@ namespace Data.Core
 
             if (goodChrominoGame == null)
             {
-                GameChromino chrominoGame = ChrominoGameDAL.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
+                GameChromino chrominoGame = ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
                 if (chrominoGame == null)
-                    GameDAL.SetStatus(GameId, GameStatus.Finished);
+                    GameDal.SetStatus(GameId, GameStatus.Finished);
                 return false;
             }
             else
             {
-                bool put = SquareDAL.PutChromino(goodChrominoGame, firstCoordinate);
+                bool put = SquareDal.PutChromino(goodChrominoGame, firstCoordinate);
                 if (!put)
                 {
 #if DEBUG
                     System.Diagnostics.Debugger.Break();
 #endif
-                    ChrominoGameDAL.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
+                    ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
                 }
                 return true;
             }
@@ -253,7 +253,7 @@ namespace Data.Core
 
         public HashSet<Coordinate> FreeAroundChrominos()
         {
-            List<Square> grids = SquareDAL.List(GameId);
+            List<Square> grids = SquareDal.List(GameId);
             HashSet<Coordinate> coordinates = new HashSet<Coordinate>();
             foreach (var grid in grids)
             {
@@ -261,13 +261,13 @@ namespace Data.Core
                 Coordinate bottomCoordinate = grid.GetBottom();
                 Coordinate leftCoordinate = grid.GetLeft();
                 Coordinate topCoordinate = grid.GetTop();
-                if (SquareDAL.IsFree(GameId, rightCoordinate))
+                if (SquareDal.IsFree(GameId, rightCoordinate))
                     coordinates.Add(rightCoordinate);
-                if (SquareDAL.IsFree(GameId, bottomCoordinate))
+                if (SquareDal.IsFree(GameId, bottomCoordinate))
                     coordinates.Add(bottomCoordinate);
-                if (SquareDAL.IsFree(GameId, leftCoordinate))
+                if (SquareDal.IsFree(GameId, leftCoordinate))
                     coordinates.Add(leftCoordinate);
-                if (SquareDAL.IsFree(GameId, topCoordinate))
+                if (SquareDal.IsFree(GameId, topCoordinate))
                     coordinates.Add(topCoordinate);
             }
             return coordinates;
@@ -286,7 +286,7 @@ namespace Data.Core
         {
             for (int i = 0; i < MaxChrominoInHand; i++)
             {
-                ChrominoGameDAL.ChrominoFromStackToHandPlayer(GameId, gamePlayer.PlayerId);
+                ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, gamePlayer.PlayerId);
             }
         }
     }

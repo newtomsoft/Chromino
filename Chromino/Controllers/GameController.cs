@@ -16,19 +16,19 @@ namespace Chromino.Controllers
     public class GameController : Controller
     {
         private readonly DefaultContext Ctx;
-        private readonly GameDal GameDAL;
-        private readonly GameChrominoDal ChrominoGameDAL;
-        private readonly ChrominoDal ChrominoDAL;
-        private readonly PlayerDal PlayerDAL;
-        private readonly GamePlayerDal GamePlayerDAL;
+        private readonly GameDal GameDal;
+        private readonly GameChrominoDal GameChrominoDal;
+        private readonly ChrominoDal ChrominoDal;
+        private readonly PlayerDal PlayerDal;
+        private readonly GamePlayerDal GamePlayerDal;
         public GameController(DefaultContext context)
         {
             Ctx = context;
-            GameDAL = new GameDal(Ctx);
-            ChrominoGameDAL = new GameChrominoDal(Ctx);
-            ChrominoDAL = new ChrominoDal(Ctx);
-            PlayerDAL = new PlayerDal(Ctx);
-            GamePlayerDAL = new GamePlayerDal(Ctx);
+            GameDal = new GameDal(Ctx);
+            GameChrominoDal = new GameChrominoDal(Ctx);
+            ChrominoDal = new ChrominoDal(Ctx);
+            PlayerDal = new PlayerDal(Ctx);
+            GamePlayerDal = new GamePlayerDal(Ctx);
         }
 
         [HttpGet]
@@ -43,30 +43,30 @@ namespace Chromino.Controllers
         {
             List<Player> players = new List<Player>(8);
             if (player1Id != null)
-                players.Add(PlayerDAL.Detail((int)player1Id));
+                players.Add(PlayerDal.Detail((int)player1Id));
             else
-                players.Add(PlayerDAL.Bot());
+                players.Add(PlayerDal.Bot());
             // todo factorize
             if (player2Id != null)
-                players.Add(PlayerDAL.Detail((int)player2Id));
+                players.Add(PlayerDal.Detail((int)player2Id));
             if (player3Id != null)
-                players.Add(PlayerDAL.Detail((int)player3Id));
+                players.Add(PlayerDal.Detail((int)player3Id));
             if (player4Id != null)
-                players.Add(PlayerDAL.Detail((int)player4Id));
+                players.Add(PlayerDal.Detail((int)player4Id));
             if (player5Id != null)
-                players.Add(PlayerDAL.Detail((int)player5Id));
+                players.Add(PlayerDal.Detail((int)player5Id));
             if (player6Id != null)
-                players.Add(PlayerDAL.Detail((int)player6Id));
+                players.Add(PlayerDal.Detail((int)player6Id));
             if (player7Id != null)
-                players.Add(PlayerDAL.Detail((int)player7Id));
+                players.Add(PlayerDal.Detail((int)player7Id));
             if (player8Id != null)
-                players.Add(PlayerDAL.Detail((int)player8Id));
+                players.Add(PlayerDal.Detail((int)player8Id));
 
             List<int> playersId = players.Select(x => x.Id).ToList();
-            ChrominoDAL.CreateChrominos();
-            int gameId = GameDAL.AddGame().Id;
-            GamePlayerDAL.Add(gameId, playersId);
-            ChrominoGameDAL.Add(gameId);
+            ChrominoDal.CreateChrominos();
+            int gameId = GameDal.AddGame().Id;
+            GamePlayerDal.Add(gameId, playersId);
+            GameChrominoDal.Add(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
             gamecore.BeginGame();
             return RedirectToAction("Show", "Grid", new { id = gameId });
@@ -74,7 +74,7 @@ namespace Chromino.Controllers
 
         public IActionResult ContinueGame(int id)
         {
-            List<Player> players = GamePlayerDAL.Players(id);
+            List<Player> players = GamePlayerDal.Players(id);
             if (players.Count == 1 && players[0].Pseudo == "bot")
             {
                 return RedirectToAction("ContinueRandomGame", "Game", new { id });
@@ -88,7 +88,7 @@ namespace Chromino.Controllers
 
         public IActionResult ContinueRandomGame(int id)
         {
-            Player bot = PlayerDAL.Bot();
+            Player bot = PlayerDal.Bot();
             List<Player> players = new List<Player>(1) { bot };
             GameCore gamecore = new GameCore(Ctx, id, players);
             gamecore.ContinueRandomGame();
@@ -123,7 +123,7 @@ namespace Chromino.Controllers
         // GET: Game/Create
         public IActionResult Create()
         {
-            GameDAL.AddGame();
+            GameDal.AddGame();
             return View();
         }
 
