@@ -48,9 +48,9 @@ namespace Data.DAL
         public GameChromino ChrominoFromStackToHandPlayer(int gameId, int playerId)
         {
             GameChromino chrominoGame = (from cg in Ctx.Chrominos_Games
-                                          where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
-                                          orderby Guid.NewGuid()
-                                          select cg).FirstOrDefault();
+                                         where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
+                                         orderby Guid.NewGuid()
+                                         select cg).FirstOrDefault();
 
             if (chrominoGame != null)
             {
@@ -64,10 +64,10 @@ namespace Data.DAL
         public GameChromino RandomFirstChromino(int gameId)
         {
             GameChromino chromino = (from cg in Ctx.Chrominos_Games
-                                      join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
-                                      where cg.GameId == gameId && c.SecondColor == Color.Cameleon
-                                      orderby Guid.NewGuid()
-                                      select cg).FirstOrDefault();
+                                     join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
+                                     where cg.GameId == gameId && c.SecondColor == Color.Cameleon
+                                     orderby Guid.NewGuid()
+                                     select cg).FirstOrDefault();
 
             chromino.Orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
 
@@ -78,9 +78,9 @@ namespace Data.DAL
         public GameChromino RandomChrominoForGame(int gameId)
         {
             GameChromino chromino = (from cg in Ctx.Chrominos_Games
-                                      where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
-                                      orderby Guid.NewGuid()
-                                      select cg).FirstOrDefault();
+                                     where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
+                                     orderby Guid.NewGuid()
+                                     select cg).FirstOrDefault();
 
             chromino.State = ChrominoStatus.InGame;
             chromino.Orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
@@ -91,9 +91,9 @@ namespace Data.DAL
         public List<GameChromino> PlayerList(int gameId, int playerId)
         {
             List<GameChromino> chrominos = (from cg in Ctx.Chrominos_Games
-                                             where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
-                                             orderby Guid.NewGuid()
-                                             select cg).ToList();
+                                            where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
+                                            orderby Guid.NewGuid()
+                                            select cg).ToList();
 
             return chrominos;
         }
@@ -101,10 +101,10 @@ namespace Data.DAL
         public List<GameChromino> PlayerListByPriority(int gameId, int playerId)
         {
             List<GameChromino> chrominos = (from cg in Ctx.Chrominos_Games
-                                             join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
-                                             where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
-                                             orderby c.Points, c.SecondColor
-                                             select cg).ToList();
+                                            join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
+                                            where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
+                                            orderby c.Points, c.SecondColor
+                                            select cg).ToList();
 
             return chrominos;
         }

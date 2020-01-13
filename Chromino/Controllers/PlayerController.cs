@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Data.Models;
 
-namespace Chromino.Controllers
+namespace ChrominoGame.Controllers
 {
     public class PlayerController : Controller
     {

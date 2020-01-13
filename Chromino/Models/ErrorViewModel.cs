@@ -1,6 +1,6 @@
 using System;
 
-namespace Chromino.Models
+namespace ChrominoGame.Models
 {
     public class ErrorViewModel
     {

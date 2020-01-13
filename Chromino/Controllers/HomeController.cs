@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Chromino.Models;
+using ChrominoGame.Models;
 using Data;
 using Data.Core;
 using Data.DAL;
 
-namespace Chromino.Controllers
+namespace ChrominoGame.Controllers
 {
     public class HomeController : Controller
     {

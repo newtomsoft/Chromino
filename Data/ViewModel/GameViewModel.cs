@@ -25,8 +25,9 @@ namespace Data.ViewModel
         public int ChrominosInStack { get; set; }
         public List<int> PlayerNumberChrominos { get; set; }
         public GameStatus GameStatus { get; set; }
+        public List<ChrominoViewModel> IdentifiedPlayerChrominosViewModel { get; set; }
 
-        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos)
+        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos, List<Chromino> identifiedPlayerChrominos)
         {
             AutoPlay = autoPlay;
             GameId = gameId;
@@ -60,6 +61,20 @@ namespace Data.ViewModel
                 int index = IndexGridState(square.X, square.Y);
                 SquaresViewModel[index] = square.SquareViewModel;
             }
+
+            IdentifiedPlayerChrominosViewModel = new List<ChrominoViewModel>();
+            foreach (Chromino chromino in identifiedPlayerChrominos)
+            {
+                SquareViewModel square1 = new SquareViewModel { State = (SquareViewModelState)chromino.FirstColor, Edge=OpenEdge.Right };
+                SquareViewModel square2 = new SquareViewModel { State = (SquareViewModelState)chromino.SecondColor, Edge = OpenEdge.RightLeft };
+                SquareViewModel square3 = new SquareViewModel { State = (SquareViewModelState)chromino.ThirdColor, Edge = OpenEdge.Left };
+                ChrominoViewModel chrominoViewModel = new ChrominoViewModel();
+                chrominoViewModel.SquaresViewModel[0] = square1;
+                chrominoViewModel.SquaresViewModel[1] = square2;
+                chrominoViewModel.SquaresViewModel[2] = square3;
+                IdentifiedPlayerChrominosViewModel.Add(chrominoViewModel);
+                //TODO faire edge
+            }
         }
 
 
@@ -71,7 +86,7 @@ namespace Data.ViewModel
             return y * ColumnsNumber + x - (YMin * ColumnsNumber + XMin);
         }
 
-        
+
 
     }
 
