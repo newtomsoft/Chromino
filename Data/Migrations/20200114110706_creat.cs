@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class dbCreate : Migration
+    public partial class creat : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,7 +31,8 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Guid = table.Column<string>(maxLength: 32, nullable: false),
                     CreateDate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<int>(nullable: false)
+                    Status = table.Column<int>(nullable: false),
+                    AutoPlay = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    [Migration("20200112121930_dbCreate")]
-    partial class dbCreate
+    [Migration("20200114110706_creat")]
+    partial class creat
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,9 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AutoPlay")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
