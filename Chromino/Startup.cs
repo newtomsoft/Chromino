@@ -14,22 +14,36 @@ namespace ChrominoGame
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
+   
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            IMvcBuilder builder = services.AddRazorPages();
+
+#if DEBUG
+                builder.AddRazorRuntimeCompilation();
+#endif
+
             services.AddControllersWithViews();
             string connectionString = Configuration.GetConnectionString("DefaultContext");
             services.AddDbContext<DefaultContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
