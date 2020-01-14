@@ -227,7 +227,7 @@ namespace ChrominoGame.Controllers
             }
 
             List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-            if (players.Count == 1 && players[0].Pseudo=="Bot")
+            if (players.Count == 1 && players[0].Pseudo == "Bot")
             {
                 identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
             }
@@ -245,14 +245,9 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult AutoPlay(int gameId, bool autoPlay)
         {
-            if (autoPlay)
-                GameDal.SetAutoPlay(gameId, autoPlay);
-
-            return RedirectToAction("Show", new { id = gameId });
+            GameDal.SetAutoPlay(gameId, autoPlay);
+            return RedirectToAction("ContinueRandomGame", "Game", new { id = gameId });
         }
-
-
-
 
 
 

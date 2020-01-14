@@ -49,119 +49,119 @@ a {
     justify-content: center;
 }
 
-    .gameLineArea .squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
-        width: 30px;
-        border-color: black;
-    }
+.squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
+    width: 30px;
+    border-color: black;
+}
 
-    .gameLineArea .squareOpenAll {
-        background-color: white;
-    }
+.squareOpenAll {
+    background-color: white;
+}
 
-    .gameLineArea .squareOpenRight {
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-left: 2px;
-        border-left-style: solid;
-        border-top: 2px;
-        border-top-style: solid;
-        border-right: 1px;
-        border-right-style: solid;
-        border-right-color: slategray;
-    }
+.squareOpenRight {
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-left: 2px;
+    border-left-style: solid;
+    border-top: 2px;
+    border-top-style: solid;
+    border-right: 1px;
+    border-right-style: solid;
+    border-right-color: slategray;
+}
 
-    .gameLineArea .squareOpenBottom {
-        border-right: 2px;
-        border-right-style: solid;
-        border-left: 2px;
-        border-left-style: solid;
-        border-top: 2px;
-        border-top-style: solid;
-        border-bottom: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: slategray;
-    }
+.squareOpenBottom {
+    border-right: 2px;
+    border-right-style: solid;
+    border-left: 2px;
+    border-left-style: solid;
+    border-top: 2px;
+    border-top-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
+}
 
-    .gameLineArea .squareOpenLeft {
-        border-right: 2px;
-        border-right-style: solid;
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-top: 2px;
-        border-top-style: solid;
-    }
+.squareOpenLeft {
+    border-right: 2px;
+    border-right-style: solid;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-top: 2px;
+    border-top-style: solid;
+}
 
-    .gameLineArea .squareOpenTop {
-        border-right: 2px;
-        border-right-style: solid;
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-left: 2px;
-        border-left-style: solid;
-    }
+.squareOpenTop {
+    border-right: 2px;
+    border-right-style: solid;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-left: 2px;
+    border-left-style: solid;
+}
 
-    .gameLineArea .squareOpenTopBotom {
-        border-right: 2px;
-        border-right-style: solid;
-        border-left: 2px;
-        border-left-style: solid;
-        border-bottom: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: slategray;
-    }
+.squareOpenTopBotom {
+    border-right: 2px;
+    border-right-style: solid;
+    border-left: 2px;
+    border-left-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
+}
 
-    .gameLineArea .squareOpenLeftRight {
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-top: 2px;
-        border-top-style: solid;
-        border-right: 1px;
-        border-right-style: solid;
-        border-right-color: slategray;
-    }
+.squareOpenLeftRight {
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-top: 2px;
+    border-top-style: solid;
+    border-right: 1px;
+    border-right-style: solid;
+    border-right-color: slategray;
+}
 
-    .gameLineArea .squareOpenBottomLeftTop {
-        border-right: 2px;
-        border-right-style: solid;
-        border-bottom: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: slategray;
-    }
+.squareOpenBottomLeftTop {
+    border-right: 2px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
+}
 
-    .gameLineArea .squareOpenRightLeftTop {
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-right: 1px;
-        border-right-style: solid;
-        border-right-color: slategray;
-    }
+.squareOpenRightLeftTop {
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-right: 1px;
+    border-right-style: solid;
+    border-right-color: slategray;
+}
 
-    .gameLineArea .squareOpenLeftTop {
-        border-right: 2px;
-        border-right-style: solid;
-        border-bottom: 2px;
-        border-bottom-style: solid;
-    }
+.squareOpenLeftTop {
+    border-right: 2px;
+    border-right-style: solid;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+}
 
-    .gameLineArea .squareOpenBottomLeft {
-        border-right: 2px;
-        border-right-style: solid;
-        border-top: 2px;
-        border-top-style: solid;
-        border-bottom: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: slategray;
-    }
+.squareOpenBottomLeft {
+    border-right: 2px;
+    border-right-style: solid;
+    border-top: 2px;
+    border-top-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
+}
 
-    .gameLineArea .squareOpenRightTop {
-        border-bottom: 2px;
-        border-bottom-style: solid;
-        border-left: 2px;
-        border-left-style: solid;
-        border-right: 1px;
-        border-right-style: solid;
-        border-right-color: slategray;
-    }
+.squareOpenRightTop {
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-left: 2px;
+    border-left-style: solid;
+    border-right: 1px;
+    border-right-style: solid;
+    border-right-color: slategray;
+}
 
 @media screen and (orientation: portrait) {
     #toolbar {
@@ -173,9 +173,24 @@ a {
 
     #handPlayer {
         position: fixed;
+        display: flex;
+        flex-direction: row;
         bottom: 0px;
         height: 100px;
         width: 100%;
+    }
+
+    .handPlayerChromino {
+        width: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 10px;
+    }
+
+    .squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
+        height: 30px;
+        border-color: black;
     }
 }
 
@@ -190,9 +205,19 @@ a {
 
     #handPlayer {
         position: fixed;
+        display: flex;
+        flex-direction: column;
         right: 0px;
         width: 100px;
         height: 100%;
+    }
+
+    .handPlayerChromino {
+        height: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: 10px;
     }
 }
 
