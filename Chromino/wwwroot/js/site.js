@@ -1,15 +1,19 @@
 ﻿$(document).ready(function () {
 
+    // Action StartNew events
     $('#addPlayer').click(function () {
         addPlayer();
     });
-
     $('#removePlayer').click(function () {
         removePlayer();
     });
 
+    //$('#gameArea').height($(window).height() - 200);
+
 });
 
+
+// Action StartNew functions
 function addPlayer() {
     if ($('#groupPlayer2').is(':hidden'))
         $('#groupPlayer2').show(600);
@@ -26,7 +30,6 @@ function addPlayer() {
     else if ($('#groupPlayer8').is(':hidden'))
         $('#groupPlayer8').show(600);
 }
-
 function removePlayer() {
     if (!$('#groupPlayer8').is(':hidden')) {
         $('#player8').val('');
@@ -57,3 +60,8 @@ function removePlayer() {
         $('#groupPlayer2').hide(600);
     }
 }
+
+
+//# {
+//    width: 85vmin;
+//    height: 85vmin;
