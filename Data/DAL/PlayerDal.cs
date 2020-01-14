@@ -8,7 +8,6 @@ namespace Data.DAL
 {
     public class PlayerDal
     {
-
         private readonly DefaultContext Ctx;
 
         public PlayerDal(DefaultContext context)
@@ -18,7 +17,6 @@ namespace Data.DAL
 
         public List<Player> List()
         {
-
             var result = (from players in Ctx.Players
                           select players).ToList();
 
@@ -27,7 +25,6 @@ namespace Data.DAL
 
         public int BotId()
         {
-
             Player botplayer = (from p in Ctx.Players
                                 where p.Pseudo == "Bot"
                                 select p).FirstOrDefault();
@@ -40,7 +37,6 @@ namespace Data.DAL
 
         public Player Bot()
         {
-
             Player botplayer = (from p in Ctx.Players
                                 where p.Pseudo == "Bot"
                                 select p).FirstOrDefault();
@@ -53,9 +49,17 @@ namespace Data.DAL
 
         public Player Detail(int id)
         {
-
             Player player = (from p in Ctx.Players
                              where p.Id == id
+                             select p).FirstOrDefault();
+
+            return player;
+        }
+
+        public Player Detail(string pseudo)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Pseudo == pseudo
                              select p).FirstOrDefault();
 
             return player;

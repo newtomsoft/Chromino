@@ -40,38 +40,50 @@ namespace ChrominoGame.Controllers
         [HttpGet]
         public IActionResult StartNew()
         {
-            return View();
+            return View(null);
         }
 
 
         [HttpPost]
-        public IActionResult StartNew(int? player1Id, int? player2Id, int? player3Id, int? player4Id, int? player5Id, int? player6Id, int? player7Id, int? player8Id)
+        public IActionResult StartNew(string[] pseudos)
         {
-            List<Player> players = new List<Player>(8);
-            if (player1Id != null)
-                players.Add(PlayerDal.Detail((int)player1Id));
-            else
-                players.Add(PlayerDal.Bot());
-            // todo factorize
-            if (player2Id != null)
-                players.Add(PlayerDal.Detail((int)player2Id));
-            if (player3Id != null)
-                players.Add(PlayerDal.Detail((int)player3Id));
-            if (player4Id != null)
-                players.Add(PlayerDal.Detail((int)player4Id));
-            if (player5Id != null)
-                players.Add(PlayerDal.Detail((int)player5Id));
-            if (player6Id != null)
-                players.Add(PlayerDal.Detail((int)player6Id));
-            if (player7Id != null)
-                players.Add(PlayerDal.Detail((int)player7Id));
-            if (player8Id != null)
-                players.Add(PlayerDal.Detail((int)player8Id));
+            string error = null;
+            Player playerBot = PlayerDal.Bot();
 
-            List<int> playersId = players.Select(x => x.Id).ToList();
+            List<Player> players = new List<Player>(8);
+            if (pseudos[0] != null && pseudos[0].ToLower() != "bot")
+            {
+                Player player = PlayerDal.Detail(pseudos[0]);
+                if (player != null)
+                    players.Add(player);
+                else
+                    error = "pseudo 1 doesn't exist";
+            }
+            else
+            {
+                players.Add(playerBot);
+            }
+            for (int i = 1; i < pseudos.Length; i++)
+            {
+                if (pseudos[i] != null)
+                {
+                    Player player = PlayerDal.Detail(pseudos[i]);
+                    if (player != null)
+                        players.Add(player);
+                    else
+                        error = $"pseudo {i} doesn't exist";
+                }
+            }
+
+            if (error != null)
+            {
+                ViewBag.error = error;
+                return View(pseudos);
+            }
+
             ChrominoDal.CreateChrominos();
             int gameId = GameDal.AddGame().Id;
-            GamePlayerDal.Add(gameId, playersId);
+            GamePlayerDal.Add(gameId, players);
             GameChrominoDal.Add(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
             gamecore.BeginGame();
