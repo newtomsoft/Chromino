@@ -49,39 +49,11 @@ a {
     justify-content: center;
 }
 
-.squareOpenAll {
-    width: 30px;
-    background-color: white;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
-    border-left: 1px;
-    border-left-style: solid;
-    border-left-color: transparent;
-    border-top: 1px;
-    border-top-style: solid;
-    border-top-color: transparent;
-    border-right: 1px;
-    border-right-style: solid;
-    border-right-color: transparent;
-}
-
-.squareOpenNone {
-    border-color: black;
-    width: 30px;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-left: 1px;
-    border-left-style: solid;
-    border-top: 1px;
-    border-top-style: solid;
-    border-right: 1px;
-    border-right-style: solid;
-}
-
 .squareOpenRight {
     border-color: black;
     width: 30px;
+    border-right: 1px;
+    border-right-style: dotted;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -95,12 +67,12 @@ a {
     width: 30px;
     border-right: 1px;
     border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: dotted;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
-    border-bottom: 1px;
-    border-bottom-style: solid;
 }
 
 .squareOpenLeft {
@@ -110,6 +82,8 @@ a {
     border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: dotted;
     border-top: 1px;
     border-top-style: solid;
 }
@@ -123,6 +97,8 @@ a {
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
+    border-top: 1px;
+    border-top-style: dotted;
 }
 
 .squareOpenTopBotom {
@@ -130,59 +106,40 @@ a {
     width: 30px;
     border-right: 1px;
     border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: dotted;
     border-left: 1px;
     border-left-style: solid;
+    border-top: 1px;
+    border-top-style: dotted;
 }
 
 .squareOpenLeftRight {
     border-color: black;
     width: 30px;
+    border-right: 1px;
+    border-right-style: dotted;
     border-bottom: 1px;
     border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: dotted;
     border-top: 1px;
     border-top-style: solid;
 }
 
-.squareOpenBottomLeftTop {
+.squareFreeCloseNone {
     border-color: black;
     width: 30px;
-    border-right: 1px;
-    border-right-style: solid;
 }
 
-.squareOpenRightLeftTop {
+.squareFreeCloseTop {
     border-color: black;
     width: 30px;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-}
-
-.squareOpenRightBottom {
-    border-color: black;
-    width: 30px;
-    border-left: 1px;
-    border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
 }
 
-.squareOpenRightBottomTop {
-    border-color: black;
-    width: 30px;
-    border-left: 1px;
-    border-left-style: solid;
-}
-
-.squareOpenLeftTop {
-    border-color: black;
-    width: 30px;
-    border-right: 1px;
-    border-right-style: solid;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-}
-
-.squareOpenBottomLeft {
+.squareFreeCloseRightTop {
     border-color: black;
     width: 30px;
     border-right: 1px;
@@ -191,21 +148,136 @@ a {
     border-top-style: solid;
 }
 
-.squareOpenRightBottomLeft {
+.squareFreeCloseTopBotom {
     border-color: black;
     width: 30px;
     border-top: 1px;
     border-top-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
 }
 
-.squareOpenRightTop {
+.squareFreeCloseRightBottomTop {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+}
+
+.squareFreeCloseLeftTop {
+    border-color: black;
+    width: 30px;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+}
+
+.squareFreeCloseLeftRight {
+    border-color: black;
+    width: 30px;
+    border-left: 1px;
+    border-left-style: solid;
+    border-right: 1px;
+    border-right-style: solid;
+}
+
+.squareFreeCloseBottomLeftTop {
     border-color: black;
     width: 30px;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
 }
+
+.squareFreeCloseAll {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+}
+
+.squareFreeCloseRightLeftTop {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+}
+
+.squareFreeCloseRight {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+}
+.squareFreeCloseBottom {
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+}
+.squareFreeCloseRightBottom {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+}
+.squareFreeCloseLeft {
+    border-color: black;
+    width: 30px;
+    border-left: 1px;
+    border-left-style: solid;
+
+}
+.squareFreeCloseBottomLeft {
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+
+}
+.squareFreeCloseRightBottomLeft {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+}
+
+.squareFreeCloseRightLeft {
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
+    border-right-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+}
+
+
 
 @media screen and (orientation: portrait) {
     #toolbar {
