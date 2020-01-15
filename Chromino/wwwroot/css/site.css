@@ -49,118 +49,162 @@ a {
     justify-content: center;
 }
 
-.squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
-    width: 30px;
-    border-color: black;
-}
-
 .squareOpenAll {
+    width: 30px;
     background-color: white;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    border-left: 1px;
+    border-left-style: solid;
+    border-left-color: transparent;
+    border-top: 1px;
+    border-top-style: solid;
+    border-top-color: transparent;
+    border-right: 1px;
+    border-right-style: solid;
+    border-right-color: transparent;
 }
 
-.squareOpenRight {
-    border-bottom: 2px;
+.squareOpenNone {
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
-    border-top: 2px;
+    border-top: 1px;
     border-top-style: solid;
     border-right: 1px;
     border-right-style: solid;
-    border-right-color: slategray;
+}
+
+.squareOpenRight {
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
 }
 
 .squareOpenBottom {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
-    border-top: 2px;
+    border-top: 1px;
     border-top-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
-    border-bottom-color: slategray;
 }
 
 .squareOpenLeft {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 2px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-top: 2px;
+    border-top: 1px;
     border-top-style: solid;
 }
 
 .squareOpenTop {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 2px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
 }
 
 .squareOpenTopBotom {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: slategray;
 }
 
 .squareOpenLeftRight {
-    border-bottom: 2px;
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-top: 2px;
+    border-top: 1px;
     border-top-style: solid;
-    border-right: 1px;
-    border-right-style: solid;
-    border-right-color: slategray;
 }
 
 .squareOpenBottomLeftTop {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: slategray;
 }
 
 .squareOpenRightLeftTop {
-    border-bottom: 2px;
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-right: 1px;
-    border-right-style: solid;
-    border-right-color: slategray;
+}
+
+.squareOpenRightBottom {
+    border-color: black;
+    width: 30px;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+}
+
+.squareOpenRightBottomTop {
+    border-color: black;
+    width: 30px;
+    border-left: 1px;
+    border-left-style: solid;
 }
 
 .squareOpenLeftTop {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 2px;
+    border-bottom: 1px;
     border-bottom-style: solid;
 }
 
 .squareOpenBottomLeft {
-    border-right: 2px;
+    border-color: black;
+    width: 30px;
+    border-right: 1px;
     border-right-style: solid;
-    border-top: 2px;
+    border-top: 1px;
     border-top-style: solid;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: slategray;
+}
+
+.squareOpenRightBottomLeft {
+    border-color: black;
+    width: 30px;
+    border-top: 1px;
+    border-top-style: solid;
 }
 
 .squareOpenRightTop {
-    border-bottom: 2px;
+    border-color: black;
+    width: 30px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
-    border-right: 1px;
-    border-right-style: solid;
-    border-right-color: slategray;
 }
 
 @media screen and (orientation: portrait) {
