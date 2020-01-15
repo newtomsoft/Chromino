@@ -8,7 +8,9 @@
         removePlayer();
     });
 
-    //$('#gameArea').height($(window).height() - 200);
+    //
+    resizeGameArea();
+
 
 });
 
@@ -61,7 +63,47 @@ function removePlayer() {
     }
 }
 
+function resizeGameArea() {
+    var linesNumber = parseInt($('#gameAreaLinesNumber').html()) + 4;
+    var columnNumber = parseInt($('#gameAreaColumnsNumber').html()) + 4;
 
-//# {
-//    width: 85vmin;
-//    height: 85vmin;
+    var width = $(document).width();
+    var height = $(document).height();
+    if (width < height) {
+        height = height - 200;
+    }
+    else {
+        width = width - 200;
+    }
+    var squareHeight = height / linesNumber;
+    var squareWidth = width / columnNumber;
+
+    var squareMin = Math.trunc(Math.min(squareHeight, squareWidth));
+
+
+    $('.gameLineArea').outerHeight("auto");
+    $('.squareOpenBottomLeftTop').outerWidth(squareMin);
+    $('.squareOpenBottomLeftTop').outerHeight(squareMin);
+    $('.squareOpenRightLeftTop').outerWidth(squareMin);
+    $('.squareOpenRightLeftTop').outerHeight(squareMin);
+    $('.squareOpenLeftTop').outerWidth(squareMin);
+    $('.squareOpenLeftTop').outerHeight(squareMin);
+    $('.squareOpenBottomLeft').outerWidth(squareMin);
+    $('.squareOpenBottomLeft').outerHeight(squareMin);
+    $('.squareOpenRightTop').outerWidth(squareMin);
+    $('.squareOpenRightTop').outerHeight(squareMin);
+    $('.squareOpenAll').outerWidth(squareMin);
+    $('.squareOpenAll').outerHeight(squareMin);
+    $('.squareOpenRight').outerWidth(squareMin);
+    $('.squareOpenRight').outerHeight(squareMin);
+    $('.squareOpenBottom').outerWidth(squareMin);
+    $('.squareOpenBottom').outerHeight(squareMin);
+    $('.squareOpenLeft').outerWidth(squareMin);
+    $('.squareOpenLeft').outerHeight(squareMin);
+    $('.squareOpenTop').outerWidth(squareMin);
+    $('.squareOpenTop').outerHeight(squareMin);
+    $('.squareOpenTopBotom').outerWidth(squareMin);
+    $('.squareOpenTopBotom').outerHeight(squareMin);
+    $('.squareOpenLeftRight').outerWidth(squareMin);
+    $('.squareOpenLeftRight').outerHeight(squareMin);
+}
