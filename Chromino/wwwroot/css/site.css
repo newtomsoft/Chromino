@@ -53,7 +53,8 @@ a {
     border-color: black;
     width: 30px;
     border-right: 1px;
-    border-right-style: dotted;
+    border-right-style: solid;
+    border-right-color: slategray;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -68,7 +69,8 @@ a {
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
-    border-bottom-style: dotted;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
@@ -83,7 +85,8 @@ a {
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
-    border-left-style: dotted;
+    border-left-style: solid;
+    border-left-color: slategray;
     border-top: 1px;
     border-top-style: solid;
 }
@@ -98,7 +101,8 @@ a {
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
-    border-top-style: dotted;
+    border-top-style: solid;
+    border-top-color: slategray;
 }
 
 .squareOpenTopBotom {
@@ -107,22 +111,26 @@ a {
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
-    border-bottom-style: dotted;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
-    border-top-style: dotted;
+    border-top-style: solid;
+    border-top-color: slategray;
 }
 
 .squareOpenLeftRight {
     border-color: black;
     width: 30px;
     border-right: 1px;
-    border-right-style: dotted;
+    border-right-style: solid;
+    border-right-color: slategray;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
-    border-left-style: dotted;
+    border-left-style: solid;
+    border-left-color: slategray;
     border-top: 1px;
     border-top-style: solid;
 }
@@ -227,12 +235,14 @@ a {
     border-right: 1px;
     border-right-style: solid;
 }
+
 .squareFreeCloseBottom {
     border-color: black;
     width: 30px;
     border-bottom: 1px;
     border-bottom-style: solid;
 }
+
 .squareFreeCloseRightBottom {
     border-color: black;
     width: 30px;
@@ -241,13 +251,14 @@ a {
     border-bottom: 1px;
     border-bottom-style: solid;
 }
+
 .squareFreeCloseLeft {
     border-color: black;
     width: 30px;
     border-left: 1px;
     border-left-style: solid;
-
 }
+
 .squareFreeCloseBottomLeft {
     border-color: black;
     width: 30px;
@@ -255,8 +266,8 @@ a {
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
-
 }
+
 .squareFreeCloseRightBottomLeft {
     border-color: black;
     width: 30px;
