@@ -118,18 +118,7 @@ namespace ChrominoGame.Controllers
             gamecore.ContinueRandomGame();
             return RedirectToAction("Show", "Game", new { id });
         }
-<<<<<<< HEAD
-      
-=======
 
-        // GET: Game/Create
-        public IActionResult Create()
-        {
-            GameDal.AddGame();
-            return View();
-        }
-
->>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
         public IActionResult Show(int id)
         {
             int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);

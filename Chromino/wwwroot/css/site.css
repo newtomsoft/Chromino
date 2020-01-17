@@ -44,7 +44,6 @@ a {
 }
 
 .gameLineArea {
-    
     display: none;
     justify-content: center;
     flex-shrink: 0;
@@ -52,7 +51,6 @@ a {
 
 .squareOpenRight {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-right-color: slategray;
@@ -67,7 +65,6 @@ a {
 
 .squareOpenBottom {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -82,7 +79,6 @@ a {
 
 .squareOpenLeft {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -97,7 +93,6 @@ a {
 
 .squareOpenTop {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -105,18 +100,13 @@ a {
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
-<<<<<<< HEAD
-    border-top-style: dotted;
-    flex-shrink: 0;
-=======
     border-top-style: solid;
     border-top-color: slategray;
->>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
+    flex-shrink: 0;
 }
 
 .squareOpenTopBotom {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -125,18 +115,13 @@ a {
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
-<<<<<<< HEAD
-    border-top-style: dotted;
-    flex-shrink: 0;
-=======
     border-top-style: solid;
     border-top-color: slategray;
->>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
+    flex-shrink: 0;
 }
 
 .squareOpenLeftRight {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-right-color: slategray;
@@ -152,13 +137,11 @@ a {
 
 .squareFreeCloseNone {
     border-color: black;
-    
     flex-shrink: 0;
 }
 
 .squareFreeCloseTop {
     border-color: black;
-    
     border-top: 1px;
     border-top-style: solid;
     flex-shrink: 0;
@@ -166,7 +149,6 @@ a {
 
 .squareFreeCloseRightTop {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-top: 1px;
@@ -176,7 +158,6 @@ a {
 
 .squareFreeCloseTopBotom {
     border-color: black;
-    
     border-top: 1px;
     border-top-style: solid;
     border-bottom: 1px;
@@ -186,7 +167,6 @@ a {
 
 .squareFreeCloseRightBottomTop {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -198,7 +178,6 @@ a {
 
 .squareFreeCloseLeftTop {
     border-color: black;
-    
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
@@ -208,7 +187,6 @@ a {
 
 .squareFreeCloseLeftRight {
     border-color: black;
-    
     border-left: 1px;
     border-left-style: solid;
     border-right: 1px;
@@ -218,7 +196,6 @@ a {
 
 .squareFreeCloseBottomLeftTop {
     border-color: black;
-    
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -230,7 +207,6 @@ a {
 
 .squareFreeCloseAll {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -244,7 +220,6 @@ a {
 
 .squareFreeCloseRightLeftTop {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-left: 1px;
@@ -256,7 +231,6 @@ a {
 
 .squareFreeCloseRight {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     flex-shrink: 0;
@@ -264,7 +238,6 @@ a {
 
 .squareFreeCloseBottom {
     border-color: black;
-    
     border-bottom: 1px;
     border-bottom-style: solid;
     flex-shrink: 0;
@@ -272,7 +245,6 @@ a {
 
 .squareFreeCloseRightBottom {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -282,31 +254,22 @@ a {
 
 .squareFreeCloseLeft {
     border-color: black;
-    
     border-left: 1px;
     border-left-style: solid;
-<<<<<<< HEAD
     flex-shrink: 0;
-=======
->>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
 
 .squareFreeCloseBottomLeft {
     border-color: black;
-    
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
-<<<<<<< HEAD
     flex-shrink: 0;
-=======
->>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
 
 .squareFreeCloseRightBottomLeft {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -318,7 +281,6 @@ a {
 
 .squareFreeCloseRightLeft {
     border-color: black;
-    
     border-right: 1px;
     border-right-style: solid;
     border-left: 1px;
@@ -346,7 +308,6 @@ a {
     }
 
     .handPlayerChromino {
-        
         display: flex;
         flex-direction: column;
         justify-content: center;
