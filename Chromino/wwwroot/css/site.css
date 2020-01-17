@@ -54,7 +54,8 @@ a {
     border-color: black;
     
     border-right: 1px;
-    border-right-style: dotted;
+    border-right-style: solid;
+    border-right-color: slategray;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -70,7 +71,8 @@ a {
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
-    border-bottom-style: dotted;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
@@ -86,7 +88,8 @@ a {
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
-    border-left-style: dotted;
+    border-left-style: solid;
+    border-left-color: slategray;
     border-top: 1px;
     border-top-style: solid;
     flex-shrink: 0;
@@ -102,8 +105,13 @@ a {
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
+<<<<<<< HEAD
     border-top-style: dotted;
     flex-shrink: 0;
+=======
+    border-top-style: solid;
+    border-top-color: slategray;
+>>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
 
 .squareOpenTopBotom {
@@ -112,23 +120,31 @@ a {
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
-    border-bottom-style: dotted;
+    border-bottom-style: solid;
+    border-bottom-color: slategray;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
+<<<<<<< HEAD
     border-top-style: dotted;
     flex-shrink: 0;
+=======
+    border-top-style: solid;
+    border-top-color: slategray;
+>>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
 
 .squareOpenLeftRight {
     border-color: black;
     
     border-right: 1px;
-    border-right-style: dotted;
+    border-right-style: solid;
+    border-right-color: slategray;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
-    border-left-style: dotted;
+    border-left-style: solid;
+    border-left-color: slategray;
     border-top: 1px;
     border-top-style: solid;
     flex-shrink: 0;
@@ -245,6 +261,7 @@ a {
     border-right-style: solid;
     flex-shrink: 0;
 }
+
 .squareFreeCloseBottom {
     border-color: black;
     
@@ -252,6 +269,7 @@ a {
     border-bottom-style: solid;
     flex-shrink: 0;
 }
+
 .squareFreeCloseRightBottom {
     border-color: black;
     
@@ -261,13 +279,18 @@ a {
     border-bottom-style: solid;
     flex-shrink: 0;
 }
+
 .squareFreeCloseLeft {
     border-color: black;
     
     border-left: 1px;
     border-left-style: solid;
+<<<<<<< HEAD
     flex-shrink: 0;
+=======
+>>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
+
 .squareFreeCloseBottomLeft {
     border-color: black;
     
@@ -275,8 +298,12 @@ a {
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
+<<<<<<< HEAD
     flex-shrink: 0;
+=======
+>>>>>>> 34bf5b9fca817c41a2174d5a175ce4b41d822826
 }
+
 .squareFreeCloseRightBottomLeft {
     border-color: black;
     

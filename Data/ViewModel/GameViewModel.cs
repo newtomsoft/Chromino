@@ -36,10 +36,10 @@ namespace Data.ViewModel
             PlayerNumberChrominos = playerNumberChrominos;
             Squares = squares;
             GameStatus = gameStatus;
-            XMin = squares.Select(g => g.X).Min();
-            XMax = squares.Select(g => g.X).Max();
-            YMin = squares.Select(g => g.Y).Min();
-            YMax = squares.Select(g => g.Y).Max();
+            XMin = squares.Select(g => g.X).Min()-1;
+            XMax = squares.Select(g => g.X).Max()+1;
+            YMin = squares.Select(g => g.Y).Min()-1;
+            YMax = squares.Select(g => g.Y).Max()+1;
 
             ColumnsNumber = XMax - XMin + 1;
             LinesNumber = YMax - YMin + 1;
