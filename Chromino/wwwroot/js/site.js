@@ -9,7 +9,7 @@
     });
 
     //
-    resizeGameArea();
+    //resizeGameArea();
 
 
 });
