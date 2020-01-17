@@ -44,14 +44,15 @@ a {
 }
 
 .gameLineArea {
-    height: 30px;
-    display: flex;
+    
+    display: none;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .squareOpenRight {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: dotted;
     border-bottom: 1px;
@@ -60,11 +61,12 @@ a {
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenBottom {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -73,11 +75,12 @@ a {
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenLeft {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -86,11 +89,12 @@ a {
     border-left-style: dotted;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenTop {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -99,11 +103,12 @@ a {
     border-left-style: solid;
     border-top: 1px;
     border-top-style: dotted;
+    flex-shrink: 0;
 }
 
 .squareOpenTopBotom {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -112,11 +117,12 @@ a {
     border-left-style: solid;
     border-top: 1px;
     border-top-style: dotted;
+    flex-shrink: 0;
 }
 
 .squareOpenLeftRight {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: dotted;
     border-bottom: 1px;
@@ -125,81 +131,90 @@ a {
     border-left-style: dotted;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseNone {
     border-color: black;
-    width: 30px;
+    
+    flex-shrink: 0;
 }
 
 .squareFreeCloseTop {
     border-color: black;
-    width: 30px;
+    
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseRightTop {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseTopBotom {
     border-color: black;
-    width: 30px;
+    
     border-top: 1px;
     border-top-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseRightBottomTop {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseLeftTop {
     border-color: black;
-    width: 30px;
+    
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseLeftRight {
     border-color: black;
-    width: 30px;
+    
     border-left: 1px;
     border-left-style: solid;
     border-right: 1px;
     border-right-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseBottomLeftTop {
     border-color: black;
-    width: 30px;
+    
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseAll {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
@@ -208,73 +223,80 @@ a {
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseRightLeftTop {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-left: 1px;
     border-left-style: solid;
     border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseRight {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
+    flex-shrink: 0;
 }
 .squareFreeCloseBottom {
     border-color: black;
-    width: 30px;
+    
     border-bottom: 1px;
     border-bottom-style: solid;
+    flex-shrink: 0;
 }
 .squareFreeCloseRightBottom {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
+    flex-shrink: 0;
 }
 .squareFreeCloseLeft {
     border-color: black;
-    width: 30px;
+    
     border-left: 1px;
     border-left-style: solid;
-
+    flex-shrink: 0;
 }
 .squareFreeCloseBottomLeft {
     border-color: black;
-    width: 30px;
+    
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
-
+    flex-shrink: 0;
 }
 .squareFreeCloseRightBottomLeft {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
     border-left-style: solid;
+    flex-shrink: 0;
 }
 
 .squareFreeCloseRightLeft {
     border-color: black;
-    width: 30px;
+    
     border-right: 1px;
     border-right-style: solid;
     border-left: 1px;
     border-left-style: solid;
+    flex-shrink: 0;
 }
 
 
@@ -297,7 +319,7 @@ a {
     }
 
     .handPlayerChromino {
-        width: 30px;
+        
         display: flex;
         flex-direction: column;
         justify-content: center;

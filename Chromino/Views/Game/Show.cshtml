@@ -19,6 +19,7 @@
 </head>
 
 <body>
+
     <div id="toolbar">
         <div>
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -131,213 +132,213 @@
     <br>
     <div id="gameAreaLinesNumber" hidden>@Model.LinesNumber</div>
     <div id="gameAreaColumnsNumber" hidden>@Model.ColumnsNumber</div>
-    <div id="gameArea">
+    <div id="gameArea" display="none">
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
-        <div class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
-            {
-                int index = i + j * Model.ColumnsNumber;
-                OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
-                SquareViewModelState state = Model.SquaresViewModel[index].State;
-
-                if (state != SquareViewModelState.Free)
+            <div class="gameLineArea">
+                @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
-                    string styleColor;
-                    switch (state)
+                    int index = i + j * Model.ColumnsNumber;
+                    OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
+                    SquareViewModelState state = Model.SquaresViewModel[index].State;
+
+                    if (state != SquareViewModelState.Free)
                     {
-                        case SquareViewModelState.Blue:
-                            styleColor = "style=background-color:dodgerblue";
-                            break;
-                        case SquareViewModelState.Green:
-                            styleColor = "style=background-color:green";
-                            break;
-                        case SquareViewModelState.Purple:
-                            styleColor = "style=background-color:purple";
-                            break;
-                        case SquareViewModelState.Red:
-                            styleColor = "style=background-color:red";
-                            break;
-                        case SquareViewModelState.Yellow:
-                            styleColor = "style=background-color:yellow";
-                            break;
-                        case SquareViewModelState.Cameleon:
-                        default:
-                            styleColor = "style=background-color:burlywood";
-                            break;
+                        string styleColor;
+                        switch (state)
+                        {
+                            case SquareViewModelState.Blue:
+                                styleColor = "style=background-color:dodgerblue";
+                                break;
+                            case SquareViewModelState.Green:
+                                styleColor = "style=background-color:green";
+                                break;
+                            case SquareViewModelState.Purple:
+                                styleColor = "style=background-color:purple";
+                                break;
+                            case SquareViewModelState.Red:
+                                styleColor = "style=background-color:red";
+                                break;
+                            case SquareViewModelState.Yellow:
+                                styleColor = "style=background-color:yellow";
+                                break;
+                            case SquareViewModelState.Cameleon:
+                            default:
+                                styleColor = "style=background-color:burlywood";
+                                break;
+                        }
+                        switch (openEdge)
+                        {
+                            case OpenEdge.Right:
+                                <div class="squareOpenRight" @styleColor></div>
+                                break;
+                            case OpenEdge.Bottom:
+                                <div class="squareOpenBottom" @styleColor></div>
+                                break;
+                            case OpenEdge.Left:
+                                <div class="squareOpenLeft" @styleColor></div>
+                                break;
+                            case OpenEdge.Top:
+                                <div class="squareOpenTop" @styleColor></div>
+                                break;
+                            case OpenEdge.BottomTop:
+                                <div class="squareOpenTopBotom" @styleColor></div>
+                                break;
+                            case OpenEdge.RightLeft:
+                                <div class="squareOpenLeftRight" @styleColor></div>
+                                break;
+                            default:
+                                int a = 55;
+                                break;
+                        }
                     }
-                    switch (openEdge)
+                    else
                     {
-                        case OpenEdge.Right:
-                            <div class="squareOpenRight" @styleColor></div>
-                            break;
-                        case OpenEdge.Bottom:
-                            <div class="squareOpenBottom" @styleColor></div>
-                            break;
-                        case OpenEdge.Left:
-                            <div class="squareOpenLeft" @styleColor></div>
-                            break;
-                        case OpenEdge.Top:
-                            <div class="squareOpenTop" @styleColor></div>
-                            break;
-                        case OpenEdge.BottomTop:
-                            <div class="squareOpenTopBotom" @styleColor></div>
-                            break;
-                        case OpenEdge.RightLeft:
-                            <div class="squareOpenLeftRight" @styleColor></div>
-                            break;
-                        default:
-                            int a = 55;
-                            break;
+                        openEdge = OpenEdge.None;
+                        if (i < Model.ColumnsNumber - 1)
+                        {
+                            int rightIndex = (i + 1) + j * Model.ColumnsNumber;
+                            OpenEdge rightOpenEdge = Model.SquaresViewModel[rightIndex].Edge;
+                            if (Model.SquaresViewModel[rightIndex].State != SquareViewModelState.Free)
+                            {
+                                openEdge = OpenEdge.Right;
+                            }
+                        }
+
+                        if (j < Model.LinesNumber - 1)
+                        {
+                            int bottomIndex = i + (j + 1) * Model.ColumnsNumber;
+                            OpenEdge bottomOpenEdge = Model.SquaresViewModel[bottomIndex].Edge;
+                            if (Model.SquaresViewModel[bottomIndex].State != SquareViewModelState.Free)
+                            {
+                                switch (openEdge)
+                                {
+                                    case OpenEdge.None:
+                                        openEdge = OpenEdge.Bottom;
+                                        break;
+                                    case OpenEdge.Right:
+                                        openEdge = OpenEdge.RightBottom;
+                                        break;
+                                }
+                            }
+                        }
+
+                        if (i > 0)
+                        {
+                            int leftIndex = (i - 1) + j * Model.ColumnsNumber;
+                            OpenEdge leftOpenEdge = Model.SquaresViewModel[leftIndex].Edge;
+                            if (Model.SquaresViewModel[leftIndex].State != SquareViewModelState.Free)
+                            {
+                                switch (openEdge)
+                                {
+                                    case OpenEdge.None:
+                                        openEdge = OpenEdge.Left;
+                                        break;
+                                    case OpenEdge.Right:
+                                        openEdge = OpenEdge.RightLeft;
+                                        break;
+                                    case OpenEdge.Bottom:
+                                        openEdge = OpenEdge.BottomLeft;
+                                        break;
+                                    case OpenEdge.RightBottom:
+                                        openEdge = OpenEdge.RightBottomLeft;
+                                        break;
+                                }
+                            }
+                        }
+
+                        if (j > 0)
+                        {
+                            int topIndex = i + (j - 1) * Model.ColumnsNumber;
+                            OpenEdge topOpenEdge = Model.SquaresViewModel[topIndex].Edge;
+                            if (Model.SquaresViewModel[topIndex].State != SquareViewModelState.Free)
+                            {
+                                switch (openEdge)
+                                {
+                                    case OpenEdge.None:
+                                        openEdge = OpenEdge.Top;
+                                        break;
+                                    case OpenEdge.Right:
+                                        openEdge = OpenEdge.RightTop;
+                                        break;
+                                    case OpenEdge.Bottom:
+                                        openEdge = OpenEdge.BottomTop;
+                                        break;
+                                    case OpenEdge.RightBottom:
+                                        openEdge = OpenEdge.RightBottomTop;
+                                        break;
+                                    case OpenEdge.Left:
+                                        openEdge = OpenEdge.LeftTop;
+                                        break;
+                                    case OpenEdge.RightLeft:
+                                        openEdge = OpenEdge.RightLeftTop;
+                                        break;
+                                    case OpenEdge.BottomLeft:
+                                        openEdge = OpenEdge.BottomLeftTop;
+                                        break;
+                                    case OpenEdge.RightBottomLeft:
+                                        openEdge = OpenEdge.All;
+                                        break;
+                                }
+                            }
+                        }
+                        switch (openEdge)
+                        {
+                            case OpenEdge.None:
+                                <div class="squareFreeCloseNone"></div>
+                                break;
+                            case OpenEdge.Top:
+                                <div class="squareFreeCloseTop"></div>
+                                break;
+                            case OpenEdge.RightTop:
+                                <div class="squareFreeCloseRightTop"></div>
+                                break;
+                            case OpenEdge.BottomTop:
+                                <div class="squareFreeCloseTopBotom"></div>
+                                break;
+                            case OpenEdge.RightBottomTop:
+                                <div class="squareFreeCloseRightBottomTop"></div>
+                                break;
+                            case OpenEdge.LeftTop:
+                                <div class="squareFreeCloseLeftTop"></div>
+                                break;
+                            case OpenEdge.RightLeftTop:
+                                <div class="squareFreeCloseRightLeftTop"></div>
+                                break;
+                            case OpenEdge.BottomLeftTop:
+                                <div class="squareFreeCloseBottomLeftTop"></div>
+                                break;
+                            case OpenEdge.All:
+                                <div class="squareFreeCloseAll"></div>
+                                break;
+                            case OpenEdge.Right:
+                                <div class="squareFreeCloseRight"></div>
+                                break;
+                            case OpenEdge.Bottom:
+                                <div class="squareFreeCloseBottom"></div>
+                                break;
+                            case OpenEdge.RightBottom:
+                                <div class="squareFreeCloseRightBottom"></div>
+                                break;
+                            case OpenEdge.Left:
+                                <div class="squareFreeCloseLeft"></div>
+                                break;
+                            case OpenEdge.BottomLeft:
+                                <div class="squareFreeCloseBottomLeft"></div>
+                                break;
+                            case OpenEdge.RightBottomLeft:
+                                <div class="squareFreeCloseRightBottomLeft"></div>
+                                break;
+                            case OpenEdge.RightLeft:
+                                <div class="squareFreeCloseRightLeft"></div>
+                                break;
+                            default:
+                                int a = 55;
+                                break;
+                        }
                     }
                 }
-                else
-                {
-                    openEdge = OpenEdge.None;
-                    if (i < Model.ColumnsNumber - 1)
-                    {
-                        int rightIndex = (i + 1) + j * Model.ColumnsNumber;
-                        OpenEdge rightOpenEdge = Model.SquaresViewModel[rightIndex].Edge;
-                        if (Model.SquaresViewModel[rightIndex].State != SquareViewModelState.Free)
-                        {
-                            openEdge = OpenEdge.Right;
-                        }
-                    }
-
-                    if (j < Model.LinesNumber - 1)
-                    {
-                        int bottomIndex = i + (j + 1) * Model.ColumnsNumber;
-                        OpenEdge bottomOpenEdge = Model.SquaresViewModel[bottomIndex].Edge;
-                        if (Model.SquaresViewModel[bottomIndex].State != SquareViewModelState.Free)
-                        {
-                            switch (openEdge)
-                            {
-                                case OpenEdge.None:
-                                    openEdge = OpenEdge.Bottom;
-                                    break;
-                                case OpenEdge.Right:
-                                    openEdge = OpenEdge.RightBottom;
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        int leftIndex = (i - 1) + j * Model.ColumnsNumber;
-                        OpenEdge leftOpenEdge = Model.SquaresViewModel[leftIndex].Edge;
-                        if (Model.SquaresViewModel[leftIndex].State != SquareViewModelState.Free)
-                        {
-                            switch (openEdge)
-                            {
-                                case OpenEdge.None:
-                                    openEdge = OpenEdge.Left;
-                                    break;
-                                case OpenEdge.Right:
-                                    openEdge = OpenEdge.RightLeft;
-                                    break;
-                                case OpenEdge.Bottom:
-                                    openEdge = OpenEdge.BottomLeft;
-                                    break;
-                                case OpenEdge.RightBottom:
-                                    openEdge = OpenEdge.RightBottomLeft;
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (j > 0)
-                    {
-                        int topIndex = i + (j - 1) * Model.ColumnsNumber;
-                        OpenEdge topOpenEdge = Model.SquaresViewModel[topIndex].Edge;
-                        if (Model.SquaresViewModel[topIndex].State != SquareViewModelState.Free)
-                        {
-                            switch (openEdge)
-                            {
-                                case OpenEdge.None:
-                                    openEdge = OpenEdge.Top;
-                                    break;
-                                case OpenEdge.Right:
-                                    openEdge = OpenEdge.RightTop;
-                                    break;
-                                case OpenEdge.Bottom:
-                                    openEdge = OpenEdge.BottomTop;
-                                    break;
-                                case OpenEdge.RightBottom:
-                                    openEdge = OpenEdge.RightBottomTop;
-                                    break;
-                                case OpenEdge.Left:
-                                    openEdge = OpenEdge.LeftTop;
-                                    break;
-                                case OpenEdge.RightLeft:
-                                    openEdge = OpenEdge.RightLeftTop;
-                                    break;
-                                case OpenEdge.BottomLeft:
-                                    openEdge = OpenEdge.BottomLeftTop;
-                                    break;
-                                case OpenEdge.RightBottomLeft:
-                                    openEdge = OpenEdge.All;
-                                    break;
-                            }
-                        }
-                    }
-                    switch (openEdge)
-                    {
-                        case OpenEdge.None:
-                            <div class="squareFreeCloseNone"></div>
-                            break;
-                        case OpenEdge.Top:
-                            <div class="squareFreeCloseTop"></div>
-                            break;
-                        case OpenEdge.RightTop:
-                            <div class="squareFreeCloseRightTop"></div>
-                            break;
-                        case OpenEdge.BottomTop:
-                            <div class="squareFreeCloseTopBotom"></div>
-                            break;
-                        case OpenEdge.RightBottomTop:
-                            <div class="squareFreeCloseRightBottomTop"></div>
-                            break;
-                        case OpenEdge.LeftTop:
-                            <div class="squareFreeCloseLeftTop"></div>
-                            break;
-                        case OpenEdge.RightLeftTop:
-                            <div class="squareFreeCloseRightLeftTop"></div>
-                            break;
-                        case OpenEdge.BottomLeftTop:
-                            <div class="squareFreeCloseBottomLeftTop"></div>
-                            break;
-                        case OpenEdge.All:
-                            <div class="squareFreeCloseAll"></div>
-                            break;
-                        case OpenEdge.Right:
-                            <div class="squareFreeCloseRight"></div>
-                            break;
-                        case OpenEdge.Bottom:
-                            <div class="squareFreeCloseBottom"></div>
-                            break;
-                        case OpenEdge.RightBottom:
-                            <div class="squareFreeCloseRightBottom"></div>
-                            break;
-                        case OpenEdge.Left:
-                            <div class="squareFreeCloseLeft"></div>
-                            break;
-                        case OpenEdge.BottomLeft:
-                            <div class="squareFreeCloseBottomLeft"></div>
-                            break;
-                        case OpenEdge.RightBottomLeft:
-                            <div class="squareFreeCloseRightBottomLeft"></div>
-                            break;
-                        case OpenEdge.RightLeft:
-                            <div class="squareFreeCloseRightLeft"></div>
-                            break;
-                        default:
-                            int a = 55;
-                            break;
-                    }
-                }
-            }
-        </div>
+            </div>
         }
     </div>
 

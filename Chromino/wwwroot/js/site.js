@@ -8,12 +8,16 @@
         removePlayer();
     });
 
+    resizeGameArea();
     //
-    //resizeGameArea();
+
 
 
 });
 
+$(document).unload(function () {
+    alert("Bye now!");
+});
 
 // Action StartNew functions
 function addPlayer() {
@@ -78,32 +82,58 @@ function resizeGameArea() {
     var squareHeight = height / linesNumber;
     var squareWidth = width / columnNumber;
 
-    var squareMin = Math.trunc(Math.min(squareHeight, squareWidth));
-
+    var squareMin = Math.min(Math.trunc(Math.min(squareHeight, squareWidth)), 30);
 
     $('.gameLineArea').outerHeight("auto");
-    $('.squareOpenBottomLeftTop').outerWidth(squareMin);
-    $('.squareOpenBottomLeftTop').outerHeight(squareMin);
-    $('.squareOpenRightLeftTop').outerWidth(squareMin);
-    $('.squareOpenRightLeftTop').outerHeight(squareMin);
-    $('.squareOpenLeftTop').outerWidth(squareMin);
-    $('.squareOpenLeftTop').outerHeight(squareMin);
-    $('.squareOpenBottomLeft').outerWidth(squareMin);
-    $('.squareOpenBottomLeft').outerHeight(squareMin);
-    $('.squareOpenRightTop').outerWidth(squareMin);
-    $('.squareOpenRightTop').outerHeight(squareMin);
-    $('.squareOpenAll').outerWidth(squareMin);
-    $('.squareOpenAll').outerHeight(squareMin);
+
     $('.squareOpenRight').outerWidth(squareMin);
-    $('.squareOpenRight').outerHeight(squareMin);
     $('.squareOpenBottom').outerWidth(squareMin);
-    $('.squareOpenBottom').outerHeight(squareMin);
     $('.squareOpenLeft').outerWidth(squareMin);
-    $('.squareOpenLeft').outerHeight(squareMin);
     $('.squareOpenTop').outerWidth(squareMin);
-    $('.squareOpenTop').outerHeight(squareMin);
     $('.squareOpenTopBotom').outerWidth(squareMin);
-    $('.squareOpenTopBotom').outerHeight(squareMin);
     $('.squareOpenLeftRight').outerWidth(squareMin);
+    $('.squareFreeCloseNone').outerWidth(squareMin);
+    $('.squareFreeCloseTop').outerWidth(squareMin);
+    $('.squareFreeCloseRightTop').outerWidth(squareMin);
+    $('.squareFreeCloseTopBotom').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottomTop').outerWidth(squareMin);
+    $('.squareFreeCloseLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseLeftRight').outerWidth(squareMin);
+    $('.squareFreeCloseBottomLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseAll').outerWidth(squareMin);
+    $('.squareFreeCloseRightLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseRight').outerWidth(squareMin);
+    $('.squareFreeCloseBottom').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottom').outerWidth(squareMin);
+    $('.squareFreeCloseLeft').outerWidth(squareMin);
+    $('.squareFreeCloseBottomLeft').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottomLeft').outerWidth(squareMin);
+    $('.squareFreeCloseRightLeft').outerWidth(squareMin);
+
+    $('.squareOpenRight').outerHeight(squareMin);
+    $('.squareOpenBottom').outerHeight(squareMin);
+    $('.squareOpenLeft').outerHeight(squareMin);
+    $('.squareOpenTop').outerHeight(squareMin);
+    $('.squareOpenTopBotom').outerHeight(squareMin);
     $('.squareOpenLeftRight').outerHeight(squareMin);
+    $('.squareFreeCloseNone').outerHeight(squareMin);
+    $('.squareFreeCloseTop').outerHeight(squareMin);
+    $('.squareFreeCloseRightTop').outerHeight(squareMin);
+    $('.squareFreeCloseTopBotom').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottomTop').outerHeight(squareMin);
+    $('.squareFreeCloseLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseLeftRight').outerHeight(squareMin);
+    $('.squareFreeCloseBottomLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseAll').outerHeight(squareMin);
+    $('.squareFreeCloseRightLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseRight').outerHeight(squareMin);
+    $('.squareFreeCloseBottom').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottom').outerHeight(squareMin);
+    $('.squareFreeCloseLeft').outerHeight(squareMin);
+    $('.squareFreeCloseBottomLeft').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottomLeft').outerHeight(squareMin);
+    $('.squareFreeCloseRightLeft').outerHeight(squareMin);
+
+    $('#gameArea').show();
+    $('.gameLineArea').css('display', 'flex');
 }
