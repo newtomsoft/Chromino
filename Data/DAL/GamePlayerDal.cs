@@ -38,15 +38,15 @@ namespace Data.DAL
             return gamePlayer;
         }
 
-        public void Add(int gameId, List<int> playersId)
+        public void Add(int gameId, List<Player> players)
         {
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
-            foreach (int playerId in playersId)
+            foreach (Player player in players)
             {
                 GamePlayer gamePlayer = new GamePlayer
                 {
                     GameId = gameId,
-                    PlayerId = playerId,
+                    PlayerId = player.Id,
                 };
                 gamePlayers.Add(gamePlayer);
             }

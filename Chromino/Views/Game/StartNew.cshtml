@@ -1,48 +1,58 @@
-﻿
+﻿@model String[];
+
 @{
     ViewData["Title"] = "Start new game";
+
+    string[] players = Model;
+    if(players==null)
+    {
+        players = new string[8];
+    }
 }
+<h1>Start new game</h1>
 
-<h1>StartNew</h1>
-
+@if(ViewBag.error != null)
+{
+<p>@ViewBag.error</p>
+}
 
 <div class="row">
     <div class="col-md-4">
+        <button id="addPlayer" class="btn btn-primary">Add player</button>
+        <button id="removePlayer" class="btn btn-primary">Remove player</button>
         <form asp-action="StartNew">
-
             <div class="form-group">
-                <label class="control-label">Player 1 (leave empty for bot player)</label>
-                <input name="player1Id" class="form-control" type="text" />
+                <label class="control-label">Player 1 pseudo (or "bot")</label>
+                <input name="pseudos[]" class="form-control" type="text" value="@players[0]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 2 (leave empty for no player)</label>
-                <input name="player2Id" class="form-control" type="text" />
+            <div id="groupPlayer2" class="form-group" style="display: none;">
+                <label class="control-label">Player 2 pseudo (or "bot")</label>
+                <input id="player2" name="pseudos[]" class="form-control" type="text" value="@players[1]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 3 (leave empty for no player)</label>
-                <input name="player3Id" class="form-control" type="text" />
+            <div id="groupPlayer3" class="form-group" style="display: none;">
+                <label class="control-label">Player 3 pseudo (or "bot")</label>
+                <input id="player3" name="pseudos[]" class="form-control" type="text" value="@players[2]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 4 (leave empty for no player)</label>
-                <input name="player4Id" class="form-control" type="text" />
+            <div id="groupPlayer4" class="form-group" style="display: none;">
+                <label class="control-label">Player 4 pseudo (or "bot")</label>
+                <input id="player4" name="pseudos[]" class="form-control" type="text" value="@players[3]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 5 (leave empty for no player)</label>
-                <input name="player5Id" class="form-control" type="text" />
+            <div id="groupPlayer5" class="form-group" style="display: none;">
+                <label class="control-label">Player 5 pseudo (or "bot")</label>
+                <input id="player5" name="player[]" class="form-control" type="text" value="@players[4]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 6 (leave empty for no player)</label>
-                <input name="player6Id" class="form-control" type="text" />
+            <div id="groupPlayer6" class="form-group" style="display: none;">
+                <label class="control-label">Player 6 pseudo (or "bot")</label>
+                <input id="player6" name="pseudos[]" class="form-control" type="text" value="@players[5]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 7 (leave empty for no player)</label>
-                <input name="player7Id" class="form-control" type="text" />
+            <div id="groupPlayer7" class="form-group" style="display: none;">
+                <label class="control-label">Player 7 pseudo (or "bot")</label>
+                <input id="player7" name="pseudos[]" class="form-control" type="text" value="@players[6]" />
             </div>
-            <div class="form-group">
-                <label class="control-label">Player 8 (leave empty for no player)</label>
-                <input name="player8Id" class="form-control" type="text" />
+            <div id="groupPlayer8" class="form-group" style="display: none;">
+                <label class="control-label">Player 8 pseudo (or "bot")</label>
+                <input id="player8" name="pseudos[]" class="form-control" type="text" value="@players[7]" />
             </div>
-
             <div class="form-group">
                 <input type="submit" value="Start new game" class="btn btn-primary" />
             </div>
@@ -53,6 +63,7 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
