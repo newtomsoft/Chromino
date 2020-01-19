@@ -44,124 +44,251 @@ a {
 }
 
 .gameLineArea {
-    height: 30px;
-    display: flex;
+    display: none;
     justify-content: center;
-}
-
-.squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
-    width: 30px;
-    border-color: black;
-}
-
-.squareOpenAll {
-    background-color: white;
+    flex-shrink: 0;
 }
 
 .squareOpenRight {
-    border-bottom: 2px;
-    border-bottom-style: solid;
-    border-left: 2px;
-    border-left-style: solid;
-    border-top: 2px;
-    border-top-style: solid;
+    border-color: black;
     border-right: 1px;
     border-right-style: solid;
     border-right-color: slategray;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenBottom {
-    border-right: 2px;
+    border-color: black;
+    border-right: 1px;
     border-right-style: solid;
-    border-left: 2px;
-    border-left-style: solid;
-    border-top: 2px;
-    border-top-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-bottom-color: slategray;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenLeft {
-    border-right: 2px;
+    border-color: black;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 2px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-top: 2px;
+    border-left: 1px;
+    border-left-style: solid;
+    border-left-color: slategray;
+    border-top: 1px;
     border-top-style: solid;
+    flex-shrink: 0;
 }
 
 .squareOpenTop {
-    border-right: 2px;
+    border-color: black;
+    border-right: 1px;
     border-right-style: solid;
-    border-bottom: 2px;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-left: 2px;
+    border-left: 1px;
     border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    border-top-color: slategray;
+    flex-shrink: 0;
 }
 
 .squareOpenTopBotom {
-    border-right: 2px;
+    border-color: black;
+    border-right: 1px;
     border-right-style: solid;
-    border-left: 2px;
-    border-left-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-bottom-color: slategray;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    border-top-color: slategray;
+    flex-shrink: 0;
 }
 
 .squareOpenLeftRight {
-    border-bottom: 2px;
-    border-bottom-style: solid;
-    border-top: 2px;
-    border-top-style: solid;
+    border-color: black;
     border-right: 1px;
     border-right-style: solid;
     border-right-color: slategray;
-}
-
-.squareOpenBottomLeftTop {
-    border-right: 2px;
-    border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
-    border-bottom-color: slategray;
+    border-left: 1px;
+    border-left-style: solid;
+    border-left-color: slategray;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
 }
 
-.squareOpenRightLeftTop {
-    border-bottom: 2px;
-    border-bottom-style: solid;
+.squareFreeCloseNone {
+    border-color: black;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseTop {
+    border-color: black;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRightTop {
+    border-color: black;
     border-right: 1px;
     border-right-style: solid;
-    border-right-color: slategray;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
 }
 
-.squareOpenLeftTop {
-    border-right: 2px;
-    border-right-style: solid;
-    border-bottom: 2px;
-    border-bottom-style: solid;
-}
-
-.squareOpenBottomLeft {
-    border-right: 2px;
-    border-right-style: solid;
-    border-top: 2px;
+.squareFreeCloseTopBotom {
+    border-color: black;
+    border-top: 1px;
     border-top-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
-    border-bottom-color: slategray;
+    flex-shrink: 0;
 }
 
-.squareOpenRightTop {
-    border-bottom: 2px;
+.squareFreeCloseRightBottomTop {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
     border-bottom-style: solid;
-    border-left: 2px;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseLeftTop {
+    border-color: black;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseLeftRight {
+    border-color: black;
+    border-left: 1px;
     border-left-style: solid;
     border-right: 1px;
     border-right-style: solid;
-    border-right-color: slategray;
+    flex-shrink: 0;
 }
+
+.squareFreeCloseBottomLeftTop {
+    border-color: black;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseAll {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRightLeftTop {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRight {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseBottom {
+    border-color: black;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRightBottom {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseLeft {
+    border-color: black;
+    border-left: 1px;
+    border-left-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseBottomLeft {
+    border-color: black;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRightBottomLeft {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    flex-shrink: 0;
+}
+
+.squareFreeCloseRightLeft {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    flex-shrink: 0;
+}
+
+
 
 @media screen and (orientation: portrait) {
     #toolbar {
@@ -181,7 +308,6 @@ a {
     }
 
     .handPlayerChromino {
-        width: 30px;
         display: flex;
         flex-direction: column;
         justify-content: center;

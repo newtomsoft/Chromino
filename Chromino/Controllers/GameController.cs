@@ -11,6 +11,7 @@ using Data.Core;
 using Data.DAL;
 using Data.Enumeration;
 using Data.ViewModel;
+using System.Globalization;
 
 namespace ChrominoGame.Controllers
 {
@@ -47,11 +48,16 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult StartNew(string[] pseudos)
         {
+            if(pseudos == null || pseudos.Length == 0 )
+            {
+                return View();
+            }
+
             string error = null;
             Player playerBot = PlayerDal.Bot();
 
             List<Player> players = new List<Player>(8);
-            if (pseudos[0] != null && pseudos[0].ToLower() != "bot")
+            if (pseudos[0] != null && pseudos[0].ToUpperInvariant() != "BOT")
             {
                 Player player = PlayerDal.Detail(pseudos[0]);
                 if (player != null)
@@ -113,119 +119,6 @@ namespace ChrominoGame.Controllers
             return RedirectToAction("Show", "Game", new { id });
         }
 
-
-        // GET: Game
-        public async Task<IActionResult> Index()
-        {
-            return View(await Ctx.Games.ToListAsync());
-        }
-
-        // GET: Game/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await Ctx.Games
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return View(game);
-        }
-
-        // GET: Game/Create
-        public IActionResult Create()
-        {
-            GameDal.AddGame();
-            return View();
-        }
-
-
-        // GET: Game/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await Ctx.Games.FindAsync(id);
-            if (game == null)
-            {
-                return NotFound();
-            }
-            return View(game);
-        }
-
-        // POST: Game/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Guid,CreateDate")] Game game)
-        {
-            if (id != game.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    Ctx.Update(game);
-                    await Ctx.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GameExists(game.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(game);
-        }
-
-        // GET: Game/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await Ctx.Games
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return View(game);
-        }
-
-        // POST: Game/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var game = await Ctx.Games.FindAsync(id);
-            Ctx.Games.Remove(game);
-            await Ctx.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
         public IActionResult Show(int id)
         {
             int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
@@ -259,16 +152,6 @@ namespace ChrominoGame.Controllers
         {
             GameDal.SetAutoPlay(gameId, autoPlay);
             return RedirectToAction("ContinueRandomGame", "Game", new { id = gameId });
-        }
-
-
-
-
-
-
-        private bool GameExists(int id)
-        {
-            return Ctx.Games.Any(e => e.Id == id);
         }
     }
 }

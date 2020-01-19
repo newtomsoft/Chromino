@@ -18,6 +18,10 @@ namespace Data.Enumeration
         LeftTop,
         BottomLeft,
         RightTop,
+        RightBottom,
+        RightBottomTop,
+        RightBottomLeft,
+        None,
     }
 
 

@@ -8,10 +8,16 @@
         removePlayer();
     });
 
-    //$('#gameArea').height($(window).height() - 200);
+    resizeGameArea();
+    //
+
+
 
 });
 
+$(document).unload(function () {
+    alert("Bye now!");
+});
 
 // Action StartNew functions
 function addPlayer() {
@@ -61,7 +67,73 @@ function removePlayer() {
     }
 }
 
+function resizeGameArea() {
+    var linesNumber = parseInt($('#gameAreaLinesNumber').html()) + 4;
+    var columnNumber = parseInt($('#gameAreaColumnsNumber').html()) + 4;
 
-//# {
-//    width: 85vmin;
-//    height: 85vmin;
+    var width = $(document).width();
+    var height = $(document).height();
+    if (width < height) {
+        height = height - 200;
+    }
+    else {
+        width = width - 200;
+    }
+    var squareHeight = height / linesNumber;
+    var squareWidth = width / columnNumber;
+
+    var squareMin = Math.min(Math.trunc(Math.min(squareHeight, squareWidth)), 30);
+
+    $('.gameLineArea').outerHeight("auto");
+
+    $('.squareOpenRight').outerWidth(squareMin);
+    $('.squareOpenBottom').outerWidth(squareMin);
+    $('.squareOpenLeft').outerWidth(squareMin);
+    $('.squareOpenTop').outerWidth(squareMin);
+    $('.squareOpenTopBotom').outerWidth(squareMin);
+    $('.squareOpenLeftRight').outerWidth(squareMin);
+    $('.squareFreeCloseNone').outerWidth(squareMin);
+    $('.squareFreeCloseTop').outerWidth(squareMin);
+    $('.squareFreeCloseRightTop').outerWidth(squareMin);
+    $('.squareFreeCloseTopBotom').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottomTop').outerWidth(squareMin);
+    $('.squareFreeCloseLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseLeftRight').outerWidth(squareMin);
+    $('.squareFreeCloseBottomLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseAll').outerWidth(squareMin);
+    $('.squareFreeCloseRightLeftTop').outerWidth(squareMin);
+    $('.squareFreeCloseRight').outerWidth(squareMin);
+    $('.squareFreeCloseBottom').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottom').outerWidth(squareMin);
+    $('.squareFreeCloseLeft').outerWidth(squareMin);
+    $('.squareFreeCloseBottomLeft').outerWidth(squareMin);
+    $('.squareFreeCloseRightBottomLeft').outerWidth(squareMin);
+    $('.squareFreeCloseRightLeft').outerWidth(squareMin);
+
+    $('.squareOpenRight').outerHeight(squareMin);
+    $('.squareOpenBottom').outerHeight(squareMin);
+    $('.squareOpenLeft').outerHeight(squareMin);
+    $('.squareOpenTop').outerHeight(squareMin);
+    $('.squareOpenTopBotom').outerHeight(squareMin);
+    $('.squareOpenLeftRight').outerHeight(squareMin);
+    $('.squareFreeCloseNone').outerHeight(squareMin);
+    $('.squareFreeCloseTop').outerHeight(squareMin);
+    $('.squareFreeCloseRightTop').outerHeight(squareMin);
+    $('.squareFreeCloseTopBotom').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottomTop').outerHeight(squareMin);
+    $('.squareFreeCloseLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseLeftRight').outerHeight(squareMin);
+    $('.squareFreeCloseBottomLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseAll').outerHeight(squareMin);
+    $('.squareFreeCloseRightLeftTop').outerHeight(squareMin);
+    $('.squareFreeCloseRight').outerHeight(squareMin);
+    $('.squareFreeCloseBottom').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottom').outerHeight(squareMin);
+    $('.squareFreeCloseLeft').outerHeight(squareMin);
+    $('.squareFreeCloseBottomLeft').outerHeight(squareMin);
+    $('.squareFreeCloseRightBottomLeft').outerHeight(squareMin);
+    $('.squareFreeCloseRightLeft').outerHeight(squareMin);
+
+    $('#gameArea').show();
+    $('.gameLineArea').css('display', 'flex');
+}
