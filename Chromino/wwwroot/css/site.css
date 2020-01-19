@@ -308,6 +308,7 @@ a {
     }
 
     .handPlayerChromino {
+        position: fixed;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -339,6 +340,7 @@ a {
     }
 
     .handPlayerChromino {
+        position: fixed;
         height: 30px;
         display: flex;
         flex-direction: row;

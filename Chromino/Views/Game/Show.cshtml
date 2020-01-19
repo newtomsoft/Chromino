@@ -64,70 +64,6 @@
         </div>
     </div>
 
-    <div id="handPlayer">
-        @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
-        {
-            <div class="handPlayerChromino">
-                @for (int i = 0; i < 3; i++)
-                {
-                    OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
-                    SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
-                    string styleColor;
-                    switch (state)
-                    {
-                        case SquareViewModelState.Free:
-                            styleColor = "style=background-color:white";
-                            openEdge = OpenEdge.All;
-                            break;
-                        case SquareViewModelState.Blue:
-                            styleColor = "style=background-color:dodgerblue";
-                            break;
-                        case SquareViewModelState.Green:
-                            styleColor = "style=background-color:green";
-                            break;
-                        case SquareViewModelState.Purple:
-                            styleColor = "style=background-color:purple";
-                            break;
-                        case SquareViewModelState.Red:
-                            styleColor = "style=background-color:red";
-                            break;
-                        case SquareViewModelState.Yellow:
-                            styleColor = "style=background-color:yellow";
-                            break;
-                        case SquareViewModelState.Cameleon:
-                        default:
-                            styleColor = "style=background-color:burlywood";
-                            break;
-                    }
-                    switch (openEdge)
-                    {
-                        case OpenEdge.Right:
-                            <div class="squareOpenRight" @styleColor></div>
-                            break;
-                        case OpenEdge.Bottom:
-                            <div class="squareOpenBottom" @styleColor></div>
-                            break;
-                        case OpenEdge.Left:
-                            <div class="squareOpenLeft" @styleColor></div>
-                            break;
-                        case OpenEdge.Top:
-                            <div class="squareOpenTop" @styleColor></div>
-                            break;
-                        case OpenEdge.BottomTop:
-                            <div class="squareOpenTopBotom" @styleColor></div>
-                            break;
-                        case OpenEdge.RightLeft:
-                            <div class="squareOpenLeftRight" @styleColor></div>
-                            break;
-                        case OpenEdge.All:
-                        default:
-                            <div class="squareOpenAll"></div>
-                            break;
-                    }
-                }
-            </div>
-        }
-    </div>
 
     <br>
     <div id="gameAreaLinesNumber" hidden>@Model.LinesNumber</div>
@@ -341,6 +277,76 @@
             </div>
         }
     </div>
+
+
+    <div id="handPlayer">
+        @{
+            int iHandPlayerChromino = 0;
+        }
+        @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
+        {
+            string id = "chromino" + iHandPlayerChromino;
+            <div id="@id" class="handPlayerChromino" ontouchstart="TouchStart(this, 'touch')" @*onmousedown="TouchStart2(this)"*@ ontouchmove="TouchMove(this, 'touch')" @*onmousemove="TouchMove2(this)"*@ ontouchend="TouchEnd(this)" @*onmouseup="TouchEnd2(this)"*@>
+                @for (int i = 0; i < 3; i++)
+                {
+                    OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
+                    SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
+                    string styleColor;
+                    switch (state)
+                    {
+                        case SquareViewModelState.Free:
+                            styleColor = "style=background-color:white";
+                            openEdge = OpenEdge.All;
+                            break;
+                        case SquareViewModelState.Blue:
+                            styleColor = "style=background-color:dodgerblue";
+                            break;
+                        case SquareViewModelState.Green:
+                            styleColor = "style=background-color:green";
+                            break;
+                        case SquareViewModelState.Purple:
+                            styleColor = "style=background-color:purple";
+                            break;
+                        case SquareViewModelState.Red:
+                            styleColor = "style=background-color:red";
+                            break;
+                        case SquareViewModelState.Yellow:
+                            styleColor = "style=background-color:yellow";
+                            break;
+                        case SquareViewModelState.Cameleon:
+                        default:
+                            styleColor = "style=background-color:burlywood";
+                            break;
+                    }
+                    switch (openEdge)
+                    {
+                        case OpenEdge.Right:
+                            <div class="squareOpenRight" @styleColor></div>
+                            break;
+                        case OpenEdge.Bottom:
+                            <div class="squareOpenBottom" @styleColor></div>
+                            break;
+                        case OpenEdge.Left:
+                            <div class="squareOpenLeft" @styleColor></div>
+                            break;
+                        case OpenEdge.Top:
+                            <div class="squareOpenTop" @styleColor></div>
+                            break;
+                        case OpenEdge.BottomTop:
+                            <div class="squareOpenTopBotom" @styleColor></div>
+                            break;
+                        case OpenEdge.RightLeft:
+                        default:
+                            <div class="squareOpenLeftRight" @styleColor></div>
+                            break;
+                    }
+                }
+            </div>
+            iHandPlayerChromino++;
+        }
+    </div>
+
+
 
     @if (Model.AutoPlay == true && (Model.GameStatus != GameStatus.Finished && Model.GameStatus != GameStatus.Aborted))
     {

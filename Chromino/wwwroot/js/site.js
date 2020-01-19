@@ -12,14 +12,76 @@
     //
 
 
+    $('.handPlayerChromino').click(function () {
+        TouchStart(this, "mouse");
+    });
+
+    $('.handPlayerChromino').mousemove(function () {
+        TouchMove(this, "mouse");
+    });
+
+    $('.handPlayerChromino').mouseup(function () {
+        TouchEnd(this, "mouse");
+    });
 
 });
 
-$(document).unload(function () {
-    alert("Bye now!");
-});
 
-// Action StartNew functions
+//***************************************//
+//** gestion déplacement des chrominos **//
+//***************************************//
+
+let XBegin, XEnd, XDiff, YBegin, YEnd, YDiff;
+let ChominoPosition;
+let IsMoving = false;
+
+function TouchStart(chromino, typeEvent) {
+    IsMoving = true;
+    ChominoPosition = $(chromino).position();
+
+    XDiff = 0;
+    YDiff = 0;
+
+    if (typeEvent == "mouse") {
+        XBegin = event.x;
+        YBegin = event.y;
+    }
+    else {
+        XBegin = event.touches[0].clientX;
+        YBegin = event.touches[0].clientY;
+    }
+}
+
+function TouchMove(chromino, typeEvent) {
+    if (IsMoving) {
+        if (typeEvent == "mouse") {
+            XEnd = event.x;
+            YEnd = event.y;
+        }
+        else {
+            XEnd = event.touches[0].clientX;
+            YEnd = event.touches[0].clientY;
+        }
+        XDiff = XEnd - XBegin;
+        YDiff = YEnd - YBegin;
+        chromino.style.transform = 'translate(' + XDiff + 'px, ' + YDiff + 'px)';
+    }
+}
+
+function TouchEnd(chromino) {
+    chromino.style.transform = 'none';
+    var left = ChominoPosition.left + XDiff;
+    var top = ChominoPosition.top + YDiff;
+    $(chromino).offset({ top: top, left: left });
+    IsMoving = false;
+}
+
+
+
+//***************************************//
+//********* fonctions StartNew  *********//
+//***************************************//
+
 function addPlayer() {
     if ($('#groupPlayer2').is(':hidden'))
         $('#groupPlayer2').show(600);
@@ -137,3 +199,5 @@ function resizeGameArea() {
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
 }
+
+
