@@ -36,10 +36,10 @@ namespace Data.ViewModel
             PlayerNumberChrominos = playerNumberChrominos;
             Squares = squares;
             GameStatus = gameStatus;
-            XMin = squares.Select(g => g.X).Min()-1;
-            XMax = squares.Select(g => g.X).Max()+1;
-            YMin = squares.Select(g => g.Y).Min()-1;
-            YMax = squares.Select(g => g.Y).Max()+1;
+            XMin = squares.Select(g => g.X).Min() - 1; // +- 1 pour marge permettant de poser un chromino sur un bord
+            XMax = squares.Select(g => g.X).Max() + 1;
+            YMin = squares.Select(g => g.Y).Min() - 1;
+            YMax = squares.Select(g => g.Y).Max() + 1;
 
             ColumnsNumber = XMax - XMin + 1;
             LinesNumber = YMax - YMin + 1;
@@ -65,7 +65,7 @@ namespace Data.ViewModel
             IdentifiedPlayerChrominosViewModel = new List<ChrominoViewModel>();
             foreach (Chromino chromino in identifiedPlayerChrominos)
             {
-                SquareViewModel square1 = new SquareViewModel { State = (SquareViewModelState)chromino.FirstColor, Edge=OpenEdge.Right };
+                SquareViewModel square1 = new SquareViewModel { State = (SquareViewModelState)chromino.FirstColor, Edge = OpenEdge.Right };
                 SquareViewModel square2 = new SquareViewModel { State = (SquareViewModelState)chromino.SecondColor, Edge = OpenEdge.RightLeft };
                 SquareViewModel square3 = new SquareViewModel { State = (SquareViewModelState)chromino.ThirdColor, Edge = OpenEdge.Left };
                 ChrominoViewModel chrominoViewModel = new ChrominoViewModel();

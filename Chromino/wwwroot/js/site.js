@@ -20,11 +20,20 @@
 $(".handPlayerChromino")
     .draggableTouch()
     .bind("dragstart", function (event, pos) {
-        //console.log("drag started on:", this, "at position:", pos);
-        $("#chromino0position").html("left : " + pos.left + "top : " + pos.top);
+        var id = this.id;
+        var x = pos.left - GameAreaOffsetX;
+        var y = pos.top - GameAreaOffsetY;
+        $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
+
+
     })
     .bind("dragend", function (event, pos) {
-        $("#chromino0position").html("left : " + pos.left + "top : " + pos.top);
+        var id = this.id;
+        var x = pos.left - GameAreaOffsetX;
+        var y = pos.top - GameAreaOffsetY;
+        $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
+
+
     });
 
 
@@ -80,73 +89,80 @@ function removePlayer() {
     }
 }
 
-function resizeGameArea() {
-    var linesNumber = parseInt($('#gameAreaLinesNumber').html()) + 4;
-    var columnNumber = parseInt($('#gameAreaColumnsNumber').html()) + 4;
+//***************************************//
+//********* fonctions GameArea  *********//
+//***************************************//
+var GameAreaOffsetX;
+var GameAreaOffsetY;
 
-    var width = $(document).width();
-    var height = $(document).height();
+function resizeGameArea() {
+    var documentWidth = $(document).width();
+    var documentHeight = $(document).height();
+    var width = documentWidth;
+    var height = documentHeight;
     if (width < height) {
-        height = height - 200;
+        height = height - 200; //-200 : taille bandeaux
     }
     else {
         width = width - 200;
     }
-    var squareHeight = height / linesNumber;
-    var squareWidth = width / columnNumber;
+    var squareSize = Math.min(Math.trunc(Math.min(height / gameAreaLinesNumber, width / gameAreaColumnsNumber)), 30);
 
-    var squareMin = Math.min(Math.trunc(Math.min(squareHeight, squareWidth)), 30);
+    var gameAreaHeight = squareSize * gameAreaLinesNumber;
+    var gameAreaWidth = squareSize * gameAreaColumnsNumber;
+    $('#gameArea').height(gameAreaHeight);
+    $('#gameArea').width(gameAreaWidth);
+
+    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2;
+    GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2;
 
     $('.gameLineArea').outerHeight("auto");
-
-    $('.squareOpenRight').outerWidth(squareMin);
-    $('.squareOpenBottom').outerWidth(squareMin);
-    $('.squareOpenLeft').outerWidth(squareMin);
-    $('.squareOpenTop').outerWidth(squareMin);
-    $('.squareOpenTopBotom').outerWidth(squareMin);
-    $('.squareOpenLeftRight').outerWidth(squareMin);
-    $('.squareFreeCloseNone').outerWidth(squareMin);
-    $('.squareFreeCloseTop').outerWidth(squareMin);
-    $('.squareFreeCloseRightTop').outerWidth(squareMin);
-    $('.squareFreeCloseTopBotom').outerWidth(squareMin);
-    $('.squareFreeCloseRightBottomTop').outerWidth(squareMin);
-    $('.squareFreeCloseLeftTop').outerWidth(squareMin);
-    $('.squareFreeCloseLeftRight').outerWidth(squareMin);
-    $('.squareFreeCloseBottomLeftTop').outerWidth(squareMin);
-    $('.squareFreeCloseAll').outerWidth(squareMin);
-    $('.squareFreeCloseRightLeftTop').outerWidth(squareMin);
-    $('.squareFreeCloseRight').outerWidth(squareMin);
-    $('.squareFreeCloseBottom').outerWidth(squareMin);
-    $('.squareFreeCloseRightBottom').outerWidth(squareMin);
-    $('.squareFreeCloseLeft').outerWidth(squareMin);
-    $('.squareFreeCloseBottomLeft').outerWidth(squareMin);
-    $('.squareFreeCloseRightBottomLeft').outerWidth(squareMin);
-    $('.squareFreeCloseRightLeft').outerWidth(squareMin);
-
-    $('.squareOpenRight').outerHeight(squareMin);
-    $('.squareOpenBottom').outerHeight(squareMin);
-    $('.squareOpenLeft').outerHeight(squareMin);
-    $('.squareOpenTop').outerHeight(squareMin);
-    $('.squareOpenTopBotom').outerHeight(squareMin);
-    $('.squareOpenLeftRight').outerHeight(squareMin);
-    $('.squareFreeCloseNone').outerHeight(squareMin);
-    $('.squareFreeCloseTop').outerHeight(squareMin);
-    $('.squareFreeCloseRightTop').outerHeight(squareMin);
-    $('.squareFreeCloseTopBotom').outerHeight(squareMin);
-    $('.squareFreeCloseRightBottomTop').outerHeight(squareMin);
-    $('.squareFreeCloseLeftTop').outerHeight(squareMin);
-    $('.squareFreeCloseLeftRight').outerHeight(squareMin);
-    $('.squareFreeCloseBottomLeftTop').outerHeight(squareMin);
-    $('.squareFreeCloseAll').outerHeight(squareMin);
-    $('.squareFreeCloseRightLeftTop').outerHeight(squareMin);
-    $('.squareFreeCloseRight').outerHeight(squareMin);
-    $('.squareFreeCloseBottom').outerHeight(squareMin);
-    $('.squareFreeCloseRightBottom').outerHeight(squareMin);
-    $('.squareFreeCloseLeft').outerHeight(squareMin);
-    $('.squareFreeCloseBottomLeft').outerHeight(squareMin);
-    $('.squareFreeCloseRightBottomLeft').outerHeight(squareMin);
-    $('.squareFreeCloseRightLeft').outerHeight(squareMin);
-
+    $('.squareOpenRight').outerWidth(squareSize);
+    $('.squareOpenBottom').outerWidth(squareSize);
+    $('.squareOpenLeft').outerWidth(squareSize);
+    $('.squareOpenTop').outerWidth(squareSize);
+    $('.squareOpenTopBotom').outerWidth(squareSize);
+    $('.squareOpenLeftRight').outerWidth(squareSize);
+    $('.squareFreeCloseNone').outerWidth(squareSize);
+    $('.squareFreeCloseTop').outerWidth(squareSize);
+    $('.squareFreeCloseRightTop').outerWidth(squareSize);
+    $('.squareFreeCloseTopBotom').outerWidth(squareSize);
+    $('.squareFreeCloseRightBottomTop').outerWidth(squareSize);
+    $('.squareFreeCloseLeftTop').outerWidth(squareSize);
+    $('.squareFreeCloseLeftRight').outerWidth(squareSize);
+    $('.squareFreeCloseBottomLeftTop').outerWidth(squareSize);
+    $('.squareFreeCloseAll').outerWidth(squareSize);
+    $('.squareFreeCloseRightLeftTop').outerWidth(squareSize);
+    $('.squareFreeCloseRight').outerWidth(squareSize);
+    $('.squareFreeCloseBottom').outerWidth(squareSize);
+    $('.squareFreeCloseRightBottom').outerWidth(squareSize);
+    $('.squareFreeCloseLeft').outerWidth(squareSize);
+    $('.squareFreeCloseBottomLeft').outerWidth(squareSize);
+    $('.squareFreeCloseRightBottomLeft').outerWidth(squareSize);
+    $('.squareFreeCloseRightLeft').outerWidth(squareSize);
+    $('.squareOpenRight').outerHeight(squareSize);
+    $('.squareOpenBottom').outerHeight(squareSize);
+    $('.squareOpenLeft').outerHeight(squareSize);
+    $('.squareOpenTop').outerHeight(squareSize);
+    $('.squareOpenTopBotom').outerHeight(squareSize);
+    $('.squareOpenLeftRight').outerHeight(squareSize);
+    $('.squareFreeCloseNone').outerHeight(squareSize);
+    $('.squareFreeCloseTop').outerHeight(squareSize);
+    $('.squareFreeCloseRightTop').outerHeight(squareSize);
+    $('.squareFreeCloseTopBotom').outerHeight(squareSize);
+    $('.squareFreeCloseRightBottomTop').outerHeight(squareSize);
+    $('.squareFreeCloseLeftTop').outerHeight(squareSize);
+    $('.squareFreeCloseLeftRight').outerHeight(squareSize);
+    $('.squareFreeCloseBottomLeftTop').outerHeight(squareSize);
+    $('.squareFreeCloseAll').outerHeight(squareSize);
+    $('.squareFreeCloseRightLeftTop').outerHeight(squareSize);
+    $('.squareFreeCloseRight').outerHeight(squareSize);
+    $('.squareFreeCloseBottom').outerHeight(squareSize);
+    $('.squareFreeCloseRightBottom').outerHeight(squareSize);
+    $('.squareFreeCloseLeft').outerHeight(squareSize);
+    $('.squareFreeCloseBottomLeft').outerHeight(squareSize);
+    $('.squareFreeCloseRightBottomLeft').outerHeight(squareSize);
+    $('.squareFreeCloseRightLeft').outerHeight(squareSize);
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
 }
