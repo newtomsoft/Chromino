@@ -62,6 +62,9 @@
                 </form>
             </div>
         </div>
+
+        <div id="chromino0position">chromino0 position : </div>
+
     </div>
 
 
@@ -286,7 +289,7 @@
         @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
         {
             string id = "chromino" + iHandPlayerChromino;
-            <div id="@id" class="handPlayerChromino" ontouchstart="TouchStart(this, 'touch')" @*onmousedown="TouchStart2(this)"*@ ontouchmove="TouchMove(this, 'touch')" @*onmousemove="TouchMove2(this)"*@ ontouchend="TouchEnd(this)" @*onmouseup="TouchEnd2(this)"*@>
+            <div id="@id" class="handPlayerChromino" @*ontouchstart="TouchStart(this, 'touch')" ontouchmove="TouchMove(this, 'touch')" ontouchend="TouchEnd(this)"*@>
                 @for (int i = 0; i < 3; i++)
                 {
                     OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
@@ -361,7 +364,14 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/jquery.draggableTouch.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+ 
+    
+    <script>
+
+    </script>
 
 
 </body>
