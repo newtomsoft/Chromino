@@ -13,9 +13,38 @@
 });
 
 
-//***************************************//
-//** gestion déplacement des chrominos **//
-//***************************************//
+//***************************************************//
+//** gestion déplacements / rotation des chrominos **//
+//***************************************************//
+jQuery.fn.rotate = function (degrees) {
+    $(this).css({ 'transform': 'rotate(' + degrees + 'deg)' });
+};
+
+$(".handPlayerChromino").click(function () {
+    var transform = $(this).css("transform");
+
+    switch (transform) {
+        case "none":
+        case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
+            $(this).rotate(90);
+            break;
+        case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
+            $(this).rotate(180);
+            break;
+        case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
+            $(this).rotate(270);
+            break;
+        case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
+            $(this).rotate(0);
+            break;
+        default:
+            break;
+    }
+});
+
+
+
+
 
 $(".handPlayerChromino")
     .draggableTouch()
@@ -24,16 +53,12 @@ $(".handPlayerChromino")
         var x = pos.left - GameAreaOffsetX;
         var y = pos.top - GameAreaOffsetY;
         $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
-
-
     })
     .bind("dragend", function (event, pos) {
         var id = this.id;
         var x = pos.left - GameAreaOffsetX;
         var y = pos.top - GameAreaOffsetY;
         $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
-
-
     });
 
 
