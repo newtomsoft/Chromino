@@ -1,7 +1,12 @@
 ﻿$(document).ready(function () {
 
-    $(document).keydown(function () {
-        KeyDown(event.code);
+    $(document).click(function () {
+        StopDraggable();
+        StartDraggable();
+    });
+
+    $(".handPlayerChromino").dblclick(function () {
+        PutChromino(this);
     });
 
     // Action StartNew events
@@ -22,34 +27,20 @@
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
 
-function KeyDown(keypress) {
-    switch (keypress) {
-        case 'Escape': // stop and restard draggability          
-            $(this).unbind("mouseup");
-            $(document).unbind("mousemove");
-            $(this).trigger("dragend", {
-                top: e.pageY - offset.y,
-                left: e.pageX - offset.x
-            });
-            //$(".handPlayerChromino").draggableTouch("disable");
-            //$(".handPlayerChromino").draggableTouch()
-            break;
-    }
-}
-
 jQuery.fn.rotate = function (degrees) {
     $(this).css({ 'transform': 'rotate(' + degrees + 'deg)' });
 };
 
 let TimeoutRotate = null;
 let ToRotate = true;
+let IsPut;
 
 function ScheduleRotate() {
     ToRotate = true;
     clearTimeout(TimeoutRotate);
     TimeoutRotate = setTimeout(function () {
         ToRotate = false;
-    }, 80);
+    }, 120);
 }
 
 function StartDraggable() {
@@ -66,24 +57,13 @@ function StartDraggable() {
             if (ToRotate) {
                 ToRotate = false;
                 clearTimeout(TimeoutRotate);
-                var transform = $(this).css("transform");
-                switch (transform) {
-                    case "none":
-                    case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-                        $(this).rotate(90);
-                        break;
-                    case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-                        $(this).rotate(180);
-                        break;
-                    case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
-                        $(this).rotate(270);
-                        break;
-                    case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-                        $(this).rotate(0);
-                        break;
-                    default:
-                        break;
-                }
+                var chromino = this;
+                clearTimeout(TimeoutPut);
+                IsPut = false;
+                var TimeoutPut = setTimeout(function () {
+                    Rotation(chromino);
+                }, 300);
+
             }
             else {
                 var id = this.id;
@@ -96,7 +76,44 @@ function StartDraggable() {
         });
 }
 
+function Rotation(chromino) {
+    if (!IsPut) {
+        var transform = $(chromino).css("transform");
+        switch (transform) {
+            case "none":
+            case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
+                $(chromino).rotate(90);
+                break;
+            case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
+                $(chromino).rotate(180);
+                break;
+            case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
+                $(chromino).rotate(270);
+                break;
+            case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
+                $(chromino).rotate(0);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
+function StopDraggable() {
+    $(this).unbind("mouseup");
+    $(this).unbind("mousedown");
+    $(document).unbind("mousemove");
+    $(".handPlayerChromino").draggableTouch("disable");
+}
+
+function PutChromino(chromino) {
+    IsPut = true;
+    var id = chromino.id;
+    var position = $(chromino).position();
+    var x = position.left - GameAreaOffsetX;
+    var y = position.top - GameAreaOffsetY;
+    $("#chrominoPosition").html(id + "put at position left : " + x + "top : " + y);
+}
 
 
 //***************************************//
