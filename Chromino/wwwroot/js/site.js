@@ -1,21 +1,42 @@
 ﻿$(document).ready(function () {
 
+    $(document).keydown(function () {
+        KeyDown(event.code);
+    });
+
     // Action StartNew events
     $('#addPlayer').click(function () {
-        addPlayer();
+        AddPlayer();
     });
     $('#removePlayer').click(function () {
-        removePlayer();
+        RemovePlayer();
     });
 
-    resizeGameArea();
+    ResizeGameArea();
 
+    StartDraggable();
 });
 
 
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
+
+function KeyDown(keypress) {
+    switch (keypress) {
+        case 'Escape': // stop and restard draggability          
+            $(this).unbind("mouseup");
+            $(document).unbind("mousemove");
+            $(this).trigger("dragend", {
+                top: e.pageY - offset.y,
+                left: e.pageX - offset.x
+            });
+            //$(".handPlayerChromino").draggableTouch("disable");
+            //$(".handPlayerChromino").draggableTouch()
+            break;
+    }
+}
+
 jQuery.fn.rotate = function (degrees) {
     $(this).css({ 'transform': 'rotate(' + degrees + 'deg)' });
 };
@@ -31,47 +52,50 @@ function ScheduleRotate() {
     }, 80);
 }
 
-$(".handPlayerChromino")
-    .draggableTouch()
-    .bind("dragstart", function (event, pos) {
-        ScheduleRotate();
-        var id = this.id;
-        var x = pos.left - GameAreaOffsetX;
-        var y = pos.top - GameAreaOffsetY;
-        $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
-    })
-    .bind("dragend", function (event, pos) {
-        if (ToRotate) {
-            ToRotate = false;
-            clearTimeout(TimeoutRotate);
-            var transform = $(this).css("transform");
-            switch (transform) {
-                case "none":
-                case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-                    $(this).rotate(90);
-                    break;
-                case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-                    $(this).rotate(180);
-                    break;
-                case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
-                    $(this).rotate(270);
-                    break;
-                case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-                    $(this).rotate(0);
-                    break;
-                default:
-                    break;
-            }
-        }
-        else {
+function StartDraggable() {
+    $(".handPlayerChromino")
+        .draggableTouch()
+        .bind("dragstart", function (event, pos) {
+            ScheduleRotate();
             var id = this.id;
             var x = pos.left - GameAreaOffsetX;
             var y = pos.top - GameAreaOffsetY;
             $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
-            clearTimeout(TimeoutRotate);
-            ToRotate = false;
-        }
-    });
+        })
+        .bind("dragend", function (event, pos) {
+            if (ToRotate) {
+                ToRotate = false;
+                clearTimeout(TimeoutRotate);
+                var transform = $(this).css("transform");
+                switch (transform) {
+                    case "none":
+                    case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
+                        $(this).rotate(90);
+                        break;
+                    case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
+                        $(this).rotate(180);
+                        break;
+                    case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
+                        $(this).rotate(270);
+                        break;
+                    case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
+                        $(this).rotate(0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else {
+                var id = this.id;
+                var x = pos.left - GameAreaOffsetX;
+                var y = pos.top - GameAreaOffsetY;
+                $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
+                clearTimeout(TimeoutRotate);
+                ToRotate = false;
+            }
+        });
+}
+
 
 
 
@@ -79,7 +103,7 @@ $(".handPlayerChromino")
 //********* fonctions StartNew  *********//
 //***************************************//
 
-function addPlayer() {
+function AddPlayer() {
     if ($('#groupPlayer2').is(':hidden'))
         $('#groupPlayer2').show(600);
     else if ($('#groupPlayer3').is(':hidden'))
@@ -95,7 +119,7 @@ function addPlayer() {
     else if ($('#groupPlayer8').is(':hidden'))
         $('#groupPlayer8').show(600);
 }
-function removePlayer() {
+function RemovePlayer() {
     if (!$('#groupPlayer8').is(':hidden')) {
         $('#player8').val('');
         $('#groupPlayer8').hide(600);
@@ -132,7 +156,7 @@ function removePlayer() {
 var GameAreaOffsetX;
 var GameAreaOffsetY;
 
-function resizeGameArea() {
+function ResizeGameArea() {
     var documentWidth = $(document).width();
     var documentHeight = $(document).height();
     var width = documentWidth;
@@ -203,50 +227,3 @@ function resizeGameArea() {
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
 }
-
-
-
-//let XBegin, XEnd, XDiff, YBegin, YEnd, YDiff;
-//let ChominoPosition;
-//let IsMoving = false;
-
-//function TouchStart(chromino, typeEvent) {
-//    IsMoving = true;
-//    ChominoPosition = $(chromino).position();
-
-//    XDiff = 0;
-//    YDiff = 0;
-
-//    if (typeEvent == "mouse") {
-//        XBegin = event.x;
-//        YBegin = event.y;
-//    }
-//    else {
-//        XBegin = event.touches[0].clientX;
-//        YBegin = event.touches[0].clientY;
-//    }
-//}
-
-//function TouchMove(chromino, typeEvent) {
-//    if (IsMoving) {
-//        if (typeEvent == "mouse") {
-//            XEnd = event.x;
-//            YEnd = event.y;
-//        }
-//        else {
-//            XEnd = event.touches[0].clientX;
-//            YEnd = event.touches[0].clientY;
-//        }
-//        XDiff = XEnd - XBegin;
-//        YDiff = YEnd - YBegin;
-//        chromino.style.transform = 'translate(' + XDiff + 'px, ' + YDiff + 'px)';
-//    }
-//}
-
-//function TouchEnd(chromino) {
-//    chromino.style.transform = 'none';
-//    var left = ChominoPosition.left + XDiff;
-//    var top = ChominoPosition.top + YDiff;
-//    $(chromino).offset({ top: top, left: left });
-//    IsMoving = false;
-//}
