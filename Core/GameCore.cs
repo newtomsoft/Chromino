@@ -62,8 +62,8 @@ namespace Data.Core
             else
             {
                 GamePlayer gamePlayer = (from gp in GamePlayers
-                                          where gp.PlayerTurn == true
-                                          select gp).FirstOrDefault();
+                                         where gp.PlayerTurn == true
+                                         select gp).FirstOrDefault();
 
                 if (gamePlayer == null)
                 {
@@ -195,6 +195,33 @@ namespace Data.Core
             }
         }
 
+        public bool Play(GameChromino gameChromino)
+        {
+            Coordinate coordinate;
+            switch (gameChromino.Orientation)
+            {
+                case Orientation.HorizontalFlip:
+                    coordinate = new Coordinate((int)gameChromino.XPosition - 2, (int)gameChromino.YPosition);
+                    break;
+                case Orientation.Vertical:
+                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition - 2);
+                    break;
+                case Orientation.Horizontal:
+                case Orientation.VerticalFlip:
+                default:
+                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition);
+                    break;
+            }
+            bool put = SquareDal.PutChromino(gameChromino, coordinate);
+            if (put)
+            {
+                // todo changer état chromino
+                // calculer points du joueur
+                //etc
+            }
+            return put;
+        }
+
         /// <summary>
         /// retourne la couleur possible à cet endroit
         /// </summary>
@@ -232,7 +259,7 @@ namespace Data.Core
 
             if (colors.Count == 0)
             {
-                return Color.Cameleon; 
+                return Color.Cameleon;
             }
             else if (colors.Count == 1)
             {

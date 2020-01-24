@@ -17,17 +17,17 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public bool PutChromino(GameChromino chromino_Game, Coordinate firstCoordinate, bool firstChromino = false)
+        public bool PutChromino(GameChromino gameChromino, Coordinate firstCoordinate, bool firstChromino = false)
         {
             ChrominoDal chrominoDal = new ChrominoDal(Ctx);
-            Chromino chromino = chrominoDal.Details(chromino_Game.ChrominoId);
+            Chromino chromino = chrominoDal.Details(gameChromino.ChrominoId);
 
-            ComputeOffset((Orientation)chromino_Game.Orientation, out int offsetX, out int offsetY);
+            ComputeOffset((Orientation)gameChromino.Orientation, out int offsetX, out int offsetY);
 
             Coordinate secondCoordinate = new Coordinate(firstCoordinate.X + offsetX, firstCoordinate.Y + offsetY);
             Coordinate thirdCoordinate = new Coordinate(firstCoordinate.X + 2 * offsetX, firstCoordinate.Y + 2 * offsetY);
 
-            int gameId = chromino_Game.GameId;
+            int gameId = gameChromino.GameId;
 
             if (!firstChromino && (!IsFree(gameId, firstCoordinate) || !IsFree(gameId, secondCoordinate) || !IsFree(gameId, thirdCoordinate)))
             {
@@ -60,7 +60,7 @@ namespace Data.DAL
                     OpenEdge firstEdge;
                     OpenEdge secondEdge;
                     OpenEdge thirdEdge;
-                    switch (chromino_Game.Orientation)
+                    switch (gameChromino.Orientation)
                     {
                         case Orientation.Horizontal:
                             firstEdge = OpenEdge.Right;
@@ -92,9 +92,9 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
 
-                    chromino_Game.XPosition = firstCoordinate.X;
-                    chromino_Game.YPosition = firstCoordinate.Y;
-                    chromino_Game.State = ChrominoStatus.InGame;
+                    gameChromino.XPosition = firstCoordinate.X;
+                    gameChromino.YPosition = firstCoordinate.Y;
+                    gameChromino.State = ChrominoStatus.InGame;
 
                     Ctx.SaveChanges();
                     return true;

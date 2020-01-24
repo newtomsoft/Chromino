@@ -48,7 +48,7 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult StartNew(string[] pseudos)
         {
-            if(pseudos == null || pseudos.Length == 0 )
+            if (pseudos == null || pseudos.Length == 0)
             {
                 return View();
             }
@@ -119,6 +119,31 @@ namespace ChrominoGame.Controllers
             return RedirectToAction("Show", "Game", new { id });
         }
 
+        [HttpPost]
+        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
+        {
+            Player player = PlayerDal.Detail(playerId);
+            List<Player> players = GamePlayerDal.Players(gameId);
+            GameCore gamecore = new GameCore(Ctx, gameId, players);
+
+            Coordinate coordinate = new Coordinate(x, y);
+            GameChromino gameChromino = new GameChromino
+            {
+                ChrominoId = chrominoId,
+                XPosition = x,
+                YPosition = y,
+                Orientation = orientation,
+                GameId = gameId,
+                PlayerId = playerId,
+            };
+            bool move = gamecore.Play(gameChromino);
+            if(!move)
+            {
+                int a = 5;
+            }
+            return RedirectToAction("Show", "Game", new { gameId });
+        }
+
         public IActionResult Show(int id)
         {
             int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
@@ -135,6 +160,14 @@ namespace ChrominoGame.Controllers
             if (players.Count == 1 && players[0].Pseudo == "Bot")
             {
                 identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+            }
+            else if (players.Count == 1) // le joueur identifié est nécessairement le joueur courant
+            {
+                identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
             Game game = GameDal.Details(id);
