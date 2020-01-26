@@ -16,8 +16,8 @@ namespace Data.DAL
         public GamePlayer GetBot(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.Games_Players
-                                      where gp.GameId == gameId && gp.PlayerId == playerId
-                                      select gp).FirstOrDefault();
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
 
             if (gamePlayer == null)
             {
@@ -32,8 +32,8 @@ namespace Data.DAL
         public GamePlayer GamePlayer(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.Games_Players
-                                      where gp.GameId == gameId && gp.PlayerId == playerId
-                                      select gp).FirstOrDefault();
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
 
             return gamePlayer;
         }
@@ -66,11 +66,21 @@ namespace Data.DAL
         public List<int> PlayersId(int gameId)
         {
             List<int> playersId = (from gp in Ctx.Games_Players
-                                    join p in Ctx.Players on gp.PlayerId equals p.Id
-                                    where gp.GameId == gameId
-                                    select p.Id).ToList();
+                                   join p in Ctx.Players on gp.PlayerId equals p.Id
+                                   where gp.GameId == gameId
+                                   select p.Id).ToList();
 
             return playersId;
+        }
+
+        public void AddPoint(int playerId, int point)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.Games_Players
+                                     where gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.PlayerPoints += point;
+            Ctx.SaveChanges();
         }
     }
 }

@@ -17,6 +17,15 @@ namespace Data.DAL
             Ctx = context;
         }
 
+        public GameChromino Details(int gameId, int chrominoId)
+        {
+            GameChromino gameChromino = (from cg in Ctx.Chrominos_Games
+                                         where cg.GameId == gameId && cg.ChrominoId == chrominoId
+                                         select cg).FirstOrDefault();
+
+            return gameChromino;
+        }
+
         public int StatusNumber(int gameId, ChrominoStatus status)
         {
             int nbChrominos = (from cg in Ctx.Chrominos_Games

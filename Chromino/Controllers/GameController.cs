@@ -120,28 +120,26 @@ namespace ChrominoGame.Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
+        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, int xMin, int yMin, Orientation orientation)
         {
             Player player = PlayerDal.Detail(playerId);
             List<Player> players = GamePlayerDal.Players(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
 
-            Coordinate coordinate = new Coordinate(x, y);
-            GameChromino gameChromino = new GameChromino
-            {
-                ChrominoId = chrominoId,
-                XPosition = x,
-                YPosition = y,
-                Orientation = orientation,
-                GameId = gameId,
-                PlayerId = playerId,
-            };
+            //Coordinate coordinate = new Coordinate(x, y);
+            GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
+            gameChromino.XPosition = x + xMin;
+            gameChromino.YPosition = y + yMin;
+            gameChromino.Orientation = orientation;
+            gameChromino.PlayerId = playerId;
+
             bool move = gamecore.Play(gameChromino);
-            if(!move)
+            if (!move)
             {
+                // todo : position pas bonne. avertir joueur
                 int a = 5;
             }
-            return RedirectToAction("Show", "Game", new { gameId });
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
         public IActionResult Show(int id)
@@ -177,6 +175,7 @@ namespace ChrominoGame.Controllers
             List<Square> squares = SquareDal.List(id);
             GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand, identifiedPlayerChrominos);
 
+            //ViewData["ChrominosId"] = new SelectList(identifiedPlayerChrominos, "Id", "Id");
             return View(gameViewModel);
         }
 

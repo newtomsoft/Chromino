@@ -201,7 +201,7 @@ namespace Data.Core
             switch (gameChromino.Orientation)
             {
                 case Orientation.HorizontalFlip:
-                    coordinate = new Coordinate((int)gameChromino.XPosition - 2, (int)gameChromino.YPosition);
+                    coordinate = new Coordinate((int)gameChromino.XPosition + 2, (int)gameChromino.YPosition);
                     break;
                 case Orientation.Vertical:
                     coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition - 2);
@@ -215,9 +215,9 @@ namespace Data.Core
             bool put = SquareDal.PutChromino(gameChromino, coordinate);
             if (put)
             {
-                // todo changer état chromino
-                // calculer points du joueur
-                //etc
+                gameChromino.State = ChrominoStatus.InGame;
+                GamePlayerDal.AddPoint((int)gameChromino.PlayerId, ChrominoDal.Details(gameChromino.ChrominoId).Points);
+                //todo ? reste calculs à faire ?
             }
             return put;
         }

@@ -140,7 +140,7 @@ function PutChromino(chromino) {
         default:
             break;
     }
-    $("#FormChrominoId").value(); // TODO mettre valeur 
+    $("#FormChrominoId").val(id); // TODO mettre valeur 
 
     $("#FormSendMove").submit();
 }

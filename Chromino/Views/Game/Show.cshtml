@@ -47,7 +47,7 @@
         <p>Game is @gameStatus  -  Chrominos in game : @Model.ChrominosInGame  -  Chrominos in stack : @Model.ChrominosInStack</p>
         @for (int i = 0; i < Model.PlayerNumberChrominos.Count; i++)
         {
-        <p>Player @(i + 1)  : @Model.PlayerNumberChrominos[i] in hand</p>
+            <p>Player @(i + 1)  : @Model.PlayerNumberChrominos[i] in hand</p>
         }
 
         <div class="row">
@@ -73,8 +73,8 @@
     <div id="gameArea" display="none">
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
-        <div class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
+            <div class="gameLineArea">
+                @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
                     int index = i + j * Model.ColumnsNumber;
                     OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
@@ -108,22 +108,22 @@
                         switch (openEdge)
                         {
                             case OpenEdge.Right:
-            <div class="squareOpenRight" @styleColor></div>
+                                <div class="squareOpenRight" @styleColor></div>
                                 break;
                             case OpenEdge.Bottom:
-            <div class="squareOpenBottom" @styleColor></div>
+                                <div class="squareOpenBottom" @styleColor></div>
                                 break;
                             case OpenEdge.Left:
-            <div class="squareOpenLeft" @styleColor></div>
+                                <div class="squareOpenLeft" @styleColor></div>
                                 break;
                             case OpenEdge.Top:
-            <div class="squareOpenTop" @styleColor></div>
+                                <div class="squareOpenTop" @styleColor></div>
                                 break;
                             case OpenEdge.BottomTop:
-            <div class="squareOpenTopBotom" @styleColor></div>
+                                <div class="squareOpenTopBotom" @styleColor></div>
                                 break;
                             case OpenEdge.RightLeft:
-            <div class="squareOpenLeftRight" @styleColor></div>
+                                <div class="squareOpenLeftRight" @styleColor></div>
                                 break;
                             default:
                                 int a = 55;
@@ -223,52 +223,52 @@
                         switch (openEdge)
                         {
                             case OpenEdge.None:
-            <div class="squareFreeCloseNone"></div>
+                                <div class="squareFreeCloseNone"></div>
                                 break;
                             case OpenEdge.Top:
-            <div class="squareFreeCloseTop"></div>
+                                <div class="squareFreeCloseTop"></div>
                                 break;
                             case OpenEdge.RightTop:
-            <div class="squareFreeCloseRightTop"></div>
+                                <div class="squareFreeCloseRightTop"></div>
                                 break;
                             case OpenEdge.BottomTop:
-            <div class="squareFreeCloseTopBotom"></div>
+                                <div class="squareFreeCloseTopBotom"></div>
                                 break;
                             case OpenEdge.RightBottomTop:
-            <div class="squareFreeCloseRightBottomTop"></div>
+                                <div class="squareFreeCloseRightBottomTop"></div>
                                 break;
                             case OpenEdge.LeftTop:
-            <div class="squareFreeCloseLeftTop"></div>
+                                <div class="squareFreeCloseLeftTop"></div>
                                 break;
                             case OpenEdge.RightLeftTop:
-            <div class="squareFreeCloseRightLeftTop"></div>
+                                <div class="squareFreeCloseRightLeftTop"></div>
                                 break;
                             case OpenEdge.BottomLeftTop:
-            <div class="squareFreeCloseBottomLeftTop"></div>
+                                <div class="squareFreeCloseBottomLeftTop"></div>
                                 break;
                             case OpenEdge.All:
-            <div class="squareFreeCloseAll"></div>
+                                <div class="squareFreeCloseAll"></div>
                                 break;
                             case OpenEdge.Right:
-            <div class="squareFreeCloseRight"></div>
+                                <div class="squareFreeCloseRight"></div>
                                 break;
                             case OpenEdge.Bottom:
-            <div class="squareFreeCloseBottom"></div>
+                                <div class="squareFreeCloseBottom"></div>
                                 break;
                             case OpenEdge.RightBottom:
-            <div class="squareFreeCloseRightBottom"></div>
+                                <div class="squareFreeCloseRightBottom"></div>
                                 break;
                             case OpenEdge.Left:
-            <div class="squareFreeCloseLeft"></div>
+                                <div class="squareFreeCloseLeft"></div>
                                 break;
                             case OpenEdge.BottomLeft:
-            <div class="squareFreeCloseBottomLeft"></div>
+                                <div class="squareFreeCloseBottomLeft"></div>
                                 break;
                             case OpenEdge.RightBottomLeft:
-            <div class="squareFreeCloseRightBottomLeft"></div>
+                                <div class="squareFreeCloseRightBottomLeft"></div>
                                 break;
                             case OpenEdge.RightLeft:
-            <div class="squareFreeCloseRightLeft"></div>
+                                <div class="squareFreeCloseRightLeft"></div>
                                 break;
                             default:
                                 int a = 55;
@@ -276,20 +276,21 @@
                         }
                     }
                 }
-        </div>
+            </div>
         }
     </div>
 
 
     <div id="handPlayer">
         @{
-            int iHandPlayerChromino = 0;
+            //int iHandPlayerChromino = 0;
         }
         @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
         {
-            string id = "chromino" + iHandPlayerChromino;
-        <div id="@id" class="handPlayerChromino" @*ontouchstart="TouchStart(this, 'touch')" ontouchmove="TouchMove(this, 'touch')" ontouchend="TouchEnd(this)"*@>
-            @for (int i = 0; i < 3; i++)
+            //string id = "chromino" + iHandPlayerChromino;
+            string id = chrominosViewModel.ChrominoId.ToString();
+            <div id="@id" class="handPlayerChromino">
+                @for (int i = 0; i < 3; i++)
                 {
                     OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
                     SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
@@ -323,28 +324,28 @@
                     switch (openEdge)
                     {
                         case OpenEdge.Right:
-            <div class="squareOpenRight" @styleColor></div>
+                            <div class="squareOpenRight" @styleColor></div>
                             break;
                         case OpenEdge.Bottom:
-            <div class="squareOpenBottom" @styleColor></div>
+                            <div class="squareOpenBottom" @styleColor></div>
                             break;
                         case OpenEdge.Left:
-            <div class="squareOpenLeft" @styleColor></div>
+                            <div class="squareOpenLeft" @styleColor></div>
                             break;
                         case OpenEdge.Top:
-            <div class="squareOpenTop" @styleColor></div>
+                            <div class="squareOpenTop" @styleColor></div>
                             break;
                         case OpenEdge.BottomTop:
-            <div class="squareOpenTopBotom" @styleColor></div>
+                            <div class="squareOpenTopBotom" @styleColor></div>
                             break;
                         case OpenEdge.RightLeft:
                         default:
-            <div class="squareOpenLeftRight" @styleColor></div>
+                            <div class="squareOpenLeftRight" @styleColor></div>
                             break;
                     }
                 }
-        </div>
-            iHandPlayerChromino++;
+            </div>
+            //iHandPlayerChromino++;
         }
     </div>
 
@@ -353,6 +354,8 @@
         <input id="FormPlayerId" name="playerId" value="2" /> @* TODO !!! *@
         <input id="FormGameId" name="gameId" value="@Model.GameId" />
         <input id="FormChrominoId" name="chrominoId" />
+        <input id="FormXMin" name="xMin" value="@Model.XMin"/>
+        <input id="FormYmin" name="yMin" value="@Model.YMin"/>
         <input id="FormX" name="x" />
         <input id="FormY" name="y" />
         <input id="FormOrientation" name="orientation" />
@@ -366,13 +369,13 @@
 
     @if (Model.AutoPlay == true && (Model.GameStatus != GameStatus.Finished && Model.GameStatus != GameStatus.Aborted))
     {
-    <script>
+        <script>
             window.onload = function () { continueRandomGame(); }
 
             function continueRandomGame() {
                 location.assign("@Url.Action("ContinueRandomGame", "Game", new { id = Model.GameId })");
             }
-    </script>
+        </script>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
