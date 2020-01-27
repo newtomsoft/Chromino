@@ -1,7 +1,9 @@
-﻿using Data.Models;
+﻿using Data.Enumeration;
+using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.DAL
 {
@@ -81,6 +83,50 @@ namespace Data.DAL
 
             gamePlayer.PlayerPoints += point;
             Ctx.SaveChanges();
+        }
+
+        public List<Game> GamesInProgress(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId && g.Status == GameStatus.InProgress
+                                orderby g.CreateDate descending
+                                select g).AsNoTracking().ToList();
+
+            return games;
+        }
+
+        public List<Game> GamesFinished(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished
+                                orderby g.CreateDate descending
+                                select g).AsNoTracking().ToList();
+
+            return games;
+        }
+
+        public List<Game> GamesToPlay(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId && gp.PlayerTurn
+                                orderby g.CreateDate descending
+                                select g).AsNoTracking().ToList();
+
+            return games;
+        }
+
+        public List<Game> Games(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId
+                                orderby g.CreateDate descending
+                                select g).AsNoTracking().ToList();
+
+            return games;
         }
     }
 }

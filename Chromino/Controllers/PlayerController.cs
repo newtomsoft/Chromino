@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Data.Models;
+using Tool;
+using Microsoft.AspNetCore.Http;
+using System.Diagnostics.Contracts;
 
 namespace Controllers
 {
@@ -14,6 +17,34 @@ namespace Controllers
     {
         public PlayerController(DefaultContext context) : base(context)
         {
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login([Bind("Pseudo,Password")] Player player)
+        {
+            Contract.Requires(player != null);
+            if (ModelState.IsValid)
+            {
+                player.Password = player.Password.GetHash();
+                Player found;
+                if ((found = PlayerDal.GetPlayer(player)) != null)
+                {
+                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
+                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View();
+            }
         }
 
 

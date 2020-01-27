@@ -48,7 +48,7 @@ namespace Data.DAL
             return botplayer;
         }
 
-        public Player Detail(int id)
+        public Player Details(int id)
         {
             Player player = (from p in Ctx.Players
                              where p.Id == id
@@ -57,7 +57,7 @@ namespace Data.DAL
             return player;
         }
 
-        public Player Detail(string pseudo)
+        public Player Details(string pseudo)
         {
             Player player = (from p in Ctx.Players
                              where p.Pseudo == pseudo

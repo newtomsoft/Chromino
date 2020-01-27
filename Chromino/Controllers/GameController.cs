@@ -46,7 +46,7 @@ namespace Controllers
             List<Player> players = new List<Player>(8);
             if (pseudos[0] != null && pseudos[0].ToUpperInvariant() != "BOT")
             {
-                Player player = PlayerDal.Detail(pseudos[0]);
+                Player player = PlayerDal.Details(pseudos[0]);
                 if (player != null)
                     players.Add(player);
                 else
@@ -60,7 +60,7 @@ namespace Controllers
             {
                 if (pseudos[i] != null)
                 {
-                    Player player = PlayerDal.Detail(pseudos[i]);
+                    Player player = PlayerDal.Details(pseudos[i]);
                     if (player != null)
                         players.Add(player);
                     else
@@ -90,7 +90,7 @@ namespace Controllers
             List<Player> players = GamePlayerDal.Players(id);
             if (players.Count == 1 && players[0].Pseudo == "bot")
             {
-                return RedirectToAction("ContinueRandomGame", "Game", new { id });
+                return RedirectToAction("PlayBot", "Game", new { id });
             }
             else
             {
@@ -99,14 +99,15 @@ namespace Controllers
             }
         }
 
-        public IActionResult ContinueRandomGame(int id)
+        public IActionResult PlayBot(int id)
         {
             GetPlayerInfosFromSession();
 
             Player bot = PlayerDal.Bot();
-            List<Player> players = new List<Player>(1) { bot };
+            //List<Player> players = new List<Player>(1) { bot };
+            List<Player> players = GamePlayerDal.Players(id);
             GameCore gamecore = new GameCore(Ctx, id, players);
-            gamecore.ContinueRandomGame();
+            gamecore.PlayBot();
             return RedirectToAction("Show", "Game", new { id });
         }
 
@@ -115,7 +116,7 @@ namespace Controllers
         {
             GetPlayerInfosFromSession();
 
-            Player player = PlayerDal.Detail(playerId);
+            Player player = PlayerDal.Details(playerId);
             List<Player> players = GamePlayerDal.Players(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
 
@@ -127,10 +128,13 @@ namespace Controllers
             gameChromino.PlayerId = playerId;
 
             bool move = gamecore.Play(gameChromino);
-            if (!move)
+            if (move)
             {
-                // todo : position pas bonne. avertir joueur
-                int a = 5;
+                gamecore.ChangePlayerTurn();
+            }
+            else // todo : position pas bonne. avertir joueur
+            {
+                int toto = 69;
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -149,13 +153,13 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
-
+        // todo : [HttpPost]
         public IActionResult Show(int id)
         {
             GetPlayerInfosFromSession();
 
             List<Player> players = GamePlayerDal.Players(id);
-            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null)
+            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || players.Count == 1 && players[0].Id == BotId) // identified player in the game or only bot play
             {
                 int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
                 int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
@@ -167,17 +171,13 @@ namespace Controllers
                 }
 
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (players.Count == 1 && players[0].Pseudo == "Bot")
-                {
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
-                }
-                else if (players.Count == 1) // le joueur identifié est nécessairement le joueur courant
+                if (players.Count == 1) // si un seul joueur, soit bot seul et on affiche ses chrominos, soit le joueur identifié est nécessairement le joueur courant et on affiche aussi ses chrominos
                 {
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
                 }
 
                 Game game = GameDal.Details(id);
@@ -200,7 +200,7 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             GameDal.SetAutoPlay(gameId, autoPlay);
-            return RedirectToAction("ContinueRandomGame", "Game", new { id = gameId });
+            return RedirectToAction("PlayBot", "Game", new { id = gameId });
         }
 
         public IActionResult NotFound()

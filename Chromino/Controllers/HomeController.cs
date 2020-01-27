@@ -13,6 +13,7 @@ using Data.DAL;
 using Data.Models;
 using System.Diagnostics.Contracts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Controllers
 {
@@ -24,43 +25,25 @@ namespace Controllers
 
         public IActionResult Index()
         {
-            //Jeu jeu = new Jeu(ctx);
-
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login([Bind("Pseudo,Password")] Player player)
-        {
-            Contract.Requires(player != null);
-            if (ModelState.IsValid)
+            GetPlayerInfosFromSession();
+            if (PlayerId == 0)
             {
-                player.Password = player.Password.GetHash();
-                Player found;
-                if ((found = PlayerDal.GetPlayer(player)) != null)
-                {
-                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
-                }
-                return RedirectToAction("Index");
+                return RedirectToAction("Login", "Player");
             }
             else
             {
+                List<Game> gamesInProgress = GamePlayerDal.GamesInProgress(PlayerId);
+                List<Game> gamesToPlay = GamePlayerDal.GamesToPlay(PlayerId);
+
+                ViewData["Games"] = new SelectList(GamePlayerDal.Games(PlayerId), "Id", "CreateDate", null, "Status");
+                ViewData["GamesInProgress"] = new SelectList(gamesInProgress.OrderByDescending(x => x.CreateDate), "Id", "CreateDate");
+                ViewData["GamesToPlay"] = new SelectList(gamesToPlay.OrderByDescending(x => x.CreateDate), "Id", "CreateDate");
                 return View();
             }
         }
 
         public IActionResult Privacy()
         {
-            GetPlayerInfosFromSession();
-
             return View();
         }
 

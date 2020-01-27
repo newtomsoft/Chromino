@@ -1,17 +1,32 @@
-﻿@{
+﻿@model Data.Models.Game
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome @ViewBag.PlayerPseudo</h1>
 </div>
 <div>
     <a asp-controller="Game" asp-action="StartNew">Start new game</a>
 </div>
+
 <div>
-    <a asp-controller="Game" asp-action="ContinueRandomGame" asp-route-id="1">Continue game</a>
-</div>
-<div>
-    <a asp-controller="Game" asp-action="Show" asp-route-id="1">Grid</a>
+    <a asp-controller="Game" asp-action="Show" asp-route-id="1">Continue game</a>
 </div>
 
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Show" asp-controller="Game">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label  class="control-label">Choose games in progress</label>
+                <select asp-for="Id" class="form-control" asp-items="ViewBag.Games"></select>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Play" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

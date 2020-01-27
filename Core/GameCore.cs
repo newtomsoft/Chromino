@@ -10,7 +10,9 @@ namespace Data.Core
     public class GameCore
     {
         private const int MaxChrominoInHand = 8;
-        private readonly GameChrominoDal ChrominoGameDal;
+        private const int BotId = 1;
+        private readonly DefaultContext Ctx;
+        private readonly GameChrominoDal GameChrominoDal;
         private readonly ChrominoDal ChrominoDal;
         private readonly SquareDal SquareDal;
         private readonly PlayerDal PlayerDal;
@@ -23,8 +25,9 @@ namespace Data.Core
 
         public GameCore(DefaultContext ctx, int gameId, List<Player> listPlayers)
         {
+            Ctx = ctx;
             GameDal = new GameDal(ctx);
-            ChrominoGameDal = new GameChrominoDal(ctx);
+            GameChrominoDal = new GameChrominoDal(ctx);
             ChrominoDal = new ChrominoDal(ctx);
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
@@ -47,7 +50,7 @@ namespace Data.Core
         public void BeginGame()
         {
             GameDal.SetStatus(GameId, GameStatus.InProgress);
-            GameChromino firstChromino = ChrominoGameDal.RandomFirstChromino(GameId);
+            GameChromino firstChromino = GameChrominoDal.RandomFirstChromino(GameId);
             SquareDal.PutChromino(firstChromino, new Coordinate(0, 0).GetPreviousCoordinate((Orientation)firstChromino.Orientation), true);
             FillHandPlayers();
             ChangePlayerTurn();
@@ -90,13 +93,14 @@ namespace Data.Core
 
                 gamePlayer.PlayerTurn = false;
             }
+            Ctx.SaveChanges();
         }
 
         /// <summary>
         /// placement d'un autre chrominos de la main du bot dans le jeu
         /// </summary>
         /// <param name="gameId"></param>
-        public bool ContinueRandomGame()
+        public bool PlayBot()
         {
             HashSet<Coordinate> coordinates = FreeAroundChrominos();
 
@@ -137,9 +141,9 @@ namespace Data.Core
                 }
             }
 
-            // cherche un chromino dans la main du joueur correspondant à un possiblesPosition
+            // cherche un chromino dans la main du bot correspondant à un possiblesPosition
             possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList();
-            List<GameChromino> hand = ChrominoGameDal.PlayerListByPriority(GameId, Players[0].Id);
+            List<GameChromino> hand = GameChrominoDal.ChrominosByPriority(GameId, BotId);
             GameChromino goodChrominoGame = null;
             Coordinate firstCoordinate = null;
 
@@ -176,7 +180,7 @@ namespace Data.Core
 
             if (goodChrominoGame == null)
             {
-                GameChromino gameChromino = ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
+                GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
                 if (gameChromino == null)
                     GameDal.SetStatus(GameId, GameStatus.Finished);
                 return false;
@@ -189,7 +193,7 @@ namespace Data.Core
 #if DEBUG
                     System.Diagnostics.Debugger.Break();
 #endif
-                    ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
+                    GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
                 }
                 return true;
             }
@@ -311,7 +315,7 @@ namespace Data.Core
         {
             for (int i = 0; i < MaxChrominoInHand; i++)
             {
-                ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, gamePlayer.PlayerId);
+                GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, gamePlayer.PlayerId);
             }
         }
     }

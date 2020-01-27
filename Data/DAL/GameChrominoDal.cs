@@ -107,7 +107,7 @@ namespace Data.DAL
             return chrominos;
         }
 
-        public List<GameChromino> PlayerListByPriority(int gameId, int playerId)
+        public List<GameChromino> ChrominosByPriority(int gameId, int playerId)
         {
             List<GameChromino> chrominos = (from gc in Ctx.GamesChrominos
                                             join c in Ctx.Chrominos on gc.ChrominoId equals c.Id

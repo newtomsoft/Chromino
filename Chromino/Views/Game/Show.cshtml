@@ -382,7 +382,7 @@
             window.onload = function () { continueRandomGame(); }
 
             function continueRandomGame() {
-                location.assign("@Url.Action("ContinueRandomGame", "Game", new { id = Model.GameId })");
+                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.GameId })");
             }
         </script>
     }

@@ -11,6 +11,7 @@ namespace Controllers
 {
     public class CommonController : Controller
     {
+        protected const int BotId = 1; // dry avec GameCore
         protected const string SessionKeyPlayerId = "PlayerId";
         protected const string SessionKeyPlayerPseudo = "PlayerPseudo";
         protected readonly DefaultContext Ctx;
