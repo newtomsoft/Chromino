@@ -282,12 +282,8 @@
 
 
     <div id="handPlayer">
-        @{
-            //int iHandPlayerChromino = 0;
-        }
         @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
         {
-            //string id = "chromino" + iHandPlayerChromino;
             string id = chrominosViewModel.ChrominoId.ToString();
             <div id="@id" class="handPlayerChromino">
                 @for (int i = 0; i < 3; i++)
@@ -345,8 +341,14 @@
                     }
                 }
             </div>
-            //iHandPlayerChromino++;
         }
+
+        <form id="FormPickChromino" asp-action="PickChromino">
+            <input name="playerId" value="2" type="hidden"/> @* TODO !!! *@
+            <input name="gameId" value="@Model.GameId" type="hidden"/>
+            <input type="submit" value="Pick"/>
+        </form>
+
     </div>
 
 
@@ -354,14 +356,13 @@
         <input id="FormPlayerId" name="playerId" value="2" /> @* TODO !!! *@
         <input id="FormGameId" name="gameId" value="@Model.GameId" />
         <input id="FormChrominoId" name="chrominoId" />
-        <input id="FormXMin" name="xMin" value="@Model.XMin"/>
-        <input id="FormYmin" name="yMin" value="@Model.YMin"/>
+        <input id="FormXMin" name="xMin" value="@Model.XMin" />
+        <input id="FormYmin" name="yMin" value="@Model.YMin" />
         <input id="FormX" name="x" />
         <input id="FormY" name="y" />
         <input id="FormOrientation" name="orientation" />
-        <input id="FormSubmit" type="submit" value="Play" />
+        <input id="FormSubmit" type="submit" />
     </form>
-
 
 
 

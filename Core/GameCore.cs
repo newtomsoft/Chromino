@@ -176,8 +176,8 @@ namespace Data.Core
 
             if (goodChrominoGame == null)
             {
-                GameChromino chrominoGame = ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
-                if (chrominoGame == null)
+                GameChromino gameChromino = ChrominoGameDal.ChrominoFromStackToHandPlayer(GameId, GamePlayers[0].PlayerId);
+                if (gameChromino == null)
                     GameDal.SetStatus(GameId, GameStatus.Finished);
                 return false;
             }
@@ -204,7 +204,7 @@ namespace Data.Core
                     coordinate = new Coordinate((int)gameChromino.XPosition + 2, (int)gameChromino.YPosition);
                     break;
                 case Orientation.Vertical:
-                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition - 2);
+                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition + 2);
                     break;
                 case Orientation.Horizontal:
                 case Orientation.VerticalFlip:

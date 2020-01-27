@@ -73,7 +73,6 @@ namespace Data.ViewModel
                 chrominoViewModel.SquaresViewModel[1] = square2;
                 chrominoViewModel.SquaresViewModel[2] = square3;
                 chrominoViewModel.ChrominoId = chromino.Id;
-                //dernier modif à répercuter
                 IdentifiedPlayerChrominosViewModel.Add(chrominoViewModel);
                 //TODO faire edge
             }

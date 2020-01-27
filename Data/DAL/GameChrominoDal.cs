@@ -19,18 +19,18 @@ namespace Data.DAL
 
         public GameChromino Details(int gameId, int chrominoId)
         {
-            GameChromino gameChromino = (from cg in Ctx.Chrominos_Games
-                                         where cg.GameId == gameId && cg.ChrominoId == chrominoId
-                                         select cg).FirstOrDefault();
+            GameChromino gameChromino = (from gc in Ctx.GamesChrominos
+                                         where gc.GameId == gameId && gc.ChrominoId == chrominoId
+                                         select gc).FirstOrDefault();
 
             return gameChromino;
         }
 
         public int StatusNumber(int gameId, ChrominoStatus status)
         {
-            int nbChrominos = (from cg in Ctx.Chrominos_Games
-                               where cg.GameId == gameId && cg.State == status
-                               select cg).Count();
+            int nbChrominos = (from gc in Ctx.GamesChrominos
+                               where gc.GameId == gameId && gc.State == status
+                               select gc).Count();
 
             return nbChrominos;
         }
@@ -50,33 +50,33 @@ namespace Data.DAL
                 };
                 chrominosGames.Add(chrominoGame);
             }
-            Ctx.Chrominos_Games.AddRange(chrominosGames);
+            Ctx.GamesChrominos.AddRange(chrominosGames);
             Ctx.SaveChanges();
         }
 
         public GameChromino ChrominoFromStackToHandPlayer(int gameId, int playerId)
         {
-            GameChromino chrominoGame = (from cg in Ctx.Chrominos_Games
-                                         where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
+            GameChromino gameChromino = (from gc in Ctx.GamesChrominos
+                                         where gc.GameId == gameId && gc.State == ChrominoStatus.InStack
                                          orderby Guid.NewGuid()
-                                         select cg).FirstOrDefault();
+                                         select gc).FirstOrDefault();
 
-            if (chrominoGame != null)
+            if (gameChromino != null)
             {
-                chrominoGame.PlayerId = playerId;
-                chrominoGame.State = ChrominoStatus.InPlayer;
+                gameChromino.PlayerId = playerId;
+                gameChromino.State = ChrominoStatus.InPlayer;
                 Ctx.SaveChanges();
             }
-            return chrominoGame;
+            return gameChromino;
         }
 
         public GameChromino RandomFirstChromino(int gameId)
         {
-            GameChromino chromino = (from cg in Ctx.Chrominos_Games
-                                     join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
-                                     where cg.GameId == gameId && c.SecondColor == Color.Cameleon
+            GameChromino chromino = (from gc in Ctx.GamesChrominos
+                                     join c in Ctx.Chrominos on gc.ChrominoId equals c.Id
+                                     where gc.GameId == gameId && c.SecondColor == Color.Cameleon
                                      orderby Guid.NewGuid()
-                                     select cg).FirstOrDefault();
+                                     select gc).FirstOrDefault();
 
             chromino.Orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
 
@@ -86,10 +86,10 @@ namespace Data.DAL
 
         public GameChromino RandomChrominoForGame(int gameId)
         {
-            GameChromino chromino = (from cg in Ctx.Chrominos_Games
-                                     where cg.GameId == gameId && cg.State == ChrominoStatus.InStack
+            GameChromino chromino = (from gc in Ctx.GamesChrominos
+                                     where gc.GameId == gameId && gc.State == ChrominoStatus.InStack
                                      orderby Guid.NewGuid()
-                                     select cg).FirstOrDefault();
+                                     select gc).FirstOrDefault();
 
             chromino.State = ChrominoStatus.InGame;
             chromino.Orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
@@ -99,21 +99,21 @@ namespace Data.DAL
 
         public List<GameChromino> PlayerList(int gameId, int playerId)
         {
-            List<GameChromino> chrominos = (from cg in Ctx.Chrominos_Games
-                                            where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
+            List<GameChromino> chrominos = (from gc in Ctx.GamesChrominos
+                                            where gc.GameId == gameId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
                                             orderby Guid.NewGuid()
-                                            select cg).ToList();
+                                            select gc).ToList();
 
             return chrominos;
         }
 
         public List<GameChromino> PlayerListByPriority(int gameId, int playerId)
         {
-            List<GameChromino> chrominos = (from cg in Ctx.Chrominos_Games
-                                            join c in Ctx.Chrominos on cg.ChrominoId equals c.Id
-                                            where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
+            List<GameChromino> chrominos = (from gc in Ctx.GamesChrominos
+                                            join c in Ctx.Chrominos on gc.ChrominoId equals c.Id
+                                            where gc.GameId == gameId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
                                             orderby c.Points, c.SecondColor
-                                            select cg).ToList();
+                                            select gc).ToList();
 
             return chrominos;
         }
@@ -121,9 +121,9 @@ namespace Data.DAL
 
         public int PlayerNumberChrominos(int gameId, int playerId)
         {
-            int chrominos = (from cg in Ctx.Chrominos_Games
-                             where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
-                             select cg).Count();
+            int chrominos = (from gc in Ctx.GamesChrominos
+                             where gc.GameId == gameId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
+                             select gc).Count();
 
 
             return chrominos;

@@ -82,8 +82,8 @@ namespace Data.DAL
         public List<Chromino> PlayerChrominos(int gameId, int playerId)
         {
             var chrominos = (from c in Ctx.Chrominos
-                             join cg in Ctx.Chrominos_Games on c.Id equals cg.ChrominoId
-                             where cg.GameId == gameId && cg.PlayerId == playerId && cg.State == ChrominoStatus.InPlayer
+                             join gc in Ctx.GamesChrominos on c.Id equals gc.ChrominoId
+                             where gc.GameId == gameId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
                              select c).ToList();
 
             return chrominos;

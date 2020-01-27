@@ -22,7 +22,7 @@ namespace ChrominoGame.Controllers
         // GET: GamePlayer
         public async Task<IActionResult> Index()
         {
-            var defaultContext = _context.Games_Players.Include(g => g.Game).Include(g => g.Player);
+            var defaultContext = _context.GamesPlayers.Include(g => g.Game).Include(g => g.Player);
             return View(await defaultContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace ChrominoGame.Controllers
                 return NotFound();
             }
 
-            var game_Player = await _context.Games_Players
+            var game_Player = await _context.GamesPlayers
                 .Include(g => g.Game)
                 .Include(g => g.Player)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -80,7 +80,7 @@ namespace ChrominoGame.Controllers
                 return NotFound();
             }
 
-            var game_Player = await _context.Games_Players.FindAsync(id);
+            var game_Player = await _context.GamesPlayers.FindAsync(id);
             if (game_Player == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace ChrominoGame.Controllers
                 return NotFound();
             }
 
-            var game_Player = await _context.Games_Players
+            var game_Player = await _context.GamesPlayers
                 .Include(g => g.Game)
                 .Include(g => g.Player)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +152,15 @@ namespace ChrominoGame.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var game_Player = await _context.Games_Players.FindAsync(id);
-            _context.Games_Players.Remove(game_Player);
+            var game_Player = await _context.GamesPlayers.FindAsync(id);
+            _context.GamesPlayers.Remove(game_Player);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool Game_PlayerExists(int id)
         {
-            return _context.Games_Players.Any(e => e.Id == id);
+            return _context.GamesPlayers.Any(e => e.Id == id);
         }
     }
 }

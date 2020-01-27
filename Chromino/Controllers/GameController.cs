@@ -142,6 +142,17 @@ namespace ChrominoGame.Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
+
+        [HttpPost]
+        public IActionResult PickChromino(int playerId, int gameId)
+        {
+            GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
+            if (gameChromino == null)
+                GameDal.SetStatus(gameId, GameStatus.Finished);
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
+
         public IActionResult Show(int id)
         {
             int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);

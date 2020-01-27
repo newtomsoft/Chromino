@@ -126,7 +126,7 @@ function PutChromino(chromino) {
     switch (transform) {
         case "none":
         case "matrix(1, 0, 0, 1, 0, 0)": // 0°
-            $("#FormOrientation").val(1); // todo : valeurs scalaire à changer en // enum c#
+            $("#FormOrientation").val(1); // todo : valeurs scalaire à changer en conformité avec l'enum c#
             break;
         case "matrix(0, 1, -1, 0, 0, 0)": // 90°
             $("#FormOrientation").val(4);
@@ -140,8 +140,7 @@ function PutChromino(chromino) {
         default:
             break;
     }
-    $("#FormChrominoId").val(id); // TODO mettre valeur 
-
+    $("#FormChrominoId").val(id);
     $("#FormSendMove").submit();
 }
 

@@ -15,7 +15,7 @@ namespace Data.DAL
 
         public GamePlayer GetBot(int gameId, int playerId)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.Games_Players
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
@@ -31,7 +31,7 @@ namespace Data.DAL
 
         public GamePlayer GamePlayer(int gameId, int playerId)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.Games_Players
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
@@ -50,13 +50,13 @@ namespace Data.DAL
                 };
                 gamePlayers.Add(gamePlayer);
             }
-            Ctx.Games_Players.AddRange(gamePlayers);
+            Ctx.GamesPlayers.AddRange(gamePlayers);
             Ctx.SaveChanges();
         }
 
         public List<Player> Players(int gameId)
         {
-            List<Player> players = (from gp in Ctx.Games_Players
+            List<Player> players = (from gp in Ctx.GamesPlayers
                                     join p in Ctx.Players on gp.PlayerId equals p.Id
                                     where gp.GameId == gameId
                                     select p).ToList();
@@ -65,7 +65,7 @@ namespace Data.DAL
         }
         public List<int> PlayersId(int gameId)
         {
-            List<int> playersId = (from gp in Ctx.Games_Players
+            List<int> playersId = (from gp in Ctx.GamesPlayers
                                    join p in Ctx.Players on gp.PlayerId equals p.Id
                                    where gp.GameId == gameId
                                    select p.Id).ToList();
@@ -75,7 +75,7 @@ namespace Data.DAL
 
         public void AddPoint(int playerId, int point)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.Games_Players
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
