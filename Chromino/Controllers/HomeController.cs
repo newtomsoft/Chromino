@@ -7,35 +7,60 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ChrominoGame.Models;
 using Data;
+using Tool;
 using Data.Core;
 using Data.DAL;
+using Data.Models;
+using System.Diagnostics.Contracts;
+using Microsoft.AspNetCore.Http;
 
-namespace ChrominoGame.Controllers
+namespace Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : CommonController
     {
-        private readonly ChrominoDal ChrominoDal;
-
-        public HomeController(DefaultContext ctx)
+        public HomeController(DefaultContext ctx) : base(ctx)
         {
-            ChrominoDal = new ChrominoDal(ctx);
-
         }
 
         public IActionResult Index()
         {
             //Jeu jeu = new Jeu(ctx);
 
-
-
-
-
-
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login([Bind("Pseudo,Password")] Player player)
+        {
+            Contract.Requires(player != null);
+            if (ModelState.IsValid)
+            {
+                player.Password = player.Password.GetHash();
+                Player found;
+                if ((found = PlayerDal.GetPlayer(player)) != null)
+                {
+                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
+                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+                }
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult Privacy()
         {
+            GetPlayerInfosFromSession();
+
             return View();
         }
 

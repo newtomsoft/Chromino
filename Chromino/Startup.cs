@@ -40,10 +40,12 @@ namespace ChrominoGame
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
-
-
-
-
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +63,7 @@ namespace ChrominoGame
             app.UseRouting();
             app.UseAuthorization();
             app.UseHttpsRedirection();
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

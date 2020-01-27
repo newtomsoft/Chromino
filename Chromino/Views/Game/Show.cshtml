@@ -58,10 +58,28 @@
                         <input type="checkbox" name="autoPlay" id="autoPlay" value="true" unchecked>
                         <label for="autoPlay">Autoplay</label>
                     </div>
-                    <input type="submit" value="Play" class="btn btn-primary" />
+                    <input type="submit" value="play bot" class="btn btn-primary" />
                 </form>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form id="FormSendMove" asp-action="Play" hidden>
+                    <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                    <input id="FormGameId" name="gameId" value="@Model.GameId" type="hidden" />
+                    <input id="FormChrominoId" name="chrominoId" type="hidden" />
+                    <input id="FormXMin" name="xMin" value="@Model.XMin" type="hidden" />
+                    <input id="FormYmin" name="yMin" value="@Model.YMin" type="hidden" />
+                    <input id="FormX" name="x" type="hidden" />
+                    <input id="FormY" name="y" type="hidden" />
+                    <input id="FormOrientation" name="orientation" type="hidden" />
+                    <input id="FormSubmit" type="submit" value="Play" class="btn btn-primary" onclick="PutChromino();" />
+                </form>
+            </div>
+        </div>
+        <button  class="btn btn-primary" onclick="PutChromino();">Play</button>
+
         <div id="chrominoPosition">chromino position : </div>
         <div id="chrominoOnAreaGame">chromino position : </div>
     </div>
@@ -126,7 +144,6 @@
                                 <div class="squareOpenLeftRight" @styleColor></div>
                                 break;
                             default:
-                                int a = 55;
                                 break;
                         }
                     }
@@ -271,7 +288,6 @@
                                 <div class="squareFreeCloseRightLeft"></div>
                                 break;
                             default:
-                                int a = 55;
                                 break;
                         }
                     }
@@ -343,26 +359,18 @@
             </div>
         }
 
+        <p>@ViewBag.PlayerPseudo</p>
+
         <form id="FormPickChromino" asp-action="PickChromino">
-            <input name="playerId" value="2" type="hidden"/> @* TODO !!! *@
-            <input name="gameId" value="@Model.GameId" type="hidden"/>
-            <input type="submit" value="Pick"/>
+            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+            <input name="gameId" value="@Model.GameId" type="hidden" />
+            <input type="submit" value="Pick" />
         </form>
 
     </div>
 
 
-    <form id="FormSendMove" asp-action="Play" hidden>
-        <input id="FormPlayerId" name="playerId" value="2" /> @* TODO !!! *@
-        <input id="FormGameId" name="gameId" value="@Model.GameId" />
-        <input id="FormChrominoId" name="chrominoId" />
-        <input id="FormXMin" name="xMin" value="@Model.XMin" />
-        <input id="FormYmin" name="yMin" value="@Model.YMin" />
-        <input id="FormX" name="x" />
-        <input id="FormY" name="y" />
-        <input id="FormOrientation" name="orientation" />
-        <input id="FormSubmit" type="submit" />
-    </form>
+
 
 
 

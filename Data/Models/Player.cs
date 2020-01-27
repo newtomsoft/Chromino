@@ -17,13 +17,9 @@ namespace Data.Models
         
         [Required]
         [StringLength(64)]
-        [MinLength(8)]
+        [MinLength(8, ErrorMessage = "your password must contain at least 8 characters")]
         public string Password { get; set; }
-        
-        [Required]
         public int PlayedGames { get; set; }
-        
-        [Required]
         public int WonGames { get; set; }
 
     }

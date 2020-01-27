@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.DAL
 {
@@ -71,6 +72,15 @@ namespace Data.DAL
             Ctx.Add(player);
             Ctx.SaveChanges();
             return player;
+        }
+
+        public Player GetPlayer(Player player)
+        {
+            var result = (from p in Ctx.Players
+                          where p.Pseudo == player.Pseudo && p.Password == player.Password
+                          select p).AsNoTracking().FirstOrDefault();
+
+            return result;
         }
     }
 }

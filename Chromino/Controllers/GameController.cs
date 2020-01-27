@@ -13,34 +13,19 @@ using Data.Enumeration;
 using Data.ViewModel;
 using System.Globalization;
 
-namespace ChrominoGame.Controllers
+namespace Controllers
 {
-    public class GameController : Controller
+    public class GameController : CommonController
     {
-        private readonly DefaultContext Ctx;
-        private readonly GameDal GameDal;
-        private readonly GameChrominoDal GameChrominoDal;
-        private readonly ChrominoDal ChrominoDal;
-        private readonly PlayerDal PlayerDal;
-        private readonly GamePlayerDal GamePlayerDal;
-        private readonly SquareDal SquareDal;
-
-
-
-        public GameController(DefaultContext context)
+        public GameController(DefaultContext context) : base(context)
         {
-            Ctx = context;
-            GameDal = new GameDal(Ctx);
-            GameChrominoDal = new GameChrominoDal(Ctx);
-            ChrominoDal = new ChrominoDal(Ctx);
-            PlayerDal = new PlayerDal(Ctx);
-            GamePlayerDal = new GamePlayerDal(Ctx);
-            SquareDal = new SquareDal(Ctx);
         }
 
         [HttpGet]
         public IActionResult StartNew()
         {
+            GetPlayerInfosFromSession();
+
             return View(null);
         }
 
@@ -48,6 +33,8 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult StartNew(string[] pseudos)
         {
+            GetPlayerInfosFromSession();
+
             if (pseudos == null || pseudos.Length == 0)
             {
                 return View();
@@ -98,6 +85,8 @@ namespace ChrominoGame.Controllers
 
         public IActionResult ContinueGame(int id)
         {
+            GetPlayerInfosFromSession();
+
             List<Player> players = GamePlayerDal.Players(id);
             if (players.Count == 1 && players[0].Pseudo == "bot")
             {
@@ -112,6 +101,8 @@ namespace ChrominoGame.Controllers
 
         public IActionResult ContinueRandomGame(int id)
         {
+            GetPlayerInfosFromSession();
+
             Player bot = PlayerDal.Bot();
             List<Player> players = new List<Player>(1) { bot };
             GameCore gamecore = new GameCore(Ctx, id, players);
@@ -122,6 +113,8 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, int xMin, int yMin, Orientation orientation)
         {
+            GetPlayerInfosFromSession();
+
             Player player = PlayerDal.Detail(playerId);
             List<Player> players = GamePlayerDal.Players(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
@@ -146,55 +139,73 @@ namespace ChrominoGame.Controllers
         [HttpPost]
         public IActionResult PickChromino(int playerId, int gameId)
         {
-            GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
-            if (gameChromino == null)
-                GameDal.SetStatus(gameId, GameStatus.Finished);
+            GetPlayerInfosFromSession();
+            if (playerId == PlayerId)
+            {
+                GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
+                if (gameChromino == null)
+                    GameDal.SetStatus(gameId, GameStatus.Finished);
+            }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
 
         public IActionResult Show(int id)
         {
-            int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
-            int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
+            GetPlayerInfosFromSession();
 
             List<Player> players = GamePlayerDal.Players(id);
-            List<int> numberChrominosInHand = new List<int>(players.Count);
-            for (int i = 0; i < players.Count; i++)
+            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null)
             {
-                numberChrominosInHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
-            }
+                int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
+                int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
 
-            List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-            if (players.Count == 1 && players[0].Pseudo == "Bot")
-            {
-                identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
-            }
-            else if (players.Count == 1) // le joueur identifié est nécessairement le joueur courant
-            {
-                identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+                List<int> numberChrominosInHand = new List<int>(players.Count);
+                for (int i = 0; i < players.Count; i++)
+                {
+                    numberChrominosInHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
+                }
+
+                List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
+                if (players.Count == 1 && players[0].Pseudo == "Bot")
+                {
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+                }
+                else if (players.Count == 1) // le joueur identifié est nécessairement le joueur courant
+                {
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                Game game = GameDal.Details(id);
+                GameStatus gameStatus = game.Status;
+                bool autoPlay = game.AutoPlay;
+
+                List<Square> squares = SquareDal.List(id);
+                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand, identifiedPlayerChrominos);
+                return View(gameViewModel);
             }
             else
             {
-                throw new NotImplementedException();
+                return RedirectToAction("NotFound");
             }
-
-            Game game = GameDal.Details(id);
-            GameStatus gameStatus = game.Status;
-            bool autoPlay = game.AutoPlay;
-
-            List<Square> squares = SquareDal.List(id);
-            GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand, identifiedPlayerChrominos);
-
-            //ViewData["ChrominosId"] = new SelectList(identifiedPlayerChrominos, "Id", "Id");
-            return View(gameViewModel);
         }
 
         [HttpPost]
         public IActionResult AutoPlay(int gameId, bool autoPlay)
         {
+            GetPlayerInfosFromSession();
+
             GameDal.SetAutoPlay(gameId, autoPlay);
             return RedirectToAction("ContinueRandomGame", "Game", new { id = gameId });
+        }
+
+        public IActionResult NotFound()
+        {
+            return View();
         }
     }
 }

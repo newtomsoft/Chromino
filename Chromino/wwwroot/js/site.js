@@ -5,10 +5,6 @@
         StartDraggable();
     });
 
-    $(".handPlayerChromino").dblclick(function () {
-        PutChromino(this);
-    });
-
     // Action StartNew events
     $('#addPlayer').click(function () {
         AddPlayer();
@@ -18,7 +14,6 @@
     });
 
     ResizeGameArea();
-
     StartDraggable();
 });
 
@@ -33,7 +28,7 @@ jQuery.fn.rotate = function (degrees) {
 
 let TimeoutRotate = null;
 let ToRotate = true;
-let IsPut;
+let LastChrominoMove;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -54,16 +49,12 @@ function StartDraggable() {
             $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
         })
         .bind("dragend", function (event, pos) {
+            LastChrominoMove = this;
             if (ToRotate) {
                 ToRotate = false;
                 clearTimeout(TimeoutRotate);
                 var chromino = this;
-                clearTimeout(TimeoutPut);
-                IsPut = false;
-                var TimeoutPut = setTimeout(function () {
-                    Rotation(chromino);
-                }, 300);
-
+                Rotation(chromino)
             }
             else {
                 var id = this.id;
@@ -78,25 +69,23 @@ function StartDraggable() {
 }
 
 function Rotation(chromino) {
-    if (!IsPut) {
-        var transform = $(chromino).css("transform");
-        switch (transform) {
-            case "none":
-            case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-                $(chromino).rotate(90);
-                break;
-            case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-                $(chromino).rotate(180);
-                break;
-            case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
-                $(chromino).rotate(270);
-                break;
-            case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-                $(chromino).rotate(0);
-                break;
-            default:
-                break;
-        }
+    var transform = $(chromino).css("transform");
+    switch (transform) {
+        case "none":
+        case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
+            $(chromino).rotate(90);
+            break;
+        case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
+            $(chromino).rotate(180);
+            break;
+        case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
+            $(chromino).rotate(270);
+            break;
+        case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
+            $(chromino).rotate(0);
+            break;
+        default:
+            break;
     }
 }
 
@@ -107,10 +96,9 @@ function StopDraggable() {
     $(".handPlayerChromino").draggableTouch("disable");
 }
 
-function PutChromino(chromino) {
-    IsPut = true;
-    var id = chromino.id;
-    var position = $(chromino).position();
+function PutChromino() {
+    var id = LastChrominoMove.id;
+    var position = $(LastChrominoMove).position();
     var x = position.left - GameAreaOffsetX;
     var y = position.top - GameAreaOffsetY;
     var xIndex = Math.round(x / SquareSize);
@@ -122,7 +110,7 @@ function PutChromino(chromino) {
 
     $("#FormX").val(xIndex);
     $("#FormY").val(yIndex);
-    var transform = $(chromino).css("transform");
+    var transform = $(LastChrominoMove).css("transform");
     switch (transform) {
         case "none":
         case "matrix(1, 0, 0, 1, 0, 0)": // 0°
@@ -143,7 +131,6 @@ function PutChromino(chromino) {
     $("#FormChrominoId").val(id);
     $("#FormSendMove").submit();
 }
-
 
 //***************************************//
 //********* fonctions StartNew  *********//
@@ -221,7 +208,7 @@ function ResizeGameArea() {
     $('#gameArea').height(gameAreaHeight);
     $('#gameArea').width(gameAreaWidth);
 
-    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2 - 10; //todo documentWidth pas le bon ; +10 offest inconnu
+    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2 - 10; //todo documentWidth pas le bon ; +10 offset inconnu
     GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2 - 10;
 
     $('.gameLineArea').outerHeight("auto");
