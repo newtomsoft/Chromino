@@ -93,23 +93,24 @@
                         switch (state)
                         {
                             case SquareViewModelState.Blue:
-                                styleColor = "style=background-color:dodgerblue";
+                                styleColor = "style=background-color:#3AC2EE";
                                 break;
                             case SquareViewModelState.Green:
-                                styleColor = "style=background-color:green";
+                                styleColor = "style=background-color:#4CAE44";
                                 break;
                             case SquareViewModelState.Purple:
-                                styleColor = "style=background-color:purple";
+                                styleColor = "style=background-color:#571B6D";
                                 break;
                             case SquareViewModelState.Red:
-                                styleColor = "style=background-color:red";
+                                styleColor = "style=background-color:#FA2C2E";
                                 break;
                             case SquareViewModelState.Yellow:
-                                styleColor = "style=background-color:yellow";
+                                styleColor = "style=background-color:#FFEB47";
                                 break;
                             case SquareViewModelState.Cameleon:
                             default:
-                                styleColor = "style=background-color:burlywood";
+                                //styleColor = "background-image:url=//image//cameleon.png";
+                                styleColor = "";
                                 break;
                         }
                         switch (openEdge)
@@ -302,19 +303,19 @@
                             openEdge = OpenEdge.All;
                             break;
                         case SquareViewModelState.Blue:
-                            styleColor = "style=background-color:dodgerblue";
+                            styleColor = "style=background-color:#3AC2EE";
                             break;
                         case SquareViewModelState.Green:
-                            styleColor = "style=background-color:green";
+                            styleColor = "style=background-color:#4CAE44";
                             break;
                         case SquareViewModelState.Purple:
-                            styleColor = "style=background-color:purple";
+                            styleColor = "style=background-color:#571B6D";
                             break;
                         case SquareViewModelState.Red:
-                            styleColor = "style=background-color:red";
+                            styleColor = "style=background-color:#FA2C2E";
                             break;
                         case SquareViewModelState.Yellow:
-                            styleColor = "style=background-color:yellow";
+                            styleColor = "style=background-color:#FFEB47";
                             break;
                         case SquareViewModelState.Cameleon:
                         default:
@@ -352,8 +353,18 @@
         <form id="FormPickChromino" asp-action="PickChromino">
             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
             <input name="gameId" value="@Model.GameId" type="hidden" />
-            <input type="submit" value="Pick" />
+            <input type="submit" class="btn btn-primary" value="Pick" />
         </form>
+
+        @if (Model.PlayersNumber > 1)
+        {
+            <form id="FormPassTurn" asp-action="PickChromino">
+                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                <input name="gameId" value="@Model.GameId" type="hidden" />
+                <input type="submit" class="btn btn-primary" value="Pass turn" />
+            </form>
+        }
+
     </div>
 
     <form id="FormSendMove" asp-action="Play" hidden>

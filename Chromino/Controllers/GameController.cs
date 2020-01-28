@@ -156,12 +156,25 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
+        [HttpPost]
+        public IActionResult PassTurn(int playerId, int gameId)
+        {
+            GetPlayerInfosFromSession();
+            if (playerId == PlayerId)
+            {
+                //TODO
+            }
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
         // todo : [HttpPost]
         public IActionResult Show(int id)
         {
             GetPlayerInfosFromSession();
 
             List<Player> players = GamePlayerDal.Players(id);
+            int playersNumber = players.Count;
+
             if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || players.Count == 1 && players[0].Id == BotId) // identified player in the game or only bot play
             {
                 int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
@@ -190,7 +203,8 @@ namespace Controllers
                 Player playerTurn = GamePlayerDal.PlayerTurn(id);
 
                 List<Square> squares = SquareDal.List(id);
-                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInEachHand, identifiedPlayerChrominos, playerTurn);
+
+                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInEachHand, identifiedPlayerChrominos, playerTurn, playersNumber);
                 return View(gameViewModel);
             }
             else
