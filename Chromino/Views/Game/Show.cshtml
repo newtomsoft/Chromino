@@ -189,19 +189,23 @@
     </div>
 
     <div id="handPlayer">
-        @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
-        {
-            string id = chrominosViewModel.ChrominoId.ToString();
-            <div id="@id" class="handPlayerChromino">
-                @for (int i = 0; i < 3; i++)
-                {
-                    OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
-                    SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
-                    string classColor = state.ToString();
-                    string classOpenEdge = "Open" + openEdge.ToString();
-                    <div class="Square @classOpenEdge @classColor"></div>
-                }
-            </div>
+        @{
+            int offset = 150;
+            foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
+            {
+                string id = chrominosViewModel.ChrominoId.ToString();
+                <div id="@id" class="handPlayerChromino" style="top:@(offset)px ; right:5px">
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
+                        SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
+                        string classColor = state.ToString();
+                        string classOpenEdge = "Open" + openEdge.ToString();
+                        <div class="Square @classOpenEdge @classColor"></div>
+                    }
+                </div>
+                offset += 40;
+            }
         }
 
         <p>@ViewBag.PlayerPseudo</p>
