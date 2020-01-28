@@ -49,7 +49,7 @@
             <p>Player @(i + 1)  : @Model.PlayerNumberChrominos[i] in hand</p>
         }
 
-        @if (Model.PlayerIdTurn == 1) // todo : remplacer par  test plus générique (si plusieurs bot jouent)
+        @if (Model.PlayerIdTurn == 1) // todo : remplacer par test plus générique (si plusieurs bot jouent)
         {
             <div class="row">
                 <div class="col-md-4">
@@ -89,53 +89,9 @@
 
                     if (state != SquareViewModelState.Free)
                     {
-                        string styleColor;
-                        switch (state)
-                        {
-                            case SquareViewModelState.Blue:
-                                styleColor = "style=background-color:#3AC2EE";
-                                break;
-                            case SquareViewModelState.Green:
-                                styleColor = "style=background-color:#4CAE44";
-                                break;
-                            case SquareViewModelState.Purple:
-                                styleColor = "style=background-color:#571B6D";
-                                break;
-                            case SquareViewModelState.Red:
-                                styleColor = "style=background-color:#FA2C2E";
-                                break;
-                            case SquareViewModelState.Yellow:
-                                styleColor = "style=background-color:#FFEB47";
-                                break;
-                            case SquareViewModelState.Cameleon:
-                            default:
-                                //styleColor = "background-image:url=//image//cameleon.png";
-                                styleColor = "";
-                                break;
-                        }
-                        switch (openEdge)
-                        {
-                            case OpenEdge.Right:
-                                <div class="squareOpenRight" @styleColor></div>
-                                break;
-                            case OpenEdge.Bottom:
-                                <div class="squareOpenBottom" @styleColor></div>
-                                break;
-                            case OpenEdge.Left:
-                                <div class="squareOpenLeft" @styleColor></div>
-                                break;
-                            case OpenEdge.Top:
-                                <div class="squareOpenTop" @styleColor></div>
-                                break;
-                            case OpenEdge.BottomTop:
-                                <div class="squareOpenTopBotom" @styleColor></div>
-                                break;
-                            case OpenEdge.RightLeft:
-                                <div class="squareOpenLeftRight" @styleColor></div>
-                                break;
-                            default:
-                                break;
-                        }
+                        string classColor = state.ToString();
+                        string classOpenEdge = "Open" + openEdge.ToString();
+                        <div class="Square @classOpenEdge @classColor"></div>
                     }
                     else
                     {
@@ -149,7 +105,6 @@
                                 openEdge = OpenEdge.Right;
                             }
                         }
-
                         if (j < Model.LinesNumber - 1)
                         {
                             int bottomIndex = i + (j + 1) * Model.ColumnsNumber;
@@ -167,7 +122,6 @@
                                 }
                             }
                         }
-
                         if (i > 0)
                         {
                             int leftIndex = (i - 1) + j * Model.ColumnsNumber;
@@ -191,7 +145,6 @@
                                 }
                             }
                         }
-
                         if (j > 0)
                         {
                             int topIndex = i + (j - 1) * Model.ColumnsNumber;
@@ -227,59 +180,8 @@
                                 }
                             }
                         }
-                        switch (openEdge)
-                        {
-                            case OpenEdge.None:
-                                <div class="squareFreeCloseNone"></div>
-                                break;
-                            case OpenEdge.Top:
-                                <div class="squareFreeCloseTop"></div>
-                                break;
-                            case OpenEdge.RightTop:
-                                <div class="squareFreeCloseRightTop"></div>
-                                break;
-                            case OpenEdge.BottomTop:
-                                <div class="squareFreeCloseTopBotom"></div>
-                                break;
-                            case OpenEdge.RightBottomTop:
-                                <div class="squareFreeCloseRightBottomTop"></div>
-                                break;
-                            case OpenEdge.LeftTop:
-                                <div class="squareFreeCloseLeftTop"></div>
-                                break;
-                            case OpenEdge.RightLeftTop:
-                                <div class="squareFreeCloseRightLeftTop"></div>
-                                break;
-                            case OpenEdge.BottomLeftTop:
-                                <div class="squareFreeCloseBottomLeftTop"></div>
-                                break;
-                            case OpenEdge.All:
-                                <div class="squareFreeCloseAll"></div>
-                                break;
-                            case OpenEdge.Right:
-                                <div class="squareFreeCloseRight"></div>
-                                break;
-                            case OpenEdge.Bottom:
-                                <div class="squareFreeCloseBottom"></div>
-                                break;
-                            case OpenEdge.RightBottom:
-                                <div class="squareFreeCloseRightBottom"></div>
-                                break;
-                            case OpenEdge.Left:
-                                <div class="squareFreeCloseLeft"></div>
-                                break;
-                            case OpenEdge.BottomLeft:
-                                <div class="squareFreeCloseBottomLeft"></div>
-                                break;
-                            case OpenEdge.RightBottomLeft:
-                                <div class="squareFreeCloseRightBottomLeft"></div>
-                                break;
-                            case OpenEdge.RightLeft:
-                                <div class="squareFreeCloseRightLeft"></div>
-                                break;
-                            default:
-                                break;
-                        }
+                        string classCloseEdge = "Close" + openEdge.ToString();
+                        <div class="Square @classCloseEdge"></div>
                     }
                 }
             </div>
@@ -295,55 +197,9 @@
                 {
                     OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
                     SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
-                    string styleColor;
-                    switch (state)
-                    {
-                        case SquareViewModelState.Free:
-                            styleColor = "style=background-color:white";
-                            openEdge = OpenEdge.All;
-                            break;
-                        case SquareViewModelState.Blue:
-                            styleColor = "style=background-color:#3AC2EE";
-                            break;
-                        case SquareViewModelState.Green:
-                            styleColor = "style=background-color:#4CAE44";
-                            break;
-                        case SquareViewModelState.Purple:
-                            styleColor = "style=background-color:#571B6D";
-                            break;
-                        case SquareViewModelState.Red:
-                            styleColor = "style=background-color:#FA2C2E";
-                            break;
-                        case SquareViewModelState.Yellow:
-                            styleColor = "style=background-color:#FFEB47";
-                            break;
-                        case SquareViewModelState.Cameleon:
-                        default:
-                            styleColor = "style=background-color:burlywood";
-                            break;
-                    }
-                    switch (openEdge)
-                    {
-                        case OpenEdge.Right:
-                            <div class="squareOpenRight" @styleColor></div>
-                            break;
-                        case OpenEdge.Bottom:
-                            <div class="squareOpenBottom" @styleColor></div>
-                            break;
-                        case OpenEdge.Left:
-                            <div class="squareOpenLeft" @styleColor></div>
-                            break;
-                        case OpenEdge.Top:
-                            <div class="squareOpenTop" @styleColor></div>
-                            break;
-                        case OpenEdge.BottomTop:
-                            <div class="squareOpenTopBotom" @styleColor></div>
-                            break;
-                        case OpenEdge.RightLeft:
-                        default:
-                            <div class="squareOpenLeftRight" @styleColor></div>
-                            break;
-                    }
+                    string classColor = state.ToString();
+                    string classOpenEdge = "Open" + openEdge.ToString();
+                    <div class="Square @classOpenEdge @classColor"></div>
                 }
             </div>
         }

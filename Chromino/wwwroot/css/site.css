@@ -47,7 +47,36 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenRight {
+.Free {
+    background-color: white;
+}
+
+.Blue {
+    background-color: #3AC2EE;
+}
+
+.Green {
+    background-color: #4CAE44;
+}
+
+.Purple {
+    background-color: #571B6D;
+}
+
+.Red {
+    background-color: #FA2C2E;
+}
+
+.Yellow {
+    background-color: #FFEB47;
+}
+
+.Cameleon {
+    background-image: url('/image/cameleon.png');
+    background-size: contain;
+}
+
+.OpenRight {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -61,7 +90,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenBottom {
+.OpenBottom {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -75,7 +104,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenLeft {
+.OpenLeft {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -89,7 +118,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenTop {
+.OpenTop {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -103,7 +132,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenTopBotom {
+.OpenTopBotom {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -118,7 +147,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareOpenLeftRight {
+.OpenLeftRight {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -133,19 +162,19 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseNone {
+.CloseNone {
     border-color: black;
     flex-shrink: 0;
 }
 
-.squareFreeCloseTop {
+.CloseTop {
     border-color: black;
     border-top: 1px;
     border-top-style: solid;
     flex-shrink: 0;
 }
 
-.squareFreeCloseRightTop {
+.CloseRightTop {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -154,7 +183,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseTopBotom {
+.CloseTopBotom {
     border-color: black;
     border-top: 1px;
     border-top-style: solid;
@@ -163,7 +192,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseRightBottomTop {
+.CloseRightBottomTop {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -174,7 +203,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseLeftTop {
+.CloseLeftTop {
     border-color: black;
     border-left: 1px;
     border-left-style: solid;
@@ -183,7 +212,7 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseLeftRight {
+.CloseLeftRight {
     border-color: black;
     border-left: 1px;
     border-left-style: solid;
@@ -192,21 +221,8 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseBottomLeftTop {
+.CloseBottomLeftTop {
     border-color: black;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-left: 1px;
-    border-left-style: solid;
-    border-top: 1px;
-    border-top-style: solid;
-    flex-shrink: 0;
-}
-
-.squareFreeCloseAll {
-    border-color: black;
-    border-right: 1px;
-    border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -216,7 +232,20 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseRightLeftTop {
+.CloseAll {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    border-top: 1px;
+    border-top-style: solid;
+    flex-shrink: 0;
+}
+
+.CloseRightLeftTop {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -227,21 +256,21 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseRight {
+.CloseRight {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
     flex-shrink: 0;
 }
 
-.squareFreeCloseBottom {
+.CloseBottom {
     border-color: black;
     border-bottom: 1px;
     border-bottom-style: solid;
     flex-shrink: 0;
 }
 
-.squareFreeCloseRightBottom {
+.CloseRightBottom {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -250,26 +279,15 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseLeft {
+.CloseLeft {
     border-color: black;
     border-left: 1px;
     border-left-style: solid;
     flex-shrink: 0;
 }
 
-.squareFreeCloseBottomLeft {
+.CloseBottomLeft {
     border-color: black;
-    border-bottom: 1px;
-    border-bottom-style: solid;
-    border-left: 1px;
-    border-left-style: solid;
-    flex-shrink: 0;
-}
-
-.squareFreeCloseRightBottomLeft {
-    border-color: black;
-    border-right: 1px;
-    border-right-style: solid;
     border-bottom: 1px;
     border-bottom-style: solid;
     border-left: 1px;
@@ -277,7 +295,18 @@ a {
     flex-shrink: 0;
 }
 
-.squareFreeCloseRightLeft {
+.CloseRightBottomLeft {
+    border-color: black;
+    border-right: 1px;
+    border-right-style: solid;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-left: 1px;
+    border-left-style: solid;
+    flex-shrink: 0;
+}
+
+.CloseRightLeft {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -285,7 +314,6 @@ a {
     border-left-style: solid;
     flex-shrink: 0;
 }
-
 
 
 @media screen and (orientation: portrait) {
@@ -313,7 +341,12 @@ a {
         margin: 10px;
     }
 
-    .squareOpenBottomLeftTop, .squareOpenRightLeftTop, .squareOpenLeftTop, .squareOpenBottomLeft, .squareOpenRightTop, .squareOpenAll, .squareOpenRight, .squareOpenBottom, .squareOpenLeft, .squareOpenTop, .squareOpenTopBotom, .squareOpenLeftRight {
+    .BottomLeftTop, .RightLeftTop, .LeftTop, .BottomLeft, .RightTop, .All, .Right, .Bottom, .Left, .Top, .TopBotom, .LeftRight {
+        height: 30px;
+        border-color: black;
+    }
+
+    .Square {
         height: 30px;
         border-color: black;
     }

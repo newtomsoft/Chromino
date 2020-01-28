@@ -22,6 +22,7 @@ namespace Data.Enumeration
         RightBottomTop,
         RightBottomLeft,
         None,
+        Cameleon //todo utiliser meilleur facon de faire...
     }
 
 
