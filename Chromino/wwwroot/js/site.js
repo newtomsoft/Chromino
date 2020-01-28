@@ -22,10 +22,6 @@
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
 
-jQuery.fn.rotate = function (degrees) {
-    $(this).css({ 'transform': 'rotate(' + degrees + 'deg)' });
-};
-
 let TimeoutRotate = null;
 let ToRotate = true;
 let LastChrominoMove;
@@ -41,14 +37,10 @@ function ScheduleRotate() {
 function StartDraggable() {
     $(".handPlayerChromino")
         .draggableTouch()
-        .bind("dragstart", function (event, pos) {
+        .bind("dragstart", function () {
             ScheduleRotate();
-            var id = this.id;
-            var x = pos.left - GameAreaOffsetX;
-            var y = pos.top - GameAreaOffsetY;
-            $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
         })
-        .bind("dragend", function (event, pos) {
+        .bind("dragend", function () {
             LastChrominoMove = this;
             if (ToRotate) {
                 ToRotate = false;
@@ -57,13 +49,7 @@ function StartDraggable() {
                 Rotation(chromino)
             }
             else {
-                var id = this.id;
-                var x = pos.left - GameAreaOffsetX;
-                var y = pos.top - GameAreaOffsetY;
-                $("#chrominoPosition").html("position " + id + " left : " + x + "top : " + y);
-                clearTimeout(TimeoutRotate);
                 ToRotate = false;
-
             }
         });
 }
@@ -73,16 +59,16 @@ function Rotation(chromino) {
     switch (transform) {
         case "none":
         case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-            $(chromino).rotate(90);
+            $(chromino).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
             break;
         case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-            $(chromino).rotate(180);
+            $(chromino).css("transform", "matrix(-1, 0, 0, -1, 0, 0)");
             break;
         case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
-            $(chromino).rotate(270);
+            $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
             break;
         case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-            $(chromino).rotate(0);
+            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");   
             break;
         default:
             break;
@@ -103,10 +89,6 @@ function PutChromino() {
     var y = position.top - GameAreaOffsetY;
     var xIndex = Math.round(x / SquareSize);
     var yIndex = Math.round(y / SquareSize);
-
-    // pour debug
-    //$("#chrominoPosition").html(id + "put at position left : " + x + "top : " + y);
-    //$("#chrominoOnAreaGame").html(id + "put at position left : " + xIndex + "top : " + yIndex);
 
     $("#FormX").val(xIndex + XMin);
     $("#FormY").val(yIndex + YMin);
