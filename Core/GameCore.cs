@@ -51,7 +51,7 @@ namespace Data.Core
         {
             GameDal.SetStatus(GameId, GameStatus.InProgress);
             GameChromino firstChromino = GameChrominoDal.RandomFirstChromino(GameId);
-            SquareDal.PutChromino(firstChromino, new Coordinate(0, 0).GetPreviousCoordinate((Orientation)firstChromino.Orientation), true);
+            SquareDal.PutChromino(firstChromino,  true);
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -187,7 +187,9 @@ namespace Data.Core
             }
             else
             {
-                bool put = SquareDal.PutChromino(goodChrominoGame, firstCoordinate);
+                goodChrominoGame.XPosition = firstCoordinate.X;
+                goodChrominoGame.YPosition = firstCoordinate.Y;
+                bool put = SquareDal.PutChromino(goodChrominoGame);
                 if (!put)
                 {
 #if DEBUG
@@ -216,7 +218,9 @@ namespace Data.Core
                     coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition);
                     break;
             }
-            bool put = SquareDal.PutChromino(gameChromino, coordinate);
+            gameChromino.XPosition = coordinate.X;
+            gameChromino.YPosition = coordinate.Y;
+            bool put = SquareDal.PutChromino(gameChromino);
             if (put)
             {
                 gameChromino.State = ChrominoStatus.InGame;

@@ -17,13 +17,17 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public bool PutChromino(GameChromino gameChromino, Coordinate firstCoordinate, bool firstChromino = false)
+        public bool PutChromino(GameChromino gameChromino, bool firstChromino = false)
+        //public bool PutChromino(GameChromino gameChromino, Coordinate firstCoordinate, bool firstChromino = false)
         {
+            //gameChromino.XPosition = firstCoordinate.X;
+            //gameChromino.YPosition = firstCoordinate.Y;
+
             ChrominoDal chrominoDal = new ChrominoDal(Ctx);
             Chromino chromino = chrominoDal.Details(gameChromino.ChrominoId);
 
             ComputeOffset((Orientation)gameChromino.Orientation, out int offsetX, out int offsetY);
-
+            Coordinate firstCoordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition);
             Coordinate secondCoordinate = new Coordinate(firstCoordinate.X + offsetX, firstCoordinate.Y + offsetY);
             Coordinate thirdCoordinate = new Coordinate(firstCoordinate.X + 2 * offsetX, firstCoordinate.Y + 2 * offsetY);
 
@@ -92,8 +96,7 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
 
-                    gameChromino.XPosition = firstCoordinate.X;
-                    gameChromino.YPosition = firstCoordinate.Y;
+
                     gameChromino.State = ChrominoStatus.InGame;
 
                     Ctx.SaveChanges();

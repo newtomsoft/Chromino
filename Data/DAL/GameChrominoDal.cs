@@ -78,8 +78,11 @@ namespace Data.DAL
                                      orderby Guid.NewGuid()
                                      select gc).FirstOrDefault();
 
-            chromino.Orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
-
+            Orientation orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
+            chromino.Orientation = orientation;
+            Coordinate coordinate = new Coordinate(0, 0).GetPreviousCoordinate(orientation);
+            chromino.XPosition = coordinate.X;
+            chromino.YPosition = coordinate.Y;
             Ctx.SaveChanges();
             return chromino;
         }

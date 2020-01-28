@@ -50,7 +50,6 @@
         }
 
 
-
         <div class="row">
             <div class="col-md-4">
                 <form asp-action="AutoPlay">
@@ -70,19 +69,13 @@
                     <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                     <input id="FormGameId" name="gameId" value="@Model.GameId" type="hidden" />
                     <input id="FormChrominoId" name="chrominoId" type="hidden" />
-                    @*<input id="FormXMin" name="xMin" value="@Model.XMin" type="hidden" />
-                    <input id="FormYmin" name="yMin" value="@Model.YMin" type="hidden" />*@
                     <input id="FormX" name="x" type="hidden" />
                     <input id="FormY" name="y" type="hidden" />
                     <input id="FormOrientation" name="orientation" type="hidden" />
-                    <input id="FormSubmit" type="submit" value="Play" class="btn btn-primary" onclick="PutChromino();" />
                 </form>
             </div>
         </div>
         <button class="btn btn-primary" onclick="PutChromino();">Play</button>
-
-        <div id="chrominoPosition">chromino position : </div>
-        <div id="chrominoOnAreaGame">chromino position : </div>
     </div>
 
 
@@ -296,7 +289,6 @@
             </div>
         }
     </div>
-
 
     <div id="handPlayer">
         @foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
