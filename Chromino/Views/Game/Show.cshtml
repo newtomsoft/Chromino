@@ -194,7 +194,7 @@
             foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
             {
                 string id = chrominosViewModel.ChrominoId.ToString();
-                <div id="@id" class="handPlayerChromino" style="top:@(offset)px ; right:5px">
+                <div id="@id" class="handPlayerChromino" style="top:@(offset)px">
                     @for (int i = 0; i < 3; i++)
                     {
                         OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
