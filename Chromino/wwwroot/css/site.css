@@ -132,7 +132,7 @@ a {
     flex-shrink: 0;
 }
 
-.OpenTopBotom {
+.OpenBottomTop {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -147,7 +147,7 @@ a {
     flex-shrink: 0;
 }
 
-.OpenLeftRight {
+.OpenRightLeft {
     border-color: black;
     border-right: 1px;
     border-right-style: solid;
@@ -183,7 +183,7 @@ a {
     flex-shrink: 0;
 }
 
-.CloseTopBotom {
+.CloseBottomTop {
     border-color: black;
     border-top: 1px;
     border-top-style: solid;
@@ -212,7 +212,7 @@ a {
     flex-shrink: 0;
 }
 
-.CloseLeftRight {
+.CloseRightLeft {
     border-color: black;
     border-left: 1px;
     border-left-style: solid;
@@ -339,11 +339,6 @@ a {
         flex-direction: column;
         justify-content: center;
         margin: 10px;
-    }
-
-    .BottomLeftTop, .RightLeftTop, .LeftTop, .BottomLeft, .RightTop, .All, .Right, .Bottom, .Left, .Top, .TopBotom, .LeftRight {
-        height: 30px;
-        border-color: black;
     }
 
     .Square {
