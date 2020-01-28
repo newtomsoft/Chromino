@@ -35,11 +35,6 @@ namespace Data.Core
             GameId = gameId;
             Squares = SquareDal.List(GameId);
             Players = listPlayers;
-            InitGamePlayers();
-        }
-
-        private void InitGamePlayers()
-        {
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
             {
@@ -180,9 +175,12 @@ namespace Data.Core
 
             if (goodChrominoGame == null)
             {
+                
                 GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
+                //todo pioche systématique uniquement si bot seul à jouer
                 if (gameChromino == null)
                     GameDal.SetStatus(GameId, GameStatus.Finished);
+                    // todo finish uniquement si bot seul à jouer
                 return false;
             }
             else
@@ -190,14 +188,18 @@ namespace Data.Core
                 goodChrominoGame.XPosition = firstCoordinate.X;
                 goodChrominoGame.YPosition = firstCoordinate.Y;
                 bool put = SquareDal.PutChromino(goodChrominoGame);
-                if (!put)
+                if(put)
+                {
+                    return true;
+                }
+                else
                 {
 #if DEBUG
                     System.Diagnostics.Debugger.Break();
 #endif
                     GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
-                }
-                return true;
+                    return false;
+                }              
             }
         }
 

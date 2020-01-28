@@ -107,7 +107,11 @@ namespace Controllers
             //List<Player> players = new List<Player>(1) { bot };
             List<Player> players = GamePlayerDal.Players(id);
             GameCore gamecore = new GameCore(Ctx, id, players);
-            gamecore.PlayBot();
+            bool move = gamecore.PlayBot();
+            if(move)
+            {
+                gamecore.ChangePlayerTurn();
+            }
             return RedirectToAction("Show", "Game", new { id });
         }
 
