@@ -108,8 +108,8 @@ function PutChromino() {
     $("#chrominoPosition").html(id + "put at position left : " + x + "top : " + y);
     $("#chrominoOnAreaGame").html(id + "put at position left : " + xIndex + "top : " + yIndex);
 
-    $("#FormX").val(xIndex);
-    $("#FormY").val(yIndex);
+    $("#FormX").val(xIndex + XMin);
+    $("#FormY").val(yIndex + YMin);
     var transform = $(LastChrominoMove).css("transform");
     switch (transform) {
         case "none":

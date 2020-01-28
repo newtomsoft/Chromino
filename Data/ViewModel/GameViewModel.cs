@@ -26,9 +26,14 @@ namespace Data.ViewModel
         public List<int> PlayerNumberChrominos { get; set; }
         public GameStatus GameStatus { get; set; }
         public List<ChrominoViewModel> IdentifiedPlayerChrominosViewModel { get; set; }
+        public string PlayerPseudoTurn { get; set; }
+        public int PlayerIdTurn { get; set; }
 
-        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos, List<Chromino> identifiedPlayerChrominos)
+
+        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, List<int> playerNumberChrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn)
         {
+            PlayerPseudoTurn = playerTurn.Pseudo;
+            PlayerIdTurn = playerTurn.Id;
             AutoPlay = autoPlay;
             GameId = gameId;
             ChrominosInGame = chrominosInGame;
@@ -78,7 +83,6 @@ namespace Data.ViewModel
             }
         }
 
-
         public int IndexGridState(int x, int y)
         {
             if (x < XMin || x > XMax || y < YMin || y > YMax)
@@ -86,10 +90,5 @@ namespace Data.ViewModel
 
             return y * ColumnsNumber + x - (YMin * ColumnsNumber + XMin);
         }
-
-
-
     }
-
-
 }

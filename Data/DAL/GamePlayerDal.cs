@@ -128,5 +128,15 @@ namespace Data.DAL
 
             return games;
         }
+
+        public Player PlayerTurn(int gameId)
+        {
+            Player player = (from gp in Ctx.GamesPlayers
+                             join p in Ctx.Players on gp.PlayerId equals p.Id
+                             where gp.GameId == gameId && gp.PlayerTurn
+                             select p).FirstOrDefault();
+
+            return player;
+        }
     }
 }

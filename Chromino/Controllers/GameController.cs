@@ -112,7 +112,7 @@ namespace Controllers
         }
 
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, int xMin, int yMin, Orientation orientation)
+        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
         {
             GetPlayerInfosFromSession();
 
@@ -120,10 +120,9 @@ namespace Controllers
             List<Player> players = GamePlayerDal.Players(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId, players);
 
-            //Coordinate coordinate = new Coordinate(x, y);
             GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
-            gameChromino.XPosition = x + xMin;
-            gameChromino.YPosition = y + yMin;
+            gameChromino.XPosition = x;
+            gameChromino.YPosition = y;
             gameChromino.Orientation = orientation;
             gameChromino.PlayerId = playerId;
 
@@ -164,10 +163,10 @@ namespace Controllers
                 int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
                 int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
 
-                List<int> numberChrominosInHand = new List<int>(players.Count);
+                List<int> numberChrominosInEachHand = new List<int>(players.Count);
                 for (int i = 0; i < players.Count; i++)
                 {
-                    numberChrominosInHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
+                    numberChrominosInEachHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
                 }
 
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
@@ -184,8 +183,10 @@ namespace Controllers
                 GameStatus gameStatus = game.Status;
                 bool autoPlay = game.AutoPlay;
 
+                Player playerTurn = GamePlayerDal.PlayerTurn(id);
+
                 List<Square> squares = SquareDal.List(id);
-                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInHand, identifiedPlayerChrominos);
+                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInEachHand, identifiedPlayerChrominos, playerTurn);
                 return View(gameViewModel);
             }
             else
