@@ -43,7 +43,6 @@
         }
         <p>Game is @gameStatus - Stack : @Model.ChrominosInStack</p>
 
-
         @for (int i = 0; i < Model.PlayerNumberChrominos.Count; i++)
         {
             <p>Player @(i + 1)  : @Model.PlayerNumberChrominos[i] in hand</p>
@@ -204,7 +203,7 @@
                         <div class="Square @classOpenEdge @classColor"></div>
                     }
                 </div>
-                offset += 40;
+                offset += 35;
             }
         }
 
@@ -218,7 +217,7 @@
 
         @if (Model.PlayersNumber > 1)
         {
-            <form id="FormPassTurn" asp-action="PickChromino">
+            <form id="FormPassTurn" asp-action="PassTurn">
                 <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                 <input name="gameId" value="@Model.GameId" type="hidden" />
                 <input type="submit" class="btn btn-primary" value="Pass turn" />

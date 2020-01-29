@@ -23,7 +23,7 @@ namespace Data.Core
         public List<Player> Players { get; set; }
         public List<GamePlayer> GamePlayers { get; set; }
 
-        public GameCore(DefaultContext ctx, int gameId, List<Player> listPlayers)
+        public GameCore(DefaultContext ctx, int gameId, List<Player> listPlayers = null)
         {
             Ctx = ctx;
             GameDal = new GameDal(ctx);
@@ -32,21 +32,36 @@ namespace Data.Core
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
+
+            if (listPlayers == null)
+            {
+                Players = GamePlayerDal.Players(gameId);
+            }
+            else
+            {
+                Players = listPlayers;
+            }
+
+
+
             GameId = gameId;
             Squares = SquareDal.List(GameId);
-            Players = listPlayers;
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
             {
                 GamePlayers.Add(GamePlayerDal.GamePlayer(GameId, player.Id));
             }
+
+
+
+
         }
 
         public void BeginGame()
         {
             GameDal.SetStatus(GameId, GameStatus.InProgress);
             GameChromino firstChromino = GameChrominoDal.RandomFirstChromino(GameId);
-            SquareDal.PutChromino(firstChromino,  true);
+            SquareDal.PutChromino(firstChromino, true);
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -175,12 +190,12 @@ namespace Data.Core
 
             if (goodChrominoGame == null)
             {
-                
+
                 GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
                 //todo pioche systématique uniquement si bot seul à jouer
                 if (gameChromino == null)
                     GameDal.SetStatus(GameId, GameStatus.Finished);
-                    // todo finish uniquement si bot seul à jouer
+                // todo finish uniquement si bot seul à jouer
                 return false;
             }
             else
@@ -188,7 +203,7 @@ namespace Data.Core
                 goodChrominoGame.XPosition = firstCoordinate.X;
                 goodChrominoGame.YPosition = firstCoordinate.Y;
                 bool put = SquareDal.PutChromino(goodChrominoGame);
-                if(put)
+                if (put)
                 {
                     return true;
                 }
@@ -199,7 +214,7 @@ namespace Data.Core
 #endif
                     GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, BotId);
                     return false;
-                }              
+                }
             }
         }
 

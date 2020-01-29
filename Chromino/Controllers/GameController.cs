@@ -78,7 +78,7 @@ namespace Controllers
             int gameId = GameDal.AddGame().Id;
             GamePlayerDal.Add(gameId, players);
             GameChrominoDal.Add(gameId);
-            GameCore gamecore = new GameCore(Ctx, gameId, players);
+            GameCore gamecore = new GameCore(Ctx, gameId);
             gamecore.BeginGame();
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -104,9 +104,7 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             Player bot = PlayerDal.Bot();
-            //List<Player> players = new List<Player>(1) { bot };
-            List<Player> players = GamePlayerDal.Players(id);
-            GameCore gamecore = new GameCore(Ctx, id, players);
+            GameCore gamecore = new GameCore(Ctx, id);
             bool move = gamecore.PlayBot();
             if(move)
             {
@@ -121,8 +119,7 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             Player player = PlayerDal.Details(playerId);
-            List<Player> players = GamePlayerDal.Players(gameId);
-            GameCore gamecore = new GameCore(Ctx, gameId, players);
+            GameCore gamecore = new GameCore(Ctx, gameId);
 
             GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
             gameChromino.XPosition = x;
@@ -162,7 +159,8 @@ namespace Controllers
             GetPlayerInfosFromSession();
             if (playerId == PlayerId)
             {
-                //TODO
+                GameCore gamecore = new GameCore(Ctx, gameId);
+                gamecore.ChangePlayerTurn();
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
