@@ -35,23 +35,19 @@ function ScheduleRotate() {
 }
 
 function StartDraggable() {
-    $(".handPlayerChromino")
-        .draggableTouch()
-        .bind("dragstart", function () {
-            ScheduleRotate();
-        })
-        .bind("dragend", function () {
-            LastChrominoMove = this;
-            if (ToRotate) {
-                ToRotate = false;
-                clearTimeout(TimeoutRotate);
-                var chromino = this;
-                Rotation(chromino)
-            }
-            else {
-                ToRotate = false;
-            }
-        });
+    $(".handPlayerChromino").draggableTouch().bind("dragstart", function () {
+        ScheduleRotate();
+    }).bind("dragend", function () {
+        LastChrominoMove = this;
+        if (ToRotate) {
+            ToRotate = false;
+            clearTimeout(TimeoutRotate);
+            Rotation(LastChrominoMove)
+        }
+        else {
+            ToRotate = false;
+        }
+    });
 }
 
 function Rotation(chromino) {
@@ -68,7 +64,7 @@ function Rotation(chromino) {
             $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
             break;
         case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");   
+            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
             break;
         default:
             break;
@@ -177,11 +173,22 @@ function ResizeGameArea() {
     var documentHeight = $(document).height();
     var width = documentWidth;
     var height = documentHeight;
-    if (width < height) {
-        height = height - 200; //-200 : taille bandeaux
+    if (width > height) {
+        width -= 200; //-200 : taille bandeaux
+        //placement des chrominos de la main ok
     }
     else {
-        width = width - 200;
+        height -= 200;
+        //rotation des chrominos de la main du joueur et changement de place     
+        $(".handPlayerChromino").each(function () {
+            var position = $(this).position();
+            $(this).css({ left: position.top });
+            $(this).css({ top: documentHeight - 80 });
+            //$(this).css({ bottom: '30px' });
+            $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+        });
+
+
     }
     SquareSize = Math.min(Math.trunc(Math.min(height / gameAreaLinesNumber, width / gameAreaColumnsNumber)), 30);
 
@@ -241,6 +248,7 @@ function ResizeGameArea() {
     $('.CloseBottomLeft').outerHeight(SquareSize);
     $('.CloseRightBottomLeft').outerHeight(SquareSize);
     $('.CloseRightLeft').outerHeight(SquareSize);
+
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
 }

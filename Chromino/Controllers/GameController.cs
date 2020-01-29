@@ -106,7 +106,7 @@ namespace Controllers
             Player bot = PlayerDal.Bot();
             GameCore gamecore = new GameCore(Ctx, id);
             bool move = gamecore.PlayBot();
-            if(move)
+            if (move)
             {
                 gamecore.ChangePlayerTurn();
             }
@@ -178,10 +178,16 @@ namespace Controllers
                 int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
                 int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
 
-                List<int> numberChrominosInEachHand = new List<int>(players.Count);
-                for (int i = 0; i < players.Count; i++)
+                //List<int> numberChrominosInEachHand = new List<int>(players.Count);
+                //for (int i = 0; i < players.Count; i++)
+                //{
+                //    numberChrominosInEachHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
+                //}
+
+                Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                foreach (Player player in players)
                 {
-                    numberChrominosInEachHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
+                    pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 }
 
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
@@ -193,16 +199,12 @@ namespace Controllers
                 {
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
                 }
-
                 Game game = GameDal.Details(id);
                 GameStatus gameStatus = game.Status;
                 bool autoPlay = game.AutoPlay;
-
                 Player playerTurn = GamePlayerDal.PlayerTurn(id);
-
                 List<Square> squares = SquareDal.List(id);
-
-                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, numberChrominosInEachHand, identifiedPlayerChrominos, playerTurn, playersNumber);
+                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, playersNumber);
                 return View(gameViewModel);
             }
             else

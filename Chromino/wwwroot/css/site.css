@@ -319,6 +319,8 @@ a {
 @media screen and (orientation: portrait) {
     #toolbar {
         position: fixed;
+        display: flex;
+        flex-direction: row;
         top: 0px;
         height: 100px;
         width: 100%;
@@ -328,6 +330,7 @@ a {
         position: fixed;
         display: flex;
         flex-direction: row;
+        /*flex-direction: column;*/
         bottom: 0px;
         height: 100px;
         width: 100%;
@@ -335,16 +338,18 @@ a {
 
     .handPlayerChromino {
         position: fixed;
+        height: 30px;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        /*flex-direction: column;*/
         justify-content: center;
         margin: 10px;
     }
 
-    .Square {
+    /*.Square {
         height: 30px;
         border-color: black;
-    }
+    }*/
 }
 
 
@@ -374,14 +379,6 @@ a {
         margin: 10px;
     }
 }
-
-
-
-
-
-
-
-
 
 
 

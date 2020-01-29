@@ -34,18 +34,39 @@
                 break;
             case GameStatus.InProgress:
                 gameStatus = "in progress";
-                <p>@Model.PlayerPseudoTurn turn</p>
+                if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
+                {
+                    <p>Your turn</p>
+                    <form id="FormPickChromino" asp-action="PickChromino">
+                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                        <input name="gameId" value="@Model.GameId" type="hidden" />
+                        <input type="submit" class="btn btn-primary" value="Pick" />
+                    </form>
+                    @if (Model.PlayersNumber > 1)
+                    {
+                        <form id="FormPassTurn" asp-action="PassTurn">
+                            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                            <input name="gameId" value="@Model.GameId" type="hidden" />
+                            <input type="submit" class="btn btn-primary" value="Pass turn" />
+                        </form>
+                    }
+                }
+                else
+                {
+                    <p>@Model.PlayerPseudoTurn turn</p>
+                }
                 break;
             case GameStatus.InPause:
             default:
                 gameStatus = "in pause";
                 break;
         }
+
         <p>Game is @gameStatus - Stack : @Model.ChrominosInStack</p>
 
-        @for (int i = 0; i < Model.PlayerNumberChrominos.Count; i++)
+        @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
         {
-            <p>Player @(i + 1)  : @Model.PlayerNumberChrominos[i] in hand</p>
+            <p> @pseudo_chromino.Key : @pseudo_chromino.Value in hand</p>
         }
 
         @if (Model.PlayerIdTurn == 1) // todo : remplacer par test plus générique (si plusieurs bot jouent)
@@ -189,7 +210,7 @@
 
     <div id="handPlayer">
         @{
-            int offset = 150;
+            int offset = 10;
             foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
             {
                 string id = chrominosViewModel.ChrominoId.ToString();
@@ -203,26 +224,11 @@
                         <div class="Square @classOpenEdge @classColor"></div>
                     }
                 </div>
-                offset += 35;
+                offset += 33;
             }
         }
 
-        <p>@ViewBag.PlayerPseudo</p>
 
-        <form id="FormPickChromino" asp-action="PickChromino">
-            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-            <input name="gameId" value="@Model.GameId" type="hidden" />
-            <input type="submit" class="btn btn-primary" value="Pick" />
-        </form>
-
-        @if (Model.PlayersNumber > 1)
-        {
-            <form id="FormPassTurn" asp-action="PassTurn">
-                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                <input name="gameId" value="@Model.GameId" type="hidden" />
-                <input type="submit" class="btn btn-primary" value="Pass turn" />
-            </form>
-        }
 
     </div>
 
