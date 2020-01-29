@@ -37,6 +37,7 @@ function ScheduleRotate() {
 function StartDraggable() {
     $(".handPlayerChromino").draggableTouch().bind("dragstart", function () {
         ScheduleRotate();
+        LastChrominoMove = this;
     }).bind("dragend", function () {
         LastChrominoMove = this;
         if (ToRotate) {
