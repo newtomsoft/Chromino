@@ -48,12 +48,6 @@ namespace Controllers
         }
 
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await Ctx.Players.ToListAsync());
-        }
-
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,10 +66,6 @@ namespace Controllers
         }
 
 
-        public IActionResult Create()
-        {
-            return View();
-        }
 
 
         [HttpPost]

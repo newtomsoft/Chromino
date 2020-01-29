@@ -66,7 +66,10 @@
 
         @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
         {
-            <p> @pseudo_chromino.Key : @pseudo_chromino.Value in hand</p>
+            if (pseudo_chromino != ViewBag.PlayerPseudo)
+            {
+                <p>@pseudo_chromino.Key : @pseudo_chromino.Value in hand</p>
+            }
         }
 
         @if (Model.PlayerIdTurn == 1) // todo : remplacer par test plus générique (si plusieurs bot jouent)
