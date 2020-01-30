@@ -11,17 +11,10 @@ namespace Data.Models
     {
         [Key]
         public int Id { get; set; }
-        
-        [Required]
         public int GameId { get; set; }
-        
-        [Required]
         public int PlayerId { get; set; }
-        
-        [Required]
         public bool PlayerTurn { get; set; }
-
-        [Required]
+        public bool PreviouslyDraw { get; set; }
         public int PlayerPoints { get; set; }
 
         public Game Game { get; set; }
