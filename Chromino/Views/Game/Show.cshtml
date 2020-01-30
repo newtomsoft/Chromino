@@ -1,7 +1,7 @@
 ﻿@using Data.Enumeration;
 @using  Data.ViewModel;
 
-@model GameViewModel;
+@model GameVM;
 @{
     Layout = null;
     ViewData["Title"] = "Chromino - Play !";
@@ -37,7 +37,7 @@
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
                     <p>Your turn</p>
-                    @if (!Model.GamePlayerTurn.PreviouslyDraw)
+                    @if (!Model.GamePlayerTurn.PreviouslyDraw || Model.PlayersNumber == 1)
                     {
                         <form id="FormDrawChromino" asp-action="DrawChromino">
                             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -111,9 +111,9 @@
                 {
                     int index = i + j * Model.ColumnsNumber;
                     OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
-                    SquareViewModelState state = Model.SquaresViewModel[index].State;
+                    SquareVMState state = Model.SquaresViewModel[index].State;
 
-                    if (state != SquareViewModelState.Free)
+                    if (state != SquareVMState.Free)
                     {
                         string classColor = state.ToString();
                         string classOpenEdge = "Open" + openEdge.ToString();
@@ -126,7 +126,7 @@
                         {
                             int rightIndex = (i + 1) + j * Model.ColumnsNumber;
                             OpenEdge rightOpenEdge = Model.SquaresViewModel[rightIndex].Edge;
-                            if (Model.SquaresViewModel[rightIndex].State != SquareViewModelState.Free)
+                            if (Model.SquaresViewModel[rightIndex].State != SquareVMState.Free)
                             {
                                 openEdge = OpenEdge.Right;
                             }
@@ -135,7 +135,7 @@
                         {
                             int bottomIndex = i + (j + 1) * Model.ColumnsNumber;
                             OpenEdge bottomOpenEdge = Model.SquaresViewModel[bottomIndex].Edge;
-                            if (Model.SquaresViewModel[bottomIndex].State != SquareViewModelState.Free)
+                            if (Model.SquaresViewModel[bottomIndex].State != SquareVMState.Free)
                             {
                                 switch (openEdge)
                                 {
@@ -152,7 +152,7 @@
                         {
                             int leftIndex = (i - 1) + j * Model.ColumnsNumber;
                             OpenEdge leftOpenEdge = Model.SquaresViewModel[leftIndex].Edge;
-                            if (Model.SquaresViewModel[leftIndex].State != SquareViewModelState.Free)
+                            if (Model.SquaresViewModel[leftIndex].State != SquareVMState.Free)
                             {
                                 switch (openEdge)
                                 {
@@ -175,7 +175,7 @@
                         {
                             int topIndex = i + (j - 1) * Model.ColumnsNumber;
                             OpenEdge topOpenEdge = Model.SquaresViewModel[topIndex].Edge;
-                            if (Model.SquaresViewModel[topIndex].State != SquareViewModelState.Free)
+                            if (Model.SquaresViewModel[topIndex].State != SquareVMState.Free)
                             {
                                 switch (openEdge)
                                 {
@@ -217,14 +217,14 @@
     <div id="handPlayer">
         @{
             int offset = 10;
-            foreach (ChrominoViewModel chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
+            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosViewModel)
             {
                 string id = chrominosViewModel.ChrominoId.ToString();
                 <div id="@id" class="handPlayerChromino" style="top:@(offset)px">
                     @for (int i = 0; i < 3; i++)
                     {
                         OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
-                        SquareViewModelState state = chrominosViewModel.SquaresViewModel[i].State;
+                        SquareVMState state = chrominosViewModel.SquaresViewModel[i].State;
                         string classColor = state.ToString();
                         string classOpenEdge = "Open" + openEdge.ToString();
                         <div class="Square @classOpenEdge @classColor"></div>

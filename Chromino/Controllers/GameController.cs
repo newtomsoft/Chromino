@@ -160,11 +160,12 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfosFromSession();
+            int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
-            if (playerId == PlayerId && !gamePlayer.PreviouslyDraw)
+            if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
             {
                 GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
-                if (gameChromino == null && GamePlayerDal.PlayersNumber(gameId) > 1)
+                if (gameChromino == null && playersNumber > 1)
                     GameDal.SetStatus(gameId, GameStatus.Finished);
                 else if (gameChromino == null)
                     return RedirectToAction("PassTurn", "Game", new { playerId = playerId, id = gameId }); //todo a tester
@@ -226,7 +227,7 @@ namespace Controllers
                 Player playerTurn = GamePlayerDal.PlayerTurn(id);
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
-                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber);
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber);
                 return View(gameViewModel);
             }
             else

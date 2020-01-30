@@ -13,7 +13,6 @@ namespace Data.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
         [StringLength(32)]
         public string Guid { get; set; }
 
@@ -22,6 +21,8 @@ namespace Data.Models
         public GameStatus Status { get; set; }
 
         public bool AutoPlay { get; set; }
+
+        public DateTime PlayedDate { get; set; }
 
     }
 }

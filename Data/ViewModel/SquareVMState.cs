@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Data.Enumeration
 {
-    public enum SquareViewModelState
+    public enum SquareVMState
     {
         Blue = 1,
         Green,

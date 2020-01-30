@@ -73,5 +73,15 @@ namespace Data.DAL
             game.AutoPlay = autoPlay;
             Ctx.SaveChanges();
         }
+
+        public void UpdateDate(int id)
+        {
+            Game game = (from g in Ctx.Games
+                         where g.Id == id
+                         select g).FirstOrDefault();
+
+            game.PlayedDate = DateTime.Now;
+            Ctx.SaveChanges();
+        }
     }
 }

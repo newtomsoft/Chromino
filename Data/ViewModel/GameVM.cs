@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Data.ViewModel
 {
-    public class GameViewModel
+    public class GameVM
     {
         public int GameId { get; set; }
         public bool AutoPlay { get; set; }
@@ -20,18 +20,18 @@ namespace Data.ViewModel
         public int LinesNumber { get; set; }
         public int ColumnsNumber { get; set; }
         public int SquaresNumber { get; set; }
-        public SquareViewModel[] SquaresViewModel { get; set; }
+        public SquareVM[] SquaresViewModel { get; set; }
         public int ChrominosInGame { get; set; }
         public int ChrominosInStack { get; set; }
         public Dictionary<string, int> Pseudos_Chrominos { get; set; }
         public GameStatus GameStatus { get; set; }
-        public List<ChrominoViewModel> IdentifiedPlayerChrominosViewModel { get; set; }
+        public List<ChrominoVM> IdentifiedPlayerChrominosViewModel { get; set; }
         public string PlayerPseudoTurn { get; set; }
         public int PlayerIdTurn { get; set; } // todo suppr
         public int PlayersNumber { get; set; } // todo suppr
         public GamePlayer GamePlayerTurn { get; set; }
 
-        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, int playersNumber)
+        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, int playersNumber)
         {
             PlayersNumber = playersNumber;
             PlayerPseudoTurn = playerTurn.Pseudo;
@@ -54,12 +54,12 @@ namespace Data.ViewModel
 
             SquaresNumber = ColumnsNumber * LinesNumber;
 
-            SquaresViewModel = new SquareViewModel[SquaresNumber];
+            SquaresViewModel = new SquareVM[SquaresNumber];
             for (int i = 0; i < SquaresViewModel.Length; i++)
             {
-                SquaresViewModel[i] = new SquareViewModel
+                SquaresViewModel[i] = new SquareVM
                 {
-                    State = SquareViewModelState.Free,
+                    State = SquareVMState.Free,
                     Edge = OpenEdge.All,
                 };
             }
@@ -70,13 +70,13 @@ namespace Data.ViewModel
                 SquaresViewModel[index] = square.SquareViewModel;
             }
 
-            IdentifiedPlayerChrominosViewModel = new List<ChrominoViewModel>();
+            IdentifiedPlayerChrominosViewModel = new List<ChrominoVM>();
             foreach (Chromino chromino in identifiedPlayerChrominos)
             {
-                SquareViewModel square1 = new SquareViewModel { State = (SquareViewModelState)chromino.FirstColor, Edge = OpenEdge.Right };
-                SquareViewModel square2 = new SquareViewModel { State = (SquareViewModelState)chromino.SecondColor, Edge = OpenEdge.RightLeft };
-                SquareViewModel square3 = new SquareViewModel { State = (SquareViewModelState)chromino.ThirdColor, Edge = OpenEdge.Left };
-                ChrominoViewModel chrominoViewModel = new ChrominoViewModel();
+                SquareVM square1 = new SquareVM { State = (SquareVMState)chromino.FirstColor, Edge = OpenEdge.Right };
+                SquareVM square2 = new SquareVM { State = (SquareVMState)chromino.SecondColor, Edge = OpenEdge.RightLeft };
+                SquareVM square3 = new SquareVM { State = (SquareVMState)chromino.ThirdColor, Edge = OpenEdge.Left };
+                ChrominoVM chrominoViewModel = new ChrominoVM();
                 chrominoViewModel.SquaresViewModel[0] = square1;
                 chrominoViewModel.SquaresViewModel[1] = square2;
                 chrominoViewModel.SquaresViewModel[2] = square3;

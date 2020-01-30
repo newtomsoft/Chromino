@@ -97,6 +97,7 @@ namespace Data.Core
 
                 gamePlayer.PlayerTurn = false;
             }
+            GameDal.UpdateDate(GameId);
             Ctx.SaveChanges();
         }
 

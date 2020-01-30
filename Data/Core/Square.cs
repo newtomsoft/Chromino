@@ -13,7 +13,7 @@ namespace Data.Models
     public partial class Square
     {
         [NotMapped]
-        public SquareViewModel SquareViewModel { get => new SquareViewModel { Edge = Edge, State = (SquareViewModelState)Color }; }
+        public SquareVM SquareViewModel { get => new SquareVM { Edge = Edge, State = (SquareVMState)Color }; }
 
         [NotMapped]
         public Coordinate Coordinate { get => new Coordinate(X, Y); }

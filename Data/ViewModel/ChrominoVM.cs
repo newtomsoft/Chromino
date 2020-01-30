@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Data.ViewModel
 {
-    public class ChrominoViewModel
+    public class ChrominoVM
     {
-        public SquareViewModel[] SquaresViewModel { get; set; } = new SquareViewModel[3];
+        public SquareVM[] SquaresViewModel { get; set; } = new SquareVM[3];
         public int ChrominoId {get;set;}
     }
 }

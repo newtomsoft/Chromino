@@ -101,7 +101,7 @@ namespace Data.DAL
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
                                 where gp.PlayerId == playerId && g.Status == GameStatus.InProgress
-                                orderby g.CreateDate descending
+                                orderby g.PlayedDate
                                 select g).AsNoTracking().ToList();
 
             return games;
@@ -112,21 +112,63 @@ namespace Data.DAL
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
                                 where gp.PlayerId == playerId && g.Status == GameStatus.Finished
-                                orderby g.CreateDate descending
+                                orderby g.PlayedDate
                                 select g).AsNoTracking().ToList();
 
             return games;
         }
 
-        public List<Game> GamesToPlay(int playerId)
+        public List<Game> MultiGamesToPlay(int playerId)
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.PlayerTurn
-                                orderby g.CreateDate descending
+                                where gp.PlayerId == playerId && gp.PlayerTurn && g.Status == GameStatus.InProgress
+                                orderby g.PlayedDate
                                 select g).AsNoTracking().ToList();
 
+            //Multijoueur in progress
+            var toto = (from gp in Ctx.GamesPlayers
+                        join g in Ctx.Games on gp.GameId equals g.Id
+                        where g.Status == GameStatus.InProgress
+                        orderby g.PlayedDate
+                        group gp by gp.GameId into groupe
+                        where groupe.Count() > 1
+                        select new
+                        {
+                            gameId = groupe.Key,
+                            count = groupe.Count()
+                        }).AsNoTracking().ToList();
+            //Todo : Filtrer ToPlay
+
+
+
+            //solo in progress
+            var singleProgress = (from gp in Ctx.GamesPlayers
+                                  join g in Ctx.Games on gp.GameId equals g.Id
+                                  where g.Status == GameStatus.InProgress
+                                  orderby g.PlayedDate
+                                  group gp by gp.GameId into groupe
+                                  where groupe.Count() == 1
+                                  select new
+                                  {
+                                      gameId = groupe.Key,
+                                      count = groupe.Count()
+                                  }).AsNoTracking().ToList();
+
+
+            var tot2 = (from gp in Ctx.GamesPlayers
+                        group gp by gp.GameId into groupe
+                        where groupe.Count() > 1
+                        select new
+                        {
+                            gameId = groupe.Key,
+                            count = groupe.Count()
+                        }).AsNoTracking().ToList();
             return games;
+
+
+
+
         }
 
         public List<Game> Games(int playerId)
@@ -134,7 +176,7 @@ namespace Data.DAL
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
                                 where gp.PlayerId == playerId
-                                orderby g.CreateDate descending
+                                orderby g.CreateDate
                                 select g).AsNoTracking().ToList();
 
             return games;
