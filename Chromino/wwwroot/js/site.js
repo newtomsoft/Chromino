@@ -185,7 +185,6 @@ function ResizeGameArea() {
             var position = $(this).position();
             $(this).css({ left: position.top });
             $(this).css({ top: documentHeight - 80 });
-            //$(this).css({ bottom: '30px' });
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
         });
 

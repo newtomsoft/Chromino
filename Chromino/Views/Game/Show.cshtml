@@ -37,10 +37,10 @@
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
                     <p>Your turn</p>
-                    <form id="FormPickChromino" asp-action="PickChromino">
+                    <form id="FormDrawChromino" asp-action="DrawChromino">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Pick" />
+                        <input type="submit" class="btn btn-primary" value="Draw" />
                     </form>
                     @if (Model.PlayersNumber > 1)
                     {

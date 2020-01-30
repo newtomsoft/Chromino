@@ -141,7 +141,7 @@ namespace Controllers
 
 
         [HttpPost]
-        public IActionResult PickChromino(int playerId, int gameId)
+        public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfosFromSession();
             if (playerId == PlayerId)
