@@ -42,19 +42,13 @@ namespace Data.Core
                 Players = listPlayers;
             }
 
-
-
             GameId = gameId;
             Squares = SquareDal.List(GameId);
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
             {
-                GamePlayers.Add(GamePlayerDal.GamePlayer(GameId, player.Id));
+                GamePlayers.Add(GamePlayerDal.Details(GameId, player.Id));
             }
-
-
-
-
         }
 
         public void BeginGame()
@@ -84,7 +78,7 @@ namespace Data.Core
                                   orderby Guid.NewGuid()
                                   select gp).FirstOrDefault();
                 }
-
+                gamePlayer.PreviouslyDraw = false;
                 bool selectNext = false;
                 bool selected = false;
                 foreach (GamePlayer currentGamePlayer in GamePlayers)
@@ -241,6 +235,7 @@ namespace Data.Core
             if (put)
             {
                 gameChromino.State = ChrominoStatus.InGame;
+                Ctx.SaveChanges();
                 GamePlayerDal.AddPoint((int)gameChromino.PlayerId, ChrominoDal.Details(gameChromino.ChrominoId).Points);
                 //todo ? reste calculs à faire ?
             }

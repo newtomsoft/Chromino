@@ -37,11 +37,14 @@
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
                     <p>Your turn</p>
-                    <form id="FormDrawChromino" asp-action="DrawChromino">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Draw" />
-                    </form>
+                    @if (!Model.GamePlayerTurn.PreviouslyDraw)
+                    {
+                        <form id="FormDrawChromino" asp-action="DrawChromino">
+                            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                            <input name="gameId" value="@Model.GameId" type="hidden" />
+                            <input type="submit" class="btn btn-primary" value="Draw" />
+                        </form>
+                    }
                     @if (Model.PlayersNumber > 1)
                     {
                         <form id="FormPassTurn" asp-action="PassTurn">
@@ -66,7 +69,7 @@
 
         @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
         {
-            if (pseudo_chromino != ViewBag.PlayerPseudo)
+            if (pseudo_chromino.Key != ViewBag.PlayerPseudo)
             {
                 <p>@pseudo_chromino.Key : @pseudo_chromino.Value in hand</p>
             }

@@ -144,11 +144,19 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfosFromSession();
-            if (playerId == PlayerId)
+            GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
+            if (playerId == PlayerId && !gamePlayer.PreviouslyDraw)
             {
                 GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
-                if (gameChromino == null)
+                if (gameChromino == null && GamePlayerDal.PlayersNumber(gameId) > 1)
                     GameDal.SetStatus(gameId, GameStatus.Finished);
+                else if (gameChromino == null)
+                    return RedirectToAction("PassTurn", "Game", new { playerId = playerId, id = gameId }); //todo a tester
+                else
+                {
+                    gamePlayer.PreviouslyDraw = true;
+                    Ctx.SaveChanges();
+                }
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -159,6 +167,9 @@ namespace Controllers
             GetPlayerInfosFromSession();
             if (playerId == PlayerId)
             {
+                //GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
+                //gamePlayer.PreviouslyDraw = false;
+                //Ctx.SaveChanges();
                 GameCore gamecore = new GameCore(Ctx, gameId);
                 gamecore.ChangePlayerTurn();
             }
@@ -177,12 +188,6 @@ namespace Controllers
             {
                 int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
                 int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
-
-                //List<int> numberChrominosInEachHand = new List<int>(players.Count);
-                //for (int i = 0; i < players.Count; i++)
-                //{
-                //    numberChrominosInEachHand.Add(GameChrominoDal.PlayerNumberChrominos(id, players[i].Id));
-                //}
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
@@ -203,8 +208,9 @@ namespace Controllers
                 GameStatus gameStatus = game.Status;
                 bool autoPlay = game.AutoPlay;
                 Player playerTurn = GamePlayerDal.PlayerTurn(id);
+                GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
-                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, playersNumber);
+                GameViewModel gameViewModel = new GameViewModel(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber);
                 return View(gameViewModel);
             }
             else

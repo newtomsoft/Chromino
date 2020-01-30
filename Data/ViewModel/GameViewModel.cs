@@ -27,15 +27,16 @@ namespace Data.ViewModel
         public GameStatus GameStatus { get; set; }
         public List<ChrominoViewModel> IdentifiedPlayerChrominosViewModel { get; set; }
         public string PlayerPseudoTurn { get; set; }
-        public int PlayerIdTurn { get; set; }
-        public int PlayersNumber { get; set; }
+        public int PlayerIdTurn { get; set; } // todo suppr
+        public int PlayersNumber { get; set; } // todo suppr
+        public GamePlayer GamePlayerTurn { get; set; }
 
-
-        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, int playersNumber)
+        public GameViewModel(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, int playersNumber)
         {
             PlayersNumber = playersNumber;
             PlayerPseudoTurn = playerTurn.Pseudo;
             PlayerIdTurn = playerTurn.Id;
+            GamePlayerTurn = gamePlayerTurn;
             AutoPlay = autoPlay;
             GameId = gameId;
             ChrominosInGame = chrominosInGame;

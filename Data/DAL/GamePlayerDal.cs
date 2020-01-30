@@ -31,7 +31,7 @@ namespace Data.DAL
             return gamePlayer;
         }
 
-        public GamePlayer GamePlayer(int gameId, int playerId)
+        public GamePlayer Details(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId
@@ -65,6 +65,17 @@ namespace Data.DAL
 
             return players;
         }
+
+        public int PlayersNumber(int gameId)
+        {
+            int playersNumber = (from gp in Ctx.GamesPlayers
+                                 join p in Ctx.Players on gp.PlayerId equals p.Id
+                                 where gp.GameId == gameId
+                                 select p).Count();
+
+            return playersNumber;
+        }
+
         public List<int> PlayersId(int gameId)
         {
             List<int> playersId = (from gp in Ctx.GamesPlayers
