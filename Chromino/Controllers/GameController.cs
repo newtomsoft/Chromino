@@ -118,8 +118,7 @@ namespace Controllers
         {
             GetPlayerInfosFromSession();
 
-            Player player = PlayerDal.Details(playerId);
-            GameCore gamecore = new GameCore(Ctx, gameId);
+            GameCore gameCore = new GameCore(Ctx, gameId);
 
             GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
             gameChromino.XPosition = x;
@@ -127,10 +126,27 @@ namespace Controllers
             gameChromino.Orientation = orientation;
             gameChromino.PlayerId = playerId;
 
-            bool move = gamecore.Play(gameChromino);
+            bool move = gameCore.Play(gameChromino);
             if (move)
             {
-                gamecore.ChangePlayerTurn();
+                int chrominosNumber = GamePlayerDal.ChrominosNumber(gameId, playerId);
+                if(chrominosNumber == 0)
+                {
+                    GameDal.SetStatus(gameId, GameStatus.Finished);
+
+                    if (GamePlayerDal.PlayersNumber(gameId) > 1)
+                    {
+                        PlayerDal.Details(playerId).WonGames++;
+                        Ctx.SaveChanges();
+                    }
+                    else
+                    {
+                        PlayerDal.Details(playerId).FinishedSinglePlayerGames++;
+                        Ctx.SaveChanges();
+                    }       
+                    // todo gérer fin de partie en laissant jouer les joueur du tour et voir s'ils peuvent finir
+                }
+                gameCore.ChangePlayerTurn();
             }
             else // todo : position pas bonne. avertir joueur
             {

@@ -82,5 +82,25 @@ namespace Data.DAL
 
             return result;
         }
+
+        public void AddPoints(int playerId, int points)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            player.Points += points;
+            Ctx.SaveChanges();
+        }
+
+        public void AddSinglePlayerGamesPoints(int playerId, int points)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            player.PointsSinglePlayerGames += points;
+            Ctx.SaveChanges();
+        }
     }
 }

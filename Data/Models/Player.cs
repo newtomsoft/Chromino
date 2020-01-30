@@ -20,7 +20,10 @@ namespace Data.Models
         [MinLength(4, ErrorMessage = "your password must contain at least 4 characters")]
         public string Password { get; set; }
         public int PlayedGames { get; set; }
+        public int Points { get; set; }
         public int WonGames { get; set; }
+        public int FinishedSinglePlayerGames { get; set; }
+        public int PointsSinglePlayerGames { get; set; }
 
     }
 }

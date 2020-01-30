@@ -86,13 +86,13 @@ namespace Data.DAL
             return playersId;
         }
 
-        public void AddPoint(int playerId, int point)
+        public void AddPoint(int gameId, int playerId, int points)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
-                                     where gp.PlayerId == playerId
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            gamePlayer.PlayerPoints += point;
+            gamePlayer.PlayerPoints += points;
             Ctx.SaveChanges();
         }
 
@@ -148,6 +148,16 @@ namespace Data.DAL
                              select p).FirstOrDefault();
 
             return player;
+        }
+
+        public int ChrominosNumber(int gameId, int playerId)
+        {
+            int ChrominosNumber = (from gp in Ctx.GamesPlayers
+                                   join gc in Ctx.GamesChrominos on gp.GameId equals gc.GameId
+                                   where gp.GameId == gameId && gp.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
+                                   select gc).Count();
+
+            return ChrominosNumber;
         }
     }
 }

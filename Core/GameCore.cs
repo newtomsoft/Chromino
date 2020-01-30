@@ -236,7 +236,12 @@ namespace Data.Core
             {
                 gameChromino.State = ChrominoStatus.InGame;
                 Ctx.SaveChanges();
-                GamePlayerDal.AddPoint((int)gameChromino.PlayerId, ChrominoDal.Details(gameChromino.ChrominoId).Points);
+                int points = ChrominoDal.Details(gameChromino.ChrominoId).Points;
+                GamePlayerDal.AddPoint(GameId,(int)gameChromino.PlayerId, points);
+                if (Players.Count > 1)
+                    PlayerDal.AddPoints((int)gameChromino.PlayerId, points);
+                else
+                    PlayerDal.AddSinglePlayerGamesPoints((int)gameChromino.PlayerId, points);
                 //todo ? reste calculs à faire ?
             }
             return put;
