@@ -32,7 +32,7 @@
         <form asp-action="Show" asp-controller="Game">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label">Other games</label>
+                <label class="control-label">All games</label>
                 <select asp-for="Id" class="form-control" asp-items="ViewBag.Games"></select>
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
