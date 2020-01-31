@@ -10,18 +10,33 @@
 <div>
     <a asp-controller="Game" asp-action="StartNew">Start new game</a>
 </div>
-<br/>
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <form name="continueMultiGame" asp-action="Show" asp-controller="Game">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="submit" value="Continue multi-game" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesToPlay"></select>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+
+        </form>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Show" asp-controller="Game">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label">or continue game</label>
-                <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesToPlay"></select>
-                <span asp-validation-for="Id" class="text-danger"></span>
+                <input type="submit" value="Continue single-game" class="btn btn-primary" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Play" class="btn btn-primary" />
+                <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGames"></select>
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
         </form>
     </div>
@@ -32,13 +47,13 @@
         <form asp-action="Show" asp-controller="Game">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label">All games</label>
-                <select asp-for="Id" class="form-control" asp-items="ViewBag.Games"></select>
-                <span asp-validation-for="Id" class="text-danger"></span>
+                <input type="submit" value="View other game" class="btn btn-primary" />
             </div>
             <div class="form-group">
-                <input type="submit" value="View" class="btn btn-primary" />
+                <select asp-for="Id" class="form-control" asp-items="ViewBag.OtherGames"></select>
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
+
         </form>
     </div>
 </div>

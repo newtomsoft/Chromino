@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Data.Core;
 
 namespace Data.DAL
 {
@@ -107,6 +108,17 @@ namespace Data.DAL
             return games;
         }
 
+        public List<Game> GamesNotInProgress(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId && g.Status != GameStatus.InProgress
+                                orderby g.PlayedDate
+                                select g).AsNoTracking().ToList();
+
+            return games;
+        }
+
         public List<Game> GamesFinished(int playerId)
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
@@ -120,14 +132,14 @@ namespace Data.DAL
 
         public List<Game> MultiGamesToPlay(int playerId)
         {
-            //Multijoueur in progress
-            List<int> multiGamesId = (from gp in Ctx.GamesPlayers
-                                      join g in Ctx.Games on gp.GameId equals g.Id
-                                      where g.Status == GameStatus.InProgress
-                                      orderby g.PlayedDate
-                                      group gp by gp.GameId into groupe
-                                      where groupe.Count() > 1
-                                      select groupe.Key).ToList();
+            //MultiPlayer in progress
+            var multiGamesId = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where g.Status == GameStatus.InProgress
+                                orderby g.PlayedDate
+                                group gp by gp.GameId into groupe
+                                where groupe.Count() > 1
+                                select groupe.Key).ToList();
 
             List<Game> multiGames = new List<Game>();
             foreach (int id in multiGamesId)
@@ -136,7 +148,7 @@ namespace Data.DAL
             }
 
             //singleGame in progress
-            List<int> singleGameInProgressId = (from gp in Ctx.GamesPlayers
+            var singleGameInProgressId = (from gp in Ctx.GamesPlayers
                                           join g in Ctx.Games on gp.GameId equals g.Id
                                           where g.Status == GameStatus.InProgress
                                           orderby g.PlayedDate
@@ -150,17 +162,43 @@ namespace Data.DAL
                 singleGameInProgress.Add(Ctx.Games.Find(id));
             }
 
+            var gamesToPlay = (from gp in Ctx.GamesPlayers
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               where gp.PlayerId == playerId && gp.PlayerTurn && g.Status == GameStatus.InProgress
+                               orderby g.PlayedDate
+                               select g).AsNoTracking().ToList();
 
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.PlayerTurn && g.Status == GameStatus.InProgress
-                                orderby g.PlayedDate
-                                select g).AsNoTracking().ToList();
+            List<Game> multiGameToPlay = gamesToPlay.Intersect(multiGames, new GameEqualityComparer()).ToList();
 
-            List<Game> a = games.Except(singleGameInProgress).ToList();
+            return multiGameToPlay;
+        }
 
-            return games;
+        public List<Game> SingleGamesInProgress(int playerId)
+        {
+            //singleGame in progress
+            var allSingleGameInProgressId = (from gp in Ctx.GamesPlayers
+                                             join g in Ctx.Games on gp.GameId equals g.Id
+                                             where g.Status == GameStatus.InProgress
+                                             orderby g.PlayedDate
+                                             group gp by gp.GameId into groupe
+                                             where groupe.Count() == 1
+                                             select groupe.Key).ToList();
 
+            List<Game> allSingleGameInProgress = new List<Game>();
+            foreach (int id in allSingleGameInProgressId)
+            {
+                allSingleGameInProgress.Add(Ctx.Games.Find(id));
+            }
+
+            var gamesToPlay = (from gp in Ctx.GamesPlayers
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               where gp.PlayerId == playerId && gp.PlayerTurn && g.Status == GameStatus.InProgress
+                               orderby g.PlayedDate
+                               select g).AsNoTracking().ToList();
+
+            List<Game> singleGameInProgress = gamesToPlay.Intersect(allSingleGameInProgress, new GameEqualityComparer()).ToList();
+
+            return singleGameInProgress;
         }
 
         public List<Game> Games(int playerId)

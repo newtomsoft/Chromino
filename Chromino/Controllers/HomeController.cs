@@ -47,9 +47,22 @@ namespace Controllers
                 }
                 ViewData["GamesToPlay"] = new SelectList(gamesToPlayForListVM, "GameId", "Infos");
 
+                List<GameForListVM> singleGamesForListVM = new List<GameForListVM>();
+                foreach (Game game in GamePlayerDal.SingleGamesInProgress(PlayerId))
+                {
+                    List<Player> players = GamePlayerDal.Players(game.Id);
+                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                    foreach (Player player in players)
+                    {
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                    }
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
+                    singleGamesForListVM.Add(new GameForListVM(game, pseudos_chrominos, playerPseudoTurn));
+                }
+                ViewData["SingleGames"] = new SelectList(singleGamesForListVM, "GameId", "Infos");
 
                 List<GameForListVM> otherGamesForListVM = new List<GameForListVM>();
-                foreach (Game game in GamePlayerDal.Games(PlayerId))
+                foreach (Game game in GamePlayerDal.GamesNotInProgress(PlayerId))
                 {
                     List<Player> players = GamePlayerDal.Players(game.Id);
                     Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
@@ -60,11 +73,8 @@ namespace Controllers
                     string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
                     otherGamesForListVM.Add(new GameForListVM(game, pseudos_chrominos, playerPseudoTurn));
                 }
-                ViewData["Games"] = new SelectList(otherGamesForListVM, "GameId", "Infos");
+                ViewData["OtherGames"] = new SelectList(otherGamesForListVM, "GameId", "Infos", null, "PlayerPseudoTurn");
 
-                //List<Game> gamesInProgress = GamePlayerDal.GamesInProgress(PlayerId);
-                //ViewData["GamesInProgress"] = new SelectList(gamesInProgress.OrderByDescending(x => x.CreateDate), "Id", "CreateDate");
-                //ViewData["GamesToPlay"] = new SelectList(gamesToPlay.OrderByDescending(x => x.CreateDate), "Id", "CreateDate");
                 return View();
             }
         }
