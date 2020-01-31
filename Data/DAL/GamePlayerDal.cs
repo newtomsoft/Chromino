@@ -16,22 +16,6 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public GamePlayer GetBot(int gameId, int playerId)
-        {
-            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
-                                     where gp.GameId == gameId && gp.PlayerId == playerId
-                                     select gp).FirstOrDefault();
-
-            if (gamePlayer == null)
-            {
-                gamePlayer = new GamePlayer { GameId = gameId, PlayerId = playerId };
-                Ctx.Add(gamePlayer);
-                Ctx.SaveChanges();
-            }
-
-            return gamePlayer;
-        }
-
         public GamePlayer Details(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
@@ -132,7 +116,6 @@ namespace Data.DAL
 
         public List<Game> MultiGamesToPlay(int playerId)
         {
-            //MultiPlayer in progress
             var multiGamesId = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
                                 where g.Status == GameStatus.InProgress
@@ -147,7 +130,6 @@ namespace Data.DAL
                 multiGames.Add(Ctx.Games.Find(id));
             }
 
-            //singleGame in progress
             var singleGameInProgressId = (from gp in Ctx.GamesPlayers
                                           join g in Ctx.Games on gp.GameId equals g.Id
                                           where g.Status == GameStatus.InProgress
@@ -175,7 +157,6 @@ namespace Data.DAL
 
         public List<Game> SingleGamesInProgress(int playerId)
         {
-            //singleGame in progress
             var allSingleGameInProgressId = (from gp in Ctx.GamesPlayers
                                              join g in Ctx.Games on gp.GameId equals g.Id
                                              where g.Status == GameStatus.InProgress
@@ -230,6 +211,48 @@ namespace Data.DAL
                                    select gc).Count();
 
             return ChrominosNumber;
+        }
+
+        public int ChrominosInGame(int gameId, int playerId)
+        {
+            int ChrominosNumber = (from gp in Ctx.GamesPlayers
+                                   join gc in Ctx.GamesChrominos on gp.GameId equals gc.GameId
+                                   where gp.GameId == gameId && gp.PlayerId == playerId && gc.State == ChrominoStatus.InGame
+                                   select gc).Count();
+
+            return ChrominosNumber;
+        }
+
+        public void SetPreviouslyDraw(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.PreviouslyDraw = true;
+            Ctx.SaveChanges();
+        }
+
+        public bool IsAllPass(int gameId)
+        {
+            var passs = from gp in Ctx.GamesPlayers
+                        where gp.GameId == gameId
+                        select gp.PreviouslyPass;
+
+            if (passs.Contains(false))
+                return false;
+            else
+                return true;
+        }
+
+        public void SetPass(int gameId, int playerId, bool pass)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.PreviouslyPass = pass;
+            Ctx.SaveChanges();
         }
     }
 }

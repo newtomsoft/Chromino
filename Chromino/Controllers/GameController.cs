@@ -119,39 +119,17 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             GameCore gameCore = new GameCore(Ctx, gameId);
-
             GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
             gameChromino.XPosition = x;
             gameChromino.YPosition = y;
             gameChromino.Orientation = orientation;
             gameChromino.PlayerId = playerId;
-
             bool move = gameCore.Play(gameChromino);
-            if (move)
+            if (!move)
             {
-                int chrominosNumber = GamePlayerDal.ChrominosNumber(gameId, playerId);
-                if(chrominosNumber == 0)
-                {
-                    GameDal.SetStatus(gameId, GameStatus.Finished);
+                // todo : position pas bonne. avertir joueur
+            }
 
-                    if (GamePlayerDal.PlayersNumber(gameId) > 1)
-                    {
-                        PlayerDal.Details(playerId).WonGames++;
-                        Ctx.SaveChanges();
-                    }
-                    else
-                    {
-                        PlayerDal.Details(playerId).FinishedSinglePlayerGames++;
-                        Ctx.SaveChanges();
-                    }       
-                    // todo gérer fin de partie en laissant jouer les joueur du tour et voir s'ils peuvent finir
-                }
-                gameCore.ChangePlayerTurn();
-            }
-            else // todo : position pas bonne. avertir joueur
-            {
-                int toto = 69;
-            }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -160,20 +138,13 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfosFromSession();
+
+            GameCore gameCore = new GameCore(Ctx, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
             if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
             {
-                GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(gameId, playerId);
-                if (gameChromino == null && playersNumber > 1)
-                    GameDal.SetStatus(gameId, GameStatus.Finished);
-                else if (gameChromino == null)
-                    return RedirectToAction("PassTurn", "Game", new { playerId = playerId, id = gameId }); //todo a tester
-                else
-                {
-                    gamePlayer.PreviouslyDraw = true;
-                    Ctx.SaveChanges();
-                }
+                gameCore.DrawChromino(playerId);
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -184,9 +155,6 @@ namespace Controllers
             GetPlayerInfosFromSession();
             if (playerId == PlayerId)
             {
-                //GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
-                //gamePlayer.PreviouslyDraw = false;
-                //Ctx.SaveChanges();
                 GameCore gamecore = new GameCore(Ctx, gameId);
                 gamecore.ChangePlayerTurn();
             }

@@ -147,7 +147,7 @@ namespace Data.Core
             }
 
             // cherche un chromino dans la main du bot correspondant à un possiblesPosition
-            possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList();
+            possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList(); // todo commencer par les positions nouvelles
             List<GameChromino> hand = GameChrominoDal.ChrominosByPriority(GameId, BotId);
             GameChromino goodChrominoGame = null;
             Coordinate firstCoordinate = null;
@@ -213,37 +213,71 @@ namespace Data.Core
             }
         }
 
+        public void DrawChromino(int playerId)
+        {
+            GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, playerId);
+            if (gameChromino == null)
+            {
+                GamePlayerDal.SetPass(GameId, playerId, true);
+                if (!GamePlayerDal.IsAllPass(GameId) || Players.Count == 1)
+                    ChangePlayerTurn();
+                else
+                    GameDal.SetStatus(GameId, GameStatus.Finished);
+            }
+            else
+            {
+                GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
+            }
+        }
+
         public bool Play(GameChromino gameChromino)
         {
-            Coordinate coordinate;
-            switch (gameChromino.Orientation)
+            int playerId = (int)gameChromino.PlayerId;
+            Coordinate coordinate = gameChromino.Orientation switch
             {
-                case Orientation.HorizontalFlip:
-                    coordinate = new Coordinate((int)gameChromino.XPosition + 2, (int)gameChromino.YPosition);
-                    break;
-                case Orientation.Vertical:
-                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition + 2);
-                    break;
-                case Orientation.Horizontal:
-                case Orientation.VerticalFlip:
-                default:
-                    coordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition);
-                    break;
-            }
+                Orientation.HorizontalFlip => new Coordinate((int)gameChromino.XPosition + 2, (int)gameChromino.YPosition),
+                Orientation.Vertical => new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition + 2),
+                _ => new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition),
+            };
             gameChromino.XPosition = coordinate.X;
             gameChromino.YPosition = coordinate.Y;
             bool put = SquareDal.PutChromino(gameChromino);
             if (put)
             {
                 gameChromino.State = ChrominoStatus.InGame;
+                GamePlayerDal.SetPass(GameId, playerId, false);
                 Ctx.SaveChanges();
                 int points = ChrominoDal.Details(gameChromino.ChrominoId).Points;
-                GamePlayerDal.AddPoint(GameId,(int)gameChromino.PlayerId, points);
+                GamePlayerDal.AddPoint(GameId, playerId, points);
                 if (Players.Count > 1)
-                    PlayerDal.AddPoints((int)gameChromino.PlayerId, points);
-                else
-                    PlayerDal.AddSinglePlayerGamesPoints((int)gameChromino.PlayerId, points);
-                //todo ? reste calculs à faire ?
+                    PlayerDal.AddPoints(playerId, points);
+
+                int numberInHand = GamePlayerDal.ChrominosNumber(GameId, playerId);
+                if (numberInHand == 0)
+                {
+                    GameDal.SetStatus(GameId, GameStatus.Finished);
+
+                    if (GamePlayerDal.PlayersNumber(GameId) > 1)
+                    {
+                        PlayerDal.Details(playerId).WonGames++;
+                    }
+                    else
+                    {
+                        int chrominosInGame = GamePlayerDal.ChrominosInGame(GameId, playerId);
+                        PlayerDal.Details(playerId).PointsSinglePlayerGames += chrominosInGame switch
+                        {
+                            8 => 100,
+                            9 => 90,
+                            10 => 85,
+                            11 => 82,
+                            _ => 92 - chrominosInGame,
+                        };
+                        PlayerDal.Details(playerId).FinishedSinglePlayerGames++;
+                    }
+                    Ctx.SaveChanges();
+                    // todo gérer fin de partie en laissant jouer les joueur du tour et voir s'ils peuvent finir
+                }
+                ChangePlayerTurn();
             }
             return put;
         }

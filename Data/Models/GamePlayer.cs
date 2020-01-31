@@ -15,6 +15,7 @@ namespace Data.Models
         public int PlayerId { get; set; }
         public bool PlayerTurn { get; set; }
         public bool PreviouslyDraw { get; set; }
+        public bool PreviouslyPass { get; set; }
         public int PlayerPoints { get; set; }
 
         public Game Game { get; set; }
