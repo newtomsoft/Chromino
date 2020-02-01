@@ -13,6 +13,7 @@ namespace Data.ViewModel
         public GameStatus GameStatus { get; set; }
         private Dictionary<string, int> Pseudos_Chrominos { get; set; }
         private DateTime PlayedDate { get; set; }
+        private string WinPlayer { get; set; }
         public string Infos
         {
             get
@@ -27,7 +28,7 @@ namespace Data.ViewModel
             }
         }
 
-        public GameForListVM(Game game, Dictionary<string, int> pseudos_chrominos, string playerPseudoTurn)
+        public GameForListVM(Game game, Dictionary<string, int> pseudos_chrominos, string playerPseudoTurn="")
         {
             GameId = game.Id;
             GameStatus = game.Status;

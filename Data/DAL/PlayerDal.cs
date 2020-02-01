@@ -111,5 +111,15 @@ namespace Data.DAL
 
             return player.Bot;
         }
+
+        public void IncreaseWin(int playerId)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            player.WonGames++;
+            Ctx.SaveChanges();
+        }
     }
 }

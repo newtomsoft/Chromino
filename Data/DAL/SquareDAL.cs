@@ -67,19 +67,16 @@ namespace Data.DAL
                             secondEdge = OpenEdge.RightLeft;
                             thirdEdge = OpenEdge.Left;
                             break;
-
                         case Orientation.HorizontalFlip:
                             firstEdge = OpenEdge.Left;
                             secondEdge = OpenEdge.RightLeft;
                             thirdEdge = OpenEdge.Right;
                             break;
-
                         case Orientation.Vertical:
                             firstEdge = OpenEdge.Top;
                             secondEdge = OpenEdge.BottomTop;
                             thirdEdge = OpenEdge.Bottom;
                             break;
-
                         case Orientation.VerticalFlip:
                         default:
                             firstEdge = OpenEdge.Bottom;
@@ -87,13 +84,10 @@ namespace Data.DAL
                             thirdEdge = OpenEdge.Top;
                             break;
                     }
-
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
-
                     gameChromino.State = ChrominoStatus.InGame;
-
                     Ctx.SaveChanges();
                     return true;
                 }

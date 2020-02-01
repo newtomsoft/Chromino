@@ -25,6 +25,10 @@ a {
 
 
 
+
+
+
+
 #gameArea {
     height: 85vm;
     width: 85vm; /* IE9 fallback */
@@ -345,11 +349,6 @@ a {
         justify-content: center;
         margin: 10px;
     }
-
-    /*.Square {
-        height: 30px;
-        border-color: black;
-    }*/
 }
 
 

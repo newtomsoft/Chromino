@@ -13,10 +13,11 @@ namespace Data.Models
         public int Id { get; set; }
         public int GameId { get; set; }
         public int PlayerId { get; set; }
-        public bool PlayerTurn { get; set; }
+        public bool Turn { get; set; }
+        public bool Win { get; set; }
         public bool PreviouslyDraw { get; set; }
         public bool PreviouslyPass { get; set; }
-        public int PlayerPoints { get; set; }
+        public int Points { get; set; }
 
         public Game Game { get; set; }
         public Player Player { get; set; }

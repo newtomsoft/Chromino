@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
-<body>
+<body id="GameBody">
     <div id="toolbar">
         <div>
             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -29,10 +29,8 @@
             case GameStatus.Finished:
                 gameStatus = "finished";
                 break;
-            case GameStatus.Aborted:
-                gameStatus = "aborted";
-                break;
             case GameStatus.InProgress:
+            default:
                 gameStatus = "in progress";
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
@@ -58,10 +56,6 @@
                 {
                     <p>@Model.PlayerPseudoTurn turn</p>
                 }
-                break;
-            case GameStatus.InPause:
-            default:
-                gameStatus = "in pause";
                 break;
         }
 
@@ -234,11 +228,7 @@
                 offset += 33;
             }
         }
-
-
-
     </div>
-
     <form id="FormSendMove" asp-action="Play" hidden>
         <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
         <input id="FormGameId" name="gameId" value="@Model.GameId" />
@@ -248,7 +238,7 @@
         <input id="FormOrientation" name="orientation" />
     </form>
 
-    @if (Model.PlayerIdTurn == 1 && Model.AutoPlay == true && Model.GameStatus != GameStatus.Finished && Model.GameStatus != GameStatus.Aborted)
+    @if (Model.PlayerIdTurn == 1 && Model.AutoPlay == true && Model.GameStatus != GameStatus.Finished)
     { // todo : test BotId à changer
         <script>
             window.onload = function () { continueRandomGame(); }

@@ -64,12 +64,12 @@ namespace Data.Core
         {
             if (GamePlayers.Count == 1)
             {
-                GamePlayers[0].PlayerTurn = true;
+                GamePlayers[0].Turn = true;
             }
             else
             {
                 GamePlayer gamePlayer = (from gp in GamePlayers
-                                         where gp.PlayerTurn == true
+                                         where gp.Turn == true
                                          select gp).FirstOrDefault();
 
                 if (gamePlayer == null)
@@ -85,7 +85,7 @@ namespace Data.Core
                 {
                     if (selectNext)
                     {
-                        currentGamePlayer.PlayerTurn = true;
+                        currentGamePlayer.Turn = true;
                         selected = true;
                         break;
                     }
@@ -93,9 +93,9 @@ namespace Data.Core
                         selectNext = true;
                 }
                 if (!selected)
-                    GamePlayers[0].PlayerTurn = true;
+                    GamePlayers[0].Turn = true;
 
-                gamePlayer.PlayerTurn = false;
+                gamePlayer.Turn = false;
             }
             GameDal.UpdateDate(GameId);
             Ctx.SaveChanges();
@@ -248,11 +248,9 @@ namespace Data.Core
             bool put = SquareDal.PutChromino(gameChromino);
             if (put)
             {
-                gameChromino.State = ChrominoStatus.InGame;
                 GamePlayerDal.SetPass(GameId, playerId, false);
-                Ctx.SaveChanges();
                 int points = ChrominoDal.Details(gameChromino.ChrominoId).Points;
-                GamePlayerDal.AddPoint(GameId, playerId, points);
+                GamePlayerDal.AddPoints(GameId, playerId, points);
                 if (Players.Count > 1)
                     PlayerDal.AddPoints(playerId, points);
 
@@ -263,7 +261,8 @@ namespace Data.Core
 
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
-                        PlayerDal.Details(playerId).WonGames++;
+                        PlayerDal.IncreaseWin(playerId);
+                        GamePlayerDal.SetWon(GameId, playerId);
                     }
                     else
                     {

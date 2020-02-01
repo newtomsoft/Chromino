@@ -33,47 +33,95 @@ namespace Controllers
             }
             else
             {
-                List<GameForListVM> gamesToPlayForListVM = new List<GameForListVM>();
+                List<SelectListItem> listSelectListItem = new List<SelectListItem>();
+                SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Play multi game", Disabled = true };
+                listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.MultiGamesToPlay(PlayerId))
                 {
                     List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
                     Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                     foreach (Player player in players)
                     {
                         pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
                     }
-                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
-                    gamesToPlayForListVM.Add(new GameForListVM(game, pseudos_chrominos, playerPseudoTurn));
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
                 }
-                ViewData["GamesToPlay"] = new SelectList(gamesToPlayForListVM, "GameId", "Infos");
+                ViewData["GamesToPlay"] = new SelectList(listSelectListItem, "Value", "Text");
 
-                List<GameForListVM> singleGamesForListVM = new List<GameForListVM>();
+                listSelectListItem = new List<SelectListItem>();
+                intro = new SelectListItem() { Value = "selected", Text = "Play alone game", Disabled = true };
+                listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.SingleGamesInProgress(PlayerId))
                 {
                     List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
                     Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                     foreach (Player player in players)
                     {
                         pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
                     }
-                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
-                    singleGamesForListVM.Add(new GameForListVM(game, pseudos_chrominos, playerPseudoTurn));
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
                 }
-                ViewData["SingleGames"] = new SelectList(singleGamesForListVM, "GameId", "Infos");
+                ViewData["SingleGames"] = new SelectList(listSelectListItem, "Value", "Text");
 
-                List<GameForListVM> otherGamesForListVM = new List<GameForListVM>();
-                foreach (Game game in GamePlayerDal.GamesNotInProgress(PlayerId))
+                listSelectListItem = new List<SelectListItem>();
+                intro = new SelectListItem() { Value = "selected", Text = "View won game", Disabled = true };
+                listSelectListItem.Add(intro);
+                foreach (Game game in GamePlayerDal.GamesWon(PlayerId))
                 {
                     List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
                     Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                     foreach (Player player in players)
                     {
                         pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
                     }
-                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
-                    otherGamesForListVM.Add(new GameForListVM(game, pseudos_chrominos, playerPseudoTurn));
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
                 }
-                ViewData["OtherGames"] = new SelectList(otherGamesForListVM, "GameId", "Infos", null, "PlayerPseudoTurn");
+                ViewData["GamesWon"] = new SelectList(listSelectListItem, "Value", "Text");
+
+                listSelectListItem = new List<SelectListItem>();
+                intro = new SelectListItem() { Value = "selected", Text = "View lost game", Disabled = true };
+                listSelectListItem.Add(intro);
+                foreach (Game game in GamePlayerDal.GamesLost(PlayerId))
+                {
+                    List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
+                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                    foreach (Player player in players)
+                    {
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                    }
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
+                }
+                ViewData["GamesLost"] = new SelectList(listSelectListItem, "Value", "Text");
+
+                listSelectListItem = new List<SelectListItem>();
+                intro = new SelectListItem() { Value = "selected", Text = "View finished alone game", Disabled = true };
+                listSelectListItem.Add(intro);
+                foreach (Game game in GamePlayerDal.SingleGamesFinished(PlayerId))
+                {
+                    List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
+                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                    foreach (Player player in players)
+                    {
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                    }
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
+                }
+                ViewData["SingleGamesFinished"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 return View();
             }
