@@ -37,7 +37,7 @@
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
                     <p>Your turn</p>
-                    @if (!Model.GamePlayerTurn.PreviouslyDraw || Model.PlayersNumber == 1)
+                    @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.PlayersNumber == 1))
                     {
                         <form id="FormDrawChromino" asp-action="DrawChromino">
                             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -45,7 +45,7 @@
                             <input type="submit" class="btn btn-primary" value="Draw" />
                         </form>
                     }
-                    @if (Model.PlayersNumber > 1)
+                    else if (Model.PlayersNumber > 1)
                     {
                         <form id="FormPassTurn" asp-action="PassTurn">
                             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -90,7 +90,8 @@
                 </div>
             </div>
         }
-        @if (Model.PlayerIdTurn == ViewBag.PlayerId)
+
+        @if (Model.GameStatus == GameStatus.InProgress && Model.PlayerIdTurn == ViewBag.PlayerId)
         {
             <div class="row">
                 <div class="col-md-4">

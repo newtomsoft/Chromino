@@ -24,6 +24,6 @@ namespace Data.Models
         public int WonGames { get; set; }
         public int FinishedSinglePlayerGames { get; set; }
         public int PointsSinglePlayerGames { get; set; }
-
+        public bool Bot { get; set; }
     }
 }

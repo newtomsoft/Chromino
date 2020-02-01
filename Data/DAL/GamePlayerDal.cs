@@ -203,7 +203,7 @@ namespace Data.DAL
             return player;
         }
 
-        public int ChrominosNumber(int gameId, int playerId)
+        public int ChrominosInHand(int gameId, int playerId)
         {
             int ChrominosNumber = (from gp in Ctx.GamesPlayers
                                    join gc in Ctx.GamesChrominos on gp.GameId equals gc.GameId

@@ -105,11 +105,8 @@ namespace Controllers
 
             Player bot = PlayerDal.Bot();
             GameCore gamecore = new GameCore(Ctx, id);
-            bool move = gamecore.PlayBot();
-            if (move)
-            {
-                gamecore.ChangePlayerTurn();
-            }
+            gamecore.PlayBot();
+
             return RedirectToAction("Show", "Game", new { id });
         }
 
@@ -128,6 +125,10 @@ namespace Controllers
             if (!move)
             {
                 // todo : position pas bonne. avertir joueur
+            }
+            else
+            {
+                NextPlayerPlayIfBot(gameId, gameCore);
             }
 
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -155,11 +156,15 @@ namespace Controllers
             GetPlayerInfosFromSession();
             if (playerId == PlayerId)
             {
-                GameCore gamecore = new GameCore(Ctx, gameId);
-                gamecore.ChangePlayerTurn();
+                GameCore gameCore = new GameCore(Ctx, gameId);
+                gameCore.PassTurn(playerId);
+                NextPlayerPlayIfBot(gameId, gameCore);
+
+
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
+
 
         // todo : [HttpPost]
         public IActionResult Show(int id)
@@ -216,6 +221,15 @@ namespace Controllers
         public IActionResult NotFound()
         {
             return View();
+        }
+
+        private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
+        {
+            if (PlayerDal.IsBot(GamePlayerDal.PlayerTurn(gameId).Id))
+            {
+                bool play;
+                while (!(play = gameCore.PlayBot())) ;
+            }
         }
     }
 }

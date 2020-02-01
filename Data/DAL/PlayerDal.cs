@@ -102,5 +102,14 @@ namespace Data.DAL
             player.PointsSinglePlayerGames += points;
             Ctx.SaveChanges();
         }
+
+        public bool IsBot(int playerId)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            return player.Bot;
+        }
     }
 }
