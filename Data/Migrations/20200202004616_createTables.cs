@@ -12,21 +12,22 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ChrominoId = table.Column<int>(nullable: false),
+                    ChrominoId = table.Column<byte>(nullable: false),
                     GameId = table.Column<int>(nullable: false),
                     Orientation = table.Column<int>(nullable: false),
                     XPosition = table.Column<int>(nullable: false),
-                    YPosition = table.Column<int>(nullable: false)
+                    YPosition = table.Column<int>(nullable: false),
+                    ChrominoId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChrominoInGame", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChrominoInGame_Chromino_ChrominoId",
-                        column: x => x.ChrominoId,
+                        name: "FK_ChrominoInGame_Chromino_ChrominoId1",
+                        column: x => x.ChrominoId1,
                         principalTable: "Chromino",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ChrominoInGame_Game_GameId",
                         column: x => x.GameId,
@@ -41,20 +42,21 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ChrominoId = table.Column<int>(nullable: false),
+                    ChrominoId = table.Column<byte>(nullable: false),
                     GameId = table.Column<int>(nullable: false),
                     PlayerId = table.Column<int>(nullable: false),
-                    Position = table.Column<byte>(nullable: false)
+                    Position = table.Column<byte>(nullable: false),
+                    ChrominoId1 = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChrominoInHand", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChrominoInHand_Chromino_ChrominoId",
-                        column: x => x.ChrominoId,
+                        name: "FK_ChrominoInHand_Chromino_ChrominoId1",
+                        column: x => x.ChrominoId1,
                         principalTable: "Chromino",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ChrominoInHand_Game_GameId",
                         column: x => x.GameId,
@@ -70,9 +72,9 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChrominoInGame_ChrominoId",
+                name: "IX_ChrominoInGame_ChrominoId1",
                 table: "ChrominoInGame",
-                column: "ChrominoId");
+                column: "ChrominoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChrominoInGame_GameId",
@@ -80,9 +82,9 @@ namespace Data.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChrominoInHand_ChrominoId",
+                name: "IX_ChrominoInHand_ChrominoId1",
                 table: "ChrominoInHand",
-                column: "ChrominoId");
+                column: "ChrominoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChrominoInHand_GameId",

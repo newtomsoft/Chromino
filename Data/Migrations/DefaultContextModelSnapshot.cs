@@ -50,7 +50,10 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ChrominoId")
+                    b.Property<byte>("ChrominoId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("ChrominoId1")
                         .HasColumnType("int");
 
                     b.Property<int>("GameId")
@@ -67,7 +70,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChrominoId");
+                    b.HasIndex("ChrominoId1");
 
                     b.HasIndex("GameId");
 
@@ -81,7 +84,10 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ChrominoId")
+                    b.Property<byte>("ChrominoId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("ChrominoId1")
                         .HasColumnType("int");
 
                     b.Property<int>("GameId")
@@ -95,7 +101,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChrominoId");
+                    b.HasIndex("ChrominoId1");
 
                     b.HasIndex("GameId");
 
@@ -284,9 +290,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Models.Chromino", "Chromino")
                         .WithMany()
-                        .HasForeignKey("ChrominoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ChrominoId1");
 
                     b.HasOne("Data.Models.Game", "Game")
                         .WithMany()
@@ -299,9 +303,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Models.Chromino", "Chromino")
                         .WithMany()
-                        .HasForeignKey("ChrominoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ChrominoId1");
 
                     b.HasOne("Data.Models.Game", "Game")
                         .WithMany()
