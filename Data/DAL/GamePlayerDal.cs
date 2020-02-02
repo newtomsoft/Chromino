@@ -230,26 +230,6 @@ namespace Data.DAL
             return player;
         }
 
-        public int ChrominosInHand(int gameId, int playerId)
-        {
-            int ChrominosNumber = (from gp in Ctx.GamesPlayers
-                                   join gc in Ctx.GamesChrominos on gp.GameId equals gc.GameId
-                                   where gp.GameId == gameId && gp.PlayerId == playerId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
-                                   select gc).Count();
-
-            return ChrominosNumber;
-        }
-
-        public int ChrominosInGame(int gameId, int playerId)
-        {
-            int ChrominosNumber = (from gp in Ctx.GamesPlayers
-                                   join gc in Ctx.GamesChrominos on gp.GameId equals gc.GameId
-                                   where gp.GameId == gameId && gp.PlayerId == playerId && gc.State == ChrominoStatus.InGame
-                                   select gc).Count();
-
-            return ChrominosNumber;
-        }
-
         public void SetPreviouslyDraw(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers

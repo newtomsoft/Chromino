@@ -17,17 +17,17 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public bool PutChromino(GameChromino gameChromino, bool firstChromino = false)
+        public bool PutChromino(ChrominoInGame chrominoInGame, bool firstChromino = false)
         {
             ChrominoDal chrominoDal = new ChrominoDal(Ctx);
-            Chromino chromino = chrominoDal.Details(gameChromino.ChrominoId);
+            Chromino chromino = chrominoDal.Details(chrominoInGame.ChrominoId);
 
-            ComputeOffset((Orientation)gameChromino.Orientation, out int offsetX, out int offsetY);
-            Coordinate firstCoordinate = new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition);
+            ComputeOffset(chrominoInGame.Orientation, out int offsetX, out int offsetY);
+            Coordinate firstCoordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition);
             Coordinate secondCoordinate = new Coordinate(firstCoordinate.X + offsetX, firstCoordinate.Y + offsetY);
             Coordinate thirdCoordinate = new Coordinate(firstCoordinate.X + 2 * offsetX, firstCoordinate.Y + 2 * offsetY);
 
-            int gameId = gameChromino.GameId;
+            int gameId = chrominoInGame.GameId;
 
             if (!firstChromino && (!IsFree(gameId, firstCoordinate) || !IsFree(gameId, secondCoordinate) || !IsFree(gameId, thirdCoordinate)))
             {
@@ -60,7 +60,7 @@ namespace Data.DAL
                     OpenEdge firstEdge;
                     OpenEdge secondEdge;
                     OpenEdge thirdEdge;
-                    switch (gameChromino.Orientation)
+                    switch (chrominoInGame.Orientation)
                     {
                         case Orientation.Horizontal:
                             firstEdge = OpenEdge.Right;
@@ -87,7 +87,6 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
-                    gameChromino.State = ChrominoStatus.InGame;
                     Ctx.SaveChanges();
                     return true;
                 }

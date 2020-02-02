@@ -77,7 +77,6 @@ namespace Controllers
             ChrominoDal.CreateChrominos();
             int gameId = GameDal.AddGame().Id;
             GamePlayerDal.Add(gameId, players);
-            GameChrominoDal.Add(gameId);
             GameCore gamecore = new GameCore(Ctx, gameId);
             gamecore.BeginGame();
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -116,12 +115,11 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             GameCore gameCore = new GameCore(Ctx, gameId);
-            GameChromino gameChromino = GameChrominoDal.Details(gameId, chrominoId);
-            gameChromino.XPosition = x;
-            gameChromino.YPosition = y;
-            gameChromino.Orientation = orientation;
-            gameChromino.PlayerId = playerId;
-            bool move = gameCore.Play(gameChromino);
+            ChrominoInGame chrominoInGame = GameChrominoDal.Details(gameId, chrominoId);
+            chrominoInGame.XPosition = x;
+            chrominoInGame.YPosition = y;
+            chrominoInGame.Orientation = orientation;
+            bool move = gameCore.Play(chrominoInGame, playerId);
             if (!move)
             {
                 // todo : position pas bonne. avertir joueur
@@ -176,8 +174,8 @@ namespace Controllers
 
             if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || players.Count == 1 && players[0].Id == BotId) // identified player in the game or only bot play
             {
-                int chrominosInGame = GameChrominoDal.StatusNumber(id, ChrominoStatus.InGame);
-                int chrominosInStack = GameChrominoDal.StatusNumber(id, ChrominoStatus.InStack);
+                int chrominosInGame = GameChrominoDal.InGame(id);
+                int chrominosInStack = GameChrominoDal.InStack(id);
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)

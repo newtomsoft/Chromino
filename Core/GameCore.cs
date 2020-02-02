@@ -54,8 +54,7 @@ namespace Data.Core
         public void BeginGame()
         {
             GameDal.SetStatus(GameId, GameStatus.InProgress);
-            GameChromino firstChromino = GameChrominoDal.RandomFirstChromino(GameId);
-            SquareDal.PutChromino(firstChromino, true);
+            GameChrominoDal.RandomFirstChrominoToGame(GameId);
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -148,42 +147,50 @@ namespace Data.Core
 
             // cherche un chromino dans la main du bot correspondant à un possiblesPosition
             possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList(); // todo commencer par les positions nouvelles
-            List<GameChromino> hand = GameChrominoDal.ChrominosByPriority(GameId, BotId);
-            GameChromino goodGameChromino = null;
+            List<ChrominoInHand> hand = GameChrominoDal.ChrominosByPriority(GameId, BotId);
+            ChrominoInGame goodChrominoInGame = null;
             Coordinate firstCoordinate = null;
 
-            foreach (GameChromino chrominoGame in hand)
+            ChrominoInGame chrominoInGame = new ChrominoInGame();
+            foreach (ChrominoInHand chrominoInHand in hand)
             {
                 foreach (PossiblesPositions possiblePosition in possiblesPositions)
                 {
-                    Chromino chromino = ChrominoDal.Details(chrominoGame.ChrominoId);
-
+                    Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
                     if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon))
                     {
-                        chrominoGame.Orientation = possiblePosition.Orientation;
                         firstCoordinate = possiblePosition.Coordinate;
-                        goodGameChromino = chrominoGame;
+                        goodChrominoInGame = new ChrominoInGame()
+                        {
+                            Orientation = possiblePosition.Orientation,
+                            ChrominoId = chromino.Id,
+                            GameId = GameId,
+                        };
                         break;
                     }
                     else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon))
                     {
                         firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
-                        chrominoGame.Orientation = possiblePosition.Orientation switch
+                        goodChrominoInGame = new ChrominoInGame()
                         {
-                            Orientation.Horizontal => Orientation.HorizontalFlip,
-                            Orientation.HorizontalFlip => Orientation.Horizontal,
-                            Orientation.Vertical => Orientation.VerticalFlip,
-                            _ => Orientation.Vertical,
+                            Orientation = possiblePosition.Orientation switch
+                            {
+                                Orientation.Horizontal => Orientation.HorizontalFlip,
+                                Orientation.HorizontalFlip => Orientation.Horizontal,
+                                Orientation.Vertical => Orientation.VerticalFlip,
+                                _ => Orientation.Vertical,
+                            },
+                            ChrominoId = chromino.Id,
+                            GameId = GameId,
                         };
-                        goodGameChromino = chrominoGame;
                         break;
                     }
                 }
-                if (goodGameChromino != null)
+                if (goodChrominoInGame != null)
                     break;
             }
 
-            if (goodGameChromino == null)
+            if (goodChrominoInGame == null)
             {
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, BotId);
                 int playersNumber = GamePlayerDal.PlayersNumber(GameId);
@@ -200,11 +207,11 @@ namespace Data.Core
             }
             else
             {
-                goodGameChromino.XPosition = firstCoordinate.X;
-                goodGameChromino.YPosition = firstCoordinate.Y;
+                goodChrominoInGame.XPosition = firstCoordinate.X;
+                goodChrominoInGame.YPosition = firstCoordinate.Y;
 
-                bool put = Play(goodGameChromino);
-                return put; // normalement ça doit tojours être true 
+                bool put = Play(goodChrominoInGame, 0); // todo id bot pas forcement = 0
+                return put; // normalement ça doit toujours être true 
             }
         }
 
@@ -216,8 +223,8 @@ namespace Data.Core
 
         public void DrawChromino(int playerId)
         {
-            GameChromino gameChromino = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, playerId);
-            if (gameChromino == null)
+            int chrominoId = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, playerId);
+            if (chrominoId == 0)
             {
                 GamePlayerDal.SetPass(GameId, playerId, true);
                 if (!GamePlayerDal.IsAllPass(GameId) || Players.Count == 1)
@@ -231,30 +238,29 @@ namespace Data.Core
             }
         }
 
-        public bool Play(GameChromino gameChromino)
+        public bool Play(ChrominoInGame chrominoInGame, int playerId)
         {
-            int playerId = (int)gameChromino.PlayerId;
-            if(!PlayerDal.IsBot(playerId))
+            if (!PlayerDal.IsBot(playerId))
             {
-                Coordinate coordinate = gameChromino.Orientation switch
+                Coordinate coordinate = chrominoInGame.Orientation switch
                 {
-                    Orientation.HorizontalFlip => new Coordinate((int)gameChromino.XPosition + 2, (int)gameChromino.YPosition),
-                    Orientation.Vertical => new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition + 2),
-                    _ => new Coordinate((int)gameChromino.XPosition, (int)gameChromino.YPosition),
+                    Orientation.HorizontalFlip => new Coordinate((int)chrominoInGame.XPosition + 2, (int)chrominoInGame.YPosition),
+                    Orientation.Vertical => new Coordinate((int)chrominoInGame.XPosition, (int)chrominoInGame.YPosition + 2),
+                    _ => new Coordinate((int)chrominoInGame.XPosition, (int)chrominoInGame.YPosition),
                 };
-                gameChromino.XPosition = coordinate.X;
-                gameChromino.YPosition = coordinate.Y;
+                chrominoInGame.XPosition = coordinate.X;
+                chrominoInGame.YPosition = coordinate.Y;
             }
-            bool put = SquareDal.PutChromino(gameChromino);
+            bool put = SquareDal.PutChromino(chrominoInGame);
             if (put)
             {
                 GamePlayerDal.SetPass(GameId, playerId, false);
-                int points = ChrominoDal.Details(gameChromino.ChrominoId).Points;
+                int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
                 GamePlayerDal.AddPoints(GameId, playerId, points);
                 if (Players.Count > 1)
                     PlayerDal.AddPoints(playerId, points);
 
-                int numberInHand = GamePlayerDal.ChrominosInHand(GameId, playerId);
+                int numberInHand = GameChrominoDal.InHand(GameId, playerId);
                 if (numberInHand == 0)
                 {
                     GameDal.SetStatus(GameId, GameStatus.Finished);
@@ -266,7 +272,7 @@ namespace Data.Core
                     }
                     else
                     {
-                        int chrominosInGame = GamePlayerDal.ChrominosInGame(GameId, playerId);
+                        int chrominosInGame = GameChrominoDal.InGame(GameId);
                         PlayerDal.Details(playerId).PointsSinglePlayerGames += chrominosInGame switch
                         {
                             8 => 100,
