@@ -210,7 +210,7 @@ namespace Data.Core
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
 
-                bool put = Play(goodChrominoInGame, 0); // todo id bot pas forcement = 0
+                bool put = Play(goodChrominoInGame, 1); // todo id bot pas forcement = 1
                 return put; // normalement ça doit toujours être true 
             }
         }

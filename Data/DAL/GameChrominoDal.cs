@@ -18,13 +18,13 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public ChrominoInGame Details(int gameId, int chrominoId)
+        public ChrominoInHand Details(int gameId, int chrominoId)
         {
-            ChrominoInGame chrominoInGame = (from gc in Ctx.ChrominosInGame
+            ChrominoInHand chrominoInHand = (from gc in Ctx.ChrominosInHand
                                              where gc.GameId == gameId && gc.ChrominoId == chrominoId
                                              select gc).FirstOrDefault();
 
-            return chrominoInGame;
+            return chrominoInHand;
         }
 
         public int InGame(int gameId)
@@ -65,8 +65,8 @@ namespace Data.DAL
         public int ChrominoFromStackToHandPlayer(int gameId, int playerId)
         {
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
-            var chrominosInGameId = Ctx.ChrominosInGame.Select(c => c.Id);
-            var chrominosInHandId = Ctx.ChrominosInHand.Select(c => c.Id);
+            var chrominosInGameId = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
+            var chrominosInHandId = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
             var possibleChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId);
 
             int chrominoId = (from c in possibleChrominosId
@@ -75,9 +75,13 @@ namespace Data.DAL
 
             if (chrominoId != 0)
             {
-                byte maxPosition = (from ch in Ctx.ChrominosInHand
-                                    where ch.GameId == gameId && ch.PlayerId == playerId
-                                    select ch.Position).Max();
+                var positions = from ch in Ctx.ChrominosInHand
+                                where ch.GameId == gameId && ch.PlayerId == playerId
+                                select ch.Position;
+
+                byte maxPosition = 0;
+                if (positions.Count() > 0)
+                    maxPosition = positions.Max();
 
                 ChrominoInHand chrominoInHand = new ChrominoInHand()
                 {
@@ -86,6 +90,7 @@ namespace Data.DAL
                     ChrominoId = chrominoId,
                     Position = (byte)(maxPosition + 1),
                 };
+                Ctx.ChrominosInHand.Add(chrominoInHand);
                 Ctx.SaveChanges();
             }
             return chrominoId;

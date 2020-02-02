@@ -115,10 +115,17 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             GameCore gameCore = new GameCore(Ctx, gameId);
-            ChrominoInGame chrominoInGame = GameChrominoDal.Details(gameId, chrominoId);
-            chrominoInGame.XPosition = x;
-            chrominoInGame.YPosition = y;
-            chrominoInGame.Orientation = orientation;
+            ChrominoInHand chrominoInHand = GameChrominoDal.Details(gameId, chrominoId);
+
+            ChrominoInGame chrominoInGame = new ChrominoInGame()
+            {
+                GameId = gameId,
+                ChrominoId = chrominoId,
+                XPosition = x,
+                YPosition = y,
+                Orientation = orientation,
+            };
+
             bool move = gameCore.Play(chrominoInGame, playerId);
             if (!move)
             {
@@ -129,7 +136,10 @@ namespace Controllers
                 NextPlayerPlayIfBot(gameId, gameCore);
             }
 
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", "Game", new
+            {
+                id = gameId
+            });
         }
 
 
