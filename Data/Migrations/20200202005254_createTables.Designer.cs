@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    [Migration("20200202004616_createTables")]
+    [Migration("20200202005254_createTables")]
     partial class createTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,10 +52,7 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte>("ChrominoId")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("ChrominoId1")
+                    b.Property<int>("ChrominoId")
                         .HasColumnType("int");
 
                     b.Property<int>("GameId")
@@ -72,7 +69,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChrominoId1");
+                    b.HasIndex("ChrominoId");
 
                     b.HasIndex("GameId");
 
@@ -86,10 +83,7 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte>("ChrominoId")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("ChrominoId1")
+                    b.Property<int>("ChrominoId")
                         .HasColumnType("int");
 
                     b.Property<int>("GameId")
@@ -103,7 +97,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChrominoId1");
+                    b.HasIndex("ChrominoId");
 
                     b.HasIndex("GameId");
 
@@ -292,7 +286,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Models.Chromino", "Chromino")
                         .WithMany()
-                        .HasForeignKey("ChrominoId1");
+                        .HasForeignKey("ChrominoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Data.Models.Game", "Game")
                         .WithMany()
@@ -305,7 +301,9 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Models.Chromino", "Chromino")
                         .WithMany()
-                        .HasForeignKey("ChrominoId1");
+                        .HasForeignKey("ChrominoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Data.Models.Game", "Game")
                         .WithMany()

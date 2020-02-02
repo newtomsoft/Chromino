@@ -12,7 +12,7 @@ namespace Data.Models
     public class ChrominoInHand
     {
         public int Id { get; set; }
-        public byte ChrominoId { get; set; }
+        public int ChrominoId { get; set; }
         public int GameId { get; set; }
         public int PlayerId { get; set; }
         public byte Position { get; set; }
