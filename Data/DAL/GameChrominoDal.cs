@@ -96,8 +96,15 @@ namespace Data.DAL
             return chrominoId;
         }
 
-        public void StackToGame(Chromino chromino, int gameId, Coordinate coordinate, Orientation orientation)
+        public void FirstRandomToGame(int gameId)
         {
+            Chromino chromino = (from c in Ctx.Chrominos
+                                 where c.SecondColor == Color.Cameleon
+                                 orderby Guid.NewGuid()
+                                 select c).AsNoTracking().FirstOrDefault();
+
+            Orientation orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
+            Coordinate coordinate = new Coordinate(0, 0).GetPreviousCoordinate(orientation);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -108,18 +115,6 @@ namespace Data.DAL
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
             new SquareDal(Ctx).PutChromino(chrominoInGame, true);
-        }
-
-        public void FirstRandomToGame(int gameId)
-        {
-            Chromino chromino = (from c in Ctx.Chrominos
-                                 where c.SecondColor == Color.Cameleon
-                                 orderby Guid.NewGuid()
-                                 select c).AsNoTracking().FirstOrDefault();
-
-            Orientation orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
-            Coordinate coordinate = new Coordinate(0, 0).GetPreviousCoordinate(orientation);
-            StackToGame(chromino, gameId, coordinate, orientation);
         }
 
         public List<ChrominoInHand> PlayerList(int gameId, int playerId)

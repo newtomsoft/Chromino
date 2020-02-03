@@ -39,33 +39,17 @@ namespace Controllers
             {
                 return View();
             }
+            string[] pseudosNotNull = pseudos.Where(c => c != null).ToArray();
 
             string error = null;
-            Player playerBot = PlayerDal.Bot();
-
             List<Player> players = new List<Player>(8);
-            if (pseudos[0] != null && pseudos[0].ToUpperInvariant() != "BOT")
+            for (int i = 0; i < pseudosNotNull.Length; i++)
             {
-                Player player = PlayerDal.Details(pseudos[0]);
-                if (player != null)
+                Player player = PlayerDal.Details(pseudosNotNull[i]);
+                if (player != null && !players.Contains(player))
                     players.Add(player);
                 else
-                    error = "pseudo 1 doesn't exist";
-            }
-            else
-            {
-                players.Add(playerBot);
-            }
-            for (int i = 1; i < pseudos.Length; i++)
-            {
-                if (pseudos[i] != null)
-                {
-                    Player player = PlayerDal.Details(pseudos[i]);
-                    if (player != null)
-                        players.Add(player);
-                    else
-                        error = $"pseudo {i} doesn't exist";
-                }
+                    error = $"pseudo {pseudosNotNull[i]} doesn't exist or already in game";
             }
 
             if (error != null)
@@ -87,7 +71,7 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             List<Player> players = GamePlayerDal.Players(id);
-            if (players.Count == 1 && players[0].Pseudo == "bot")
+            if (players.Count == 1 && PlayerDal.IsBot(players[0].Id))
             {
                 return RedirectToAction("PlayBot", "Game", new { id });
             }
@@ -96,17 +80,6 @@ namespace Controllers
                 // TODO jeux "normal"
                 return View();
             }
-        }
-
-        public IActionResult PlayBot(int id)
-        {
-            GetPlayerInfosFromSession();
-
-            Player bot = PlayerDal.Bot();
-            GameCore gamecore = new GameCore(Ctx, id);
-            gamecore.PlayBot();
-
-            return RedirectToAction("Show", "Game", new { id });
         }
 
         [HttpPost]
@@ -208,7 +181,9 @@ namespace Controllers
                 Player playerTurn = GamePlayerDal.PlayerTurn(id);
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber);
+                List<int> botsId = PlayerDal.BotsId();
+
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber, botsId);
                 return View(gameViewModel);
             }
             else
@@ -217,13 +192,24 @@ namespace Controllers
             }
         }
 
+        public IActionResult PlayBot(int id, int botId)
+        {
+            GetPlayerInfosFromSession();
+
+            Player bot = PlayerDal.Bot();
+            GameCore gamecore = new GameCore(Ctx, id);
+            gamecore.PlayBot(botId);
+
+            return RedirectToAction("Show", "Game", new { id });
+        }
+
         [HttpPost]
-        public IActionResult AutoPlay(int gameId, bool autoPlay)
+        public IActionResult AutoPlay(int gameId, int botId, bool autoPlay)
         {
             GetPlayerInfosFromSession();
 
             GameDal.SetAutoPlay(gameId, autoPlay);
-            return RedirectToAction("PlayBot", "Game", new { id = gameId });
+            return RedirectToAction("PlayBot", "Game", new { id = gameId, botId = botId });
         }
 
         public IActionResult NotFound()
@@ -233,10 +219,11 @@ namespace Controllers
 
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
         {
-            if (PlayerDal.IsBot(GamePlayerDal.PlayerTurn(gameId).Id))
+            int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
+            if (PlayerDal.IsBot(playerId))
             {
                 bool play;
-                while (!(play = gameCore.PlayBot())) ;
+                while (!(play = gameCore.PlayBot(playerId))) ;
             }
         }
     }

@@ -91,6 +91,7 @@ namespace Data.DAL
                         ChrominoInHand chrominoInHand = new GameChrominoDal(Ctx).Details(gameId, chromino.Id);
                         Ctx.ChrominosInHand.Remove(chrominoInHand);
                     }
+                    Ctx.ChrominosInGame.Add(chrominoInGame);
                     Ctx.SaveChanges();
                     return true;
                 }

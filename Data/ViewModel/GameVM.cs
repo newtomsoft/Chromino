@@ -27,11 +27,12 @@ namespace Data.ViewModel
         public GameStatus GameStatus { get; set; }
         public List<ChrominoVM> IdentifiedPlayerChrominosViewModel { get; set; }
         public string PlayerPseudoTurn { get; set; }
-        public int PlayerIdTurn { get; set; } // todo suppr
+        public int PlayerIdTurn { get; set; }
         public int PlayersNumber { get; set; } // todo suppr
         public GamePlayer GamePlayerTurn { get; set; }
+        public List<int> BotsId { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, int playersNumber)
+        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, int playersNumber, List<int> botsId)
         {
             PlayersNumber = playersNumber;
             PlayerPseudoTurn = playerTurn.Pseudo;
@@ -44,6 +45,7 @@ namespace Data.ViewModel
             Pseudos_Chrominos = pseudos_chrominos;
             Squares = squares;
             GameStatus = gameStatus;
+            BotsId = botsId;
             XMin = squares.Select(g => g.X).Min() - 1; // +- 1 pour marge permettant de poser un chromino sur un bord
             XMax = squares.Select(g => g.X).Max() + 1;
             YMin = squares.Select(g => g.Y).Min() - 1;

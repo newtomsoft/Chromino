@@ -104,7 +104,7 @@ namespace Data.Core
         /// placement d'un autre chrominos de la main du bot dans le jeu
         /// </summary>
         /// <param name="gameId"></param>
-        public bool PlayBot()
+        public bool PlayBot(int botId)
         {
             HashSet<Coordinate> coordinates = FreeAroundChrominos();
 
@@ -147,7 +147,7 @@ namespace Data.Core
 
             // cherche un chromino dans la main du bot correspondant à un possiblesPosition
             possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList(); // todo commencer par les positions nouvelles
-            List<ChrominoInHand> hand = GameChrominoDal.ChrominosByPriority(GameId, BotId);
+            List<ChrominoInHand> hand = GameChrominoDal.ChrominosByPriority(GameId, botId);
             ChrominoInGame goodChrominoInGame = null;
             Coordinate firstCoordinate = null;
 
@@ -195,16 +195,16 @@ namespace Data.Core
 
             if (goodChrominoInGame == null)
             {
-                GamePlayer gamePlayer = GamePlayerDal.Details(GameId, BotId);
+                GamePlayer gamePlayer = GamePlayerDal.Details(GameId, botId);
                 int playersNumber = GamePlayerDal.PlayersNumber(GameId);
                 if (!gamePlayer.PreviouslyDraw || playersNumber == 1)
                 {
-                    DrawChromino(BotId);
+                    DrawChromino(botId);
                     return false;
                 }
                 else
                 {
-                    PassTurn(BotId);
+                    PassTurn(botId);
                     return true;
                 }
             }
@@ -212,12 +212,7 @@ namespace Data.Core
             {
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
-                bool put = Play(goodChrominoInGame, 1); // todo id bot pas forcement = 1
-                //if(put)
-                //{
-                //    Ctx.ChrominosInHand.Remove(goodChrominoInHand);
-                //    Ctx.SaveChanges();
-                //}
+                bool put = Play(goodChrominoInGame, botId); 
                 return put; // normalement ça doit toujours être true 
             }
         }
@@ -271,7 +266,6 @@ namespace Data.Core
                 if (numberInHand == 0)
                 {
                     GameDal.SetStatus(GameId, GameStatus.Finished);
-
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
                         PlayerDal.IncreaseWin(playerId);

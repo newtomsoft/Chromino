@@ -48,6 +48,7 @@ namespace Data.DAL
             return botplayer;
         }
 
+
         public Player Details(int id)
         {
             Player player = (from p in Ctx.Players
@@ -120,6 +121,15 @@ namespace Data.DAL
 
             player.WonGames++;
             Ctx.SaveChanges();
+        }
+
+        public List<int> BotsId()
+        {
+            List<int> botsId = (from p in Ctx.Players
+                                where p.Bot
+                                select p.Id).ToList();
+
+            return botsId;
         }
     }
 }
