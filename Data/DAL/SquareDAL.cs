@@ -19,8 +19,7 @@ namespace Data.DAL
 
         public bool PutChromino(ChrominoInGame chrominoInGame, bool firstChromino = false)
         {
-            ChrominoDal chrominoDal = new ChrominoDal(Ctx);
-            Chromino chromino = chrominoDal.Details(chrominoInGame.ChrominoId);
+            Chromino chromino = new ChrominoDal(Ctx).Details(chrominoInGame.ChrominoId);
 
             ComputeOffset(chrominoInGame.Orientation, out int offsetX, out int offsetY);
             Coordinate firstCoordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition);
@@ -87,6 +86,11 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
+                    if (!firstChromino)
+                    {
+                        ChrominoInHand chrominoInHand = new GameChrominoDal(Ctx).Details(gameId, chromino.Id);
+                        Ctx.ChrominosInHand.Remove(chrominoInHand);
+                    }
                     Ctx.SaveChanges();
                     return true;
                 }

@@ -26,15 +26,6 @@ namespace Data.DAL
             return result;
         }
 
-        public List<Chromino> List()
-        {
-
-            var result = (from chrominos in Ctx.Chrominos
-                          select chrominos).ToList();
-
-            return result;
-        }
-
         public void CreateChrominos()
         {
             if (!Ctx.Chrominos.Any())

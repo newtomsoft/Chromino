@@ -116,7 +116,6 @@ namespace Controllers
 
             GameCore gameCore = new GameCore(Ctx, gameId);
             ChrominoInHand chrominoInHand = GameChrominoDal.Details(gameId, chrominoId);
-
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -125,7 +124,6 @@ namespace Controllers
                 YPosition = y,
                 Orientation = orientation,
             };
-
             bool move = gameCore.Play(chrominoInGame, playerId);
             if (!move)
             {
@@ -133,6 +131,8 @@ namespace Controllers
             }
             else
             {
+                //Ctx.ChrominosInHand.Remove(chrominoInHand);
+                //Ctx.SaveChanges();
                 NextPlayerPlayIfBot(gameId, gameCore);
             }
 

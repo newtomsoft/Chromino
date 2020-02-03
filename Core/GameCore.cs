@@ -54,7 +54,7 @@ namespace Data.Core
         public void BeginGame()
         {
             GameDal.SetStatus(GameId, GameStatus.InProgress);
-            GameChrominoDal.RandomFirstChrominoToGame(GameId);
+            GameChrominoDal.FirstRandomToGame(GameId);
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -152,6 +152,7 @@ namespace Data.Core
             Coordinate firstCoordinate = null;
 
             ChrominoInGame chrominoInGame = new ChrominoInGame();
+            ChrominoInHand goodChrominoInHand = null;
             foreach (ChrominoInHand chrominoInHand in hand)
             {
                 foreach (PossiblesPositions possiblePosition in possiblesPositions)
@@ -159,6 +160,7 @@ namespace Data.Core
                     Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
                     if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon))
                     {
+                        goodChrominoInHand = chrominoInHand;
                         firstCoordinate = possiblePosition.Coordinate;
                         goodChrominoInGame = new ChrominoInGame()
                         {
@@ -170,6 +172,7 @@ namespace Data.Core
                     }
                     else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon))
                     {
+                        goodChrominoInHand = chrominoInHand;
                         firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
                         goodChrominoInGame = new ChrominoInGame()
                         {
@@ -209,8 +212,12 @@ namespace Data.Core
             {
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
-
                 bool put = Play(goodChrominoInGame, 1); // todo id bot pas forcement = 1
+                //if(put)
+                //{
+                //    Ctx.ChrominosInHand.Remove(goodChrominoInHand);
+                //    Ctx.SaveChanges();
+                //}
                 return put; // normalement ça doit toujours être true 
             }
         }
@@ -223,7 +230,7 @@ namespace Data.Core
 
         public void DrawChromino(int playerId)
         {
-            int chrominoId = GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, playerId);
+            int chrominoId = GameChrominoDal.StackToHand(GameId, playerId);
             if (chrominoId == 0)
             {
                 GamePlayerDal.SetPass(GameId, playerId, true);
@@ -244,9 +251,9 @@ namespace Data.Core
             {
                 Coordinate coordinate = chrominoInGame.Orientation switch
                 {
-                    Orientation.HorizontalFlip => new Coordinate((int)chrominoInGame.XPosition + 2, (int)chrominoInGame.YPosition),
-                    Orientation.Vertical => new Coordinate((int)chrominoInGame.XPosition, (int)chrominoInGame.YPosition + 2),
-                    _ => new Coordinate((int)chrominoInGame.XPosition, (int)chrominoInGame.YPosition),
+                    Orientation.HorizontalFlip => new Coordinate(chrominoInGame.XPosition + 2, chrominoInGame.YPosition),
+                    Orientation.Vertical => new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition + 2),
+                    _ => new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition),
                 };
                 chrominoInGame.XPosition = coordinate.X;
                 chrominoInGame.YPosition = coordinate.Y;
@@ -380,7 +387,7 @@ namespace Data.Core
         {
             for (int i = 0; i < MaxChrominoInHand; i++)
             {
-                GameChrominoDal.ChrominoFromStackToHandPlayer(GameId, gamePlayer.PlayerId);
+                GameChrominoDal.StackToHand(GameId, gamePlayer.PlayerId);
             }
         }
     }
