@@ -69,12 +69,13 @@
             }
         }
 
-        @if (Model.PlayerIdTurn == 1) // todo : remplacer par test plus générique (si plusieurs bot jouent)
+        @if (Model.BotsId.Contains(Model.PlayerIdTurn))
         {
             <div class="row">
                 <div class="col-md-4">
                     <form asp-action="AutoPlay">
                         <input name="gameId" type="hidden" value="@Model.GameId" />
+                        <input name="botId" type="hidden" value="@Model.PlayerIdTurn" />
                         <div>
                             <input type="checkbox" name="autoPlay" id="autoPlay" value="true" unchecked>
                             <label for="autoPlay">Autoplay</label>
@@ -238,13 +239,13 @@
         <input id="FormOrientation" name="orientation" />
     </form>
 
-    @if (Model.PlayerIdTurn == 1 && Model.AutoPlay == true && Model.GameStatus != GameStatus.Finished)
-    { // todo : test BotId à changer
+    @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.AutoPlay && Model.GameStatus != GameStatus.Finished)
+    {
         <script>
             window.onload = function () { continueRandomGame(); }
 
             function continueRandomGame() {
-                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.GameId })");
+                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.GameId, botId = Model.PlayerIdTurn})");
             }
         </script>
     }

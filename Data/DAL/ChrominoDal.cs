@@ -26,15 +26,6 @@ namespace Data.DAL
             return result;
         }
 
-        public List<Chromino> List()
-        {
-
-            var result = (from chrominos in Ctx.Chrominos
-                          select chrominos).ToList();
-
-            return result;
-        }
-
         public void CreateChrominos()
         {
             if (!Ctx.Chrominos.Any())
@@ -82,8 +73,8 @@ namespace Data.DAL
         public List<Chromino> PlayerChrominos(int gameId, int playerId)
         {
             var chrominos = (from c in Ctx.Chrominos
-                             join gc in Ctx.GamesChrominos on c.Id equals gc.ChrominoId
-                             where gc.GameId == gameId && gc.PlayerId == playerId && gc.State == ChrominoStatus.InPlayer
+                             join gc in Ctx.ChrominosInHand on c.Id equals gc.ChrominoId
+                             where gc.GameId == gameId && gc.PlayerId == playerId
                              select c).ToList();
 
             return chrominos;
