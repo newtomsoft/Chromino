@@ -183,7 +183,7 @@ namespace Controllers
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
 
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, playersNumber, botsId);
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId);
                 return View(gameViewModel);
             }
             else
@@ -196,10 +196,8 @@ namespace Controllers
         {
             GetPlayerInfosFromSession();
 
-            Player bot = PlayerDal.Bot();
             GameCore gamecore = new GameCore(Ctx, id);
             gamecore.PlayBot(botId);
-
             return RedirectToAction("Show", "Game", new { id });
         }
 

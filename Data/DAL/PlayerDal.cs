@@ -24,31 +24,6 @@ namespace Data.DAL
             return result;
         }
 
-        public int BotId()
-        {
-            Player botplayer = (from p in Ctx.Players
-                                where p.Pseudo == "Bot"
-                                select p).FirstOrDefault();
-
-            if (botplayer == null)
-                botplayer = CreateBotPlayer();
-
-            return botplayer.Id;
-        }
-
-        public Player Bot()
-        {
-            Player botplayer = (from p in Ctx.Players
-                                where p.Pseudo == "Bot"
-                                select p).FirstOrDefault();
-
-            if (botplayer == null)
-                botplayer = CreateBotPlayer();
-
-            return botplayer;
-        }
-
-
         public Player Details(int id)
         {
             Player player = (from p in Ctx.Players
@@ -64,14 +39,6 @@ namespace Data.DAL
                              where p.Pseudo == pseudo
                              select p).FirstOrDefault();
 
-            return player;
-        }
-
-        private Player CreateBotPlayer()
-        {
-            Player player = new Player { Pseudo = "Bot", Password = "password" };
-            Ctx.Add(player);
-            Ctx.SaveChanges();
             return player;
         }
 
@@ -91,16 +58,6 @@ namespace Data.DAL
                              select p).FirstOrDefault();
 
             player.Points += points;
-            Ctx.SaveChanges();
-        }
-
-        public void AddSinglePlayerGamesPoints(int playerId, int points)
-        {
-            Player player = (from p in Ctx.Players
-                             where p.Id == playerId
-                             select p).FirstOrDefault();
-
-            player.PointsSinglePlayerGames += points;
             Ctx.SaveChanges();
         }
 
