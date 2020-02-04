@@ -154,8 +154,9 @@ namespace Controllers
 
             List<Player> players = GamePlayerDal.Players(id);
             int playersNumber = players.Count;
+            Player playerTurn = GamePlayerDal.PlayerTurn(id);
 
-            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || players.Count == 1 && players[0].Id == BotId) // identified player in the game or only bot play
+            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || playerTurn.Bot) // identified player in the game or bot play
             {
                 int chrominosInGame = GameChrominoDal.InGame(id);
                 int chrominosInStack = GameChrominoDal.InStack(id);
@@ -167,9 +168,9 @@ namespace Controllers
                 }
 
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (players.Count == 1) // si un seul joueur, soit bot seul et on affiche ses chrominos, soit le joueur identifié est nécessairement le joueur courant et on affiche aussi ses chrominos
+                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regare leur partie et leur mains
                 {
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, players[0].Id);
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
                 }
                 else
                 {
@@ -178,7 +179,6 @@ namespace Controllers
                 Game game = GameDal.Details(id);
                 GameStatus gameStatus = game.Status;
                 bool autoPlay = game.AutoPlay;
-                Player playerTurn = GamePlayerDal.PlayerTurn(id);
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();

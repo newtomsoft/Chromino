@@ -271,5 +271,18 @@ namespace Data.DAL
             gamePlayer.Win = true;
             Ctx.SaveChanges();
         }
+
+        public bool IsAllBot(int gameId)
+        {
+            var ids = from gp in Ctx.GamesPlayers
+                      join p in Ctx.Players on gp.PlayerId equals p.Id
+                      where gp.GameId == gameId
+                      select p.Bot;
+
+            if (ids.Contains(false))
+                return false;
+            else
+                return true;
+        }
     }
 }
