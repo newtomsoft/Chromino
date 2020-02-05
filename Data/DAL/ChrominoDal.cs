@@ -79,5 +79,14 @@ namespace Data.DAL
 
             return chrominos;
         }
+
+        public bool IsCameleon(int id)
+        {
+            int idC = (from c in Ctx.Chrominos
+                      where c.Id == id && c.SecondColor == Color.Cameleon
+                      select c.Id).FirstOrDefault();
+            
+            return idC != 0 ? true : false;
+        }
     }
 }
