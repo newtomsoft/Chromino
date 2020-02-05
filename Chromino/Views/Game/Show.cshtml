@@ -85,7 +85,7 @@
             </div>
         }
         @if (Model.GameStatus == GameStatus.InProgress && Model.PlayerIdTurn == ViewBag.PlayerId && 
-            (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[2].State != SquareVMState.Cameleon)
+            (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
            )
         {
             <div class="row">
