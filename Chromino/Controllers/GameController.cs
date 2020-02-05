@@ -87,6 +87,8 @@ namespace Controllers
         {
             GetPlayerInfosFromSession();
 
+
+
             GameCore gameCore = new GameCore(Ctx, gameId);
             ChrominoInHand chrominoInHand = GameChrominoDal.Details(gameId, chrominoId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()

@@ -159,7 +159,7 @@ namespace Data.Core
             }
             else
             {
-                if (hand.Count == 2 && ChrominoDal.IsCameleon(hand[1].ChrominoId)) 
+                if (hand.Count == 2 && ChrominoDal.IsCameleon(hand[1].ChrominoId))
                 {
                     // s'il reste un camelon dans les 2 derniers de la main, on va chercher à le poser en priorité pour ne pas finir avec un caméléon
                     // -> inversion des 2 chrominos dans la main du bot
@@ -268,7 +268,15 @@ namespace Data.Core
                 chrominoInGame.XPosition = coordinate.X;
                 chrominoInGame.YPosition = coordinate.Y;
             }
-            bool put = SquareDal.PutChromino(chrominoInGame);
+            bool put;
+            if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
+            {
+                put = false; // interdit de jouer le denier chromino si c'est un caméléon
+            }
+            else
+            {
+                put = SquareDal.PutChromino(chrominoInGame);
+            }
             if (put)
             {
                 GamePlayerDal.SetPass(GameId, playerId, false);
