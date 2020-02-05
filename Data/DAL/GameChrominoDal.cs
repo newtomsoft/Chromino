@@ -114,7 +114,7 @@ namespace Data.DAL
                 Orientation = orientation,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
-            new SquareDal(Ctx).PutChromino(chrominoInGame, true);
+            new SquareDal(Ctx).PutChromino(chrominoInGame, 0);
         }
 
         public List<ChrominoInHand> PlayerList(int gameId, int playerId)
@@ -146,6 +146,19 @@ namespace Data.DAL
                              select ch).Count();
 
             return chrominos;
+        }
+
+        public byte MaxMove(int gameId)
+        {
+            List<byte> moves = (from cg in Ctx.ChrominosInGame
+                                where cg.GameId == gameId
+                                select cg.Move).ToList();
+ 
+            if (moves.Count == 0)
+                return 0;
+
+            else
+                return moves.Max();
         }
     }
 }

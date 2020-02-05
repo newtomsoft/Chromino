@@ -17,7 +17,13 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public bool PutChromino(ChrominoInGame chrominoInGame, bool firstChromino = false)
+        /// <summary>
+        /// put a chrominoInGame in game (playerId = 0 : first chromino in center)
+        /// </summary>
+        /// <param name="chrominoInGame"></param>
+        /// <param name="playerId">0 for first chromino</param>
+        /// <returns></returns>
+        public bool PutChromino(ChrominoInGame chrominoInGame, int playerId)
         {
             Chromino chromino = new ChrominoDal(Ctx).Details(chrominoInGame.ChrominoId);
 
@@ -28,14 +34,14 @@ namespace Data.DAL
 
             int gameId = chrominoInGame.GameId;
 
-            if (!firstChromino && (!IsFree(gameId, firstCoordinate) || !IsFree(gameId, secondCoordinate) || !IsFree(gameId, thirdCoordinate)))
+            if (playerId > 0 && (!IsFree(gameId, firstCoordinate) || !IsFree(gameId, secondCoordinate) || !IsFree(gameId, thirdCoordinate)))
             {
                 return false;
             }
             else
             {
                 int n1, n2, n3;
-                if (firstChromino)
+                if (playerId == 0)
                 {
                     n1 = 2; n2 = 2; n3 = 2;
                 }
@@ -45,11 +51,11 @@ namespace Data.DAL
                 }
                 // todo not the best method for validate first chromino position...
 
-                if (!firstChromino && ((n1 = GetNumberSameColorsAround(gameId, firstCoordinate, chromino.FirstColor)) == -1 || (n2 = GetNumberSameColorsAround(gameId, secondCoordinate, chromino.SecondColor)) == -1 || (n3 = GetNumberSameColorsAround(gameId, thirdCoordinate, chromino.ThirdColor)) == -1))
+                if (playerId > 0 && ((n1 = GetNumberSameColorsAround(gameId, firstCoordinate, chromino.FirstColor)) == -1 || (n2 = GetNumberSameColorsAround(gameId, secondCoordinate, chromino.SecondColor)) == -1 || (n3 = GetNumberSameColorsAround(gameId, thirdCoordinate, chromino.ThirdColor)) == -1))
                 {
                     return false;
                 }
-                else if (!firstChromino && (n1 + n2 + n3 < 2))
+                else if (playerId > 0 && (n1 + n2 + n3 < 2))
                 {
                     return false;
                 }
@@ -86,11 +92,15 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
-                    if (!firstChromino)
+                    if (playerId > 0)
                     {
                         ChrominoInHand chrominoInHand = new GameChrominoDal(Ctx).Details(gameId, chromino.Id);
                         Ctx.ChrominosInHand.Remove(chrominoInHand);
                     }
+                    byte maxMove = new GameChrominoDal(Ctx).MaxMove(gameId);
+                    chrominoInGame.Move = (byte)(maxMove + 1);
+                    if (playerId > 0)
+                        chrominoInGame.PlayerId = playerId;
                     Ctx.ChrominosInGame.Add(chrominoInGame);
                     Ctx.SaveChanges();
                     return true;

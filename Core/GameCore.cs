@@ -10,7 +10,6 @@ namespace Data.Core
     public class GameCore
     {
         private const int MaxChrominoInHand = 8;
-        private const int BotId = 1;
         private readonly DefaultContext Ctx;
         private readonly GameChrominoDal GameChrominoDal;
         private readonly ChrominoDal ChrominoDal;
@@ -275,7 +274,7 @@ namespace Data.Core
             }
             else
             {
-                put = SquareDal.PutChromino(chrominoInGame);
+                put = SquareDal.PutChromino(chrominoInGame, playerId);
             }
             if (put)
             {
