@@ -262,7 +262,7 @@
 </html>
 
 
-@if (!Model.GamePlayerTurn.PreviouslyDraw)
+@if (!Model.GamePlayerTurn.PreviouslyDraw && (Model.Pseudos_Chrominos.ContainsValue(1) || Model.Pseudos_Chrominos.ContainsValue(0)))
 {
     <script>
         $(document).ready(function () {
@@ -280,19 +280,14 @@ else
 }
 
 <div id="infoPopup">
-    @*<img src="@message.CheminImage" alt="@message.Type.ToString()" />*@
-    @*@Html.Raw(message.ToHtml())*@
-
-    <h2>Game is @gameStatus</h2>
-    <br />
-    <h3>@playerTurn</h3>
-    @if (Model.ChrominosInStack > 1)
+    @if (Model.GameStatus == GameStatus.Finished)
     {
-        <p>Stack : @Model.ChrominosInStack chrominos left</p>
+        <h2>Game is finished</h2>
+        <br />
     }
     else
     {
-        <p>Stack : @Model.ChrominosInStack chromino left</p>
+        <h3>@playerTurn</h3>
     }
 
     @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
@@ -301,16 +296,26 @@ else
         {
             if (pseudo_chromino.Value > 1)
             {
-                <p>@pseudo_chromino.Key : @pseudo_chromino.Value chrominos left to play</p>
+                <p>@pseudo_chromino.Key : @pseudo_chromino.Value chrominos</p>
             }
             else if (pseudo_chromino.Value == 1)
             {
-                <p>@pseudo_chromino.Key : last playing chromino</p>
+                <p>@pseudo_chromino.Key : last chromino !</p>
             }
             else
             {
-                <p>@pseudo_chromino.Key finished the game</p>
+                <p>@pseudo_chromino.Key win the game</p>
             }
         }
+    }
+
+    <br />
+    @if (Model.ChrominosInStack > 1)
+    {
+        <p>Stack : @Model.ChrominosInStack chrominos</p>
+    }
+    else
+    {
+        <p>Stack : @Model.ChrominosInStack chromino</p>
     }
 </div>
