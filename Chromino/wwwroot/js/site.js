@@ -19,6 +19,24 @@
 
 
 //***************************************************//
+//******** gestion popup infos de la partie *********//
+//***************************************************//
+
+function ShowInfoPopup() {
+    $('#infoPopup').show();
+    $('#infoPopup').popup({
+        autoopen: true,
+        transition: 'all 0.4s'
+    });
+    $.fn.popup.defaults.pagecontainer = '#page'
+}
+
+function HideInfoPopup() {
+    $('#infoPopup').hide();
+}
+
+
+//***************************************************//
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
 

@@ -5,7 +5,8 @@
 @{
     Layout = null;
     ViewData["Title"] = "Chromino - Play !";
-    string gameStatus;
+    string gameStatus = "";
+    string playerTurn = "";
 }
 
 <!DOCTYPE html>
@@ -21,11 +22,50 @@
 <body id="GameBody">
     <div id="toolbar">
         <div>
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index"><input type="button" class="btn btn-primary" value="Home" /></a>
         </div>
-       
 
-        
+        <div>
+            <button class="btn btn-primary" onclick="ShowInfoPopup();">Infos</button>
+        </div>
+
+        <br />
+
+        @switch (Model.GameStatus)
+        {
+            case GameStatus.Finished:
+                gameStatus = "finished";
+                break;
+            case GameStatus.InProgress:
+            default:
+                gameStatus = "in progress";
+                if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
+                {
+                    playerTurn = "It's up to you";
+                    @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.Pseudos_Chrominos.Count == 1))
+                    {
+                        <form id="FormDrawChromino" asp-action="DrawChromino">
+                            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                            <input name="gameId" value="@Model.GameId" type="hidden" />
+                            <input type="submit" class="btn btn-primary" value="Draw" />
+                        </form>
+                    }
+                    else if (Model.Pseudos_Chrominos.Count > 1)
+                    {
+                        <form id="FormPassTurn" asp-action="PassTurn">
+                            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                            <input name="gameId" value="@Model.GameId" type="hidden" />
+                            <input type="submit" class="btn btn-primary" value="Pass turn" />
+                        </form>
+                    }
+                }
+                else
+                {
+                    playerTurn = $"it's up to {@Model.PlayerPseudoTurn} to play";
+                }
+                break;
+        }
+
 
         @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
         {
@@ -44,8 +84,8 @@
             </div>
         }
         @if (Model.GameStatus == GameStatus.InProgress && Model.PlayerIdTurn == ViewBag.PlayerId &&
-         (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
-        )
+(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
+)
         {
             <div class="row">
                 <div class="col-md-4">
@@ -221,62 +261,56 @@
 </body>
 </html>
 
-<script>
-    $(document).ready(function () {
-        $('#messagePopup').popup({
-            autoopen: true,
-            closebutton: true,
-            transition: 'all 0.4s'
-        });
-        $.fn.popup.defaults.pagecontainer = '#page'
-    });
-</script>
 
-<div id="messagePopup">
+@if (!Model.GamePlayerTurn.PreviouslyDraw)
+{
+    <script>
+        $(document).ready(function () {
+            ShowInfoPopup();
+        });
+    </script>
+}
+else
+{
+    <script>
+        $(document).ready(function () {
+            HideInfoPopup();
+        });
+    </script>
+}
+
+<div id="infoPopup">
     @*<img src="@message.CheminImage" alt="@message.Type.ToString()" />*@
     @*@Html.Raw(message.ToHtml())*@
-    @switch (Model.GameStatus)
+
+    <h2>Game is @gameStatus</h2>
+    <br />
+    <h3>@playerTurn</h3>
+    @if (Model.ChrominosInStack > 1)
     {
-        case GameStatus.Finished:
-            gameStatus = "finished";
-            break;
-        case GameStatus.InProgress:
-        default:
-            gameStatus = "in progress";
-            if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
-            {
-                <p>Your turn</p>
-                @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.Pseudos_Chrominos.Count == 1))
-                {
-                    <form id="FormDrawChromino" asp-action="DrawChromino">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Draw" />
-                    </form>
-                }
-                else if (Model.Pseudos_Chrominos.Count > 1)
-                {
-                    <form id="FormPassTurn" asp-action="PassTurn">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Pass turn" />
-                    </form>
-                }
-            }
-            else
-            {
-                <p>@Model.PlayerPseudoTurn turn</p>
-            }
-            break;
+        <p>Stack : @Model.ChrominosInStack chrominos left</p>
     }
-    <h3>Game is @gameStatus</h3>
-    <p>Stack : @Model.ChrominosInStack</p>
+    else
+    {
+        <p>Stack : @Model.ChrominosInStack chromino left</p>
+    }
 
     @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
     {
         if (pseudo_chromino.Key != ViewBag.PlayerPseudo)
         {
-            <p>@pseudo_chromino.Key : @pseudo_chromino.Value in hand</p>
+            if (pseudo_chromino.Value > 1)
+            {
+                <p>@pseudo_chromino.Key : @pseudo_chromino.Value chrominos left to play</p>
+            }
+            else if (pseudo_chromino.Value == 1)
+            {
+                <p>@pseudo_chromino.Key : last playing chromino</p>
+            }
+            else
+            {
+                <p>@pseudo_chromino.Key finished the game</p>
+            }
         }
     }
 </div>
