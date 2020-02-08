@@ -81,11 +81,11 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public List<Game> GamesInProgress(int playerId)
+        public List<Game> GamesWaitTurn(int playerId)
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.InProgress
+                                where gp.PlayerId == playerId && g.Status == GameStatus.InProgress && !gp.Turn
                                 orderby g.PlayedDate
                                 select g).AsNoTracking().ToList();
 

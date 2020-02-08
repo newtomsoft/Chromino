@@ -123,6 +123,27 @@ namespace Controllers
                 }
                 ViewData["SingleGamesFinished"] = new SelectList(listSelectListItem, "Value", "Text");
 
+                listSelectListItem = new List<SelectListItem>();
+                intro = new SelectListItem() { Value = "selected", Text = "View opponent turn game", Disabled = true };
+                listSelectListItem.Add(intro);
+                foreach (Game game in GamePlayerDal.GamesWaitTurn(PlayerId))
+                {
+                    List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
+                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                    foreach (Player player in players)
+                    {
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                    }
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
+                }
+                ViewData["GamesWaitTurn"] = new SelectList(listSelectListItem, "Value", "Text");
+
+                
+
+
                 return View();
             }
         }
