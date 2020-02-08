@@ -25,7 +25,26 @@ a {
 
 
 
+.popup_content {
+    margin: 10px;
+    padding: 0 10px;
+    width: auto;
+    border: 2px solid #444;
+    background: white;
+    font-size: large;
+}
 
+    .popup_content img {
+        width: 80px;
+        margin: auto;
+        padding: 2%;
+        display: grid;
+        align-content: center;
+    }
+
+    .popup_content p {
+        text-align: center;
+    }
 
 
 
