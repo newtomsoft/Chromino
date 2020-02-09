@@ -126,7 +126,7 @@ function PutChromino() {
     $("#FormX").val(xIndex + XMin);
     $("#FormY").val(yIndex + YMin);
     $("#FormChrominoId").val(id);
-    //$("#FormSendMove").submit(); TODO REMOVE TEST
+    $("#FormSendMove").submit();
 }
 
 //***************************************//
