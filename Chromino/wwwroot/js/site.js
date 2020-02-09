@@ -99,14 +99,6 @@ function StopDraggable() {
 
 function PutChromino() {
     var id = LastChrominoMove.id;
-    var position = $(LastChrominoMove).position();
-    var x = position.left - GameAreaOffsetX;
-    var y = position.top - GameAreaOffsetY;
-    var xIndex = Math.round(x / SquareSize);
-    var yIndex = Math.round(y / SquareSize);
-
-    $("#FormX").val(xIndex + XMin);
-    $("#FormY").val(yIndex + YMin);
     var transform = $(LastChrominoMove).css("transform");
     switch (transform) {
         case "none":
@@ -125,8 +117,16 @@ function PutChromino() {
         default:
             break;
     }
+    var position = $(LastChrominoMove).position();
+    var x = position.left - GameAreaOffsetX;
+    var y = position.top - GameAreaOffsetY;
+    var xIndex = Math.round(x / SquareSize);
+    var yIndex = Math.round(y / SquareSize);
+
+    $("#FormX").val(xIndex + XMin);
+    $("#FormY").val(yIndex + YMin);
     $("#FormChrominoId").val(id);
-    $("#FormSendMove").submit();
+    //$("#FormSendMove").submit(); TODO REMOVE TEST
 }
 
 //***************************************//
@@ -206,17 +206,18 @@ function ResizeGameArea() {
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
         });
     }
-    SquareSize = Math.min(Math.trunc(Math.min(height / gameAreaLinesNumber, width / gameAreaColumnsNumber)), 30);
+    SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
 
-    var gameAreaHeight = SquareSize * gameAreaLinesNumber;
-    var gameAreaWidth = SquareSize * gameAreaColumnsNumber;
+    var gameAreaHeight = SquareSize * GameAreaLinesNumber;
+    var gameAreaWidth = SquareSize * GameAreaColumnsNumber;
     $('#gameArea').height(gameAreaHeight);
     $('#gameArea').width(gameAreaWidth);
 
-    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2 - 10; //todo documentWidth pas le bon ; +10 offset inconnu
-    GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2 - 10;
+    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2;
+    GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2;
 
     $('.gameLineArea').outerHeight("auto");
+
     $('.OpenRight').outerWidth(SquareSize);
     $('.OpenBottom').outerWidth(SquareSize);
     $('.OpenLeft').outerWidth(SquareSize);
@@ -264,6 +265,8 @@ function ResizeGameArea() {
     $('.CloseBottomLeft').outerHeight(SquareSize);
     $('.CloseRightBottomLeft').outerHeight(SquareSize);
     $('.CloseRightLeft').outerHeight(SquareSize);
+
+    $('.handPlayerChromino').outerHeight(SquareSize);
 
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
