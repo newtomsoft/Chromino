@@ -205,8 +205,6 @@ function ResizeGameArea() {
             $(this).css({ top: documentHeight - 80 });
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
         });
-
-
     }
     SquareSize = Math.min(Math.trunc(Math.min(height / gameAreaLinesNumber, width / gameAreaColumnsNumber)), 30);
 

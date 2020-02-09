@@ -25,6 +25,16 @@ namespace Data.DAL
             return gamePlayer;
         }
 
+        public int PlayerId(int gameId, string playerPseudo)
+        {
+            int playerId = (from gp in Ctx.GamesPlayers
+                            join p in Ctx.Players on gp.PlayerId equals p.Id
+                            where gp.GameId == gameId && p.Pseudo == playerPseudo
+                            select p.Id).FirstOrDefault();
+
+            return playerId;
+        }
+
         public void Add(int gameId, List<Player> players)
         {
             List<GamePlayer> gamePlayers = new List<GamePlayer>();

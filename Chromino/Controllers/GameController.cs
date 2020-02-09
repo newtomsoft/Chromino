@@ -169,6 +169,16 @@ namespace Controllers
                     pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 }
 
+                Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
+                foreach (var pseudo_chromino in pseudos_chrominos)
+                {
+                    if(pseudo_chromino.Value == 1)
+                    {
+                        pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
+                    }
+                }
+
+
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
                 if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regare leur partie et leur mains
                 {
@@ -185,7 +195,7 @@ namespace Controllers
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
 
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId);
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos);
                 return View(gameViewModel);
             }
             else

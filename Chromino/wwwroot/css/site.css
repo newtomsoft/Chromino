@@ -340,6 +340,16 @@ a {
     flex-shrink: 0;
 }
 
+.opponentLastChromino {
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.toto {
+    display: flex;
+    flex-direction: row;
+}
 
 @media screen and (orientation: portrait) {
     #toolbar {
@@ -355,7 +365,6 @@ a {
         position: fixed;
         display: flex;
         flex-direction: row;
-        /*flex-direction: column;*/
         bottom: 0px;
         height: 100px;
         width: 100%;
@@ -366,7 +375,6 @@ a {
         height: 30px;
         display: flex;
         flex-direction: row;
-        /*flex-direction: column;*/
         justify-content: center;
         margin: 10px;
     }

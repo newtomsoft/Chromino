@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Data.DAL;
 
 namespace Data.ViewModel
 {
@@ -24,6 +25,7 @@ namespace Data.ViewModel
         public int ChrominosInGame { get; set; }
         public int ChrominosInStack { get; set; }
         public Dictionary<string, int> Pseudos_Chrominos { get; set; }
+        public Dictionary<string, ChrominoVM> Pseudos_LastChrominoVM { get; set; }
         public GameStatus GameStatus { get; set; }
         public List<ChrominoVM> IdentifiedPlayerChrominosVM { get; set; }
         public string PlayerPseudoTurn { get; set; }
@@ -31,7 +33,7 @@ namespace Data.ViewModel
         public GamePlayer GamePlayerTurn { get; set; }
         public List<int> BotsId { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId)
+        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos)
         {
             PlayerPseudoTurn = playerTurn.Pseudo;
             PlayerIdTurn = playerTurn.Id;
@@ -83,6 +85,20 @@ namespace Data.ViewModel
                 chrominoViewModel.ChrominoId = chromino.Id;
                 IdentifiedPlayerChrominosVM.Add(chrominoViewModel);
                 //TODO faire edge
+            }
+
+            Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
+            foreach (var pseudo_chromino in pseudos_lastChrominos)
+            {
+                SquareVM square1 = new SquareVM { State = (SquareVMState)pseudo_chromino.Value.FirstColor, Edge = OpenEdge.Right };
+                SquareVM square2 = new SquareVM { State = (SquareVMState)pseudo_chromino.Value.SecondColor, Edge = OpenEdge.RightLeft };
+                SquareVM square3 = new SquareVM { State = (SquareVMState)pseudo_chromino.Value.ThirdColor, Edge = OpenEdge.Left };
+                ChrominoVM chrominoViewModel = new ChrominoVM();
+                chrominoViewModel.SquaresViewModel[0] = square1;
+                chrominoViewModel.SquaresViewModel[1] = square2;
+                chrominoViewModel.SquaresViewModel[2] = square3;
+                chrominoViewModel.ChrominoId = pseudo_chromino.Value.Id;
+                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key, chrominoViewModel);
             }
         }
 

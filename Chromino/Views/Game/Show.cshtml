@@ -300,7 +300,17 @@ else
             }
             else if (pseudo_chromino.Value == 1)
             {
-                <p>@pseudo_chromino.Key : last chromino !</p>
+                <div class="opponentLastChromino">
+                    @pseudo_chromino.Key &nbsp;
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        OpenEdge openEdge = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].Edge;
+                        SquareVMState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
+                        string classColor = state.ToString();
+                        string classOpenEdge = "Open" + openEdge.ToString();
+                        <div class="Square @classOpenEdge @classColor"></div>
+                    }
+                </div>
             }
             else
             {

@@ -117,14 +117,17 @@ namespace Data.DAL
             new SquareDal(Ctx).PutChromino(chrominoInGame, 0);
         }
 
-        public List<ChrominoInHand> PlayerList(int gameId, int playerId)
+        public Chromino FirstChromino(int gameId, int playerId)
         {
-            List<ChrominoInHand> chrominos = (from ch in Ctx.ChrominosInHand
-                                              where ch.GameId == gameId && ch.PlayerId == playerId
-                                              orderby Guid.NewGuid()
-                                              select ch).ToList();
+            int chrominoId = (from ch in Ctx.ChrominosInHand
+                              where ch.GameId == gameId && ch.PlayerId == playerId
+                              select ch.ChrominoId).FirstOrDefault();
 
-            return chrominos;
+            Chromino chromino = (from c in Ctx.Chrominos
+                                 where c.Id == chrominoId
+                                 select c).FirstOrDefault();
+
+            return chromino;
         }
 
         public List<ChrominoInHand> ChrominosByPriority(int gameId, int playerId)
@@ -153,7 +156,7 @@ namespace Data.DAL
             List<byte> moves = (from cg in Ctx.ChrominosInGame
                                 where cg.GameId == gameId
                                 select cg.Move).ToList();
- 
+
             if (moves.Count == 0)
                 return 0;
 
