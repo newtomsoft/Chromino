@@ -363,8 +363,6 @@ a {
 
     #handPlayer {
         position: fixed;
-        /*display: flex;
-        flex-direction: row;*/
         bottom: 0px;
         height: 100px;
         width: 100%;
@@ -376,7 +374,6 @@ a {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        /*margin: 10px;*/
     }
 }
 
