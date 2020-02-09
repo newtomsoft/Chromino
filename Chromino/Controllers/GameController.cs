@@ -160,8 +160,8 @@ namespace Controllers
 
             if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || playerTurn.Bot) // identified player in the game or bot play
             {
-                int chrominosInGame = GameChrominoDal.InGame(id);
-                int chrominosInStack = GameChrominoDal.InStack(id);
+                int chrominosInGameNumber = GameChrominoDal.InGame(id);
+                int chrominosInStackNumber = GameChrominoDal.InStack(id);
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
@@ -194,8 +194,8 @@ namespace Controllers
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
-
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGame, chrominosInStack, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos);
+                List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed);
                 return View(gameViewModel);
             }
             else

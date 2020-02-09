@@ -60,17 +60,6 @@ namespace Data.Core
             return new Coordinate(X, Y - 1);
         }
 
-        public Color? GetNextColor(List<Square> grid, Orientation orientation)
-        {
-            return orientation switch
-            {
-                Orientation.Horizontal => GetRightColor(grid),
-                Orientation.HorizontalFlip => GetLeftColor(grid),
-                Orientation.Vertical => GetTopColor(grid),
-                _ => GetBottomColor(grid),
-            };
-        }
-
         public Color? GetRightColor(List<Square> grid)
         {
             Coordinate coordinate = GetRightCoordinate();

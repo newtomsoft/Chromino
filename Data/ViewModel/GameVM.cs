@@ -32,16 +32,17 @@ namespace Data.ViewModel
         public int PlayerIdTurn { get; set; }
         public GamePlayer GamePlayerTurn { get; set; }
         public List<int> BotsId { get; set; }
+        public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGame, int chrominosInStack, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos)
+        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed)
         {
             PlayerPseudoTurn = playerTurn.Pseudo;
             PlayerIdTurn = playerTurn.Id;
             GamePlayerTurn = gamePlayerTurn;
             AutoPlay = autoPlay;
             GameId = gameId;
-            ChrominosInGame = chrominosInGame;
-            ChrominosInStack = chrominosInStack;
+            ChrominosInGame = chrominosInGameNumber;
+            ChrominosInStack = chrominosInStackNumber;
             Pseudos_Chrominos = pseudos_chrominos;
             Squares = squares;
             GameStatus = gameStatus;
@@ -99,6 +100,46 @@ namespace Data.ViewModel
                 chrominoViewModel.SquaresViewModel[2] = square3;
                 chrominoViewModel.ChrominoId = pseudo_chromino.Value.Id;
                 Pseudos_LastChrominoVM.Add(pseudo_chromino.Key, chrominoViewModel);
+            }
+
+            ChrominosPlayedVM = new List<ChrominoPlayedVM>();
+            foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
+            {
+                int indexX = chrominoInGame.XPosition - XMin;
+                int indexY = chrominoInGame.YPosition - YMin;
+                ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM();
+                chrominoPlayedVM.IndexesX[0] = (short)indexX;
+                chrominoPlayedVM.IndexesY[0] = (short)indexY;
+                switch (chrominoInGame.Orientation)
+                {
+                    case Orientation.Horizontal:
+                        chrominoPlayedVM.IndexesX[1] = (short)(indexX + 1);
+                        chrominoPlayedVM.IndexesX[2] = (short)(indexX + 2);
+                        chrominoPlayedVM.IndexesY[1] = (short)indexY;
+                        chrominoPlayedVM.IndexesY[2] = (short)indexY;
+                        break;
+                    case Orientation.HorizontalFlip:
+                        chrominoPlayedVM.IndexesX[1] = (short)(indexX - 1);
+                        chrominoPlayedVM.IndexesX[2] = (short)(indexX - 2);
+                        chrominoPlayedVM.IndexesY[1] = (short)indexY;
+                        chrominoPlayedVM.IndexesY[2] = (short)indexY;
+                        break;
+                    case Orientation.Vertical:
+                        chrominoPlayedVM.IndexesX[1] = (short)indexX;
+                        chrominoPlayedVM.IndexesX[2] = (short)indexX;
+                        chrominoPlayedVM.IndexesY[1] = (short)(indexY - 1);
+                        chrominoPlayedVM.IndexesY[2] = (short)(indexY - 2);
+                        break;
+                    case Orientation.VerticalFlip:
+                    default:
+                        chrominoPlayedVM.IndexesX[1] = (short)indexX;
+                        chrominoPlayedVM.IndexesX[2] = (short)indexX;
+                        chrominoPlayedVM.IndexesY[1] = (short)(indexY + 1);
+                        chrominoPlayedVM.IndexesY[2] = (short)(indexY + 2);
+                        break;
+                }
+                chrominoPlayedVM.PlayerId = chrominoInGame.PlayerId ?? 0;
+                ChrominosPlayedVM.Add(chrominoPlayedVM);
             }
         }
 

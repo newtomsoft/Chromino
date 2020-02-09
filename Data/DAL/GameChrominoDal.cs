@@ -6,6 +6,7 @@ using System.Linq;
 using Data.Core;
 using Data.Enumeration;
 using Microsoft.EntityFrameworkCore;
+using Data.ViewModel;
 
 namespace Data.DAL
 {
@@ -163,5 +164,17 @@ namespace Data.DAL
             else
                 return moves.Max();
         }
+
+        public List<ChrominoInGame> ChrominosInGamePlayed(int gameId)
+        {
+            List<ChrominoInGame> chrominosInGame = (from cg in Ctx.ChrominosInGame
+                                                    where cg.GameId == gameId
+                                                    orderby cg.Move descending
+                                                    select cg).AsNoTracking().ToList();
+
+            return chrominosInGame;
+        }
+
+
     }
 }

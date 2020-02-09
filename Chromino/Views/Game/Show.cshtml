@@ -111,7 +111,7 @@
                     {
                         string classColor = state.ToString();
                         string classOpenEdge = "Open" + openEdge.ToString();
-                        <div class="Square @classOpenEdge @classColor"></div>
+                        <div id="Grid_@index" class="Square @classOpenEdge @classColor"></div>
                     }
                     else
                     {
@@ -229,6 +229,31 @@
         <input id="FormY" name="y" />
         <input id="FormOrientation" name="orientation" />
     </form>
+
+
+
+    <script>
+        var index1 = @Model.ChrominosPlayedVM[0].IndexesX[0] + @Model.ChrominosPlayedVM[0].IndexesY[0] * @Model.ColumnsNumber;
+        var index2 = @Model.ChrominosPlayedVM[0].IndexesX[1] + @Model.ChrominosPlayedVM[0].IndexesY[1] * @Model.ColumnsNumber;
+        var index3 = @Model.ChrominosPlayedVM[0].IndexesX[2] + @Model.ChrominosPlayedVM[0].IndexesY[2] * @Model.ColumnsNumber;
+
+        var Square1 = "Grid_" + index1;
+        var Square2 = "Grid_" + index2;
+        var Square3 = "Grid_" + index3;
+
+    @*@foreach (ChrominoPlayedVM chrominoPlayedVM in Model.ChrominosPlayedVM)
+    {
+        int playerId = chrominoPlayedVM.PlayerId;
+        for (int i = 0; i < 3; i++)
+        {
+            var a = chrominoPlayedVM.IndexesX[i];
+            var b = chrominoPlayedVM.IndexesY[i];
+        }
+    }*@
+
+
+
+    </script>
 
     @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.AutoPlay && Model.GameStatus != GameStatus.Finished)
     {
