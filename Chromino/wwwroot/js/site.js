@@ -5,6 +5,16 @@
         StartDraggable();
     });
 
+    $(window).bind('resize', function (e) {
+        window.resizeEvt;
+        $(window).resize(function () {
+            clearTimeout(window.resizeEvt);
+            window.resizeEvt = setTimeout(function () {
+                ResizeGameArea();
+            }, 250);
+        });
+    });
+
     // Action StartNew events
     $('#addPlayer').click(function () {
         AddPlayer();
@@ -192,22 +202,28 @@ function ResizeGameArea() {
     var documentHeight = $(document).height();
     var width = documentWidth;
     var height = documentHeight;
+    var offset = 0;
     if (width > height) {
-        width -= 200; //-200 : taille bandeaux
-        //placement des chrominos de la main ok
+        width -= 200; //-200 : somme de la taille des 2 bandeaux
+        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
+        $(".handPlayerChromino").each(function () {
+            $(this).css({ left: documentWidth - 100 });
+            $(this).css({ top: offset });
+            $(this).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
+            offset += SquareSize + Math.floor(SquareSize / 10);
+        });
     }
     else {
         height -= 200;
-        //rotation des chrominos de la main du joueur et changement de place     
+        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
+        FirstResizeGameArea = false;
         $(".handPlayerChromino").each(function () {
-            var position = $(this).position();
-            $(this).css({ left: position.top });
-            $(this).css({ top: documentHeight - 80 });
+            $(this).css({ left: offset });
+            $(this).css({ top: documentHeight - 100 });
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+            offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
-    SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
-
     var gameAreaHeight = SquareSize * GameAreaLinesNumber;
     var gameAreaWidth = SquareSize * GameAreaColumnsNumber;
     $('#gameArea').height(gameAreaHeight);

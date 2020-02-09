@@ -346,9 +346,13 @@ a {
     flex-direction: row;
 }
 
-.toto {
+.handPlayerChromino {
+    position: fixed;
+    height: 30px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    margin: 10px;
 }
 
 @media screen and (orientation: portrait) {
@@ -360,23 +364,7 @@ a {
         height: 100px;
         width: 100%;
     }
-
-    #handPlayer {
-        position: fixed;
-        bottom: 0px;
-        height: 100px;
-        width: 100%;
-    }
-
-    .handPlayerChromino {
-        position: fixed;
-        height: 30px;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
 }
-
 
 @media screen and (orientation: landscape) {
     #toolbar {
@@ -384,24 +372,6 @@ a {
         left: 0px;
         width: 100px;
         height: 100%;
-    }
-
-    #handPlayer {
-        position: fixed;
-        display: flex;
-        flex-direction: column;
-        right: 0px;
-        width: 100px;
-        height: 100%;
-    }
-
-    .handPlayerChromino {
-        position: fixed;
-        height: 30px;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        margin: 10px;
     }
 }
 

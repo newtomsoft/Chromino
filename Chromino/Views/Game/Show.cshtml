@@ -207,26 +207,20 @@
             </div>
         }
     </div>
-    <div id="handPlayer">
-        @{
-            int offset = 5;
-            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+    @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+    {
+        string id = chrominosViewModel.ChrominoId.ToString();
+        <div id="@id" class="handPlayerChromino">
+            @for (int i = 0; i < 3; i++)
             {
-                string id = chrominosViewModel.ChrominoId.ToString();
-                <div id="@id" class="handPlayerChromino" style="top:@(offset)px">
-                    @for (int i = 0; i < 3; i++)
-                    {
-                        OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
-                        SquareVMState state = chrominosViewModel.SquaresViewModel[i].State;
-                        string classColor = state.ToString();
-                        string classOpenEdge = "Open" + openEdge.ToString();
-                        <div class="Square @classOpenEdge @classColor"></div>
-                    }
-                </div>
-                offset += 33;
+                OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
+                SquareVMState state = chrominosViewModel.SquaresViewModel[i].State;
+                string classColor = state.ToString();
+                string classOpenEdge = "Open" + openEdge.ToString();
+                <div class="Square @classOpenEdge @classColor"></div>
             }
-        }
-    </div>
+        </div>
+    }
     <form id="FormSendMove" asp-action="Play" hidden>
         <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
         <input id="FormGameId" name="gameId" value="@Model.GameId" />
