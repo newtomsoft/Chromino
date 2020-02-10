@@ -166,7 +166,8 @@ namespace Controllers
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
                 {
-                    pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
+                    if(player.Id != PlayerId)
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 }
 
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();

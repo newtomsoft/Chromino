@@ -26,15 +26,17 @@
     ResizeGameArea();
     StartDraggable();
 
-    $('#' + Square1).fadeToggle("slow", function () {
-        $('#' + Square1).fadeToggle("slow");
-    });
-    $('#' + Square2).fadeToggle("slow", function () {
-        $('#' + Square2).fadeToggle("slow");
-    });
-    $('#' + Square3).fadeToggle("slow", function () {
-        $('#' + Square3).fadeToggle("slow");
-    });
+    if (!PreviouslyDraw) {
+        $('#' + Square1).fadeToggle("slow", function () {
+            $('#' + Square1).fadeToggle("slow");
+        });
+        $('#' + Square2).fadeToggle("slow", function () {
+            $('#' + Square2).fadeToggle("slow");
+        });
+        $('#' + Square3).fadeToggle("slow", function () {
+            $('#' + Square3).fadeToggle("slow");
+        });
+    }
 });
 
 

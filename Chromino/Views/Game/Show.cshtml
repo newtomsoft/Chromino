@@ -42,7 +42,7 @@
                 if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
                 {
                     playerTurn = "It's up to you";
-                    @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.Pseudos_Chrominos.Count == 1))
+                    @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.Pseudos_Chrominos.Count == 0))
                     {
                         <form id="FormDrawChromino" asp-action="DrawChromino">
                             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -50,7 +50,7 @@
                             <input type="submit" class="btn btn-primary" value="Draw" />
                         </form>
                     }
-                    else if (Model.Pseudos_Chrominos.Count > 1)
+                    else if (Model.Pseudos_Chrominos.Count > 0)
                     {
                         <form id="FormPassTurn" asp-action="PassTurn">
                             <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -241,15 +241,15 @@
         }
     }
     <script>
-            var index1 = @indexes[0];
-            var index2 = @indexes[1];
-            var index3 = @indexes[2];
+        PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 
-            var Square1 = "Grid_" + index1;
-            var Square2 = "Grid_" + index2;
-            var Square3 = "Grid_" + index3;
-        }
+        var index1 = @indexes[0];
+        var index2 = @indexes[1];
+        var index3 = @indexes[2];
 
+        var Square1 = "Grid_" + index1;
+        var Square2 = "Grid_" + index2;
+        var Square3 = "Grid_" + index3;
     </script>
 
     @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.AutoPlay && Model.GameStatus != GameStatus.Finished)
@@ -266,7 +266,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/jquery.draggableTouch.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/vast-engineering/jquery-popup-overlay@2/jquery.popupoverlay.min.js"></script>
+    <script src="~/js/jquery.popupoverlay.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         var GameAreaLinesNumber = @Model.LinesNumber;
@@ -308,30 +308,27 @@ else
 
     @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
     {
-        if (pseudo_chromino.Key != ViewBag.PlayerPseudo)
+        if (pseudo_chromino.Value > 1)
         {
-            if (pseudo_chromino.Value > 1)
-            {
-                <p>@pseudo_chromino.Key : @pseudo_chromino.Value chrominos</p>
-            }
-            else if (pseudo_chromino.Value == 1)
-            {
-                <div class="opponentLastChromino">
-                    @pseudo_chromino.Key &nbsp;
-                    @for (int i = 0; i < 3; i++)
-                    {
-                        OpenEdge openEdge = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].Edge;
-                        SquareVMState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
-                        string classColor = state.ToString();
-                        string classOpenEdge = "Open" + openEdge.ToString();
-                        <div class="Square @classOpenEdge @classColor"></div>
-                    }
-                </div>
-            }
-            else
-            {
-                <p>@pseudo_chromino.Key win the game</p>
-            }
+            <p>@pseudo_chromino.Key : @pseudo_chromino.Value chrominos</p>
+        }
+        else if (pseudo_chromino.Value == 1)
+        {
+            <div class="opponentLastChromino">
+                @pseudo_chromino.Key &nbsp;
+                @for (int i = 0; i < 3; i++)
+                {
+                    OpenEdge openEdge = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].Edge;
+                    SquareVMState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
+                    string classColor = state.ToString();
+                    string classOpenEdge = "Open" + openEdge.ToString();
+                    <div class="Square @classOpenEdge @classColor"></div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>@pseudo_chromino.Key win the game</p>
         }
     }
 
