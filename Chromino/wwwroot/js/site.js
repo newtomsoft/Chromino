@@ -1,5 +1,17 @@
 ﻿$(document).ready(function () {
 
+    // Action StartNew events
+    $('#addPlayer').click(function () {
+        AddPlayer();
+    });
+    $('#removePlayer').click(function () {
+        RemovePlayer();
+    });
+
+
+    //********************//
+    //*** Actions Game ***//
+    //********************//
     $(document).click(function () {
         StopDraggable();
         StartDraggable();
@@ -15,18 +27,11 @@
         });
     });
 
-    // Action StartNew events
-    $('#addPlayer').click(function () {
-        AddPlayer();
-    });
-    $('#removePlayer').click(function () {
-        RemovePlayer();
-    });
-
     ResizeGameArea();
     StartDraggable();
 
-    if (!PreviouslyDraw) {
+    // indication for lasts chrominos played
+    if (!PreviouslyDraw && ThisPlayerTurn) {
         $('#' + Square1).fadeToggle("slow", function () {
             $('#' + Square1).fadeToggle("slow");
         });

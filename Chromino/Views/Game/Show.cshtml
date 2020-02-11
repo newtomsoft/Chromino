@@ -95,8 +95,6 @@
         }
     </div>
     <br>
-    <div id="gameAreaLinesNumber" hidden>@Model.LinesNumber</div>
-    <div id="gameAreaColumnsNumber" hidden>@Model.ColumnsNumber</div>
     <div id="gameArea" display="none">
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
@@ -242,6 +240,8 @@
     }
     <script>
         PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
+        @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
+        ThisPlayerTurn = @thisPlayerTurn;
 
         var index1 = @indexes[0];
         var index2 = @indexes[1];
