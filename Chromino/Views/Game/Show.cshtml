@@ -228,28 +228,23 @@
         <input id="FormOrientation" name="orientation" />
     </form>
 
+
+
+    <script>
+    PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
+    @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
+    ThisPlayerTurn = @thisPlayerTurn;
+    Squares = new Array;
     @{
-        List<int> indexes = new List<int>();
         for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
         {
             for (int i = 0; i < 3; i++)
             {
-                indexes.Add(Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber);
+                int index = Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber;
+    @:Squares.push("Grid_" + @index);
             }
         }
     }
-    <script>
-        PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
-        @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
-        ThisPlayerTurn = @thisPlayerTurn;
-
-        var index1 = @indexes[0];
-        var index2 = @indexes[1];
-        var index3 = @indexes[2];
-
-        var Square1 = "Grid_" + index1;
-        var Square2 = "Grid_" + index2;
-        var Square3 = "Grid_" + index3;
     </script>
 
     @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.AutoPlay && Model.GameStatus != GameStatus.Finished)

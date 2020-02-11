@@ -30,19 +30,31 @@
     ResizeGameArea();
     StartDraggable();
 
-    // indication for lasts chrominos played
+    //animate lasts chrominos played
     if (!PreviouslyDraw && ThisPlayerTurn) {
-        $('#' + Square1).fadeToggle("slow", function () {
-            $('#' + Square1).fadeToggle("slow");
-        });
-        $('#' + Square2).fadeToggle("slow", function () {
-            $('#' + Square2).fadeToggle("slow");
-        });
-        $('#' + Square3).fadeToggle("slow", function () {
-            $('#' + Square3).fadeToggle("slow");
-        });
+        AnimateChrominosPlayed(0);
+        //AnimateChrominosPlayed(1); //test todo suppr
     }
+
+
 });
+
+//***************************************************//
+//**** gestion afichage derniers chrominos joués ****//
+//***************************************************//
+
+function AnimateChrominosPlayed(indexMove) {
+    index = indexMove * 3;
+    for (var i = index; i < index + 3; i++) {
+        AnimateSquare('#' + Squares[i]);
+    }
+}
+
+function AnimateSquare(squareId) {
+    $(squareId).fadeToggle("slow", function () {
+        $(this).fadeToggle("slow");
+    });
+}
 
 
 //***************************************************//
@@ -157,57 +169,6 @@ function PutChromino() {
 }
 
 //***************************************//
-//********* fonctions StartNew  *********//
-//***************************************//
-
-function AddPlayer() {
-    if ($('#groupPlayer2').is(':hidden'))
-        $('#groupPlayer2').show(600);
-    else if ($('#groupPlayer3').is(':hidden'))
-        $('#groupPlayer3').show(600);
-    else if ($('#groupPlayer4').is(':hidden'))
-        $('#groupPlayer4').show(600);
-    else if ($('#groupPlayer5').is(':hidden'))
-        $('#groupPlayer5').show(600);
-    else if ($('#groupPlayer6').is(':hidden'))
-        $('#groupPlayer6').show(600);
-    else if ($('#groupPlayer7').is(':hidden'))
-        $('#groupPlayer7').show(600);
-    else if ($('#groupPlayer8').is(':hidden'))
-        $('#groupPlayer8').show(600);
-}
-function RemovePlayer() {
-    if (!$('#groupPlayer8').is(':hidden')) {
-        $('#player8').val('');
-        $('#groupPlayer8').hide(600);
-    }
-    else if (!$('#groupPlayer7').is(':hidden')) {
-        $('#player7').val('');
-        $('#groupPlayer7').hide(600);
-    }
-    else if (!$('#groupPlayer6').is(':hidden')) {
-        $('#player6').val('');
-        $('#groupPlayer6').hide(600);
-    }
-    else if (!$('#groupPlayer5').is(':hidden')) {
-        $('#player5').val('');
-        $('#groupPlayer5').hide(600);
-    }
-    else if (!$('#groupPlayer4').is(':hidden')) {
-        $('#player4').val('');
-        $('#groupPlayer4').hide(600);
-    }
-    else if (!$('#groupPlayer3').is(':hidden')) {
-        $('#player3').val('');
-        $('#groupPlayer3').hide(600);
-    }
-    else if (!$('#groupPlayer2').is(':hidden')) {
-        $('#player2').val('');
-        $('#groupPlayer2').hide(600);
-    }
-}
-
-//***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
 let GameAreaOffsetX;
@@ -303,4 +264,55 @@ function ResizeGameArea() {
 
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
+}
+
+//***************************************//
+//********* fonctions StartNew  *********//
+//***************************************//
+
+function AddPlayer() {
+    if ($('#groupPlayer2').is(':hidden'))
+        $('#groupPlayer2').show(600);
+    else if ($('#groupPlayer3').is(':hidden'))
+        $('#groupPlayer3').show(600);
+    else if ($('#groupPlayer4').is(':hidden'))
+        $('#groupPlayer4').show(600);
+    else if ($('#groupPlayer5').is(':hidden'))
+        $('#groupPlayer5').show(600);
+    else if ($('#groupPlayer6').is(':hidden'))
+        $('#groupPlayer6').show(600);
+    else if ($('#groupPlayer7').is(':hidden'))
+        $('#groupPlayer7').show(600);
+    else if ($('#groupPlayer8').is(':hidden'))
+        $('#groupPlayer8').show(600);
+}
+function RemovePlayer() {
+    if (!$('#groupPlayer8').is(':hidden')) {
+        $('#player8').val('');
+        $('#groupPlayer8').hide(600);
+    }
+    else if (!$('#groupPlayer7').is(':hidden')) {
+        $('#player7').val('');
+        $('#groupPlayer7').hide(600);
+    }
+    else if (!$('#groupPlayer6').is(':hidden')) {
+        $('#player6').val('');
+        $('#groupPlayer6').hide(600);
+    }
+    else if (!$('#groupPlayer5').is(':hidden')) {
+        $('#player5').val('');
+        $('#groupPlayer5').hide(600);
+    }
+    else if (!$('#groupPlayer4').is(':hidden')) {
+        $('#player4').val('');
+        $('#groupPlayer4').hide(600);
+    }
+    else if (!$('#groupPlayer3').is(':hidden')) {
+        $('#player3').val('');
+        $('#groupPlayer3').hide(600);
+    }
+    else if (!$('#groupPlayer2').is(':hidden')) {
+        $('#player2').val('');
+        $('#groupPlayer2').hide(600);
+    }
 }
