@@ -33,21 +33,21 @@
     //animate lasts chrominos played
     if (!PreviouslyDraw && ThisPlayerTurn) {
         AnimateChrominosPlayed(0);
-        //AnimateChrominosPlayed(1); //test todo suppr
     }
 
     $("#previousButton").click(function () {
-        if (true) {
+        if (IndexMove < Squares.length / 3 - 1) {
             IndexMove++;
-            AnimateChrominosPlayed();
         }
+        AnimateChrominosPlayed();
+
     });
 
     $("#nextButton").click(function () {
         if (IndexMove > 0) {
             IndexMove--;
-            AnimateChrominosPlayed();
         }
+        AnimateChrominosPlayed();
     });
 
 });
