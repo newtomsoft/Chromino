@@ -36,6 +36,19 @@
         //AnimateChrominosPlayed(1); //test todo suppr
     }
 
+    $("#previousButton").click(function () {
+        if (true) {
+            IndexMove++;
+            AnimateChrominosPlayed();
+        }
+    });
+
+    $("#nextButton").click(function () {
+        if (IndexMove > 0) {
+            IndexMove--;
+            AnimateChrominosPlayed();
+        }
+    });
 
 });
 
@@ -43,8 +56,10 @@
 //**** gestion afichage derniers chrominos joués ****//
 //***************************************************//
 
-function AnimateChrominosPlayed(indexMove) {
-    index = indexMove * 3;
+var IndexMove = 0;
+
+function AnimateChrominosPlayed() {
+    index = IndexMove * 3;
     for (var i = index; i < index + 3; i++) {
         AnimateSquare('#' + Squares[i]);
     }

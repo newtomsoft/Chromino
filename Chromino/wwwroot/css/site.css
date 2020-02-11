@@ -355,6 +355,24 @@ a {
     margin: 10px;
 }
 
+#previousButton {
+    width: 18px;
+    height: 18px;
+    background-image: url(/image/LeftArrow.svg);
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#nextButton {
+    width: 18px;
+    height: 18px;
+    background-image: url(/image/RightArrow.svg);
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 @media screen and (orientation: portrait) {
     #toolbar {
         position: fixed;
@@ -374,9 +392,6 @@ a {
         height: 100%;
     }
 }
-
-
-
 
 
 
