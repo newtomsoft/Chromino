@@ -10,6 +10,7 @@ namespace Data.Enumeration
         Bottom,
         Left,
         Top,
+
         RightLeft,
         BottomTop,
         All,

@@ -93,10 +93,10 @@
                 </div>
             </div>
         }
-    <div id="previousNextButton">
-        <div id="previousButton"></div>
-        <div id="nextButton"></div>
-    </div>
+        <div id="previousNextButton">
+            <div id="previousButton"></div>
+            <div id="nextButton"></div>
+        </div>
     </div>
     <br>
     <div id="gameArea" display="none">
@@ -112,98 +112,29 @@
                     if (state != SquareVMState.Free)
                     {
                         string classColor = state.ToString();
-                        string classOpenEdge = "Open" + openEdge.ToString();
-                        <div id="Grid_@index" class="Square @classOpenEdge @classColor"></div>
+                        string classOpenEdge = "Square Open" + openEdge.ToString();
+                        <div id="Grid_@index" class="@classOpenEdge @classColor"></div>
                     }
                     else
                     {
-                        openEdge = OpenEdge.None;
-                        if (i < Model.ColumnsNumber - 1)
+                        string classCloseEdge = "Square ";
+                        if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            int rightIndex = (i + 1) + j * Model.ColumnsNumber;
-                            OpenEdge rightOpenEdge = Model.SquaresViewModel[rightIndex].Edge;
-                            if (Model.SquaresViewModel[rightIndex].State != SquareVMState.Free)
-                            {
-                                openEdge = OpenEdge.Right;
-                            }
+                            classCloseEdge += " Close" + OpenEdge.Right.ToString();
                         }
-                        if (j < Model.LinesNumber - 1)
+                        if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            int bottomIndex = i + (j + 1) * Model.ColumnsNumber;
-                            OpenEdge bottomOpenEdge = Model.SquaresViewModel[bottomIndex].Edge;
-                            if (Model.SquaresViewModel[bottomIndex].State != SquareVMState.Free)
-                            {
-                                switch (openEdge)
-                                {
-                                    case OpenEdge.None:
-                                        openEdge = OpenEdge.Bottom;
-                                        break;
-                                    case OpenEdge.Right:
-                                        openEdge = OpenEdge.RightBottom;
-                                        break;
-                                }
-                            }
+                            classCloseEdge += " Close" + OpenEdge.Bottom.ToString();
                         }
-                        if (i > 0)
+                        if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            int leftIndex = (i - 1) + j * Model.ColumnsNumber;
-                            OpenEdge leftOpenEdge = Model.SquaresViewModel[leftIndex].Edge;
-                            if (Model.SquaresViewModel[leftIndex].State != SquareVMState.Free)
-                            {
-                                switch (openEdge)
-                                {
-                                    case OpenEdge.None:
-                                        openEdge = OpenEdge.Left;
-                                        break;
-                                    case OpenEdge.Right:
-                                        openEdge = OpenEdge.RightLeft;
-                                        break;
-                                    case OpenEdge.Bottom:
-                                        openEdge = OpenEdge.BottomLeft;
-                                        break;
-                                    case OpenEdge.RightBottom:
-                                        openEdge = OpenEdge.RightBottomLeft;
-                                        break;
-                                }
-                            }
+                            classCloseEdge += " Close" + OpenEdge.Left.ToString();
                         }
-                        if (j > 0)
+                        if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            int topIndex = i + (j - 1) * Model.ColumnsNumber;
-                            OpenEdge topOpenEdge = Model.SquaresViewModel[topIndex].Edge;
-                            if (Model.SquaresViewModel[topIndex].State != SquareVMState.Free)
-                            {
-                                switch (openEdge)
-                                {
-                                    case OpenEdge.None:
-                                        openEdge = OpenEdge.Top;
-                                        break;
-                                    case OpenEdge.Right:
-                                        openEdge = OpenEdge.RightTop;
-                                        break;
-                                    case OpenEdge.Bottom:
-                                        openEdge = OpenEdge.BottomTop;
-                                        break;
-                                    case OpenEdge.RightBottom:
-                                        openEdge = OpenEdge.RightBottomTop;
-                                        break;
-                                    case OpenEdge.Left:
-                                        openEdge = OpenEdge.LeftTop;
-                                        break;
-                                    case OpenEdge.RightLeft:
-                                        openEdge = OpenEdge.RightLeftTop;
-                                        break;
-                                    case OpenEdge.BottomLeft:
-                                        openEdge = OpenEdge.BottomLeftTop;
-                                        break;
-                                    case OpenEdge.RightBottomLeft:
-                                        openEdge = OpenEdge.All;
-                                        break;
-                                }
-                            }
+                            classCloseEdge += " Close" + OpenEdge.Top.ToString();
                         }
-                        string classCloseEdge = "Close" + openEdge.ToString();
-                        <div class="Square @classCloseEdge"></div>
+                        <div class="@classCloseEdge"></div>
                     }
                 }
             </div>

@@ -34,7 +34,6 @@
     if (!PreviouslyDraw && ThisPlayerTurn) {
         AnimateChrominosPlayed(0);
     }
-
     $("#previousButton").click(function () {
         if (IndexMove < Squares.length / 3 - 1) {
             IndexMove++;
@@ -42,7 +41,6 @@
         AnimateChrominosPlayed();
 
     });
-
     $("#nextButton").click(function () {
         if (IndexMove > 0) {
             IndexMove--;
@@ -55,16 +53,13 @@
 //***************************************************//
 //**** gestion afichage derniers chrominos joués ****//
 //***************************************************//
-
 var IndexMove = 0;
-
 function AnimateChrominosPlayed() {
     index = IndexMove * 3;
     for (var i = index; i < index + 3; i++) {
         AnimateSquare('#' + Squares[i]);
     }
 }
-
 function AnimateSquare(squareId) {
     $(squareId).fadeToggle("slow", function () {
         $(this).fadeToggle("slow");
@@ -75,7 +70,6 @@ function AnimateSquare(squareId) {
 //***************************************************//
 //******** gestion popup infos de la partie *********//
 //***************************************************//
-
 function ShowInfoPopup() {
     $('#infoPopup').show();
     $('#infoPopup').popup({
@@ -84,7 +78,6 @@ function ShowInfoPopup() {
     });
     $.fn.popup.defaults.pagecontainer = '#page'
 }
-
 function HideInfoPopup() {
     $('#infoPopup').hide();
 }
@@ -226,57 +219,9 @@ function ResizeGameArea() {
     GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2;
 
     $('.gameLineArea').outerHeight("auto");
-
-    $('.OpenRight').outerWidth(SquareSize);
-    $('.OpenBottom').outerWidth(SquareSize);
-    $('.OpenLeft').outerWidth(SquareSize);
-    $('.OpenTop').outerWidth(SquareSize);
-    $('.OpenBottomTop').outerWidth(SquareSize);
-    $('.OpenRightLeft').outerWidth(SquareSize);
-    $('.CloseNone').outerWidth(SquareSize);
-    $('.CloseTop').outerWidth(SquareSize);
-    $('.CloseRightTop').outerWidth(SquareSize);
-    $('.CloseBottomTop').outerWidth(SquareSize);
-    $('.CloseRightBottomTop').outerWidth(SquareSize);
-    $('.CloseLeftTop').outerWidth(SquareSize);
-    $('.CloseLeftRight').outerWidth(SquareSize);
-    $('.CloseBottomLeftTop').outerWidth(SquareSize);
-    $('.CloseAll').outerWidth(SquareSize);
-    $('.CloseRightLeftTop').outerWidth(SquareSize);
-    $('.CloseRight').outerWidth(SquareSize);
-    $('.CloseBottom').outerWidth(SquareSize);
-    $('.CloseRightBottom').outerWidth(SquareSize);
-    $('.CloseLeft').outerWidth(SquareSize);
-    $('.CloseBottomLeft').outerWidth(SquareSize);
-    $('.CloseRightBottomLeft').outerWidth(SquareSize);
-    $('.CloseRightLeft').outerWidth(SquareSize);
-
-    $('.OpenRight').outerHeight(SquareSize);
-    $('.OpenBottom').outerHeight(SquareSize);
-    $('.OpenLeft').outerHeight(SquareSize);
-    $('.OpenTop').outerHeight(SquareSize);
-    $('.OpenBottomTop').outerHeight(SquareSize);
-    $('.OpenRightLeft').outerHeight(SquareSize);
-    $('.CloseNone').outerHeight(SquareSize);
-    $('.CloseTop').outerHeight(SquareSize);
-    $('.CloseRightTop').outerHeight(SquareSize);
-    $('.CloseBottomTop').outerHeight(SquareSize);
-    $('.CloseRightBottomTop').outerHeight(SquareSize);
-    $('.CloseLeftTop').outerHeight(SquareSize);
-    $('.CloseLeftRight').outerHeight(SquareSize);
-    $('.CloseBottomLeftTop').outerHeight(SquareSize);
-    $('.CloseAll').outerHeight(SquareSize);
-    $('.CloseRightLeftTop').outerHeight(SquareSize);
-    $('.CloseRight').outerHeight(SquareSize);
-    $('.CloseBottom').outerHeight(SquareSize);
-    $('.CloseRightBottom').outerHeight(SquareSize);
-    $('.CloseLeft').outerHeight(SquareSize);
-    $('.CloseBottomLeft').outerHeight(SquareSize);
-    $('.CloseRightBottomLeft').outerHeight(SquareSize);
-    $('.CloseRightLeft').outerHeight(SquareSize);
-
+    $('.Square').outerHeight(SquareSize);
+    $('.Square').outerWidth(SquareSize);
     $('.handPlayerChromino').outerHeight(SquareSize);
-
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
 }
