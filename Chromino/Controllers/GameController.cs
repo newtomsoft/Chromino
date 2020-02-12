@@ -196,7 +196,20 @@ namespace Controllers
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed);
+                List<string> pseudoChrominosInGamePlayed = new List<string>();
+                foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
+                {
+                    if(chrominoInGame.PlayerId != null)
+                    {
+                        pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).Pseudo);
+                    }
+                    else
+                    {
+                        pseudoChrominosInGamePlayed.Add("first chromino");
+                    }
+                    
+                }
+                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
                 return View(gameViewModel);
             }
             else

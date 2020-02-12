@@ -47,11 +47,10 @@
         }
         AnimateChrominosPlayed();
     });
-
 });
 
 //***************************************************//
-//**** gestion afichage derniers chrominos joués ****//
+//**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
 var IndexMove = 0;
 function AnimateChrominosPlayed() {
@@ -59,10 +58,11 @@ function AnimateChrominosPlayed() {
     for (var i = index; i < index + 3; i++) {
         AnimateSquare('#' + Squares[i]);
     }
+    $('#PlayerHistory').html(Pseudos[IndexMove]).fadeIn(300).delay(400).fadeOut(300);
 }
 function AnimateSquare(squareId) {
-    $(squareId).fadeToggle("slow", function () {
-        $(this).fadeToggle("slow");
+    $(squareId).fadeToggle(500, function () {
+        $(this).fadeToggle(500);
     });
 }
 

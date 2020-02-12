@@ -97,6 +97,7 @@
             <div id="previousButton"></div>
             <div id="nextButton"></div>
         </div>
+        <div id="PlayerHistory"></div>
     </div>
     <br>
     <div id="gameArea" display="none">
@@ -169,10 +170,12 @@
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
     @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
     ThisPlayerTurn = @thisPlayerTurn;
-    Squares = new Array;
+        Squares = new Array;
+        Pseudos = new Array;
     @{
         for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
         {
+    @:Pseudos.push("@Model.PseudoChrominosPlayedVM[iChromino]");
             for (int i = 0; i < 3; i++)
             {
                 int index = Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber;

@@ -33,8 +33,9 @@ namespace Data.ViewModel
         public GamePlayer GamePlayerTurn { get; set; }
         public List<int> BotsId { get; set; }
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
+        public List<string> PseudoChrominosPlayedVM { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed)
+        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudoChrominosInGamePlayed)
         {
             PlayerPseudoTurn = playerTurn.Pseudo;
             PlayerIdTurn = playerTurn.Id;
@@ -105,42 +106,10 @@ namespace Data.ViewModel
             ChrominosPlayedVM = new List<ChrominoPlayedVM>();
             foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
             {
-                int indexX = chrominoInGame.XPosition - XMin;
-                int indexY = chrominoInGame.YPosition - YMin;
-                ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM();
-                chrominoPlayedVM.IndexesX[0] = (short)indexX;
-                chrominoPlayedVM.IndexesY[0] = (short)indexY;
-                switch (chrominoInGame.Orientation)
-                {
-                    case Orientation.Horizontal:
-                        chrominoPlayedVM.IndexesX[1] = (short)(indexX + 1);
-                        chrominoPlayedVM.IndexesX[2] = (short)(indexX + 2);
-                        chrominoPlayedVM.IndexesY[1] = (short)indexY;
-                        chrominoPlayedVM.IndexesY[2] = (short)indexY;
-                        break;
-                    case Orientation.HorizontalFlip:
-                        chrominoPlayedVM.IndexesX[1] = (short)(indexX - 1);
-                        chrominoPlayedVM.IndexesX[2] = (short)(indexX - 2);
-                        chrominoPlayedVM.IndexesY[1] = (short)indexY;
-                        chrominoPlayedVM.IndexesY[2] = (short)indexY;
-                        break;
-                    case Orientation.Vertical:
-                        chrominoPlayedVM.IndexesX[1] = (short)indexX;
-                        chrominoPlayedVM.IndexesX[2] = (short)indexX;
-                        chrominoPlayedVM.IndexesY[1] = (short)(indexY - 1);
-                        chrominoPlayedVM.IndexesY[2] = (short)(indexY - 2);
-                        break;
-                    case Orientation.VerticalFlip:
-                    default:
-                        chrominoPlayedVM.IndexesX[1] = (short)indexX;
-                        chrominoPlayedVM.IndexesX[2] = (short)indexX;
-                        chrominoPlayedVM.IndexesY[1] = (short)(indexY + 1);
-                        chrominoPlayedVM.IndexesY[2] = (short)(indexY + 2);
-                        break;
-                }
-                chrominoPlayedVM.PlayerId = chrominoInGame.PlayerId ?? 0;
+                ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM(chrominoInGame, XMin, YMin);
                 ChrominosPlayedVM.Add(chrominoPlayedVM);
             }
+            PseudoChrominosPlayedVM = pseudoChrominosInGamePlayed;
         }
 
         public int IndexGridState(int x, int y)
