@@ -60,57 +60,40 @@ namespace Data.Core
             return new Coordinate(X, Y - 1);
         }
 
-        public Color? GetRightColor(List<Square> grid)
+        private Color? GetColor(List<Square> grid, Coordinate coordinate)
         {
-            Coordinate coordinate = GetRightCoordinate();
             Square square = (from g in grid
                              where g.X == coordinate.X && g.Y == coordinate.Y
                              select g).FirstOrDefault();
-            
+
             if (square == null)
                 return null;
             else
                 return square.Color;
+        }
+
+        public Color? GetRightColor(List<Square> grid)
+        {
+            Coordinate coordinate = GetRightCoordinate();
+            return GetColor(grid, coordinate);
         }
 
         public Color? GetBottomColor(List<Square> grid)
         {
             Coordinate coordinate = GetBottomCoordinate();
-            Square square = (from g in grid
-                             where g.X == coordinate.X && g.Y == coordinate.Y
-                             select g).FirstOrDefault();
-            
-            if (square == null)
-                return null;
-            else
-                return square.Color;
+            return GetColor(grid, coordinate);
         }
 
         public Color? GetLeftColor(List<Square> grid)
         {
             Coordinate coordinate = GetLeftCoordinate();
-            Square square = (from g in grid
-                             where g.X == coordinate.X && g.Y == coordinate.Y
-                             select g).FirstOrDefault();
-
-            if (square == null)
-                return null;
-            else
-                return square.Color;
+            return GetColor(grid, coordinate);
         }
 
         public Color? GetTopColor(List<Square> grid)
         {
             Coordinate coordinate = GetTopCoordinate();
-            Square square = (from g in grid
-                             where g.X == coordinate.X && g.Y == coordinate.Y
-                             select g).FirstOrDefault();
-
-            if (square == null)
-                return null;
-            else
-                return square.Color;
+            return GetColor(grid, coordinate);
         }
-
     }
 }
