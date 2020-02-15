@@ -215,8 +215,8 @@ function ResizeGameArea() {
     $('#gameArea').height(gameAreaHeight);
     $('#gameArea').width(gameAreaWidth);
 
-    GameAreaOffsetX = (documentWidth - gameAreaWidth) / 2;
-    GameAreaOffsetY = (documentHeight - gameAreaHeight) / 2;
+    GameAreaOffsetX = Math.ceil((documentWidth - gameAreaWidth) / 2);
+    GameAreaOffsetY = Math.ceil((documentHeight - gameAreaHeight) / 2);
 
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
