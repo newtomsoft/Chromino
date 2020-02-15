@@ -62,36 +62,49 @@ namespace Data.DAL
                 else
                 {
                     //the position is valide :)
-                    OpenEdge firstEdge;
-                    OpenEdge secondEdge;
-                    OpenEdge thirdEdge;
+                    bool firstSquareOpenRight = false;
+                    bool firstSquareOpenBottom = false;
+                    bool firstSquareOpenLeft = false;
+                    bool firstSquareOpenTop = false;
+                    bool secondSquareOpenRight = false;
+                    bool secondSquareOpenBottom = false;
+                    bool secondSquareOpenLeft = false;
+                    bool secondSquareOpenTop = false;
+                    bool thirdSquareOpenRight = false;
+                    bool thirdSquareOpenBottom = false;
+                    bool thirdSquareOpenLeft = false;
+                    bool thirdSquareOpenTop = false;
+
                     switch (chrominoInGame.Orientation)
                     {
                         case Orientation.Horizontal:
-                            firstEdge = OpenEdge.Right;
-                            secondEdge = OpenEdge.RightLeft;
-                            thirdEdge = OpenEdge.Left;
+                            firstSquareOpenRight = true;
+                            secondSquareOpenRight = true;
+                            secondSquareOpenLeft = true;
+                            thirdSquareOpenLeft = true;
                             break;
                         case Orientation.HorizontalFlip:
-                            firstEdge = OpenEdge.Left;
-                            secondEdge = OpenEdge.RightLeft;
-                            thirdEdge = OpenEdge.Right;
+                            firstSquareOpenLeft = true;
+                            secondSquareOpenRight = true;
+                            secondSquareOpenLeft = true;
+                            thirdSquareOpenRight = true;
                             break;
                         case Orientation.Vertical:
-                            firstEdge = OpenEdge.Top;
-                            secondEdge = OpenEdge.BottomTop;
-                            thirdEdge = OpenEdge.Bottom;
+                            firstSquareOpenTop = true;
+                            secondSquareOpenTop = true;
+                            secondSquareOpenBottom = true;
+                            thirdSquareOpenBottom = true;
                             break;
                         case Orientation.VerticalFlip:
-                        default:
-                            firstEdge = OpenEdge.Bottom;
-                            secondEdge = OpenEdge.BottomTop;
-                            thirdEdge = OpenEdge.Top;
+                            firstSquareOpenBottom = true;
+                            secondSquareOpenTop = true;
+                            secondSquareOpenBottom = true;
+                            thirdSquareOpenTop = true;
                             break;
                     }
-                    Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, Edge = firstEdge });
-                    Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, Edge = secondEdge });
-                    Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, Edge = thirdEdge });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, OpenRight = firstSquareOpenRight, OpenBottom = firstSquareOpenBottom, OpenLeft = firstSquareOpenLeft, OpenTop = firstSquareOpenTop });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop });
+                    Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop });
                     if (playerId > 0)
                     {
                         ChrominoInHand chrominoInHand = new GameChrominoDal(Ctx).Details(gameId, chromino.Id);

@@ -107,33 +107,40 @@
                 @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
                     int index = i + j * Model.ColumnsNumber;
-                    OpenEdge openEdge = Model.SquaresViewModel[index].Edge;
                     SquareVMState state = Model.SquaresViewModel[index].State;
-
                     if (state != SquareVMState.Free)
                     {
+                        string classOpenSides = "Square Open";
+                        if ( Model.SquaresViewModel[index].OpenRight)
+                            classOpenSides += "Right";
+                        if (Model.SquaresViewModel[index].OpenBottom)
+                            classOpenSides += "Bottom";
+                        if (Model.SquaresViewModel[index].OpenLeft)
+                            classOpenSides += "Left";
+                        if (Model.SquaresViewModel[index].OpenTop)
+                            classOpenSides += "Top";
                         string classColor = state.ToString();
-                        string classOpenEdge = "Square Open" + openEdge.ToString();
-                        <div id="Grid_@index" class="@classOpenEdge @classColor"></div>
+
+                        <div id="Grid_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
                     {
                         string classCloseEdge = "Square ";
                         if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            classCloseEdge += " Close" + OpenEdge.Right.ToString();
+                            classCloseEdge += " CloseRight";
                         }
                         if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            classCloseEdge += " Close" + OpenEdge.Bottom.ToString();
+                            classCloseEdge += " CloseBottom";
                         }
                         if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            classCloseEdge += " Close" + OpenEdge.Left.ToString();
+                            classCloseEdge += " CloseLeft";
                         }
                         if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].State != SquareVMState.Free)
                         {
-                            classCloseEdge += " Close" + OpenEdge.Top.ToString();
+                            classCloseEdge += " CloseTop";
                         }
                         <div class="@classCloseEdge"></div>
                     }
@@ -147,11 +154,23 @@
         <div id="@id" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
-                OpenEdge openEdge = chrominosViewModel.SquaresViewModel[i].Edge;
+                string classOpenSides;
+                switch (i)
+                {
+                    case 0:
+                        classOpenSides = "OpenRight";
+                        break;
+                    case 1:
+                        classOpenSides = "OpenRightLeft";
+                        break;
+                    case 2:
+                    default:
+                        classOpenSides = "OpenLeft";
+                        break;
+                }
                 SquareVMState state = chrominosViewModel.SquaresViewModel[i].State;
                 string classColor = state.ToString();
-                string classOpenEdge = "Open" + openEdge.ToString();
-                <div class="Square @classOpenEdge @classColor"></div>
+                <div class="Square @classOpenSides @classColor"></div>
             }
         </div>
     }
@@ -251,11 +270,23 @@ else
                 @pseudo_chromino.Key &nbsp;
                 @for (int i = 0; i < 3; i++)
                 {
-                    OpenEdge openEdge = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].Edge;
+                    string classOpenSides;
+                    switch (i)
+                    {
+                        case 0:
+                            classOpenSides = "OpenRight";
+                            break;
+                        case 1:
+                            classOpenSides = "OpenRightLeft";
+                            break;
+                        case 2:
+                        default:
+                            classOpenSides = "OpenLeft";
+                            break;
+                    }
                     SquareVMState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
                     string classColor = state.ToString();
-                    string classOpenEdge = "Open" + openEdge.ToString();
-                    <div class="Square @classOpenEdge @classColor"></div>
+                    <div class="Square @classOpenSides @classColor"></div>
                 }
             </div>
         }
