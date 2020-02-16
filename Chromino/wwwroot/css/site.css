@@ -222,8 +222,6 @@ a {
     flex-shrink: 0;
 }
 
-
-
 .CloseRightTop {
     border-color: black;
     border-right: 1px;
@@ -306,10 +304,6 @@ a {
     flex-shrink: 0;
 }
 
-
-
-
-
 .CloseRightBottom {
     border-color: black;
     border-right: 1px;
@@ -318,8 +312,6 @@ a {
     border-bottom-style: solid;
     flex-shrink: 0;
 }
-
-
 
 .CloseBottomLeft {
     border-color: black;
@@ -349,10 +341,6 @@ a {
     border-left-style: solid;
     flex-shrink: 0;
 }
-
-
-
-
 
 
 .opponentLastChromino {
@@ -388,6 +376,13 @@ a {
 
 #nextButton {
     background-image: url(/image/RightArrow.svg);
+}
+
+#PlayerHistory {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    text-align: center;
 }
 
 @media screen and (orientation: portrait) {

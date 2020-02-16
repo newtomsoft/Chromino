@@ -164,9 +164,9 @@ function PutChromino() {
         default:
             break;
     }
-    var position = $(LastChrominoMove).position();
-    var x = position.left - GameAreaOffsetX;
-    var y = position.top - GameAreaOffsetY;
+    var offset = $(LastChrominoMove).offset();
+    var x = offset.left - GameAreaOffsetX;
+    var y = offset.top - GameAreaOffsetY;
     var xIndex = Math.round(x / SquareSize);
     var yIndex = Math.round(y / SquareSize);
 
@@ -215,15 +215,17 @@ function ResizeGameArea() {
     $('#gameArea').height(gameAreaHeight);
     $('#gameArea').width(gameAreaWidth);
 
-    GameAreaOffsetX = Math.ceil((documentWidth - gameAreaWidth) / 2);
-    GameAreaOffsetY = Math.ceil((documentHeight - gameAreaHeight) / 2);
-
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
     $('.handPlayerChromino').outerHeight(SquareSize);
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
+
+    var gameAreaOffset = $('#gameArea').offset();
+    GameAreaOffsetX = gameAreaOffset.left;
+    GameAreaOffsetY = gameAreaOffset.top;
+
 }
 
 //***************************************//

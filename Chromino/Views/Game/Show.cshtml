@@ -19,18 +19,15 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
-<body id="GameBody">
+<body>
     <div id="toolbar">
         <div>
             <a asp-area="" asp-controller="Home" asp-action="Index"><input type="button" class="btn btn-primary" value="Home" /></a>
         </div>
-
         <div>
             <button class="btn btn-primary" onclick="ShowInfoPopup();">Infos</button>
         </div>
-
         <br />
-
         @switch (Model.GameStatus)
         {
             case GameStatus.Finished:
@@ -66,7 +63,6 @@
                 break;
         }
 
-
         @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
         {
             <div class="row">
@@ -84,8 +80,8 @@
             </div>
         }
         @if (Model.GameStatus == GameStatus.InProgress && Model.PlayerIdTurn == ViewBag.PlayerId &&
-(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
-)
+      (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
+      )
         {
             <div class="row">
                 <div class="col-md-4">
@@ -97,10 +93,10 @@
             <div id="previousButton"></div>
             <div id="nextButton"></div>
         </div>
-        <div id="PlayerHistory"></div>
     </div>
     <br>
     <div id="gameArea" display="none">
+        <div id="PlayerHistory"></div>
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
             <div class="gameLineArea">
@@ -110,8 +106,9 @@
                     SquareVMState state = Model.SquaresViewModel[index].State;
                     if (state != SquareVMState.Free)
                     {
+                        string classColor = state.ToString();
                         string classOpenSides = "Square Open";
-                        if ( Model.SquaresViewModel[index].OpenRight)
+                        if (Model.SquaresViewModel[index].OpenRight)
                             classOpenSides += "Right";
                         if (Model.SquaresViewModel[index].OpenBottom)
                             classOpenSides += "Bottom";
@@ -119,8 +116,6 @@
                             classOpenSides += "Left";
                         if (Model.SquaresViewModel[index].OpenTop)
                             classOpenSides += "Top";
-                        string classColor = state.ToString();
-
                         <div id="Grid_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
@@ -182,8 +177,6 @@
         <input id="FormY" name="y" />
         <input id="FormOrientation" name="orientation" />
     </form>
-
-
 
     <script>
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
