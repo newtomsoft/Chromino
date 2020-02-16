@@ -17,7 +17,12 @@
         StartDraggable();
     });
 
-    $(window).bind('resize', function (e) {
+    $(document).mouseup(function () {
+        MagnetChromino();
+    });
+    
+
+    $(window).on('resize', function (e) {
         window.resizeEvt;
         $(window).resize(function () {
             clearTimeout(window.resizeEvt);
@@ -100,18 +105,17 @@ function ScheduleRotate() {
 }
 
 function StartDraggable() {
-    $(".handPlayerChromino").draggableTouch().bind("dragstart", function () {
+    $(".handPlayerChromino").draggableTouch()
+        .on("dragstart", function () {
         ScheduleRotate();
         LastChrominoMove = this;
-    }).bind("dragend", function () {
+    }).on("dragend", function () {
         LastChrominoMove = this;
+        MagnetChromino();
         if (ToRotate) {
             ToRotate = false;
             clearTimeout(TimeoutRotate);
-            Rotation(LastChrominoMove)
-        }
-        else {
-            ToRotate = false;
+            Rotation(LastChrominoMove);
         }
     });
 }
@@ -126,7 +130,7 @@ function Rotation(chromino) {
         case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
             $(chromino).css("transform", "matrix(-1, 0, 0, -1, 0, 0)");
             break;
-        case "matrix(-1, 0, 0, -1, 0, 0)": //180° => 270°
+        case "matrix(-1, 0, 0, -1, 0, 0)": // 180° => 270°
             $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
             break;
         case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
@@ -138,10 +142,19 @@ function Rotation(chromino) {
 }
 
 function StopDraggable() {
-    $(this).unbind("mouseup");
-    $(this).unbind("mousedown");
-    $(document).unbind("mousemove");
-    $(".handPlayerChromino").draggableTouch("disable");
+    $(this).off("mouseup");
+    $(this).off("mousedown");
+    $(document).off("mousemove");
+    $('.handPlayerChromino').draggableTouch("disable");
+}
+
+function MagnetChromino() {
+    var offset = $(LastChrominoMove).offset();
+    var x = offset.left - GameAreaOffsetX;
+    var y = offset.top - GameAreaOffsetY;
+    var difX = SquareSize * Math.round(x / SquareSize) - x;
+    var difY = SquareSize * Math.round(y / SquareSize) - y;
+    $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
 }
 
 function PutChromino() {
