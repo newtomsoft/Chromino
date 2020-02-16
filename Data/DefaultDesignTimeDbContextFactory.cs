@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace Mooove.Data
+namespace Data
 {
     public class DefaultDesignTimeDbContextFactory : IDesignTimeDbContextFactory<Context>
     {
