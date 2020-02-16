@@ -14,7 +14,7 @@ namespace Controllers
         protected const int BotId = 1; // dry avec GameCore
         protected const string SessionKeyPlayerId = "PlayerId";
         protected const string SessionKeyPlayerPseudo = "PlayerPseudo";
-        protected readonly DefaultContext Ctx;
+        protected readonly Context Ctx;
         protected readonly GameDal GameDal;
         protected readonly GameChrominoDal GameChrominoDal;
         protected readonly ChrominoDal ChrominoDal;
@@ -24,7 +24,7 @@ namespace Controllers
         protected int PlayerId { get; private set; }
         protected string PlayerPseudo { get; private set; }
 
-        public CommonController(DefaultContext context)
+        public CommonController(Context context)
         {
             Ctx = context;
             GameDal = new GameDal(Ctx);

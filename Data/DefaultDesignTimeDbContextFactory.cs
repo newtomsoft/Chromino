@@ -6,9 +6,9 @@ using System.IO;
 
 namespace Mooove.Data
 {
-    public class DefaultDesignTimeDbContextFactory : IDesignTimeDbContextFactory<DefaultContext>
+    public class DefaultDesignTimeDbContextFactory : IDesignTimeDbContextFactory<Context>
     {
-        public DefaultContext CreateDbContext(string[] args)
+        public Context CreateDbContext(string[] args)
         {
             string path = Directory.GetCurrentDirectory();
 
@@ -18,10 +18,10 @@ namespace Mooove.Data
 
             IConfigurationRoot config = builder.Build();
             string connectionString = config.GetConnectionString("DefaultContext");
-            DbContextOptionsBuilder<DefaultContext> optionBuilder = new DbContextOptionsBuilder<DefaultContext>();
+            DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
 
-            return new DefaultContext(optionBuilder.Options);
+            return new Context(optionBuilder.Options);
         }
     }
 }

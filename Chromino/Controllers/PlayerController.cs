@@ -15,7 +15,7 @@ namespace Controllers
 {
     public class PlayerController : CommonController
     {
-        public PlayerController(DefaultContext context) : base(context)
+        public PlayerController(Context context) : base(context)
         {
         }
 

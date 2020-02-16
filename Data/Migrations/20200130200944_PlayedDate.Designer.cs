@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(DefaultContext))]
+    [DbContext(typeof(Context))]
     [Migration("20200130200944_PlayedDate")]
     partial class PlayedDate
     {

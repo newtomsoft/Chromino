@@ -20,7 +20,7 @@ namespace Controllers
 {
     public class HomeController : CommonController
     {
-        public HomeController(DefaultContext ctx) : base(ctx)
+        public HomeController(Context ctx) : base(ctx)
         {
         }
 

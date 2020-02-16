@@ -10,9 +10,9 @@ namespace Data.DAL
 {
     public class SquareDal
     {
-        private readonly DefaultContext Ctx;
+        private readonly Context Ctx;
 
-        public SquareDal(DefaultContext context)
+        public SquareDal(Context context)
         {
             Ctx = context;
         }

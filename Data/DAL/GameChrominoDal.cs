@@ -12,9 +12,9 @@ namespace Data.DAL
 {
     public class GameChrominoDal
     {
-        private readonly DefaultContext Ctx;
+        private readonly Context Ctx;
 
-        public GameChrominoDal(DefaultContext context)
+        public GameChrominoDal(Context context)
         {
             Ctx = context;
         }

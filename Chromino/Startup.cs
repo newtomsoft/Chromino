@@ -36,7 +36,7 @@ namespace ChrominoGame
 
             services.AddControllersWithViews();
             string connectionString = Configuration.GetConnectionString("DefaultContext");
-            services.AddDbContext<DefaultContext>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+            services.AddDbContext<Context>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));

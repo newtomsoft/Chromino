@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(DefaultContext))]
+    [DbContext(typeof(Context))]
     [Migration("20200205224923_ChrominoInGame-MovePlayer")]
     partial class ChrominoInGameMovePlayer
     {

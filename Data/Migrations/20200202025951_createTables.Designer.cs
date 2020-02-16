@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(DefaultContext))]
+    [DbContext(typeof(Context))]
     [Migration("20200202025951_createTables")]
     partial class createTables
     {

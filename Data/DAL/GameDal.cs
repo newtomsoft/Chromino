@@ -9,9 +9,9 @@ namespace Data.DAL
 {
     public class GameDal
     {
-        private readonly DefaultContext Ctx;
+        private readonly Context Ctx;
 
-        public GameDal(DefaultContext context)
+        public GameDal(Context context)
         {
             Ctx = context;
         }

@@ -17,7 +17,7 @@ namespace Controllers
 {
     public class GameController : CommonController
     {
-        public GameController(DefaultContext context) : base(context)
+        public GameController(Context context) : base(context)
         {
         }
 

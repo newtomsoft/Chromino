@@ -10,7 +10,7 @@ namespace Data.Core
     public class GameCore
     {
         private const int MaxChrominoInHand = 8;
-        private readonly DefaultContext Ctx;
+        private readonly Context Ctx;
         private readonly GameChrominoDal GameChrominoDal;
         private readonly ChrominoDal ChrominoDal;
         private readonly SquareDal SquareDal;
@@ -22,7 +22,7 @@ namespace Data.Core
         public List<Player> Players { get; set; }
         public List<GamePlayer> GamePlayers { get; set; }
 
-        public GameCore(DefaultContext ctx, int gameId, List<Player> listPlayers = null)
+        public GameCore(Context ctx, int gameId, List<Player> listPlayers = null)
         {
             Ctx = ctx;
             GameDal = new GameDal(ctx);

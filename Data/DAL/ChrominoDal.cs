@@ -10,9 +10,9 @@ namespace Data.DAL
 {
     public class ChrominoDal
     {
-        private readonly DefaultContext Ctx;
+        private readonly Context Ctx;
 
-        public ChrominoDal(DefaultContext context)
+        public ChrominoDal(Context context)
         {
             Ctx = context;
         }

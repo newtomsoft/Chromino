@@ -7,7 +7,7 @@
 /Chromino/appsettings.Production.json
 /Chromino/appsettings.Stage.json
 /Chromino/appsettings.Test.json
-/Data/DefaultContext.cs
+/Data/Context.cs
 
 # User-specific files
 *.rsuser
