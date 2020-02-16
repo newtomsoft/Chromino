@@ -5,6 +5,7 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
+    <Configurations>Debug;Release;Prod</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
