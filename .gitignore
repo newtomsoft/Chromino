@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#env files
+/Chromino/appsettings.Production.json
+/Chromino/appsettings.Stage.json
+/Chromino/appsettings.Test.json
+/Data/DefaultContext.cs
+
 # User-specific files
 *.rsuser
 *.suo
@@ -338,6 +344,3 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/Chromino/appsettings.Production.json
-/Chromino/appsettings.Stage.json
-/Chromino/appsettings.Test.json
