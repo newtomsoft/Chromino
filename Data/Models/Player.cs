@@ -13,6 +13,7 @@ namespace Data.Models
         public int Id { get; set; }
         
         [Required]
+        [Column(TypeName = "varchar(25)")]
         public string Pseudo { get; set; }
         
         [Required]
