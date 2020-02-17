@@ -124,7 +124,7 @@ namespace Controllers
                 ViewData["SingleGamesFinished"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "Parties dont c'est le tour d'un adversaire", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties en attente (tour d'un adversaire)", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.GamesWaitTurn(PlayerId))
                 {
@@ -148,7 +148,7 @@ namespace Controllers
             }
         }
 
-        public IActionResult Privacy()
+        public IActionResult APropos()
         {
             return View();
         }
