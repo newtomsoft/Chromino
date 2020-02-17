@@ -7,7 +7,7 @@
     $('#removePlayer').click(function () {
         RemovePlayer();
     });
-
+    ShowPlayers();
 
     //********************//
     //*** Actions Game ***//
@@ -20,7 +20,7 @@
     $(document).mouseup(function () {
         MagnetChromino();
     });
-    
+
 
     $(window).on('resize', function (e) {
         window.resizeEvt;
@@ -107,17 +107,17 @@ function ScheduleRotate() {
 function StartDraggable() {
     $(".handPlayerChromino").draggableTouch()
         .on("dragstart", function () {
-        ScheduleRotate();
-        LastChrominoMove = this;
-    }).on("dragend", function () {
-        LastChrominoMove = this;
-        MagnetChromino();
-        if (ToRotate) {
-            ToRotate = false;
-            clearTimeout(TimeoutRotate);
-            Rotation(LastChrominoMove);
-        }
-    });
+            ScheduleRotate();
+            LastChrominoMove = this;
+        }).on("dragend", function () {
+            LastChrominoMove = this;
+            MagnetChromino();
+            if (ToRotate) {
+                ToRotate = false;
+                clearTimeout(TimeoutRotate);
+                Rotation(LastChrominoMove);
+            }
+        });
 }
 
 function Rotation(chromino) {
@@ -290,4 +290,10 @@ function RemovePlayer() {
         $('#player2').val('');
         $('#groupPlayer2').hide(600);
     }
+}
+function ShowPlayers() {
+    $(".playerName").each(function (index, element) {
+        if ($(element).val() != '')
+            $(element).parent().show(600);
+    });
 }

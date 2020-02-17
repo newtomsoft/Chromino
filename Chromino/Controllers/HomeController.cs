@@ -34,7 +34,7 @@ namespace Controllers
             else
             {
                 List<SelectListItem> listSelectListItem = new List<SelectListItem>();
-                SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Play multi game", Disabled = true };
+                SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties à plusieurs (votre tour)", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.MultiGamesToPlay(PlayerId))
                 {
@@ -52,7 +52,7 @@ namespace Controllers
                 ViewData["GamesToPlay"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "Play alone game", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties seul", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.SingleGamesInProgress(PlayerId))
                 {
@@ -70,7 +70,7 @@ namespace Controllers
                 ViewData["SingleGames"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "View won game", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties gagnées", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.GamesWon(PlayerId))
                 {
@@ -88,7 +88,7 @@ namespace Controllers
                 ViewData["GamesWon"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "View lost game", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties perdues", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.GamesLost(PlayerId))
                 {
@@ -106,7 +106,7 @@ namespace Controllers
                 ViewData["GamesLost"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "View finished alone game", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Partries seul terminées", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.SingleGamesFinished(PlayerId))
                 {
@@ -124,7 +124,7 @@ namespace Controllers
                 ViewData["SingleGamesFinished"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "View opponent turn game", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties dont c'est le tour d'un adversaire", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.GamesWaitTurn(PlayerId))
                 {

@@ -49,7 +49,7 @@ namespace Controllers
                 if (player != null && !players.Contains(player))
                     players.Add(player);
                 else
-                    error = $"pseudo {pseudosNotNull[i]} doesn't exist or already in game";
+                    error = $"Le pseudo {pseudosNotNull[i]} n'existe pas ou est déjà dans la partie";
             }
 
             if (error != null)

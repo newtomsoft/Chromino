@@ -1,7 +1,7 @@
 ﻿@model String[];
 
 @{
-    ViewData["Title"] = "Start new game";
+    ViewData["Title"] = "Créer nouvelle partie";
 
     string[] players = Model;
     if(players==null)
@@ -10,52 +10,52 @@
         players[0] = ViewBag.PlayerPseudo;
     }
 }
-<h1>Start new game</h1>
+<h1>Créer nouvelle partie</h1>
 
 @if(ViewBag.error != null)
 {
-<p>@ViewBag.error</p>
+<p class="error">@ViewBag.error</p>
 }
 
 <div class="row">
     <div class="col-md-4">
-        <button id="addPlayer" class="btn btn-primary">Add player</button>
-        <button id="removePlayer" class="btn btn-primary">Remove player</button>
+        <button id="addPlayer" class="btn btn-primary">Ajouter un joueur</button>
+        <button id="removePlayer" class="btn btn-primary">Enlever un joueur</button>
         <form asp-action="StartNew">
             <div class="form-group">
-                <label class="control-label">Player 1 pseudo (or "bot")</label>
-                <input name="pseudos[]" class="form-control" type="text" value="@players[0]" />
+                <label class="control-label">Pseudo du joueur 1 (bot1 pour l'ordinateur)</label>
+                <input name="pseudos[]" class="form-control playerName" type="text" value="@players[0]" />
             </div>
-            <div id="groupPlayer2" class="form-group" style="display: none;">
-                <label class="control-label">Player 2 pseudo (or "bot")</label>
-                <input id="player2" name="pseudos[]" class="form-control" type="text" value="@players[1]" />
+            <div id="groupPlayer2" class="form-group">
+                <label class="control-label">Pseudo du joueur 2 (bot2 pour l'ordinateur)</label>
+                <input id="player2" name="pseudos[]" class="form-control playerName" type="text" value="@players[1]" />
             </div>
             <div id="groupPlayer3" class="form-group" style="display: none;">
-                <label class="control-label">Player 3 pseudo (or "bot")</label>
-                <input id="player3" name="pseudos[]" class="form-control" type="text" value="@players[2]" />
+                <label class="control-label">Pseudo du joueur 3 (bot3 pour l'ordinateur)</label>
+                <input id="player3" name="pseudos[]" class="form-control playerName" type="text" value="@players[2]" />
             </div>
             <div id="groupPlayer4" class="form-group" style="display: none;">
-                <label class="control-label">Player 4 pseudo (or "bot")</label>
-                <input id="player4" name="pseudos[]" class="form-control" type="text" value="@players[3]" />
+                <label class="control-label">Pseudo du joueur 4 (bot4 pour l'ordinateur)</label>
+                <input id="player4" name="pseudos[]" class="form-control playerName" type="text" value="@players[3]" />
             </div>
             <div id="groupPlayer5" class="form-group" style="display: none;">
-                <label class="control-label">Player 5 pseudo (or "bot")</label>
-                <input id="player5" name="pseudos[]" class="form-control" type="text" value="@players[4]" />
+                <label class="control-label">Pseudo du joueur 5 (bot5 pour l'ordinateur)</label>
+                <input id="player5" name="pseudos[]" class="form-control playerName" type="text" value="@players[4]" />
             </div>
             <div id="groupPlayer6" class="form-group" style="display: none;">
-                <label class="control-label">Player 6 pseudo (or "bot")</label>
-                <input id="player6" name="pseudos[]" class="form-control" type="text" value="@players[5]" />
+                <label class="control-label">Pseudo du joueur 6 (bot6 pour l'ordinateur)</label>
+                <input id="player6" name="pseudos[]" class="form-control playerName" type="text" value="@players[5]" />
             </div>
             <div id="groupPlayer7" class="form-group" style="display: none;">
-                <label class="control-label">Player 7 pseudo (or "bot")</label>
-                <input id="player7" name="pseudos[]" class="form-control" type="text" value="@players[6]" />
+                <label class="control-label">Pseudo du joueur 7 (bot7 pour l'ordinateur)</label>
+                <input id="player7" name="pseudos[]" class="form-control playerName" type="text" value="@players[6]" />
             </div>
             <div id="groupPlayer8" class="form-group" style="display: none;">
-                <label class="control-label">Player 8 pseudo (or "bot")</label>
-                <input id="player8" name="pseudos[]" class="form-control" type="text" value="@players[7]" />
+                <label class="control-label">Pseudo du joueur 8 (bot8 pour l'ordinateur)</label>
+                <input id="player8" name="pseudos[]" class="form-control playerName" type="text" value="@players[7]" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Start new game" class="btn btn-primary" />
+                <input type="submit" value="Créer la partie" class="btn btn-primary" />
             </div>
         </form>
     </div>

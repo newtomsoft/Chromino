@@ -23,7 +23,9 @@ a {
     border-color: #1861ac;
 }
 
-
+.error{
+    color:red;
+}
 
 .popup_content {
     margin: 10px;
