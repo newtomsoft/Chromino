@@ -23,7 +23,7 @@ namespace Data.ViewModel
                 {
                     infos.Append($"{pseudo_Chromino.Key} ({pseudo_Chromino.Value}) - ");
                 }
-                infos.Append("last played : " + PlayedDate);
+                infos.Append("jouée le : " + PlayedDate);
                 return infos.ToString();
             }
         }

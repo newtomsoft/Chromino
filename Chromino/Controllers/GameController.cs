@@ -51,7 +51,6 @@ namespace Controllers
                 else
                     error = $"Le pseudo {pseudosNotNull[i]} n'existe pas ou est déjà dans la partie";
             }
-
             if (error != null)
             {
                 ViewBag.error = error;
@@ -205,7 +204,7 @@ namespace Controllers
                     }
                     else
                     {
-                        pseudoChrominosInGamePlayed.Add("first chromino");
+                        pseudoChrominosInGamePlayed.Add("premier chromino");
                     }
                     
                 }

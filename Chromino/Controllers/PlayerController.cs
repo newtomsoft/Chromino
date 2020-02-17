@@ -38,15 +38,33 @@ namespace Controllers
                 {
                     HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
                     HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+                    return RedirectToAction("Index", "Home");
                 }
-                return RedirectToAction("Index", "Home");
+                else
+                {
+                    ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
+                    return View();
+                }
+                
             }
             else
             {
+                ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
                 return View();
             }
         }
 
+        [HttpPost]
+        public IActionResult LoginGuest()
+        {
+                Player found = PlayerDal.Details("Invité");
+                if (found != null)
+                {
+                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
+                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+                }
+                return RedirectToAction("Index", "Home");
+        }
 
         public async Task<IActionResult> Details(int? id)
         {

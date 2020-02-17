@@ -11,14 +11,15 @@ namespace Data.Models
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         [Column(TypeName = "varchar(25)")]
         public string Pseudo { get; set; }
-        
+
         [Required]
         [StringLength(64)]
-        [MinLength(4, ErrorMessage = "your password must contain at least 4 characters")]
+        [Display(Name = "Mot de passe")]
+        [MinLength(4, ErrorMessage = "votre mot de passe doit contenir au moins 4 caractères")]
         public string Password { get; set; }
         public int PlayedGames { get; set; }
         public int Points { get; set; }

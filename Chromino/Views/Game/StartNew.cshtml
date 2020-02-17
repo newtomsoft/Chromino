@@ -1,7 +1,7 @@
 ﻿@model String[];
 
 @{
-    ViewData["Title"] = "Créer nouvelle partie";
+    ViewData["Title"] = "Créer une nouvelle partie";
 
     string[] players = Model;
     if(players==null)
@@ -10,7 +10,7 @@
         players[0] = ViewBag.PlayerPseudo;
     }
 }
-<h1>Créer nouvelle partie</h1>
+<h1>Créer une nouvelle partie</h1>
 
 @if(ViewBag.error != null)
 {

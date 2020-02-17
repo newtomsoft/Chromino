@@ -6,8 +6,23 @@
 
 <h1>Chromino</h1>
 
-<h4>Please sign in to create/join/continue game</h4>
+<h4>Merci de vous identifier ou continuer comme invité pour jouer</h4>
 <hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="LoginGuest">
+            <div class="form-group">
+                <input type="submit" value="Continuer comme invité" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.error != null)
+{
+    <p class="error">@ViewBag.error</p>
+}
+
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Login">
@@ -23,7 +38,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
+                <input type="submit" value="Connexion" class="btn btn-primary" />
             </div>
         </form>
     </div>
