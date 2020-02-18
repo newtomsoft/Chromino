@@ -106,7 +106,7 @@ namespace Controllers
                 ViewData["GamesLost"] = new SelectList(listSelectListItem, "Value", "Text");
 
                 listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "Partries seul terminées", Disabled = true };
+                intro = new SelectListItem() { Value = "selected", Text = "Parties seul terminées", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.SingleGamesFinished(PlayerId))
                 {

@@ -23,12 +23,16 @@ a {
     border-color: #1861ac;
 }
 
-.error{
-    color:red;
+.error {
+    color: red;
 }
 
 .infoMineure {
-    font-size:small;
+    font-size: small;
+}
+
+.winner {
+    text-align: center !important;
 }
 
 .popup_content {
