@@ -113,7 +113,7 @@ namespace Data.DAL
                 Orientation = orientation,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
-            new SquareDal(Ctx).PutChromino(chrominoInGame, 0);
+            new SquareDal(Ctx).PlayChromino(chrominoInGame, 0);
         }
 
         public Chromino FirstChromino(int gameId, int playerId)

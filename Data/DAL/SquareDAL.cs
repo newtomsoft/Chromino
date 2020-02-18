@@ -21,7 +21,7 @@ namespace Data.DAL
         /// <param name="chrominoInGame"></param>
         /// <param name="playerId">0 for first chromino</param>
         /// <returns></returns>
-        public bool PutChromino(ChrominoInGame chrominoInGame, int playerId)
+        public PlayReturn PlayChromino(ChrominoInGame chrominoInGame, int playerId)
         {
             Chromino chromino = new ChrominoDal(Ctx).Details(chrominoInGame.ChrominoId);
 
@@ -34,12 +34,12 @@ namespace Data.DAL
 
             if (playerId > 0 && (!IsFree(gameId, firstCoordinate) || !IsFree(gameId, secondCoordinate) || !IsFree(gameId, thirdCoordinate)))
             {
-                return false;
+                return PlayReturn.NotFree;
             }
             else
             {
                 int n1, n2, n3;
-                if (playerId == 0)
+                if (playerId == 0) // le premier chromino posé par aucun joueur
                 {
                     n1 = 2; n2 = 2; n3 = 2;
                 }
@@ -51,11 +51,11 @@ namespace Data.DAL
 
                 if (playerId > 0 && ((n1 = GetNumberSameColorsAround(gameId, firstCoordinate, chromino.FirstColor)) == -1 || (n2 = GetNumberSameColorsAround(gameId, secondCoordinate, chromino.SecondColor)) == -1 || (n3 = GetNumberSameColorsAround(gameId, thirdCoordinate, chromino.ThirdColor)) == -1))
                 {
-                    return false;
+                    return PlayReturn.DifferentColorsAround;
                 }
                 else if (playerId > 0 && (n1 + n2 + n3 < 2))
                 {
-                    return false;
+                    return PlayReturn.NotTwoOrMoreSameColors;
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace Data.DAL
                         chrominoInGame.PlayerId = playerId;
                     Ctx.ChrominosInGame.Add(chrominoInGame);
                     Ctx.SaveChanges();
-                    return true;
+                    return PlayReturn.Ok;
                 }
             }
         }

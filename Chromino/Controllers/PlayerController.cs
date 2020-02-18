@@ -71,8 +71,7 @@ namespace Controllers
                 return NotFound();
             }
 
-            var player = await Ctx.Players
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var player = await Ctx.Players.FirstOrDefaultAsync(m => m.Id == id);
             if (player == null)
             {
                 return NotFound();

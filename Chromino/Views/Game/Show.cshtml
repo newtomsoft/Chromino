@@ -55,8 +55,8 @@
             }
         }
         @if (Model.GameStatus == GameStatus.InProgress && Model.PlayerIdTurn == ViewBag.PlayerId &&
-   (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
-   )
+(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
+)
         {
             <div class="row">
                 <div class="col-md-4">
@@ -198,7 +198,7 @@
 </html>
 
 
-@if (!Model.GamePlayerTurn.PreviouslyDraw && (Model.Pseudos_Chrominos.ContainsValue(1) || Model.Pseudos_Chrominos.ContainsValue(0)))
+@if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo && !Model.GamePlayerTurn.PreviouslyDraw && (Model.Pseudos_Chrominos.ContainsValue(1) || Model.Pseudos_Chrominos.ContainsValue(0)))
 {
     <script>
         $(document).ready(function () {
@@ -215,7 +215,8 @@ else
     </script>
 }
 
-<div id="infoPopup">
+<div id="infoPopup" style="display:none">
+    <img src="~/image/Info.svg" alt="erreur" />
     @if (Model.GameStatus == GameStatus.Finished)
     {
         <h2>La partie est terminée</h2>
@@ -229,7 +230,6 @@ else
     {
         <h3>@playerTurn</h3>
     }
-
     @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
     {
         if (pseudo_chromino.Value > 1)
@@ -267,7 +267,6 @@ else
             <p class="winner">@pseudo_chromino.Key a gagné la partie</p>
         }
     }
-
     <br />
     @if (Model.ChrominosInStack > 1)
     {
@@ -278,3 +277,41 @@ else
         <p class="infoMineure">Pioche : @Model.ChrominosInStack chrominos</p>
     }
 </div>
+
+@if (TempData["PlayReturn"] != null)
+{
+    string errorMessage = "";
+    <div id="errorPopup" style="display:none">
+        <img src="~/image/error.svg" alt="erreur" />
+        @switch ((PlayReturn)TempData["PlayReturn"])
+        {
+            case PlayReturn.NotFree:
+                <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre</p>
+                break;
+            case PlayReturn.DifferentColorsAround:
+                <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes</p>
+                break;
+            case PlayReturn.NotTwoOrMoreSameColors:
+                <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu</p>
+                break;
+            case PlayReturn.LastChrominoIsCameleon:
+                <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher</p>
+                break;
+        }
+        <p style="text-align:center">Merci de rejouer</p>
+    </div>
+    <script>
+        $(document).ready(function () {
+            ShowErrorPopup();
+        });
+    </script>
+}
+else
+{
+    <div id="errorPopup" style="display:none">
+        <img src="~/image/Error.svg" alt="erreur" />
+        <p id="errorMessage"></p>
+        <p style="text-align:center">Merci de rejouer</p>
+    </div>
+}
+

@@ -103,7 +103,7 @@ namespace Data.Core
         /// placement d'un autre chrominos de la main du bot dans le jeu
         /// </summary>
         /// <param name="gameId"></param>
-        public bool PlayBot(int botId)
+        public PlayReturn PlayBot(int botId)
         {
             HashSet<Coordinate> coordinates = FreeAroundChrominos();
 
@@ -214,20 +214,20 @@ namespace Data.Core
                 if (!gamePlayer.PreviouslyDraw || playersNumber == 1)
                 {
                     DrawChromino(botId);
-                    return false;
+                    return PlayReturn.DrawChromino;
                 }
                 else
                 {
                     PassTurn(botId);
-                    return true;
+                    return PlayReturn.Ok;
                 }
             }
             else
             {
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
-                bool put = Play(goodChrominoInGame, botId);
-                return put; // normalement ça doit toujours être true 
+                PlayReturn playReturn = Play(goodChrominoInGame, botId);
+                return playReturn; 
             }
         }
 
@@ -254,7 +254,7 @@ namespace Data.Core
             }
         }
 
-        public bool Play(ChrominoInGame chrominoInGame, int playerId)
+        public PlayReturn Play(ChrominoInGame chrominoInGame, int playerId)
         {
             if (!PlayerDal.IsBot(playerId))
             {
@@ -267,16 +267,16 @@ namespace Data.Core
                 chrominoInGame.XPosition = coordinate.X;
                 chrominoInGame.YPosition = coordinate.Y;
             }
-            bool put;
+            PlayReturn playReturn;
             if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
             {
-                put = false; // interdit de jouer le denier chromino si c'est un caméléon
+                playReturn = PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
             }
             else
             {
-                put = SquareDal.PutChromino(chrominoInGame, playerId);
+                playReturn = SquareDal.PlayChromino(chrominoInGame, playerId);
             }
-            if (put)
+            if (playReturn == PlayReturn.Ok)
             {
                 GamePlayerDal.SetPass(GameId, playerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
@@ -311,7 +311,7 @@ namespace Data.Core
                 }
                 ChangePlayerTurn();
             }
-            return put;
+            return playReturn;
         }
 
         /// <summary>

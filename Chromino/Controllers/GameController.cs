@@ -16,15 +16,22 @@ namespace Controllers
         {
         }
 
+        /// <summary>
+        /// page de création de partie
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult StartNew()
         {
             GetPlayerInfosFromSession();
-
             return View(null);
         }
 
-
+        /// <summary>
+        /// retour du formulaire de création de partie
+        /// </summary>
+        /// <param name="pseudos">pseudos des joueurs de la partie à créer</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult StartNew(string[] pseudos)
         {
@@ -76,12 +83,20 @@ namespace Controllers
             }
         }
 
+        /// <summary>
+        /// tente de jouer le chromino à l'emplacement choisit par le joueur
+        /// </summary>
+        /// <param name="playerId">id du joueur</param>
+        /// <param name="gameId">id du jeu</param>
+        /// <param name="chrominoId">id du chromino</param>
+        /// <param name="x">abscisse (0 étant le Caméléon du premier chromino du jeu)</param>
+        /// <param name="y">ordonnée (0 étant le Caméléon du premier chromino du jeu)</param>
+        /// <param name="orientation">vertical, horizontal, etc</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
         {
             GetPlayerInfosFromSession();
-
-
 
             GameCore gameCore = new GameCore(Ctx, gameId);
             ChrominoInHand chrominoInHand = GameChrominoDal.Details(gameId, chrominoId);
@@ -93,25 +108,22 @@ namespace Controllers
                 YPosition = y,
                 Orientation = orientation,
             };
-            bool move = gameCore.Play(chrominoInGame, playerId);
-            if (!move)
-            {
-                // todo : position pas bonne. avertir joueur
-            }
-            else
-            {
-                //Ctx.ChrominosInHand.Remove(chrominoInHand);
-                //Ctx.SaveChanges();
-                NextPlayerPlayIfBot(gameId, gameCore);
-            }
+            PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
 
-            return RedirectToAction("Show", "Game", new
-            {
-                id = gameId
-            });
+            if (playReturn == PlayReturn.Ok)
+                NextPlayerPlayIfBot(gameId, gameCore);
+            else
+                TempData["PlayReturn"] = playReturn;
+            
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
-
+        /// <summary>
+        /// Pioche un chromino
+        /// </summary>
+        /// <param name="playerId">id du joueur</param>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult DrawChromino(int playerId, int gameId)
         {
@@ -143,7 +155,6 @@ namespace Controllers
         }
 
 
-        // todo : [HttpPost]
         public IActionResult Show(int id)
         {
             GetPlayerInfosFromSession();
@@ -208,7 +219,7 @@ namespace Controllers
             }
             else
             {
-                return RedirectToAction("NotFound");
+                return NotFound();
             }
         }
 
@@ -230,18 +241,17 @@ namespace Controllers
             return RedirectToAction("PlayBot", "Game", new { id = gameId, botId = botId });
         }
 
-        public IActionResult NotFound()
-        {
-            return View();
-        }
+        //public IActionResult GameNotFound()
+        //{
+        //    return View();
+        //}
 
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
         {
             int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
             if (PlayerDal.IsBot(playerId))
             {
-                bool play;
-                while (!(play = gameCore.PlayBot(playerId))) ;
+                while (gameCore.PlayBot(playerId) != PlayReturn.Ok) ;
             }
         }
     }

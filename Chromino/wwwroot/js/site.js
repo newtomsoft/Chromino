@@ -73,8 +73,17 @@ function AnimateSquare(squareId) {
 
 
 //***************************************************//
-//******** gestion popup infos de la partie *********//
+//********** gestion popups de la partie ************//
 //***************************************************//
+function ShowErrorPopup() {
+    $('#errorPopup').show();
+    $('#errorPopup').popup({
+        autoopen: true,
+        transition: 'all 0.4s'
+    });
+    $.fn.popup.defaults.pagecontainer = '#page'
+}
+
 function ShowInfoPopup() {
     $('#infoPopup').show();
     $('#infoPopup').popup({
@@ -86,6 +95,8 @@ function ShowInfoPopup() {
 function HideInfoPopup() {
     $('#infoPopup').hide();
 }
+
+
 
 
 //***************************************************//
@@ -158,35 +169,41 @@ function MagnetChromino() {
 }
 
 function PutChromino() {
-    var id = LastChrominoMove.id;
-    var transform = $(LastChrominoMove).css("transform");
-    switch (transform) {
-        case "none":
-        case "matrix(1, 0, 0, 1, 0, 0)": // 0°
-            $("#FormOrientation").val(1); // todo : valeurs scalaire à changer en conformité avec l'enum c#
-            break;
-        case "matrix(0, 1, -1, 0, 0, 0)": // 90°
-            $("#FormOrientation").val(4);
-            break;
-        case "matrix(-1, 0, 0, -1, 0, 0)": //180°
-            $("#FormOrientation").val(3);
-            break;
-        case "matrix(0, -1, 1, 0, 0, 0)": // 270°
-            $("#FormOrientation").val(2);
-            break;
-        default:
-            break;
-    }
-    var offset = $(LastChrominoMove).offset();
-    var x = offset.left - GameAreaOffsetX;
-    var y = offset.top - GameAreaOffsetY;
-    var xIndex = Math.round(x / SquareSize);
-    var yIndex = Math.round(y / SquareSize);
+    if (LastChrominoMove != null) {
+        var id = LastChrominoMove.id;
+        var transform = $(LastChrominoMove).css("transform");
+        switch (transform) {
+            case "none":
+            case "matrix(1, 0, 0, 1, 0, 0)": // 0°
+                $("#FormOrientation").val(1); // todo : valeurs scalaire à changer en conformité avec l'enum c#
+                break;
+            case "matrix(0, 1, -1, 0, 0, 0)": // 90°
+                $("#FormOrientation").val(4);
+                break;
+            case "matrix(-1, 0, 0, -1, 0, 0)": //180°
+                $("#FormOrientation").val(3);
+                break;
+            case "matrix(0, -1, 1, 0, 0, 0)": // 270°
+                $("#FormOrientation").val(2);
+                break;
+            default:
+                break;
+        }
+        var offset = $(LastChrominoMove).offset();
+        var x = offset.left - GameAreaOffsetX;
+        var y = offset.top - GameAreaOffsetY;
+        var xIndex = Math.round(x / SquareSize);
+        var yIndex = Math.round(y / SquareSize);
 
-    $("#FormX").val(xIndex + XMin);
-    $("#FormY").val(yIndex + YMin);
-    $("#FormChrominoId").val(id);
-    $("#FormSendMove").submit();
+        $("#FormX").val(xIndex + XMin);
+        $("#FormY").val(yIndex + YMin);
+        $("#FormChrominoId").val(id);
+        $("#FormSendMove").submit();
+    }
+    else {
+        $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
+        ShowErrorPopup();
+    }
 }
 
 //***************************************//
