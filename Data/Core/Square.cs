@@ -1,12 +1,7 @@
 ﻿using Data.Core;
-using Data.DAL;
 using Data.Enumeration;
-using Data.Models;
 using Data.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Data.Models
 {

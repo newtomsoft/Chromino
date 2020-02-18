@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data;
-using Data.Models;
+﻿using Data;
 using Data.Core;
 using Data.DAL;
 using Data.Enumeration;
+using Data.Models;
 using Data.ViewModel;
-using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Controllers
 {
@@ -165,14 +160,14 @@ namespace Controllers
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
                 {
-                    if(player.Id != PlayerId)
+                    if (player.Id != PlayerId)
                         pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 }
 
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudos_chrominos)
                 {
-                    if(pseudo_chromino.Value == 1)
+                    if (pseudo_chromino.Value == 1)
                     {
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
                     }
@@ -198,7 +193,7 @@ namespace Controllers
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
                 foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
                 {
-                    if(chrominoInGame.PlayerId != null)
+                    if (chrominoInGame.PlayerId != null)
                     {
                         pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).Pseudo);
                     }
@@ -206,7 +201,7 @@ namespace Controllers
                     {
                         pseudoChrominosInGamePlayed.Add("premier chromino");
                     }
-                    
+
                 }
                 GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
                 return View(gameViewModel);

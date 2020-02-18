@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Data.Enumeration
+﻿namespace Data.Enumeration
 {
     public enum Orientation
     {

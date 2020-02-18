@@ -1,12 +1,10 @@
-﻿using Data.Models;
+﻿using Data.Core;
+using Data.Enumeration;
+using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Data.Core;
-using Data.Enumeration;
-using Microsoft.EntityFrameworkCore;
-using Data.ViewModel;
 
 namespace Data.DAL
 {

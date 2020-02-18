@@ -1,10 +1,8 @@
-﻿using Data.Core;
+﻿using Data.Enumeration;
 using Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Data.Enumeration;
 
 namespace Data.DAL
 {
@@ -83,9 +81,9 @@ namespace Data.DAL
         public bool IsCameleon(int id)
         {
             int idC = (from c in Ctx.Chrominos
-                      where c.Id == id && c.SecondColor == Color.Cameleon
-                      select c.Id).FirstOrDefault();
-            
+                       where c.Id == id && c.SecondColor == Color.Cameleon
+                       select c.Id).FirstOrDefault();
+
             return idC != 0 ? true : false;
         }
     }

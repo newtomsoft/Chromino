@@ -1,11 +1,8 @@
-﻿using Data.Core;
-using Data.Enumeration;
+﻿using Data.Enumeration;
 using Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Data.DAL;
 
 namespace Data.ViewModel
 {

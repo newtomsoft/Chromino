@@ -28,7 +28,7 @@ namespace Data.ViewModel
             }
         }
 
-        public GameForListVM(Game game, Dictionary<string, int> pseudos_chrominos, string playerPseudoTurn="")
+        public GameForListVM(Game game, Dictionary<string, int> pseudos_chrominos, string playerPseudoTurn = "")
         {
             GameId = game.Id;
             GameStatus = game.Status;

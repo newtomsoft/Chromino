@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using ChrominoGame.Models;
+﻿using ChrominoGame.Models;
 using Data;
-using Tool;
-using Data.Core;
 using Data.DAL;
 using Data.Models;
-using System.Diagnostics.Contracts;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Data.ViewModel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Controllers
 {
@@ -141,7 +134,7 @@ namespace Controllers
                 }
                 ViewData["GamesWaitTurn"] = new SelectList(listSelectListItem, "Value", "Text");
 
-                
+
 
 
                 return View();

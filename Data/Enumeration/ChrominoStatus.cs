@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-
-namespace Data.Enumeration
+﻿namespace Data.Enumeration
 {
     public enum ChrominoStatus
     {

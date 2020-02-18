@@ -1,5 +1,3 @@
-using System;
-
 namespace ChrominoGame.Models
 {
     public class ErrorViewModel

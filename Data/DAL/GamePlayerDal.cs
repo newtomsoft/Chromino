@@ -1,10 +1,10 @@
-﻿using Data.Enumeration;
+﻿using Data.Core;
+using Data.Enumeration;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Data.Core;
 
 namespace Data.DAL
 {
@@ -96,7 +96,7 @@ namespace Data.DAL
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
                                 where gp.PlayerId == playerId && g.Status == GameStatus.InProgress && !gp.Turn
-                                orderby g.PlayedDate
+                                orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
             return games;

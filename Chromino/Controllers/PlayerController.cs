@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Data;
+using Data.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data;
-using Data.Models;
 using Tool;
-using Microsoft.AspNetCore.Http;
-using System.Diagnostics.Contracts;
 
 namespace Controllers
 {
@@ -45,7 +43,7 @@ namespace Controllers
                     ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
                     return View();
                 }
-                
+
             }
             else
             {
@@ -57,13 +55,13 @@ namespace Controllers
         [HttpPost]
         public IActionResult LoginGuest()
         {
-                Player found = PlayerDal.Details("Invité");
-                if (found != null)
-                {
-                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
-                }
-                return RedirectToAction("Index", "Home");
+            Player found = PlayerDal.Details("Invité");
+            if (found != null)
+            {
+                HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
+                HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> Details(int? id)
