@@ -10,7 +10,7 @@
     ShowPlayers();
 
     //********************//
-    //*** Actions Game ***//
+    //*** Event on Game **//
     //********************//
     $(document).click(function () {
         StopDraggable();
@@ -20,8 +20,7 @@
     $(document).mouseup(function () {
         MagnetChromino();
     });
-
-
+      
     $(window).on('resize', function (e) {
         window.resizeEvt;
         $(window).resize(function () {
@@ -103,6 +102,9 @@ function HideInfoPopup() {
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
 
+let TimeoutPut = null;
+let ToPut = false;
+let PositionLastChromino;
 let TimeoutRotate = null;
 let ToRotate = true;
 let LastChrominoMove;
@@ -115,11 +117,34 @@ function ScheduleRotate() {
     }, 120);
 }
 
+function SchedulePut() {
+    clearTimeout(TimeoutPut);
+    PositionLastChromino = $(LastChrominoMove).offset();
+    TimeoutPut = setTimeout(function () {
+        position = $(LastChrominoMove).offset();
+        if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+            ToPut = true;
+            ShowOkToPut();
+        }
+    }, 700);
+}
+
+function ShowOkToPut() {
+    $('#gameArea').fadeToggle(25, function () {
+        $(this).fadeToggle(25);
+    });
+    $(LastChrominoMove).fadeToggle(25, function () {
+        $(this).fadeToggle(25);
+    });
+}
+
 function StartDraggable() {
     $(".handPlayerChromino").draggableTouch()
         .on("dragstart", function () {
             ScheduleRotate();
             LastChrominoMove = this;
+            PositionLastChromino = $(LastChrominoMove).offset();
+            SchedulePut();
         }).on("dragend", function () {
             LastChrominoMove = this;
             MagnetChromino();
@@ -128,6 +153,12 @@ function StartDraggable() {
                 clearTimeout(TimeoutRotate);
                 Rotation(LastChrominoMove);
             }
+            var position = $(LastChrominoMove).offset();
+            if (ToPut && PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+                clearTimeout(TimeoutPut);
+                PutChromino();
+            }
+            ToPut = false;
         });
 }
 
