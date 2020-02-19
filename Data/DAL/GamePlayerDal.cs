@@ -95,7 +95,7 @@ namespace Data.DAL
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.InProgress && !gp.Turn
+                                where gp.PlayerId == playerId && !gp.ViewFinished && !gp.Turn
                                 orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
@@ -106,7 +106,7 @@ namespace Data.DAL
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && gp.Win == true
+                                where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == true
                                 orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
@@ -117,7 +117,7 @@ namespace Data.DAL
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && gp.Win == false
+                                where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == false
                                 orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
@@ -126,41 +126,41 @@ namespace Data.DAL
 
         public List<Game> MultiGamesToPlay(int playerId)
         {
-            var multiGamesId = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where g.Status == GameStatus.InProgress
-                                orderby g.PlayedDate
-                                group gp by gp.GameId into groupe
-                                where groupe.Count() > 1
-                                select groupe.Key).ToList();
+            //var multiGamesId = (from gp in Ctx.GamesPlayers
+            //                    join g in Ctx.Games on gp.GameId equals g.Id
+            //                    where !gp.ViewFinished
+            //                    orderby g.PlayedDate
+            //                    group gp by gp.GameId into groupe
+            //                    where groupe.Count() > 1
+            //                    select groupe.Key).ToList();
 
-            List<Game> multiGames = new List<Game>();
-            foreach (int id in multiGamesId)
-            {
-                multiGames.Add(Ctx.Games.Find(id));
-            }
+            //List<Game> multiGames = new List<Game>();
+            //foreach (int id in multiGamesId)
+            //{
+            //    multiGames.Add(Ctx.Games.Find(id));
+            //}
 
-            var singleGameInProgressId = (from gp in Ctx.GamesPlayers
+            //var singleGameInProgressId = (from gp in Ctx.GamesPlayers
+            //                              join g in Ctx.Games on gp.GameId equals g.Id
+            //                              where g.Status == GameStatus.InProgress
+            //                              orderby g.PlayedDate
+            //                              group gp by gp.GameId into groupe
+            //                              where groupe.Count() == 1
+            //                              select groupe.Key).ToList();
+
+            //var gamesToPlay = (from gp in Ctx.GamesPlayers
+            //                   join g in Ctx.Games on gp.GameId equals g.Id
+            //                   where gp.PlayerId == playerId && gp.Turn && g.Status == GameStatus.InProgress
+            //                   orderby g.PlayedDate
+            //                   select g).AsNoTracking().ToList();
+
+            //List<Game> multiGameToPlay = gamesToPlay.Intersect(multiGames, new GameEqualityComparer()).ToList();
+
+            List<Game> multiGameToPlay = (from gp in Ctx.GamesPlayers
                                           join g in Ctx.Games on gp.GameId equals g.Id
-                                          where g.Status == GameStatus.InProgress
+                                          where gp.PlayerId == playerId && !gp.ViewFinished
                                           orderby g.PlayedDate
-                                          group gp by gp.GameId into groupe
-                                          where groupe.Count() == 1
-                                          select groupe.Key).ToList();
-
-            List<Game> singleGameInProgress = new List<Game>();
-            foreach (int id in singleGameInProgressId)
-            {
-                singleGameInProgress.Add(Ctx.Games.Find(id));
-            }
-
-            var gamesToPlay = (from gp in Ctx.GamesPlayers
-                               join g in Ctx.Games on gp.GameId equals g.Id
-                               where gp.PlayerId == playerId && gp.Turn && g.Status == GameStatus.InProgress
-                               orderby g.PlayedDate
-                               select g).AsNoTracking().ToList();
-
-            List<Game> multiGameToPlay = gamesToPlay.Intersect(multiGames, new GameEqualityComparer()).ToList();
+                                          select g).ToList();
 
             return multiGameToPlay;
         }
@@ -181,13 +181,20 @@ namespace Data.DAL
                 allSingleGameFinished.Add(Ctx.Games.Find(id));
             }
 
-            var gamesFinished = (from gp in Ctx.GamesPlayers
-                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                 where gp.PlayerId == playerId && gp.Turn && g.Status == GameStatus.SingleFinished
-                                 orderby g.PlayedDate descending
-                                 select g).AsNoTracking().ToList();
+            List<Game> singleGameFinished = (from g in allSingleGameFinished
+                                             join gp in Ctx.GamesPlayers on g.Id equals gp.GameId
+                                             where gp.PlayerId == playerId
+                                             orderby g.PlayedDate descending
+                                             select g).ToList();
 
-            List<Game> singleGameFinished = gamesFinished.Intersect(allSingleGameFinished, new GameEqualityComparer()).ToList();
+
+            //var gamesFinished = (from gp in Ctx.GamesPlayers
+            //                     join g in Ctx.Games on gp.GameId equals g.Id
+            //                     where gp.PlayerId == playerId && gp.Turn && g.Status == GameStatus.SingleFinished
+            //                     orderby g.PlayedDate descending
+            //                     select g).AsNoTracking().ToList();
+
+            //List<Game> singleGameFinished = gamesFinished.Intersect(allSingleGameFinished, new GameEqualityComparer()).ToList();
 
             return singleGameFinished;
         }
@@ -250,6 +257,16 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public void SetViewFinished(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.ViewFinished = true;
+            Ctx.SaveChanges();
+        }
+
         public bool IsPreviouslyDraw(int gameId, int playerId)
         {
             bool previouslyDraw = (from gp in Ctx.GamesPlayers
@@ -287,13 +304,13 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void SetWon(int gameId, int playerId)
+        public void SetWon(int gameId, int playerId, bool won = true)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            gamePlayer.Win = true;
+            gamePlayer.Win = won;
             Ctx.SaveChanges();
         }
 

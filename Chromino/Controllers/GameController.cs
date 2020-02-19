@@ -156,6 +156,8 @@ namespace Controllers
         {
             GetPlayerInfosFromSession();
 
+            //TODO passer l'essentiel de l'algo dans GameCore
+
             List<Player> players = GamePlayerDal.Players(id);
             int playersNumber = players.Count;
             Player playerTurn = GamePlayerDal.PlayerTurn(id);
@@ -193,6 +195,11 @@ namespace Controllers
                 }
                 Game game = GameDal.Details(id);
                 GameStatus gameStatus = game.Status;
+                if (gameStatus == GameStatus.Finished)
+                {
+                    GamePlayerDal.SetViewFinished(id, PlayerId);
+                    GamePlayerDal.SetWon(id, PlayerId, false);
+                }
                 bool autoPlay = game.AutoPlay;
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
