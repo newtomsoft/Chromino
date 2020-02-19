@@ -106,7 +106,7 @@ namespace Data.DAL
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && gp.Win
+                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && gp.Win == true
                                 orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
@@ -117,7 +117,7 @@ namespace Data.DAL
         {
             List<Game> games = (from gp in Ctx.GamesPlayers
                                 join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && !gp.Win
+                                where gp.PlayerId == playerId && g.Status == GameStatus.Finished && gp.Win == false
                                 orderby g.PlayedDate descending
                                 select g).AsNoTracking().ToList();
 
