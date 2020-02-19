@@ -8,5 +8,6 @@
         NotTwoOrMoreSameColors,
         DifferentColorsAround,
         DrawChromino,
+        NotPlayerTurn,
     }
 }

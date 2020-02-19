@@ -99,7 +99,6 @@ namespace Controllers
             GetPlayerInfosFromSession();
 
             GameCore gameCore = new GameCore(Ctx, gameId);
-            ChrominoInHand chrominoInHand = GameChrominoDal.Details(gameId, chrominoId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -148,8 +147,6 @@ namespace Controllers
                 GameCore gameCore = new GameCore(Ctx, gameId);
                 gameCore.PassTurn(playerId);
                 NextPlayerPlayIfBot(gameId, gameCore);
-
-
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -186,7 +183,7 @@ namespace Controllers
 
 
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regare leur partie et leur mains
+                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur mains
                 {
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
                 }
@@ -226,7 +223,6 @@ namespace Controllers
         public IActionResult PlayBot(int id, int botId)
         {
             GetPlayerInfosFromSession();
-
             GameCore gamecore = new GameCore(Ctx, id);
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
@@ -240,11 +236,6 @@ namespace Controllers
             GameDal.SetAutoPlay(gameId, autoPlay);
             return RedirectToAction("PlayBot", "Game", new { id = gameId, botId = botId });
         }
-
-        //public IActionResult GameNotFound()
-        //{
-        //    return View();
-        //}
 
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
         {

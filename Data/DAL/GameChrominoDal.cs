@@ -21,9 +21,19 @@ namespace Data.DAL
         {
             ChrominoInHand chrominoInHand = (from ch in Ctx.ChrominosInHand
                                              where ch.GameId == gameId && ch.ChrominoId == chrominoId
-                                             select ch).FirstOrDefault();
+                                             select ch).AsNoTracking().FirstOrDefault();
 
             return chrominoInHand;
+        }
+
+        public void DeleteInHand(int gameId, int chrominoId)
+        {
+            ChrominoInHand chrominoInHand = (from ch in Ctx.ChrominosInHand
+                                             where ch.GameId == gameId && ch.ChrominoId == chrominoId
+                                             select ch).FirstOrDefault();
+
+            Ctx.ChrominosInHand.Remove(chrominoInHand);
+            Ctx.SaveChanges();
         }
 
         public int InGame(int gameId)
@@ -53,6 +63,11 @@ namespace Data.DAL
             return nbChrominos;
         }
 
+        /// <summary>
+        /// Nombre de chrominos dans la pioche
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
         public int InStack(int gameId)
         {
             int nbChrominos = (from c in Ctx.Chrominos
@@ -61,6 +76,12 @@ namespace Data.DAL
             return nbChrominos - InHands(gameId) - InGame(gameId);
         }
 
+        /// <summary>
+        /// Pioche un chromino
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <param name="playerId">id du joueur</param>
+        /// <returns>id du chromino pioché. 0 si plus de chromino dans la pioche</returns>
         public int StackToHand(int gameId, int playerId)
         {
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
@@ -173,6 +194,15 @@ namespace Data.DAL
             return chrominosInGame;
         }
 
+        public ChrominoInHand GetNewAddedChrominoInHand(int gameId, int playerId)
+        {
+            ChrominoInHand chromino = (from ch in Ctx.ChrominosInHand
+                                       join c in Ctx.Chrominos on ch.ChrominoId equals c.Id
+                                       where ch.GameId == gameId && ch.PlayerId == playerId
+                                       orderby ch.Position descending
+                                       select ch).FirstOrDefault();
 
+            return chromino;
+        }
     }
 }

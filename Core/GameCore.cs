@@ -105,11 +105,17 @@ namespace Data.Core
         /// <param name="gameId"></param>
         public PlayReturn PlayBot(int botId)
         {
-            HashSet<Coordinate> coordinates = FreeAroundChrominos();
+            bool isPreviouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
+            int playersNumber = GamePlayerDal.PlayersNumber(GameId);
+            if (GamePlayerDal.IsAllPass(GameId) && (!isPreviouslyDraw || playersNumber == 1))
+            {
+                DrawChromino(botId);
+                return PlayReturn.DrawChromino;
+            }
 
+            HashSet<Coordinate> coordinates = FreeAroundChrominos();
             // prendre ceux avec un seul coté en commun avec un chrominos
             // calculer orientation avec les couleurs imposées ou pas
-
             List<PossiblesPositions> possiblesPositions = new List<PossiblesPositions>();
             foreach (Coordinate coordinate in coordinates)
             {
@@ -145,14 +151,18 @@ namespace Data.Core
             }
 
             // cherche un chromino dans la main du bot correspondant à un possiblesPosition
-            possiblesPositions = possiblesPositions.OrderBy(a => Guid.NewGuid()).ToList(); // todo commencer par les positions nouvelles
-            List<ChrominoInHand> hand = GameChrominoDal.ChrominosByPriority(GameId, botId);
+            List<ChrominoInHand> hand;
+            bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
+            if (previouslyDraw)
+                hand = new List<ChrominoInHand> { GameChrominoDal.GetNewAddedChrominoInHand(GameId, botId) };
+            else
+                hand = GameChrominoDal.ChrominosByPriority(GameId, botId);
+
             ChrominoInGame goodChrominoInGame = null;
             Coordinate firstCoordinate = null;
-
             ChrominoInGame chrominoInGame = new ChrominoInGame();
             ChrominoInHand goodChrominoInHand = null;
-            if (hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de le main
+            if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de le main
             {
                 goodChrominoInGame = null;
             }
@@ -209,9 +219,7 @@ namespace Data.Core
             }
             if (goodChrominoInGame == null)
             {
-                GamePlayer gamePlayer = GamePlayerDal.Details(GameId, botId);
-                int playersNumber = GamePlayerDal.PlayersNumber(GameId);
-                if (!gamePlayer.PreviouslyDraw || playersNumber == 1)
+                if (!isPreviouslyDraw || playersNumber == 1)
                 {
                     DrawChromino(botId);
                     return PlayReturn.DrawChromino;
@@ -227,31 +235,26 @@ namespace Data.Core
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
                 PlayReturn playReturn = Play(goodChrominoInGame, botId);
-                return playReturn; 
+                return playReturn;
             }
         }
 
         public void PassTurn(int playerId)
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
+            if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId))
+                GameDal.SetStatus(GameId, GameStatus.Finished);
+            // todo : avertir tous les joueurs que la partie est nulle
+
             ChangePlayerTurn();
         }
 
         public void DrawChromino(int playerId)
         {
-            int chrominoId = GameChrominoDal.StackToHand(GameId, playerId);
-            if (chrominoId == 0)
-            {
-                GamePlayerDal.SetPass(GameId, playerId, true);
-                if (!GamePlayerDal.IsAllPass(GameId) || Players.Count == 1)
-                    ChangePlayerTurn();
-                else
-                    GameDal.SetStatus(GameId, GameStatus.Finished);
-            }
+            if (GameChrominoDal.StackToHand(GameId, playerId) == 0)
+                PassTurn(playerId);
             else
-            {
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
-            }
         }
 
         public PlayReturn Play(ChrominoInGame chrominoInGame, int playerId)
@@ -268,7 +271,11 @@ namespace Data.Core
                 chrominoInGame.YPosition = coordinate.Y;
             }
             PlayReturn playReturn;
-            if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
+            if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
+            {
+                playReturn = PlayReturn.NotPlayerTurn;
+            }
+            else if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
             {
                 playReturn = PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
             }
@@ -368,16 +375,21 @@ namespace Data.Core
             }
         }
 
+        /// <summary>
+        /// liste (sans doublons) des coordonées libres ajdacentes à des squares occupés.
+        /// les coordonées des derniers squares occupés sont remontées en premiers.
+        /// </summary>
+        /// <returns></returns>
         public HashSet<Coordinate> FreeAroundChrominos()
         {
-            List<Square> grids = SquareDal.List(GameId);
+            List<Square> squares = SquareDal.List(GameId);
             HashSet<Coordinate> coordinates = new HashSet<Coordinate>();
-            foreach (var grid in grids)
+            foreach (Square square in squares)
             {
-                Coordinate rightCoordinate = grid.GetRight();
-                Coordinate bottomCoordinate = grid.GetBottom();
-                Coordinate leftCoordinate = grid.GetLeft();
-                Coordinate topCoordinate = grid.GetTop();
+                Coordinate rightCoordinate = square.GetRight();
+                Coordinate bottomCoordinate = square.GetBottom();
+                Coordinate leftCoordinate = square.GetLeft();
+                Coordinate topCoordinate = square.GetTop();
                 if (SquareDal.IsFree(GameId, rightCoordinate))
                     coordinates.Add(rightCoordinate);
                 if (SquareDal.IsFree(GameId, bottomCoordinate))

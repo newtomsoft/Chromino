@@ -193,6 +193,16 @@
         var GameAreaColumnsNumber = @Model.ColumnsNumber;
         var XMin = @Model.XMin;
         var YMin = @Model.YMin;
+        @{
+            int horizontal = (int)Orientation.Horizontal;
+            int horizontalFlip = (int)Orientation.HorizontalFlip;
+            int vertical = (int)Orientation.Vertical;
+            int verticalFlip = (int)Orientation.VerticalFlip;
+        }
+        var Horizontal = @horizontal;
+        var HorizontalFlip = @horizontalFlip;
+        var Vertical = @vertical;
+        var VerticalFlip = @verticalFlip;
     </script>
 </body>
 </html>
@@ -216,7 +226,7 @@ else
 }
 
 <div id="infoPopup" style="display:none">
-    <img src="~/image/Info.svg" alt="erreur" />
+    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
     @if (Model.GameStatus == GameStatus.Finished)
     {
         <h2>La partie est terminée</h2>
@@ -282,7 +292,7 @@ else
 {
     string errorMessage = "";
     <div id="errorPopup" style="display:none">
-        <img src="~/image/Error.svg" alt="erreur" />
+        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
         @switch ((PlayReturn)TempData["PlayReturn"])
         {
             case PlayReturn.NotFree:
@@ -297,6 +307,9 @@ else
             case PlayReturn.LastChrominoIsCameleon:
                 <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher</p>
                 break;
+            case PlayReturn.NotPlayerTurn:
+                <p id="errorMessage">Il est interdit d'essayer de tricher !</p>
+                break;
         }
         <p style="text-align:center">Merci de rejouer</p>
     </div>
@@ -309,9 +322,9 @@ else
 else
 {
     <div id="errorPopup" style="display:none">
-        <img src="~/image/Error.svg" alt="erreur" />
+        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
         <p id="errorMessage"></p>
-        <p style="text-align:center">Merci de rejouer</p>
+        <p id="errorMessageEnd" style="text-align:center">Merci de rejouer</p>
     </div>
 }
 

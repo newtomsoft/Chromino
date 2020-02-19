@@ -250,6 +250,15 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public bool IsPreviouslyDraw(int gameId, int playerId)
+        {
+            bool previouslyDraw = (from gp in Ctx.GamesPlayers
+                                   where gp.GameId == gameId && gp.PlayerId == playerId
+                                   select gp.PreviouslyDraw).FirstOrDefault();
+
+            return previouslyDraw;
+        }
+
         public bool IsAllPass(int gameId)
         {
             var passs = from gp in Ctx.GamesPlayers
@@ -262,6 +271,12 @@ namespace Data.DAL
                 return true;
         }
 
+        /// <summary>
+        /// indique si le joueur a pasé son tour
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <param name="playerId">id du joueur</param>
+        /// <param name="pass">true : le joueur a passé son tour</param>
         public void SetPass(int gameId, int playerId, bool pass)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers

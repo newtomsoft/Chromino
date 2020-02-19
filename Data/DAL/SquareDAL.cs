@@ -104,10 +104,7 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop });
                     if (playerId > 0)
-                    {
-                        ChrominoInHand chrominoInHand = new GameChrominoDal(Ctx).Details(gameId, chromino.Id);
-                        Ctx.ChrominosInHand.Remove(chrominoInHand);
-                    }
+                        new GameChrominoDal(Ctx).DeleteInHand(gameId, chromino.Id);
                     byte maxMove = new GameChrominoDal(Ctx).MaxMove(gameId);
                     chrominoInGame.Move = (byte)(maxMove + 1);
                     if (playerId > 0)
@@ -174,10 +171,16 @@ namespace Data.DAL
                 return null;
         }
 
+        /// <summary>
+        /// liste des squares du jeu classés par ceux occupés en dernier (par des chrominos)
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
         public List<Square> List(int gameId)
         {
             var result = (from s in Ctx.Squares
                           where s.GameId == gameId
+                          orderby s.Id descending
                           select s).ToList();
 
             return result;

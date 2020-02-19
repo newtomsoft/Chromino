@@ -20,7 +20,7 @@
     $(document).mouseup(function () {
         MagnetChromino();
     });
-      
+
     $(window).on('resize', function (e) {
         window.resizeEvt;
         $(window).resize(function () {
@@ -96,12 +96,9 @@ function HideInfoPopup() {
 }
 
 
-
-
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
-
 let TimeoutPut = null;
 let ToPut = false;
 let PositionLastChromino;
@@ -126,7 +123,7 @@ function SchedulePut() {
             ToPut = true;
             ShowOkToPut();
         }
-    }, 700);
+    }, 600);
 }
 
 function ShowOkToPut() {
@@ -200,32 +197,34 @@ function MagnetChromino() {
 }
 
 function PutChromino() {
+    if (!ThisPlayerTurn) {
+        $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
+        $('#errorMessageEnd').html("Merci");
+        ShowErrorPopup();
+        return;
+    }
     if (LastChrominoMove != null) {
         var id = LastChrominoMove.id;
-        var transform = $(LastChrominoMove).css("transform");
-        switch (transform) {
+        switch ($(LastChrominoMove).css("transform")) {
             case "none":
-            case "matrix(1, 0, 0, 1, 0, 0)": // 0°
-                $("#FormOrientation").val(1); // todo : valeurs scalaire à changer en conformité avec l'enum c#
+            case "matrix(1, 0, 0, 1, 0, 0)":
+                $("#FormOrientation").val(Horizontal);
                 break;
-            case "matrix(0, 1, -1, 0, 0, 0)": // 90°
-                $("#FormOrientation").val(4);
+            case "matrix(0, 1, -1, 0, 0, 0)":
+                $("#FormOrientation").val(VerticalFlip);
                 break;
-            case "matrix(-1, 0, 0, -1, 0, 0)": //180°
-                $("#FormOrientation").val(3);
+            case "matrix(-1, 0, 0, -1, 0, 0)":
+                $("#FormOrientation").val(HorizontalFlip);
                 break;
-            case "matrix(0, -1, 1, 0, 0, 0)": // 270°
-                $("#FormOrientation").val(2);
+            case "matrix(0, -1, 1, 0, 0, 0)":
+                $("#FormOrientation").val(Vertical);
                 break;
             default:
                 break;
         }
         var offset = $(LastChrominoMove).offset();
-        var x = offset.left - GameAreaOffsetX;
-        var y = offset.top - GameAreaOffsetY;
-        var xIndex = Math.round(x / SquareSize);
-        var yIndex = Math.round(y / SquareSize);
-
+        var xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        var yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
         $("#FormChrominoId").val(id);
@@ -275,24 +274,20 @@ function ResizeGameArea() {
     var gameAreaWidth = SquareSize * GameAreaColumnsNumber;
     $('#gameArea').height(gameAreaHeight);
     $('#gameArea').width(gameAreaWidth);
-
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
     $('.handPlayerChromino').outerHeight(SquareSize);
     $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
-
     var gameAreaOffset = $('#gameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
-
 }
 
 //***************************************//
 //********* fonctions StartNew  *********//
 //***************************************//
-
 function AddPlayer() {
     if ($('#groupPlayer2').is(':hidden'))
         $('#groupPlayer2').show(600);
