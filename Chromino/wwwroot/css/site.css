@@ -357,6 +357,7 @@ a {
     height: 30px;
     display: flex;
     flex-direction: row;
+    margin-bottom: 7px;
 }
 
 .handPlayerChromino {

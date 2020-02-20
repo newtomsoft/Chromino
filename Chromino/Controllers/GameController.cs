@@ -63,7 +63,7 @@ namespace Controllers
             int gameId = GameDal.AddGame().Id;
             GamePlayerDal.Add(gameId, players);
             GameCore gamecore = new GameCore(Ctx, gameId);
-            gamecore.BeginGame();
+            gamecore.BeginGame(players.Count);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -196,6 +196,11 @@ namespace Controllers
                 Game game = GameDal.Details(id);
                 GameStatus gameStatus = game.Status;
                 if (gameStatus == GameStatus.Finished)
+                {
+                    GamePlayerDal.SetViewFinished(id, PlayerId);
+                    GamePlayerDal.SetWon(id, PlayerId, false);
+                }
+                else if (gameStatus == GameStatus.SingleFinished)
                 {
                     GamePlayerDal.SetViewFinished(id, PlayerId);
                     GamePlayerDal.SetWon(id, PlayerId, false);

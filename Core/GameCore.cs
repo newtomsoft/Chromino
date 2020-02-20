@@ -50,9 +50,12 @@ namespace Data.Core
             }
         }
 
-        public void BeginGame()
+        public void BeginGame(int playerNumber)
         {
-            GameDal.SetStatus(GameId, GameStatus.InProgress);
+            if(playerNumber == 1)
+                GameDal.SetStatus(GameId, GameStatus.SingleInProgress);
+            else
+                GameDal.SetStatus(GameId, GameStatus.InProgress);
             GameChrominoDal.FirstRandomToGame(GameId);
             FillHandPlayers();
             ChangePlayerTurn();
