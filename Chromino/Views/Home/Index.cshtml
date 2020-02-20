@@ -17,10 +17,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesMulti" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesToPlay" onchange="window.document.formGamesMulti.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
@@ -32,10 +30,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesAlone" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGames" onchange="window.document.formGamesAlone.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
@@ -47,10 +43,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesWin" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWon" onchange="window.document.formGamesWin.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
@@ -62,10 +56,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesLost" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesLost" onchange="window.document.formGamesLost.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
@@ -77,10 +69,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesAloneFinished" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGamesFinished" onchange="window.document.formGamesAloneFinished.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
@@ -92,10 +82,8 @@
     <div class="row">
         <div class="col-md-8">
             <form name="formGamesWaitTurn" asp-action="Show" asp-controller="Game" method="put">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWaitTurn" onchange="window.document.formGamesWaitTurn.submit();"></select>
-                    <span asp-validation-for="Id" class="text-danger"></span>
                 </div>
             </form>
         </div>
