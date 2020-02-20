@@ -22,16 +22,12 @@ namespace ChrominoGame
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages().AddRazorRuntimeCompilation();
-
             IMvcBuilder builder = services.AddRazorPages();
-
 #if DEBUG
             builder.AddRazorRuntimeCompilation();
 #endif
-
             services.AddControllersWithViews();
-            string connectionString = Configuration.GetConnectionString("DefaultContext");
-            services.AddDbContext<Context>(options => options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));

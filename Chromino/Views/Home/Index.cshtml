@@ -16,7 +16,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesMulti" asp-action="Show" asp-controller="Game" method="put">
+            <form method="get" name="formGamesMulti" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesToPlay" onchange="window.document.formGamesMulti.submit();"></select>
                 </div>
@@ -29,7 +29,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesAlone" asp-action="Show" asp-controller="Game" method="put">
+            <form method="get" name="formGamesAlone" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGames" onchange="window.document.formGamesAlone.submit();"></select>
                 </div>
@@ -42,7 +42,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesWin" asp-action="Show" asp-controller="Game" method="put">
+            <form  method="get" name="formGamesWin" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWon" onchange="window.document.formGamesWin.submit();"></select>
                 </div>
@@ -55,7 +55,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesLost" asp-action="Show" asp-controller="Game" method="put">
+            <form  method="get" name="formGamesLost" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesLost" onchange="window.document.formGamesLost.submit();"></select>
                 </div>
@@ -68,7 +68,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesAloneFinished" asp-action="Show" asp-controller="Game" method="put">
+            <form  method="get" name="formGamesAloneFinished" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGamesFinished" onchange="window.document.formGamesAloneFinished.submit();"></select>
                 </div>
@@ -81,7 +81,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form name="formGamesWaitTurn" asp-action="Show" asp-controller="Game" method="put">
+            <form method="get" name="formGamesWaitTurn" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWaitTurn" onchange="window.document.formGamesWaitTurn.submit();"></select>
                 </div>
