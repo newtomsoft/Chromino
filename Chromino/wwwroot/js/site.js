@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-    // Action StartNew events
+    // Action New events
     $('#addPlayer').click(function () {
         AddPlayer();
     });
@@ -286,7 +286,7 @@ function ResizeGameArea() {
 }
 
 //***************************************//
-//********* fonctions StartNew  *********//
+//********* fonctions New  *********//
 //***************************************//
 function AddPlayer() {
     if ($('#groupPlayer2').is(':hidden'))

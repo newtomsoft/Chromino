@@ -21,7 +21,7 @@ namespace Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult StartNew()
+        public IActionResult New()
         {
             GetPlayerInfosFromSession();
             return View(null);
@@ -33,7 +33,7 @@ namespace Controllers
         /// <param name="pseudos">pseudos des joueurs de la partie à créer</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult StartNew(string[] pseudos)
+        public IActionResult New(string[] pseudos)
         {
             GetPlayerInfosFromSession();
 
