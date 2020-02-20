@@ -64,9 +64,8 @@ namespace Data.DAL
         public int PlayersNumber(int gameId)
         {
             int playersNumber = (from gp in Ctx.GamesPlayers
-                                 join p in Ctx.Players on gp.PlayerId equals p.Id
                                  where gp.GameId == gameId
-                                 select p).Count();
+                                 select gp.Id).Count();
 
             return playersNumber;
         }
@@ -188,6 +187,15 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public bool IsPreviouslyDraw(int gameId, int playerId)
+        {
+            bool previouslyDraw = (from gp in Ctx.GamesPlayers
+                                   where gp.GameId == gameId && gp.PlayerId == playerId
+                                   select gp.PreviouslyDraw).FirstOrDefault();
+
+            return previouslyDraw;
+        }
+
         public void SetViewFinished(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
@@ -196,15 +204,6 @@ namespace Data.DAL
 
             gamePlayer.ViewFinished = true;
             Ctx.SaveChanges();
-        }
-
-        public bool IsPreviouslyDraw(int gameId, int playerId)
-        {
-            bool previouslyDraw = (from gp in Ctx.GamesPlayers
-                                   where gp.GameId == gameId && gp.PlayerId == playerId
-                                   select gp.PreviouslyDraw).FirstOrDefault();
-
-            return previouslyDraw;
         }
 
         public bool IsAllPass(int gameId)

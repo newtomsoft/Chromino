@@ -52,7 +52,7 @@ namespace Data.Core
 
         public void BeginGame(int playerNumber)
         {
-            if(playerNumber == 1)
+            if (playerNumber == 1)
                 GameDal.SetStatus(GameId, GameStatus.SingleInProgress);
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
@@ -163,8 +163,7 @@ namespace Data.Core
 
             ChrominoInGame goodChrominoInGame = null;
             Coordinate firstCoordinate = null;
-            ChrominoInGame chrominoInGame = new ChrominoInGame();
-            ChrominoInHand goodChrominoInHand = null;
+            ChrominoInHand goodChrominoInHand;
             if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de le main
             {
                 goodChrominoInGame = null;
@@ -246,9 +245,8 @@ namespace Data.Core
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
             if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId))
-                GameDal.SetStatus(GameId, GameStatus.Finished);
+                SetGameFinished();
             // todo : avertir tous les joueurs que la partie est nulle
-
             ChangePlayerTurn();
         }
 
@@ -297,7 +295,7 @@ namespace Data.Core
                 int numberInHand = GameChrominoDal.InHand(GameId, playerId);
                 if (numberInHand == 0)
                 {
-                    GameDal.SetStatus(GameId, GameStatus.Finished);
+                    SetGameFinished();
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
                         PlayerDal.IncreaseWin(playerId);
@@ -405,7 +403,6 @@ namespace Data.Core
             return coordinates;
         }
 
-
         private void FillHandPlayers()
         {
             foreach (GamePlayer gamePlayer in GamePlayers)
@@ -420,6 +417,17 @@ namespace Data.Core
             {
                 GameChrominoDal.StackToHand(GameId, gamePlayer.PlayerId);
             }
+        }
+
+        /// <summary>
+        /// marque la partie terminée
+        /// </summary>
+        private void SetGameFinished()
+        {
+            if (GamePlayerDal.PlayersNumber(GameId) == 1)
+                GameDal.SetStatus(GameId, GameStatus.SingleFinished);
+            else
+                GameDal.SetStatus(GameId, GameStatus.Finished);
         }
     }
 }
