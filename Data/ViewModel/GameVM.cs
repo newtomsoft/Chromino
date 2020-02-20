@@ -9,7 +9,6 @@ namespace Data.ViewModel
     public class GameVM
     {
         public int GameId { get; set; }
-        public bool AutoPlay { get; set; }
         public List<Square> Squares { get; set; }
         public int XMin { get; set; }
         public int XMax { get; set; }
@@ -32,12 +31,11 @@ namespace Data.ViewModel
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
         public List<string> PseudoChrominosPlayedVM { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, bool autoPlay, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudoChrominosInGamePlayed)
+        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudoChrominosInGamePlayed)
         {
             PlayerPseudoTurn = playerTurn.Pseudo;
             PlayerIdTurn = playerTurn.Id;
             GamePlayerTurn = gamePlayerTurn;
-            AutoPlay = autoPlay;
             GameId = gameId;
             ChrominosInGame = chrominosInGameNumber;
             ChrominosInStack = chrominosInStackNumber;

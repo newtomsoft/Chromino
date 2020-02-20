@@ -205,7 +205,6 @@ namespace Controllers
                     GamePlayerDal.SetViewFinished(id, PlayerId);
                     GamePlayerDal.SetWon(id, PlayerId, false);
                 }
-                bool autoPlay = game.AutoPlay;
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
@@ -223,7 +222,7 @@ namespace Controllers
                     }
 
                 }
-                GameVM gameViewModel = new GameVM(id, squares, autoPlay, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
+                GameVM gameViewModel = new GameVM(id, squares, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
                 return View(gameViewModel);
             }
             else
@@ -238,15 +237,6 @@ namespace Controllers
             GameCore gamecore = new GameCore(Ctx, id);
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
-        }
-
-        [HttpPost]
-        public IActionResult AutoPlay(int gameId, int botId, bool autoPlay)
-        {
-            GetPlayerInfosFromSession();
-
-            GameDal.SetAutoPlay(gameId, autoPlay);
-            return RedirectToAction("PlayBot", "Game", new { id = gameId, botId = botId });
         }
 
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
