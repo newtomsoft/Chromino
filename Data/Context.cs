@@ -24,13 +24,5 @@ namespace Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Player>()
-            .HasIndex(e => e.Pseudo)
-            .HasName("NIX_PlayerPseudo")
-            .IsUnique();
-        }
     }
 }
