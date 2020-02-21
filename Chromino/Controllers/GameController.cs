@@ -113,7 +113,7 @@ namespace Controllers
                 NextPlayerPlayIfBot(gameId, gameCore);
             else
                 TempData["PlayReturn"] = playReturn;
-            
+
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 

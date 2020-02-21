@@ -1,8 +1,5 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
-using System;
-using System.Linq;
 
 namespace Data
 {

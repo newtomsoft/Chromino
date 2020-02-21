@@ -1,5 +1,4 @@
-﻿using Data.Core;
-using Data.Enumeration;
+﻿using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
