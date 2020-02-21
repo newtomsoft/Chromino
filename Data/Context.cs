@@ -5,7 +5,6 @@ namespace Data
 {
     public class Context : DbContext
     {
-        public string ConnectionString { get; set; }
         public DbSet<Chromino> Chrominos { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Game> Games { get; set; }
