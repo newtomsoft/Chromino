@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
 
 namespace Data
@@ -9,17 +10,16 @@ namespace Data
     {
         public Context CreateDbContext(string[] args)
         {
-            string path = Directory.GetCurrentDirectory();
-
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "Chromino");
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Console.WriteLine("ASPNETCORE_ENVIRONMENT is : " + env);
             IConfigurationBuilder builder = new ConfigurationBuilder()
                                .SetBasePath(path)
-                               .AddJsonFile("appsettings.json");
-
+                               .AddJsonFile($"appsettings.{env}.json");
             IConfigurationRoot config = builder.Build();
             string connectionString = config.GetConnectionString("DefaultContext");
             DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
-
             return new Context(optionBuilder.Options);
         }
     }

@@ -21,7 +21,7 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages().AddRazorRuntimeCompilation();
+            //services.AddRazorPages().AddRazorRuntimeCompilation();
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
             builder.AddRazorRuntimeCompilation();
