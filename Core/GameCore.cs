@@ -76,7 +76,7 @@ namespace Data.Core
                 if (gamePlayer == null)
                 {
                     gamePlayer = (from gp in GamePlayers
-                                  orderby Guid.NewGuid()
+                                  orderby gp.Id descending
                                   select gp).FirstOrDefault();
                 }
                 gamePlayer.PreviouslyDraw = false;

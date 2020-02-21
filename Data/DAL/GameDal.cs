@@ -44,7 +44,7 @@ namespace Data.DAL
             return games;
         }
 
-        public Game AddGame()
+        public Game Add()
         {
             string guid = Guid.NewGuid().ToString("N");
             Game game = new Game { CreateDate = DateTime.Now, Guid = guid };

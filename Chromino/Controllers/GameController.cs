@@ -5,6 +5,7 @@ using Data.Enumeration;
 using Data.Models;
 using Data.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -58,12 +59,13 @@ namespace Controllers
                 ViewBag.error = error;
                 return View(pseudos);
             }
+            List<Player> randomPlayers = players.OrderBy(_ => new Random().Next()).ToList();
 
             ChrominoDal.CreateChrominos();
-            int gameId = GameDal.AddGame().Id;
-            GamePlayerDal.Add(gameId, players);
+            int gameId = GameDal.Add().Id;
+            GamePlayerDal.Add(gameId, randomPlayers);
             GameCore gamecore = new GameCore(Ctx, gameId);
-            gamecore.BeginGame(players.Count);
+            gamecore.BeginGame(randomPlayers.Count);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
