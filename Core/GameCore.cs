@@ -237,6 +237,8 @@ namespace Data.Core
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
                 PlayReturn playReturn = Play(goodChrominoInGame, botId);
+                if (IsRoundLastPlayer(botId) && GamePlayerDal.IsSomePlayerWon(GameId))
+                    SetGameFinished();
                 return playReturn;
             }
         }
@@ -244,9 +246,8 @@ namespace Data.Core
         public void PassTurn(int playerId)
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
-            if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId))
+            if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId)))
                 SetGameFinished();
-            // todo : avertir tous les joueurs que la partie est nulle
             ChangePlayerTurn();
         }
 
@@ -273,17 +274,11 @@ namespace Data.Core
             }
             PlayReturn playReturn;
             if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
-            {
                 playReturn = PlayReturn.NotPlayerTurn;
-            }
             else if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
-            {
                 playReturn = PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
-            }
             else
-            {
                 playReturn = SquareDal.PlayChromino(chrominoInGame, playerId);
-            }
             if (playReturn == PlayReturn.Ok)
             {
                 GamePlayerDal.SetPass(GameId, playerId, false);
@@ -319,10 +314,9 @@ namespace Data.Core
                         SetGameFinished();
                     }
                 }
-                else if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
-                {
+                if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
-                }
+
                 ChangePlayerTurn();
             }
             return playReturn;

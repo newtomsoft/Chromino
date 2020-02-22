@@ -21,7 +21,7 @@ namespace Data.DAL
         /// <param name="chrominoInGame"></param>
         /// <param name="playerId">0 for first chromino</param>
         /// <returns></returns>
-        public PlayReturn PlayChromino(ChrominoInGame chrominoInGame, int playerId)
+        public PlayReturn PlayChromino(ChrominoInGame chrominoInGame, int? playerId)
         {
             Chromino chromino = new ChrominoDal(Ctx).Details(chrominoInGame.ChrominoId);
 
@@ -59,20 +59,10 @@ namespace Data.DAL
                 }
                 else
                 {
-                    //the position is valide :)
-                    bool firstSquareOpenRight = false;
-                    bool firstSquareOpenBottom = false;
-                    bool firstSquareOpenLeft = false;
-                    bool firstSquareOpenTop = false;
-                    bool secondSquareOpenRight = false;
-                    bool secondSquareOpenBottom = false;
-                    bool secondSquareOpenLeft = false;
-                    bool secondSquareOpenTop = false;
-                    bool thirdSquareOpenRight = false;
-                    bool thirdSquareOpenBottom = false;
-                    bool thirdSquareOpenLeft = false;
-                    bool thirdSquareOpenTop = false;
-
+                    //the position is ok :)
+                    bool firstSquareOpenRight = false, firstSquareOpenBottom = false, firstSquareOpenLeft = false, firstSquareOpenTop = false;
+                    bool secondSquareOpenRight = false, secondSquareOpenBottom = false, secondSquareOpenLeft = false, secondSquareOpenTop = false;
+                    bool thirdSquareOpenRight = false, thirdSquareOpenBottom = false, thirdSquareOpenLeft = false, thirdSquareOpenTop = false;
                     switch (chrominoInGame.Orientation)
                     {
                         case Orientation.Horizontal:
@@ -103,13 +93,10 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, OpenRight = firstSquareOpenRight, OpenBottom = firstSquareOpenBottom, OpenLeft = firstSquareOpenLeft, OpenTop = firstSquareOpenTop });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop });
-                    if (playerId > 0)
-                        new GameChrominoDal(Ctx).DeleteInHand(gameId, chromino.Id);
-                    byte maxMove = new GameChrominoDal(Ctx).MaxMove(gameId);
-                    chrominoInGame.Move = (byte)(maxMove + 1);
-                    if (playerId > 0)
-                        chrominoInGame.PlayerId = playerId;
+                    chrominoInGame.Move = (byte)(new GameChrominoDal(Ctx).MaxMove(gameId) + 1);
+                    chrominoInGame.PlayerId = playerId;
                     Ctx.ChrominosInGame.Add(chrominoInGame);
+                    new GameChrominoDal(Ctx).DeleteInHand(gameId, chromino.Id);
                     Ctx.SaveChanges();
                     return PlayReturn.Ok;
                 }

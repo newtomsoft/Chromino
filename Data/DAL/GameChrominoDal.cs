@@ -31,9 +31,11 @@ namespace Data.DAL
             ChrominoInHand chrominoInHand = (from ch in Ctx.ChrominosInHand
                                              where ch.GameId == gameId && ch.ChrominoId == chrominoId
                                              select ch).FirstOrDefault();
-
-            Ctx.ChrominosInHand.Remove(chrominoInHand);
-            Ctx.SaveChanges();
+            if (chrominoInHand != null)
+            {
+                Ctx.ChrominosInHand.Remove(chrominoInHand);
+                Ctx.SaveChanges();
+            }
         }
 
         public int InGame(int gameId)
@@ -135,7 +137,7 @@ namespace Data.DAL
                 Orientation = orientation,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
-            new SquareDal(Ctx).PlayChromino(chrominoInGame, 0);
+            new SquareDal(Ctx).PlayChromino(chrominoInGame, null);
         }
 
         public Chromino FirstChromino(int gameId, int playerId)
