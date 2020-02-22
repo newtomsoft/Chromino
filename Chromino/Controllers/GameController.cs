@@ -152,17 +152,12 @@ namespace Controllers
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
-                {
-                    if (player.Id != PlayerId)
-                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
-                }
+                    pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudos_chrominos)
                 {
                     if (pseudo_chromino.Value == 1)
-                    {
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
-                    }
                 }
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
                 if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur mains

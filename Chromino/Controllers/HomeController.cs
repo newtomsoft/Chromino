@@ -36,7 +36,10 @@ namespace Controllers
                     Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                     foreach (Player player in players)
                     {
-                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                        int chrominosNumber = GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id);
+                        if (chrominosNumber == 0) // pour garder le suspens, on affiche 1 au lieu de 0 si le joueur a terminé
+                            chrominosNumber = 1;
+                        pseudos_chrominos.Add(player.Pseudo, chrominosNumber);
                     }
                     GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
                     SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
