@@ -53,14 +53,32 @@ namespace Data.DAL
             return Details(guid);
         }
 
-        public void SetStatus(int id, GameStatus status)
+        public void SetStatus(int gameId, GameStatus status)
         {
             Game game = (from g in Ctx.Games
-                         where g.Id == id
+                         where g.Id == gameId
                          select g).FirstOrDefault();
 
             game.Status = status;
             Ctx.SaveChanges();
+        }
+
+        public GameStatus GetStatus(int gameId)
+        {
+            GameStatus status = (from g in Ctx.Games
+                                 where g.Id == gameId
+                                 select g.Status).FirstOrDefault();
+
+            return status;
+        }
+
+        public bool IsFinished(int gameId)
+        {
+            int id = (from g in Ctx.Games
+                      where g.Id == gameId && (g.Status == GameStatus.Finished || g.Status == GameStatus.SingleFinished)
+                      select g.Id).FirstOrDefault();
+
+            return id == 0 ? false : true;
         }
 
         public void UpdateDate(int id)

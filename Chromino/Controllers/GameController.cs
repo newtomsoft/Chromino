@@ -13,6 +13,8 @@ namespace Controllers
 {
     public class GameController : CommonController
     {
+        private static readonly Random Random = new Random();
+
         public GameController(Context context) : base(context)
         {
         }
@@ -59,30 +61,13 @@ namespace Controllers
                 ViewBag.error = error;
                 return View(pseudos);
             }
-            List<Player> randomPlayers = players.OrderBy(_ => new Random().Next()).ToList();
-
+            List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
             ChrominoDal.CreateChrominos();
             int gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);
             GameCore gamecore = new GameCore(Ctx, gameId);
             gamecore.BeginGame(randomPlayers.Count);
             return RedirectToAction("Show", "Game", new { id = gameId });
-        }
-
-        public IActionResult ContinueGame(int id)
-        {
-            GetPlayerInfosFromSession();
-
-            List<Player> players = GamePlayerDal.Players(id);
-            if (players.Count == 1 && PlayerDal.IsBot(players[0].Id))
-            {
-                return RedirectToAction("PlayBot", "Game", new { id });
-            }
-            else
-            {
-                // TODO jeux "normal"
-                return View();
-            }
         }
 
         /// <summary>
@@ -129,7 +114,6 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfosFromSession();
-
             GameCore gameCore = new GameCore(Ctx, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
@@ -153,13 +137,10 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
-
         public IActionResult Show(int id)
         {
             GetPlayerInfosFromSession();
-
             //TODO passer l'essentiel de l'algo dans GameCore
-
             List<Player> players = GamePlayerDal.Players(id);
             int playersNumber = players.Count;
             Player playerTurn = GamePlayerDal.PlayerTurn(id);
@@ -175,7 +156,6 @@ namespace Controllers
                     if (player.Id != PlayerId)
                         pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 }
-
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudos_chrominos)
                 {
@@ -184,25 +164,12 @@ namespace Controllers
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
                     }
                 }
-
-
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
                 if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur mains
-                {
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
-                }
                 else
-                {
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
-                }
-                Game game = GameDal.Details(id);
-                GameStatus gameStatus = game.Status;
-                if (gameStatus == GameStatus.Finished)
-                {
-                    GamePlayerDal.SetViewFinished(id, PlayerId);
-                    GamePlayerDal.SetWon(id, PlayerId, false);
-                }
-                else if (gameStatus == GameStatus.SingleFinished)
+                if (GameDal.IsFinished(id))
                 {
                     GamePlayerDal.SetViewFinished(id, PlayerId);
                     GamePlayerDal.SetWon(id, PlayerId, false);
@@ -215,16 +182,11 @@ namespace Controllers
                 foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
                 {
                     if (chrominoInGame.PlayerId != null)
-                    {
                         pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).Pseudo);
-                    }
                     else
-                    {
                         pseudoChrominosInGamePlayed.Add("premier chromino");
-                    }
-
                 }
-                GameVM gameViewModel = new GameVM(id, squares, gameStatus, chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
+                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
                 return View(gameViewModel);
             }
             else
@@ -244,7 +206,7 @@ namespace Controllers
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
         {
             int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
-            if (PlayerDal.IsBot(playerId))
+            if (PlayerDal.IsBot(playerId) && !GameDal.IsFinished(gameId))
             {
                 while (gameCore.PlayBot(playerId) != PlayReturn.Ok) ;
             }

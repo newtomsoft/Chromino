@@ -9,13 +9,13 @@ namespace Controllers
     {
         protected const string SessionKeyPlayerId = "PlayerId";
         protected const string SessionKeyPlayerPseudo = "PlayerPseudo";
-        protected readonly Context Ctx;
-        protected readonly GameDal GameDal;
-        protected readonly GameChrominoDal GameChrominoDal;
-        protected readonly ChrominoDal ChrominoDal;
-        protected readonly PlayerDal PlayerDal;
-        protected readonly GamePlayerDal GamePlayerDal;
-        protected readonly SquareDal SquareDal;
+        protected Context Ctx { get; }
+        protected GameDal GameDal { get; }
+        protected GameChrominoDal GameChrominoDal { get; }
+        protected ChrominoDal ChrominoDal { get; }
+        protected PlayerDal PlayerDal { get; }
+        protected GamePlayerDal GamePlayerDal { get; }
+        protected SquareDal SquareDal { get; }
         protected int PlayerId { get; private set; }
         protected string PlayerPseudo { get; private set; }
 

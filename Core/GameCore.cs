@@ -295,7 +295,6 @@ namespace Data.Core
                 int numberInHand = GameChrominoDal.InHand(GameId, playerId);
                 if (numberInHand == 0)
                 {
-                    SetGameFinished();
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
                         PlayerDal.IncreaseWin(playerId);
@@ -313,9 +312,16 @@ namespace Data.Core
                             _ => 92 - chrominosInGame,
                         };
                         PlayerDal.Details(playerId).FinishedSinglePlayerGames++;
+                        Ctx.SaveChanges();
                     }
-                    Ctx.SaveChanges();
-                    // todo gérer fin de partie en laissant jouer les joueur du tour et voir s'ils peuvent finir
+                    if (IsRoundLastPlayer(playerId))
+                    {
+                        SetGameFinished();
+                    }
+                }
+                else if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
+                {
+                    SetGameFinished();
                 }
                 ChangePlayerTurn();
             }
@@ -428,6 +434,17 @@ namespace Data.Core
                 GameDal.SetStatus(GameId, GameStatus.SingleFinished);
             else
                 GameDal.SetStatus(GameId, GameStatus.Finished);
+        }
+
+        /// <summary>
+        /// return true si l'id du joueur est l'id du dernier dans le tour
+        /// </summary>
+        /// <param name="playerId">id du joueur courant</param>
+        /// <returns></returns>
+        private bool IsRoundLastPlayer(int playerId)
+        {
+            int roundLastPlayerId = GamePlayerDal.RoundLastPlayerId(GameId);
+            return playerId == roundLastPlayerId ? true : false;
         }
     }
 }

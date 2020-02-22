@@ -11,7 +11,7 @@ namespace Data.DAL
     public class GameChrominoDal
     {
         private readonly Context Ctx;
-
+        private static readonly Random Random = new Random();
         public GameChrominoDal(Context context)
         {
             Ctx = context;
@@ -87,14 +87,11 @@ namespace Data.DAL
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
             var chrominosInGameId = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
             var chrominosInHandId = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
-            var possibleChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId);
-
-            int chrominoId = (from id in possibleChrominosId
-                              orderby Guid.NewGuid()
-                              select id).FirstOrDefault();
-
-            if (chrominoId != 0)
+            var possibleChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId).ToList();
+            int possibleChrominosIdCount = possibleChrominosId.Count;
+            if (possibleChrominosIdCount != 0)
             {
+                int chrominoId = possibleChrominosId[Random.Next(possibleChrominosIdCount)];
                 var positions = from ch in Ctx.ChrominosInHand
                                 where ch.GameId == gameId && ch.PlayerId == playerId
                                 select ch.Position;
@@ -112,18 +109,22 @@ namespace Data.DAL
                 };
                 Ctx.ChrominosInHand.Add(chrominoInHand);
                 Ctx.SaveChanges();
+                return chrominoId;
             }
-            return chrominoId;
+            else
+            {
+                return 0;
+            }
         }
 
         public void FirstRandomToGame(int gameId)
         {
-            Chromino chromino = (from c in Ctx.Chrominos
-                                 where c.SecondColor == Color.Cameleon
-                                 orderby Guid.NewGuid()
-                                 select c).AsNoTracking().FirstOrDefault();
+            List<Chromino> chrominosCameleon = (from c in Ctx.Chrominos
+                                                where c.SecondColor == Color.Cameleon
+                                                select c).AsNoTracking().ToList();
 
-            Orientation orientation = (Orientation)new Random().Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
+            Chromino chromino = chrominosCameleon[Random.Next(chrominosCameleon.Count)];
+            Orientation orientation = (Orientation)Random.Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
             Coordinate coordinate = new Coordinate(0, 0).GetPreviousCoordinate(orientation);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {

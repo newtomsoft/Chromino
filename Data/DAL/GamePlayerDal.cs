@@ -255,5 +255,24 @@ namespace Data.DAL
             else
                 return true;
         }
+
+        public int RoundLastPlayerId(int gameId)
+        {
+            int playerId = (from gp in Ctx.GamesPlayers
+                            where gp.GameId == gameId
+                            orderby gp.Id descending
+                            select gp.PlayerId).FirstOrDefault();
+
+            return playerId;
+        }
+
+        public bool IsSomePlayerWon(int gameId)
+        {
+            int somePlayerWon = (from gp in Ctx.GamesPlayers
+                                 where gp.GameId == gameId && gp.Win == true
+                                 select gp.PlayerId).FirstOrDefault();
+
+            return somePlayerWon == 0 ? false : true;
+        }
     }
 }
