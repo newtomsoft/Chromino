@@ -22,7 +22,7 @@ namespace Data.Core
         public List<Player> Players { get; set; }
         public List<GamePlayer> GamePlayers { get; set; }
 
-        public GameCore(Context ctx, int gameId, List<Player> listPlayers = null)
+        public GameCore(Context ctx, int gameId)
         {
             Ctx = ctx;
             GameDal = new GameDal(ctx);
@@ -31,16 +31,7 @@ namespace Data.Core
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
-
-            if (listPlayers == null)
-            {
-                Players = GamePlayerDal.Players(gameId);
-            }
-            else
-            {
-                Players = listPlayers;
-            }
-
+            Players = GamePlayerDal.Players(gameId);
             GameId = gameId;
             Squares = SquareDal.List(GameId);
             GamePlayers = new List<GamePlayer>();
@@ -170,15 +161,7 @@ namespace Data.Core
             }
             else
             {
-                if (hand.Count == 2 && ChrominoDal.IsCameleon(hand[1].ChrominoId))
-                {
-                    // s'il reste un camelon dans les 2 derniers de la main, on va chercher à le poser en priorité pour ne pas finir avec un caméléon
-                    // -> inversion des 2 chrominos dans la main du bot
-                    // todo? meilleur tactique de jeu ? a voir...
-                    ChrominoInHand chrominoInHand0 = hand[0];
-                    hand.RemoveAt(0);
-                    hand.Add(chrominoInHand0);
-                }
+                SortHandToFinishedWithNoCameleon(ref hand);
                 foreach (ChrominoInHand chrominoInHand in hand)
                 {
                     foreach (PossiblesPositions possiblePosition in possiblesPositions)
@@ -439,6 +422,28 @@ namespace Data.Core
         {
             int roundLastPlayerId = GamePlayerDal.RoundLastPlayerId(GameId);
             return playerId == roundLastPlayerId ? true : false;
+        }
+
+        private void SortHandToFinishedWithNoCameleon(ref List<ChrominoInHand> hand)
+        {
+            if (hand.Count > 1)
+            {
+                bool forcePlayCameleon = true;
+                for (int i = 1; i < hand.Count; i++)
+                {
+                    if (!ChrominoDal.IsCameleon(hand[i].ChrominoId))
+                    {
+                        forcePlayCameleon = false;
+                        break;
+                    }
+                }
+                if (forcePlayCameleon)
+                {
+                    ChrominoInHand chrominoAt0 = hand[0];
+                    hand.RemoveAt(0);
+                    hand.Add(chrominoAt0);
+                }
+            }
         }
     }
 }

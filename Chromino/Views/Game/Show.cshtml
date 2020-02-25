@@ -6,6 +6,8 @@
     Layout = null;
     ViewData["Title"] = "Chromino - Jouer !";
     string playerTurn = "";
+    Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.Pseudos_Chrominos);   
+    pseudosExceptCurrentPlayer_Chrominos.Remove(ViewBag.PlayerPseudo);
 }
 
 <!DOCTYPE html>
@@ -208,7 +210,7 @@
 </html>
 
 
-@if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo && !Model.GamePlayerTurn.PreviouslyDraw && (Model.Pseudos_Chrominos.ContainsValue(1) || Model.Pseudos_Chrominos.ContainsValue(0)))
+@if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0)))
 {
     <script>
         $(document).ready(function () {

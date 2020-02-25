@@ -139,6 +139,9 @@ namespace Controllers
 
         public IActionResult Show(int id)
         {
+            if (id == 0)
+                return RedirectToAction("NotFound");
+
             GetPlayerInfosFromSession();
             //TODO passer l'essentiel de l'algo dans GameCore
             List<Player> players = GamePlayerDal.Players(id);
@@ -187,7 +190,7 @@ namespace Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("NotFound");
             }
         }
 
@@ -197,6 +200,11 @@ namespace Controllers
             GameCore gamecore = new GameCore(Ctx, id);
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
+        }
+
+        public IActionResult NotFound()
+        {
+            return View();
         }
 
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)

@@ -21,14 +21,8 @@
         MagnetChromino();
     });
 
-    $(window).on('resize', function (e) {
-        window.resizeEvt;
-        $(window).resize(function () {
-            clearTimeout(window.resizeEvt);
-            window.resizeEvt = setTimeout(function () {
-                ResizeGameArea();
-            }, 250);
-        });
+    $(window).resize(function () {
+        ResizeGameArea();
     });
 
     ResizeGameArea();
@@ -104,7 +98,7 @@ let ToPut = false;
 let PositionLastChromino;
 let TimeoutRotate = null;
 let ToRotate = true;
-let LastChrominoMove;
+let LastChrominoMove = null;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -188,12 +182,14 @@ function StopDraggable() {
 }
 
 function MagnetChromino() {
-    var offset = $(LastChrominoMove).offset();
-    var x = offset.left - GameAreaOffsetX;
-    var y = offset.top - GameAreaOffsetY;
-    var difX = SquareSize * Math.round(x / SquareSize) - x;
-    var difY = SquareSize * Math.round(y / SquareSize) - y;
-    $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
+    if (LastChrominoMove != null) {
+        var offset = $(LastChrominoMove).offset();
+        var x = offset.left - GameAreaOffsetX;
+        var y = offset.top - GameAreaOffsetY;
+        var difX = SquareSize * Math.round(x / SquareSize) - x;
+        var difY = SquareSize * Math.round(y / SquareSize) - y;
+        $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
+    }
 }
 
 function PutChromino() {
@@ -249,9 +245,9 @@ function ResizeGameArea() {
     var width = documentWidth;
     var height = documentHeight;
     var offset = 0;
+    SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
     if (width > height) {
         width -= 200; //-200 : somme de la taille des 2 bandeaux
-        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: documentWidth - 100 });
             $(this).css({ top: offset });
@@ -261,8 +257,6 @@ function ResizeGameArea() {
     }
     else {
         height -= 200;
-        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
-        FirstResizeGameArea = false;
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: offset });
             $(this).css({ top: documentHeight - 100 });
