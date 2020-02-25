@@ -245,11 +245,11 @@ function ResizeGameArea() {
     var width = documentWidth;
     var height = documentHeight;
     var offset = 0;
-    SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
     if (width > height) {
         width -= 200; //-200 : somme de la taille des 2 bandeaux
+        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
-            $(this).css({ left: documentWidth - 100 });
+            $(this).css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
             $(this).css({ top: offset });
             $(this).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
             offset += SquareSize + Math.floor(SquareSize / 10);
@@ -257,17 +257,16 @@ function ResizeGameArea() {
     }
     else {
         height -= 200;
+        SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: offset });
-            $(this).css({ top: documentHeight - 100 });
+            $(this).css({ top: documentHeight - SquareSize * 3}); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
-    var gameAreaHeight = SquareSize * GameAreaLinesNumber;
-    var gameAreaWidth = SquareSize * GameAreaColumnsNumber;
-    $('#gameArea').height(gameAreaHeight);
-    $('#gameArea').width(gameAreaWidth);
+    $('#gameArea').height(SquareSize * GameAreaLinesNumber);
+    $('#gameArea').width(SquareSize * GameAreaColumnsNumber);
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
