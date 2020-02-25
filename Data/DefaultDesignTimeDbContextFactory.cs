@@ -12,6 +12,8 @@ namespace Data
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "Chromino");
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (env == null)
+                env = "Development";
             Console.WriteLine("ASPNETCORE_ENVIRONMENT is : " + env);
             IConfigurationBuilder builder = new ConfigurationBuilder()
                                .SetBasePath(path)
