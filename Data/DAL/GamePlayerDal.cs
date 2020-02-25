@@ -195,6 +195,15 @@ namespace Data.DAL
             return previouslyDraw;
         }
 
+        public bool GetViewFinished(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            return gamePlayer.ViewFinished;
+        }
+
         public void SetViewFinished(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
@@ -231,6 +240,15 @@ namespace Data.DAL
 
             gamePlayer.PreviouslyPass = pass;
             Ctx.SaveChanges();
+        }
+
+        public bool? GetWon(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            return gamePlayer.Win;
         }
 
         public void SetWon(int gameId, int playerId, bool won = true)

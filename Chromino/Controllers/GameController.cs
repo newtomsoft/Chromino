@@ -160,14 +160,15 @@ namespace Controllers
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
                 }
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur mains
+                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
                 else
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
-                if (GameDal.IsFinished(id))
+                if (GameDal.IsFinished(id) && !GamePlayerDal.GetViewFinished(id, PlayerId))
                 {
                     GamePlayerDal.SetViewFinished(id, PlayerId);
-                    GamePlayerDal.SetWon(id, PlayerId, false);
+                    if (GamePlayerDal.GetWon(id, PlayerId) == null)
+                        GamePlayerDal.SetWon(id, PlayerId, false);
                 }
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
                 List<Square> squares = SquareDal.List(id);
