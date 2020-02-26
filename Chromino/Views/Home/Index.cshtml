@@ -2,15 +2,18 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    bool toPlay = false;
 }
 
 <div class="text-center">
     <h2 class="display-5">Bienvenue @ViewBag.PlayerPseudo</h2>
 </div>
-<div>
-    <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Créer nouvelle partie" /></a>
-</div>
-<br />
+
+
+@if ((ViewBag.GamesToPlay as SelectList).Count() > 1 || (ViewBag.SingleGames as SelectList).Count() > 1)
+{
+    <p><b>Vous avez des parties où c'est à vous de jouer</b></p>
+}
 
 @if ((ViewBag.GamesToPlay as SelectList).Count() > 1)
 {
@@ -38,11 +41,16 @@
     </div>
 }
 
+<div>
+    <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Créer nouvelle partie" /></a>
+</div>
+<br />
+
 @if ((ViewBag.GamesWon as SelectList).Count() > 1)
 {
     <div class="row">
         <div class="col-md-8">
-            <form  method="get" name="formGamesWin" asp-action="Show" asp-controller="Game">
+            <form method="get" name="formGamesWin" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWon" onchange="window.document.formGamesWin.submit();"></select>
                 </div>
@@ -55,7 +63,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form  method="get" name="formGamesLost" asp-action="Show" asp-controller="Game">
+            <form method="get" name="formGamesLost" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesLost" onchange="window.document.formGamesLost.submit();"></select>
                 </div>
@@ -68,7 +76,7 @@
 {
     <div class="row">
         <div class="col-md-8">
-            <form  method="get" name="formGamesAloneFinished" asp-action="Show" asp-controller="Game">
+            <form method="get" name="formGamesAloneFinished" asp-action="Show" asp-controller="Game">
                 <div class="form-group">
                     <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGamesFinished" onchange="window.document.formGamesAloneFinished.submit();"></select>
                 </div>
