@@ -34,7 +34,7 @@
             if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
             {
                 playerTurn = "C'est à vous de jouer";
-                @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || Model.Pseudos_Chrominos.Count == 0))
+                @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
                 {
                     <form id="FormDrawChromino" asp-action="DrawChromino">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -42,7 +42,7 @@
                         <input type="submit" class="btn btn-primary" value="Piocher" />
                     </form>
                 }
-                else if (Model.Pseudos_Chrominos.Count > 0)
+                else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
                     <form id="FormPassTurn" asp-action="PassTurn">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
