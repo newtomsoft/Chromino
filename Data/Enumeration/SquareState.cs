@@ -1,6 +1,6 @@
 ﻿namespace Data.Enumeration
 {
-    public enum SquareVMState
+    public enum SquareState
     {
         Blue = 1,
         Green,
@@ -8,6 +8,6 @@
         Yellow,
         Purple,
         Cameleon,
-        Free,
+        None,
     }
 }

@@ -8,5 +8,6 @@
         Yellow,
         Purple,
         Cameleon,
+        None
     }
 }

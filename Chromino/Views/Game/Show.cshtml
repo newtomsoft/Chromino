@@ -57,7 +57,7 @@
             }
         }
         @if ((Model.GameStatus == GameStatus.SingleInProgress || Model.GameStatus == GameStatus.InProgress) && Model.PlayerIdTurn == ViewBag.PlayerId &&
-(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareVMState.Cameleon)
+(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].State != SquareState.Cameleon)
 )
         {
             <div class="row">
@@ -80,8 +80,8 @@
                 @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
                     int index = i + j * Model.ColumnsNumber;
-                    SquareVMState state = Model.SquaresViewModel[index].State;
-                    if (state != SquareVMState.Free)
+                    SquareState state = Model.SquaresViewModel[index].State;
+                    if (state != SquareState.None)
                     {
                         string classColor = state.ToString();
                         string classOpenSides = "Square Open";
@@ -98,19 +98,19 @@
                     else
                     {
                         string classCloseEdge = "Square ";
-                        if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
+                        if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].State != SquareState.None)
                         {
                             classCloseEdge += " CloseRight";
                         }
-                        if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].State != SquareVMState.Free)
+                        if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].State != SquareState.None)
                         {
                             classCloseEdge += " CloseBottom";
                         }
-                        if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].State != SquareVMState.Free)
+                        if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].State != SquareState.None)
                         {
                             classCloseEdge += " CloseLeft";
                         }
-                        if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].State != SquareVMState.Free)
+                        if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].State != SquareState.None)
                         {
                             classCloseEdge += " CloseTop";
                         }
@@ -140,7 +140,7 @@
                         classOpenSides = "OpenLeft";
                         break;
                 }
-                SquareVMState state = chrominosViewModel.SquaresViewModel[i].State;
+                SquareState state = chrominosViewModel.SquaresViewModel[i].State;
                 string classColor = state.ToString();
                 <div class="Square @classOpenSides @classColor"></div>
             }
@@ -267,7 +267,7 @@ else
                             classOpenSides = "OpenLeft";
                             break;
                     }
-                    SquareVMState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
+                    SquareState state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].State;
                     string classColor = state.ToString();
                     <div class="Square @classOpenSides @classColor"></div>
                 }

@@ -151,7 +151,7 @@ namespace Data.Core
                 }
             }
 
-            // cherche un chromino dans la main du bot correspondant à un possiblesPosition
+            // cherche un chromino dans la main du bot correspondant à un possiblePosition
             List<ChrominoInHand> hand;
             bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
             if (previouslyDraw)
@@ -162,7 +162,7 @@ namespace Data.Core
             ChrominoInGame goodChrominoInGame = null;
             Coordinate firstCoordinate = null;
             ChrominoInHand goodChrominoInHand;
-            if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de le main
+            if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de la main
             {
                 goodChrominoInGame = null;
             }
