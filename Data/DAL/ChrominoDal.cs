@@ -24,6 +24,9 @@ namespace Data.DAL
             return result;
         }
 
+        /// <summary>
+        /// Création des chrominos. Utilisé qu'une seule fois après création de la base de données et servira ensuite pour chaque partie
+        /// </summary>
         public void CreateChrominos()
         {
             if (!Ctx.Chrominos.Any())
@@ -38,15 +41,15 @@ namespace Data.DAL
                 };
                 foreach (Color firstSquare in (Color[])Enum.GetValues(typeof(Color)))
                 {
-                    if (firstSquare == Color.Cameleon)
+                    if (IsNotGoodColor(firstSquare))
                         continue;
                     foreach (Color secondSquare in (Color[])Enum.GetValues(typeof(Color)))
                     {
-                        if (secondSquare == Color.Cameleon)
+                        if (IsNotGoodColor(secondSquare))
                             continue;
                         foreach (Color thirdSquare in (Color[])Enum.GetValues(typeof(Color)))
                         {
-                            if (thirdSquare == Color.Cameleon)
+                            if (IsNotGoodColor(thirdSquare))
                                 continue;
                             if (thirdSquare >= firstSquare)
                             {
@@ -68,6 +71,12 @@ namespace Data.DAL
             }
         }
 
+        /// <summary>
+        /// liste des chrominos de la main du joueur
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns></returns>
         public List<Chromino> PlayerChrominos(int gameId, int playerId)
         {
             var chrominos = (from c in Ctx.Chrominos
@@ -78,6 +87,11 @@ namespace Data.DAL
             return chrominos;
         }
 
+        /// <summary>
+        /// indique si le chromino est de type Cameleon
+        /// </summary>
+        /// <param name="id">Id du Chromino</param>
+        /// <returns>true si le chromino est de type Cameleon</returns>
         public bool IsCameleon(int id)
         {
             int idC = (from c in Ctx.Chrominos
@@ -85,6 +99,16 @@ namespace Data.DAL
                        select c.Id).FirstOrDefault();
 
             return idC != 0 ? true : false;
+        }
+
+        /// <summary>
+        /// indique si la couleur passée n'est pas une bonne couleur (pour fabrication des chrominos classiques) 
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns>true si color est Camelelon ou None</returns>
+        private bool IsNotGoodColor(Color color)
+        {
+            return color == Color.Cameleon || color == Color.None;
         }
     }
 }

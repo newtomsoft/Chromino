@@ -89,9 +89,9 @@ namespace Data.ViewModel
             Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
             foreach (var pseudo_chromino in pseudos_lastChrominos)
             {
-                SquareVM square1 = new SquareVM { Color = (Color)pseudo_chromino.Value.FirstColor, OpenRight = true };
-                SquareVM square2 = new SquareVM { Color = (Color)pseudo_chromino.Value.SecondColor, OpenRight = true, OpenLeft = true };
-                SquareVM square3 = new SquareVM { Color = (Color)pseudo_chromino.Value.ThirdColor, OpenLeft = true };
+                SquareVM square1 = new SquareVM { Color = pseudo_chromino.Value.FirstColor, OpenRight = true };
+                SquareVM square2 = new SquareVM { Color = pseudo_chromino.Value.SecondColor, OpenRight = true, OpenLeft = true };
+                SquareVM square3 = new SquareVM { Color = pseudo_chromino.Value.ThirdColor, OpenLeft = true };
                 ChrominoVM chrominoViewModel = new ChrominoVM();
                 chrominoViewModel.SquaresViewModel[0] = square1;
                 chrominoViewModel.SquaresViewModel[1] = square2;
