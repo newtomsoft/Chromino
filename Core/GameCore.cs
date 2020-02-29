@@ -41,6 +41,10 @@ namespace Data.Core
             }
         }
 
+        /// <summary>
+        /// Commence une partie seul ou à plusieurs
+        /// </summary>
+        /// <param name="playerNumber"></param>
         public void BeginGame(int playerNumber)
         {
             if (playerNumber == 1)
@@ -52,6 +56,9 @@ namespace Data.Core
             ChangePlayerTurn();
         }
 
+        /// <summary>
+        /// change le joueur dont c'est le tour de jouer
+        /// </summary>
         public void ChangePlayerTurn()
         {
             if (GamePlayers.Count == 1)
@@ -161,7 +168,7 @@ namespace Data.Core
             }
             else
             {
-                SortHandToFinishedWithNoCameleon(ref hand);
+                SortHandToFinishedWithoutCameleon(ref hand);
                 foreach (ChrominoInHand chrominoInHand in hand)
                 {
                     foreach (PossiblesPositions possiblePosition in possiblesPositions)
@@ -226,6 +233,12 @@ namespace Data.Core
             }
         }
 
+        /// <summary>
+        /// Passe le tour
+        /// Indique que la partie est terminée si c'est au dernier joueur du tour de jouer, 
+        /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
+        /// </summary>
+        /// <param name="playerId"></param>
         public void PassTurn(int playerId)
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
@@ -234,6 +247,11 @@ namespace Data.Core
             ChangePlayerTurn();
         }
 
+        /// <summary>
+        /// pioche un chromino et indique que le joueur à pioché au coup d'avant
+        /// s'il n'y a plus de chrimino dans la pioche, passe le tour
+        /// </summary>
+        /// <param name="playerId">Id du joueur</param>
         public void DrawChromino(int playerId)
         {
             if (GameChrominoDal.StackToHand(GameId, playerId) == 0)
@@ -386,6 +404,11 @@ namespace Data.Core
             return coordinates;
         }
 
+        /// <summary>
+        /// rempli la main de tous les joueurs
+        /// </summary>
+        /// <param name="gamePlayer"></param>
+
         private void FillHandPlayers()
         {
             foreach (GamePlayer gamePlayer in GamePlayers)
@@ -394,6 +417,10 @@ namespace Data.Core
             }
         }
 
+        /// <summary>
+        /// rempli la main du joueur de chrominos
+        /// </summary>
+        /// <param name="gamePlayer"></param>
         private void FillHand(GamePlayer gamePlayer)
         {
             for (int i = 0; i < MaxChrominoInHand; i++)
@@ -424,7 +451,12 @@ namespace Data.Core
             return playerId == roundLastPlayerId ? true : false;
         }
 
-        private void SortHandToFinishedWithNoCameleon(ref List<ChrominoInHand> hand)
+        /// <summary>
+        /// change l'ordre des n chrominos de la main s'il y a n-1 cameleon
+        /// afin de jouer les cameleon et finir avec un chromino normal
+        /// </summary>
+        /// <param name="hand">référence de la liste des chrominos de la main du joueur</param>
+        private void SortHandToFinishedWithoutCameleon(ref List<ChrominoInHand> hand)
         {
             if (hand.Count > 1)
             {
