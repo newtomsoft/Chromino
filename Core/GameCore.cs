@@ -9,21 +9,49 @@ namespace Data.Core
 {
     public class GameCore
     {
-        private const int MaxChrominoInHand = 8;
+        /// <summary>
+        /// nombre de chromino dans la main des joueurs en début de partie
+        /// </summary>
+        private const int BeginGameChrominoInHand = 8;
+        
+        /// <summary>
+        /// DbContext du jeu
+        /// </summary>
         private readonly Context Ctx;
+
+        /// <summary>
+        /// les différentes Dal du contexte utilisées
+        /// </summary>
         private readonly GameChrominoDal GameChrominoDal;
         private readonly ChrominoDal ChrominoDal;
         private readonly SquareDal SquareDal;
         private readonly PlayerDal PlayerDal;
         private readonly GamePlayerDal GamePlayerDal;
         private readonly GameDal GameDal;
+        
+        /// <summary>
+        /// Id du jeu
+        /// </summary>
         private int GameId { get; set; }
+        
+        /// <summary>
+        /// Liste de carré de la grille du jeu
+        /// </summary>
         public List<Square> Squares { get; set; }
+        
+        /// <summary>
+        /// Liste des joueurs du jeu
+        /// </summary>
         public List<Player> Players { get; set; }
+
+        /// <summary>
+        /// List des GamePlayer du jeu (jointure entre Game et Player)
+        /// </summary>
         public List<GamePlayer> GamePlayers { get; set; }
 
         public GameCore(Context ctx, int gameId)
         {
+            GameId = gameId;
             Ctx = ctx;
             GameDal = new GameDal(ctx);
             GameChrominoDal = new GameChrominoDal(ctx);
@@ -32,12 +60,11 @@ namespace Data.Core
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
             Players = GamePlayerDal.Players(gameId);
-            GameId = gameId;
-            Squares = SquareDal.List(GameId);
+            Squares = SquareDal.List(gameId);
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
             {
-                GamePlayers.Add(GamePlayerDal.Details(GameId, player.Id));
+                GamePlayers.Add(GamePlayerDal.Details(gameId, player.Id));
             }
         }
 
@@ -423,7 +450,7 @@ namespace Data.Core
         /// <param name="gamePlayer"></param>
         private void FillHand(GamePlayer gamePlayer)
         {
-            for (int i = 0; i < MaxChrominoInHand; i++)
+            for (int i = 0; i < BeginGameChrominoInHand; i++)
             {
                 GameChrominoDal.StackToHand(GameId, gamePlayer.PlayerId);
             }
