@@ -1,4 +1,4 @@
-# ChrominoCommunity
+# Chromino
 Chromino inline game.
 Official real game by Asmodee is here :  https://fr.asmodee.com/fr/games/chromino/
 But no inline game so this is one :)
