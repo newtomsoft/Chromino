@@ -8,7 +8,7 @@ namespace Data.Models
     public partial class Square
     {
         [NotMapped]
-        public SquareVM SquareViewModel { get => new SquareVM { OpenRight = OpenRight, OpenBottom = OpenBottom, OpenLeft = OpenLeft, OpenTop = OpenTop, State = (SquareState)Color }; }
+        public SquareVM SquareViewModel { get => new SquareVM { OpenRight = OpenRight, OpenBottom = OpenBottom, OpenLeft = OpenLeft, OpenTop = OpenTop, Color = (Color)Color }; }
 
         [NotMapped]
         public Coordinate Coordinate { get => new Coordinate(X, Y); }
