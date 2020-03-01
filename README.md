@@ -1,5 +1,5 @@
 # Chromino
-Chromino inline game.
+Chromino online game.
 Official real game by Asmodee is here :  https://fr.asmodee.com/fr/games/chromino/
 But no inline game so this is one :)
 
