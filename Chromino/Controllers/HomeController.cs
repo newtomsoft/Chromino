@@ -137,14 +137,21 @@ namespace Controllers
                 }
                 ViewData["GamesWaitTurn"] = new SelectList(listSelectListItem, "Value", "Text");
 
-
-
-
                 return View();
             }
         }
 
-        public IActionResult APropos()
+        public IActionResult GamesInProgress()
+        {
+            return View();
+        }
+
+        public IActionResult GamesFinished()
+        {
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }

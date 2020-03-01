@@ -137,6 +137,11 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
+        /// <summary>
+        /// affiche une partie 
+        /// </summary>
+        /// <param name="id">Id de la partie</param>
+        /// <returns></returns>
         public IActionResult Show(int id)
         {
             if (id == 0)
@@ -194,19 +199,33 @@ namespace Controllers
             }
         }
 
-        public IActionResult PlayBot(int id, int botId)
-        {
-            GetPlayerInfosFromSession();
-            GameCore gamecore = new GameCore(Ctx, id);
-            gamecore.PlayBot(botId);
-            return RedirectToAction("Show", "Game", new { id });
-        }
-
+        /// <summary>
+        /// Page de partie non trouvée ou non autorisée
+        /// </summary>
+        /// <returns></returns>
         public IActionResult NotFound()
         {
             return View();
         }
 
+        /// <summary>
+        /// fait jouer un bot
+        /// </summary>
+        /// <param name="id">Id de la partie</param>
+        /// <param name="botId">Id du bot</param>
+        /// <returns></returns>
+        public IActionResult PlayBot(int id, int botId)
+        {
+            GameCore gamecore = new GameCore(Ctx, id);
+            gamecore.PlayBot(botId);
+            return RedirectToAction("Show", "Game", new { id });
+        }
+
+        /// <summary>
+        /// Fait jouer le prochain joueur si c'est un bot
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <param name="gameCore"></param>
         private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
         {
             int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
