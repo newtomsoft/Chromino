@@ -361,7 +361,7 @@ a {
 }
 
 .handPlayerChromino {
-    cursor: pointer;
+    cursor: grab;
     position: fixed;
     height: 30px;
     display: flex;
