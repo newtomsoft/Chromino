@@ -17,6 +17,10 @@ namespace Controllers
         {
         }
 
+        /// <summary>
+        /// Pages des parties à jouer
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             GetPlayerInfosFromSession();
@@ -63,10 +67,61 @@ namespace Controllers
                     SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
                     listSelectListItem.Add(selectListItem);
                 }
-                ViewData["SingleGames"] = new SelectList(listSelectListItem, "Value", "Text");
+                ViewData["SingleGames"] = new SelectList(listSelectListItem, "Value", "Text");              
 
-                listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "Parties gagnées", Disabled = true };
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// Page des parties en cours (tour d'un adversaire)
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GamesInProgress()
+        {
+            GetPlayerInfosFromSession();
+            if (PlayerId == 0)
+            {
+                return RedirectToAction("Login", "Player");
+            }
+            else
+            {
+                List<SelectListItem> listSelectListItem = new List<SelectListItem>();
+                SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties en attente (tour d'un adversaire)", Disabled = true };
+                listSelectListItem.Add(intro);
+                foreach (Game game in GamePlayerDal.GamesWaitTurn(PlayerId))
+                {
+                    List<Player> players = GamePlayerDal.Players(game.Id);
+                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
+                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                    foreach (Player player in players)
+                    {
+                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
+                    }
+                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
+                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
+                    listSelectListItem.Add(selectListItem);
+                }
+                ViewData["GamesWaitTurn"] = new SelectList(listSelectListItem, "Value", "Text");
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// Page des parties terminées
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GamesFinished()
+        {
+            GetPlayerInfosFromSession();
+            if (PlayerId == 0)
+            {
+                return RedirectToAction("Login", "Player");
+            }
+            else
+            {
+                List<SelectListItem> listSelectListItem = new List<SelectListItem>();
+                SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties gagnées", Disabled = true };
                 listSelectListItem.Add(intro);
                 foreach (Game game in GamePlayerDal.GamesWon(PlayerId))
                 {
@@ -118,37 +173,8 @@ namespace Controllers
                     listSelectListItem.Add(selectListItem);
                 }
                 ViewData["SingleGamesFinished"] = new SelectList(listSelectListItem, "Value", "Text");
-
-                listSelectListItem = new List<SelectListItem>();
-                intro = new SelectListItem() { Value = "selected", Text = "Parties en attente (tour d'un adversaire)", Disabled = true };
-                listSelectListItem.Add(intro);
-                foreach (Game game in GamePlayerDal.GamesWaitTurn(PlayerId))
-                {
-                    List<Player> players = GamePlayerDal.Players(game.Id);
-                    string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).Pseudo;
-                    Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
-                    foreach (Player player in players)
-                    {
-                        pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
-                    }
-                    GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
-                    SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
-                    listSelectListItem.Add(selectListItem);
-                }
-                ViewData["GamesWaitTurn"] = new SelectList(listSelectListItem, "Value", "Text");
-
                 return View();
             }
-        }
-
-        public IActionResult GamesInProgress()
-        {
-            return View();
-        }
-
-        public IActionResult GamesFinished()
-        {
-            return View();
         }
 
         public IActionResult About()

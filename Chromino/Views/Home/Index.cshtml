@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    bool toPlay = false;
 }
 
 <div class="text-center">
@@ -46,54 +45,11 @@
 </div>
 <br />
 
-@if ((ViewBag.GamesWon as SelectList).Count() > 1)
-{
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesWin" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWon" onchange="window.document.formGamesWin.submit();"></select>
-                </div>
-            </form>
-        </div>
-    </div>
-}
 
-@if ((ViewBag.GamesLost as SelectList).Count() > 1)
-{
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesLost" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesLost" onchange="window.document.formGamesLost.submit();"></select>
-                </div>
-            </form>
-        </div>
-    </div>
-}
-
-@if ((ViewBag.SingleGamesFinished as SelectList).Count() > 1)
-{
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesAloneFinished" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGamesFinished" onchange="window.document.formGamesAloneFinished.submit();"></select>
-                </div>
-            </form>
-        </div>
-    </div>
-}
-
-@if ((ViewBag.GamesWaitTurn as SelectList).Count() > 1)
-{
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesWaitTurn" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesWaitTurn" onchange="window.document.formGamesWaitTurn.submit();"></select>
-                </div>
-            </form>
-        </div>
-    </div>
-}
+<div>
+    Voir vos <a asp-controller="Home" asp-action="GamesFinished">parties terminées</a>
+</div>
+<br />
+<div>
+    Voir vos <a asp-controller="Home" asp-action="GamesInProgress">parties en attente (tour d'un adversaire)</a>
+</div>
