@@ -23,15 +23,22 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = this.Configuration["apis:facebook:id"];
+                options.AppSecret = this.Configuration["apis:facebook:secret"];
+            });
+
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
             builder.AddRazorRuntimeCompilation();
 #endif
             services.AddControllersWithViews();
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
-            services.AddIdentity<Player, Role>().AddEntityFrameworkStores<Context>();
-
+            services.AddIdentity<Player, Role>()
+                .AddEntityFrameworkStores<Context>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
@@ -43,7 +50,7 @@ namespace ChrominoGame
             });
         }
 
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -55,13 +62,14 @@ namespace ChrominoGame
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
                    name: "default",
-                   template: "{controller=Home}/{action=Index}/{id?}");
+                   pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
     }
 }
