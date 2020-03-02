@@ -54,6 +54,7 @@ namespace ChrominoGame
             app.UseAuthorization();
             app.UseHttpsRedirection();
             app.UseSession();
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

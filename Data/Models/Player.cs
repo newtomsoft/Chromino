@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
     [Table("Player")]
-    public class Player
+    public class Player : IdentityUser <int>
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [Column(TypeName = "varchar(25)")]
         public string Pseudo { get; set; }
