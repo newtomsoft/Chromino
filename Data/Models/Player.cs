@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
-    [Table("Player")]
     public class Player : IdentityUser <int>
     {
         [Required]

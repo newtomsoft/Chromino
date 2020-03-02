@@ -1,10 +1,11 @@
+création models à partir de la base de donnée:
+dotnet ef dbcontext scaffold "chaine de connexion" Microsoft.EntityFrameworkCore.SqlServer --table NomDeLaTable --context-dir Data --output-dir Models
 
+Création / migrations  de tables : Projet Data
+Si pas déjà installé :
 dotnet tool install --global dotnet-ef
-
-
-
-Creation / migrations  de tables : Projet Data
-
+maj :
+dotnet tool update --global dotnet-ef
 
 Nuget :
 Microsoft.Extensions.Configuration.Json
@@ -13,5 +14,16 @@ Microsoft.EntityFrameworkCore.SqlServer
 Microsoft.EntityFrameworkCore.Design
 
 commandes :
+Powershell : $Env:ASPNETCORE_ENVIRONMENT = "Development"
+cmd : setx ASPNETCORE_ENVIRONMENT "Development"
 dotnet ef migrations add MaMigration
 dotnet ef database update
+
+Apache avant livraison :
+systemctl stop chromino.service
+Apache après livraison :
+systemctl start chromino.service
+
+
+https:
+dotnet dev-certs https --trust

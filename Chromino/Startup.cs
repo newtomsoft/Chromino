@@ -1,6 +1,8 @@
 using Data;
+using Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +30,8 @@ namespace ChrominoGame
 #endif
             services.AddControllersWithViews();
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
+            services.AddIdentity<Player, Role>().AddEntityFrameworkStores<Context>();
+
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
@@ -42,19 +46,15 @@ namespace ChrominoGame
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 app.UseExceptionHandler("/Home/Error");
-            }
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthorization();
             app.UseHttpsRedirection();
             app.UseSession();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
