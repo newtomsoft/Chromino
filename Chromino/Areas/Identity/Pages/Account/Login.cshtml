@@ -10,7 +10,7 @@
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h4>Identifiez-vous avec votre compte joueur</h4>
+                <h4>Identifiez-vous pour jouer</h4>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
@@ -49,7 +49,7 @@
         <section>
             @if ((Model.ExternalLogins?.Count ?? 0) != 0)
             {
-                <h4>S'identifier avec un autre fournisseur</h4>
+                <h4>S'identifier avec un autre site internet</h4>
                 <hr />
                 <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                     <div>

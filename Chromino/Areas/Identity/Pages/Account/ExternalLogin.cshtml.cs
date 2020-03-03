@@ -50,6 +50,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Nom de joueur")]
             public string PlayerName { get; set; }
         }
 
@@ -101,7 +102,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        PlayerName = info.Principal.FindFirstValue(ClaimTypes.Name)
+                        PlayerName = info.Principal.FindFirstValue(ClaimTypes.Name).Replace(" ", string.Empty) 
                     };
                 }
                 return Page();
