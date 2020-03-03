@@ -42,6 +42,7 @@ namespace ChrominoGame
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);

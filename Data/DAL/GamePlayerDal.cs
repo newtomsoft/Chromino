@@ -28,7 +28,7 @@ namespace Data.DAL
         {
             int playerId = (from gp in Ctx.GamesPlayers
                             join p in Ctx.Players on gp.PlayerId equals p.Id
-                            where gp.GameId == gameId && p.Pseudo == playerPseudo
+                            where gp.GameId == gameId && p.UserName == playerPseudo
                             select p.Id).FirstOrDefault();
 
             return playerId;

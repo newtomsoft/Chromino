@@ -46,7 +46,7 @@ namespace Data.ViewModel
                     break;
             }
             PlayerId = chrominoInGame.PlayerId ?? 0;
-            PlayerPseudo = chrominoInGame.Player == null ? "First chromino" : chrominoInGame.Player.Pseudo;
+            PlayerPseudo = chrominoInGame.Player == null ? "First chromino" : chrominoInGame.Player.UserName;
         }
     }
 }
