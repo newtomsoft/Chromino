@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>83bf0338-4c68-40c0-8daa-f89aa4ad0a5c</UserSecretsId>
-    <Configurations>Debug;Release;Prod</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <RootNamespace>ChrominoApp</RootNamespace>
   </PropertyGroup>
 

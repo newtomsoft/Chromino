@@ -44,23 +44,40 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        public class InputModel
+        public class InputModel //: IValidatableObject
         {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
+            [Required(ErrorMessage = "Le nom de joueur est obligatoire")]
+            [StringLength(50, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 2)]
+            [Display(Name = "Nom de joueur")]
+            public string PlayerName { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Le mot de passe est obligatoire")]
+            [StringLength(20, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Mot de passe")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmez le mot de passe")]
+            [Compare("Password", ErrorMessage = "Les 2 mots de passe ne sont pas identiques.")]
             public string ConfirmPassword { get; set; }
+
+            [EmailAddress(ErrorMessage = "Merci de rentrer une adresse Email valide ou laisser vide")]
+            [StringLength(50, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 2)]
+            [Display(Name = "Email (optionnel)")]
+            public string Email { get; set; }
+
+            //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+            //{
+            //    if (Email != null)
+            //    {
+            //        var owner = this._userManager.FindByEmailAsync(Email);
+            //        if (owner != null)
+            //        {
+            //            yield return new ValidationResult("Un compte avec cette adresse Email existe déjà");
+            //        }
+            //    }
+            //}
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -75,7 +92,17 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new Player { UserName = Input.Email, Email = Input.Email };
+                if (Input.Email != null)
+                {
+                    Player player = _userManager.FindByEmailAsync(Input.Email).Result;
+                    if (player != null)
+                    {
+                        ModelState.AddModelError("Email", "Un joueur avec cette adresse email est déjà inscrit");
+                        return Page();
+                    }
+                }
+
+                var user = new Player { UserName = Input.PlayerName, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
