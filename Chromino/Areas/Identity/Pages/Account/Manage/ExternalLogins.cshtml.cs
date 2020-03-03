@@ -59,12 +59,12 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
             if (!result.Succeeded)
             {
-                StatusMessage = "The external login was not removed.";
+                StatusMessage = "L'identification tierce n'a pas été supprimée.";
                 return RedirectToPage();
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "The external login was removed.";
+            StatusMessage = "L'identification tierce a été supprimée.";
             return RedirectToPage();
         }
 

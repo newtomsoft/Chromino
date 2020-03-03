@@ -26,6 +26,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
+            GetPlayerInfos();
             List<SelectListItem> listSelectListItem = new List<SelectListItem>();
             SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties à plusieurs (votre tour)", Disabled = true };
             listSelectListItem.Add(intro);
@@ -156,11 +157,13 @@ namespace Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult About()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Rgpd()
         {
             return View();

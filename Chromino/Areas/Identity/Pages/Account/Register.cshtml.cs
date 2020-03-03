@@ -66,18 +66,6 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
             [StringLength(50, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 2)]
             [Display(Name = "Email (optionnel)")]
             public string Email { get; set; }
-
-            //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-            //{
-            //    if (Email != null)
-            //    {
-            //        var owner = this._userManager.FindByEmailAsync(Email);
-            //        if (owner != null)
-            //        {
-            //            yield return new ValidationResult("Un compte avec cette adresse Email existe déjà");
-            //        }
-            //    }
-            //}
         }
 
         public async Task OnGetAsync(string returnUrl = null)
