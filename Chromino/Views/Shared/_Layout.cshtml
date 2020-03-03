@@ -44,7 +44,10 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top text-muted">
+        <div class="container">
+            &copy; @DateTime.Today.Year - Data - <a asp-area="" asp-controller="Home" asp-action="Rgpd">Vie privée</a>
+        </div>
     </footer>
 </body>
 </html>

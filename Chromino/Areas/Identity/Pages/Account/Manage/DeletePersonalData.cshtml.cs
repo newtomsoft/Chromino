@@ -32,6 +32,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [DataType(DataType.Password)]
+            [Display(Name = "Mot de passe")]
             public string Password { get; set; }
         }
 
@@ -62,21 +63,28 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
             {
                 if (!await _userManager.CheckPasswordAsync(user, Input.Password))
                 {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
+                    ModelState.AddModelError(string.Empty, "Mot de passe incorrect.");
                     return Page();
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
+            try
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
+                var result = await _userManager.DeleteAsync(user);
+                
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
+                }
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
             }
-
-            await _signInManager.SignOutAsync();
-
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            catch
+            {
+                ModelState.AddModelError(string.Empty, "Cette fonctionnalité n'est pas encore développée. Merci de votre compréhension.");
+                return Page();
+            }
 
             return Redirect("~/");
         }
