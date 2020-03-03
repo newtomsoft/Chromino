@@ -93,7 +93,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Votre mot de passe a bien été modifié.";
 
             return RedirectToPage();
         }

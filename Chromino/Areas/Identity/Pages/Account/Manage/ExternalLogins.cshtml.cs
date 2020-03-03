@@ -103,7 +103,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            StatusMessage = "The external login was added.";
+            StatusMessage = "L'identification tierce a bien été ajoutée.";
             return RedirectToPage();
         }
     }

@@ -85,7 +85,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your password has been set.";
+            StatusMessage = "Votre mot de passe a bien été créé.";
 
             return RedirectToPage();
         }
