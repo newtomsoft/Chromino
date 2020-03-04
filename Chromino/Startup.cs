@@ -23,25 +23,36 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication()
-            .AddFacebook(options =>
+            string googleClientId = Configuration["apis:google:ClientId"];
+            string googleClientSecret = Configuration["apis:google:ClientSecret"];
+            if (googleClientId != null && googleClientSecret != null)
             {
-                options.AppId = Configuration["apis:facebook:id"];
-                options.AppSecret = Configuration["apis:facebook:secret"];
-            })
-            //.AddTwitter(options =>
-            //{
-            //    options.ConsumerKey = Configuration["apis:twitter:consumerkey"];
-            //    options.ConsumerSecret = Configuration["apis:twitter:consumersecret"];
-            //})
-            .AddGoogle(options =>
+                services.AddAuthentication().AddGoogle(options =>
+                {
+                    options.ClientId = googleClientId;
+                    options.ClientSecret = googleClientSecret;
+                });
+            }
+            string twitterConsumerKey = Configuration["apis:twitter:ConsumerKey"];
+            string twitterConsumerSecret = Configuration["apis:twitter:ConsumerSecret"];
+            if (twitterConsumerKey != null && twitterConsumerSecret != null)
             {
-                options.ClientId = Configuration["apis:google:ClientId"];
-                options.ClientSecret = Configuration["apis:google:ClientSecret"];
-            });
-
-
-
+                services.AddAuthentication().AddTwitter(options =>
+                {
+                    options.ConsumerKey = twitterConsumerKey;
+                    options.ConsumerSecret = twitterConsumerSecret;
+                });
+            }
+            string facebookAppId= Configuration["apis:facebook:AppId"];
+            string facebookAppSecret = Configuration["apis:facebook:AppSecret"];
+            if (facebookAppId != null && facebookAppSecret != null)
+            {
+                services.AddAuthentication().AddFacebook(options =>
+                {
+                    options.AppId = facebookAppId;
+                    options.AppSecret = facebookAppSecret;
+                });
+            }
 
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
