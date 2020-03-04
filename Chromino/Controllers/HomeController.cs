@@ -164,10 +164,6 @@ namespace Controllers
         {
             return View();
         }
-        public IActionResult Rgpd()
-        {
-            return View();
-        }
 
         [AllowAnonymous]
         public IActionResult Rgpd()
