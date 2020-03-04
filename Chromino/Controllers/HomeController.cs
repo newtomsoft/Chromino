@@ -75,6 +75,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult GamesInProgress()
         {
+            GetPlayerInfos();
             List<SelectListItem> listSelectListItem = new List<SelectListItem>();
             SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties en attente (tour d'un adversaire)", Disabled = true };
             listSelectListItem.Add(intro);
@@ -101,6 +102,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult GamesFinished()
         {
+            GetPlayerInfos();
             List<SelectListItem> listSelectListItem = new List<SelectListItem>();
             SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties gagnées", Disabled = true };
             listSelectListItem.Add(intro);

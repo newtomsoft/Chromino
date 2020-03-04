@@ -1,42 +1,43 @@
 ﻿@{
     ViewData["Title"] = "A propos";
 }
+<div id="about">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>@ViewData["Title"]</h1>
+    <h2>La naissance du jeu</h2>
+    <p>L'idée de développer ce jeu sur le web m'est venue pendant les vacances de Noël 2019 alors que nous jouions avec mes enfants et leur grand-mère aux Chrominos que je ne connaissais pas.</p>
+    <p>Il s’agit d’un jeu de plateau créé par Louis Abraham (sous licence Week End Games) de type Dominos évolués. En effet, nous retrouvons ici des pièces comportant non pas 2 carrés de chiffres mais 3 carrés de couleurs (parmi le bleu, violet, rouge, vert et jaune).</p>
+    <p>Ayant bien aimé (tout comme mes enfants) et voulant développer une application web en asp.net core, mon challenge était tout trouvé. C’est ainsi que j’ai commencé à pianoter sur mon PC portable (il me suit pendant les vacances évidemment!) tout comme un écrivain l'aurait probablement fait s’il lui était venue une idée de scénario, situation, personnage.</p>
+    <p>Depuis, le jeu est jouable par n’importe quel utilisateur du monde ayant un accès internet sur un PC, tablette et smartphone sans aucune installation. C’est la force des applis web !</p>
 
-<h2>La naissance du jeu</h2>
-<p>L'idée de développer ce jeu sur le web m'est venue pendant les vacances de Noël 2019 alors que nous jouions avec mes enfants et leur grand-mère aux Chrominos que je ne connaissais pas.</p>
-<p>Il s’agit d’un jeu de plateau créé par Louis Abraham (sous licence Week End Games) de type Dominos évolués. En effet, nous retrouvons ici des pièces comportant non pas 2 carrés de chiffres mais 3 carrés de couleurs (parmi le bleu, violet, rouge, vert et jaune).</p>
-<p>Ayant bien aimé (tout comme mes enfants) et voulant développé alors une application web en asp.net core, mon challenge était tout trouvé. C’est ainsi que j’ai commencé à pianoté sur mon PC portable (il me suit pendant les vacances évidemment!) tout comme un écrivain l'aurait probablement fait s’il lui était venue une idée de scénario, situation, personnage.</p>
-<p>Depuis, le jeu est jouable par n’importe quel utilisateur du monde ayant un accès internet sur un PC, tablette et smartphone sans aucune installation. C’est la force des appli web !</p>
+    <h2>Les technos utilisées</h2>
+    <p>
+        A ce jour, tout est développé, testé et intégré par Thomas Vuille, ingénieur en développement logiciel depuis 2001 et sur le C# depuis l'été 2018.
+        Coté Soft :
+        <ul>
+            <li>L'application est développée sous Visual Studio Community 2019</li>
+            <li>Le "back-end" est en C# avec le framework asp.net core 3.1 et Entity Framework core</li>
+            <li>Utilisation de Identity pour la partie identification</li>
+            <li>Le "front-end" en Javascript et jQuery</li>
+            <li>Utilisation de jQuery Draggable Touch de Jonatan Heyman</li>
+            <li>Utilisation de jQuery Popup Overlay de  Ivan Lazarević et Vast Engineering</li>
+            <li>Git et GitHub pour versionner/sauvegarder les sources</li>
+            <li>Trello pour l'organisation du développement (Kanban)</li>
+            <li>A venir, l'utilisation d'Ajax et de Signal-R pour de meilleures performances et une meilleure expérience utilisateur</li>
+        </ul>
+    </p>
+    <p>
+        Coté Hard / Infra on trouve un serveur Virtuel Linux Ubuntu loué chez Ovh qui fait tourner :
+        <ul>
+            <li>Un serveur web Apache</li>
+            <li>Une base de données MS SQL Express pour sauvegarder en temps réél vos parties et données</li>
+            <li>A venir, un serveur de mail pour envoyer des rappels aux étourdis</li>
+        </ul>
+    </p>
 
-<h2>Les technos utilisées</h2>
-<p>
-    A ce jour, tout est développé, testé et intégré par Thomas Vuille, ingénieur en développement logiciel depuis 2001 et sur le C# depuis l'été 2018.
-    Coté Soft :
-    <ul>
-        <li>L'application est développée sous Visual Studio Community 2019</li>
-        <li>Le "back-end" est en C# avec le framework asp.net core 3.1 et Entity Framework core</li>
-        <li>Utilisation de Identity pour la partie identification</li>
-        <li>Le "front-end" en Javascript et jQuery</li>
-        <li>Utilisation de jQuery Draggable Touch de Jonatan Heyman</li>
-        <li>Utilisation de jQuery Popup Overlay de  Ivan Lazarević et Vast Engineering</li>
-        <li>Git et GitHub pour versionner/sauvegarder les sources</li>
-        <li>Trello pour l'organisation du développement (Kanban)</li>
-        <li>A venir, l'utilisation d'Ajax et de Signal-R pour de meilleures performances et une meilleure expérience utilisateur</li>
-    </ul>
-</p>
-<p>
-    Coté Hard / Infra on trouve un serveur Virtuel Linux Ubuntu loué chez Ovh qui fait tourner :
-    <ul>
-        <li>Un serveur web Apache</li>
-        <li>Une base de données MS SQL Express pour sauvegarder en temps réél vos parties et données</li>
-        <li>A venir, un serveur de mail pour envoyer des rappels aux étourdis</li>
-    </ul>
-</p>
-
-<h2>Contact</h2>
-<p>
-    Pour toute information complémentaire, contactez-moi par email à :
-    tho<!-- zri@plo -->mas@vui<!-- cd.lo -->lle.fr
-</p>
+    <h2>Contact</h2>
+    <p>
+        Pour toute information complémentaire, contactez-moi par email à :
+        tho<!-- zri@plo -->mas@vui<!-- cd.lo -->lle.fr
+    </p>
+</div>

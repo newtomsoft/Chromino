@@ -23,11 +23,25 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication().AddFacebook(options =>
+            services.AddAuthentication()
+            .AddFacebook(options =>
             {
-                options.AppId = this.Configuration["apis:facebook:id"];
-                options.AppSecret = this.Configuration["apis:facebook:secret"];
+                options.AppId = Configuration["apis:facebook:id"];
+                options.AppSecret = Configuration["apis:facebook:secret"];
+            })
+            //.AddTwitter(options =>
+            //{
+            //    options.ConsumerKey = Configuration["apis:twitter:consumerkey"];
+            //    options.ConsumerSecret = Configuration["apis:twitter:consumersecret"];
+            //})
+            .AddGoogle(options =>
+            {
+                options.ClientId = Configuration["apis:google:ClientId"];
+                options.ClientSecret = Configuration["apis:google:ClientSecret"];
             });
+
+
+
 
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
