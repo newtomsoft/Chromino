@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +14,7 @@ namespace Controllers
 {
     public class PlayerController : CommonController
     {
-        public PlayerController(Context context) : base(context)
+        public PlayerController(Context context, UserManager<Player> userManager) : base(context, userManager)
         {
         }
 
@@ -23,34 +24,34 @@ namespace Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login([Bind("Pseudo,Password")] Player player)
-        {
-            Contract.Requires(player != null);
-            if (ModelState.IsValid)
-            {
-                player.Password = player.Password.GetHash();
-                Player found;
-                if ((found = PlayerDal.GetPlayer(player)) != null)
-                {
-                    HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-                    HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
-                    return View();
-                }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Login([Bind("Pseudo,Password")] Player player)
+        //{
+        //    Contract.Requires(player != null);
+        //    if (ModelState.IsValid)
+        //    {
+        //        player.Password = player.Password.GetHash();
+        //        Player found;
+        //        if ((found = PlayerDal.GetPlayer(player)) != null)
+        //        {
+        //            HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
+        //            HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+        //            return RedirectToAction("Index", "Home");
+        //        }
+        //        else
+        //        {
+        //            ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
+        //            return View();
+        //        }
 
-            }
-            else
-            {
-                ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
-                return View();
-            }
-        }
+        //    }
+        //    else
+        //    {
+        //        ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
+        //        return View();
+        //    }
+        //}
 
         [HttpPost]
         public IActionResult LoginGuest()
@@ -59,7 +60,7 @@ namespace Controllers
             if (found != null)
             {
                 HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-                HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
+                HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.UserName);
             }
             return RedirectToAction("Index", "Home");
         }

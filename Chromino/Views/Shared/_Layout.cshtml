@@ -9,7 +9,7 @@
 </head>
 <body>
     <noscript>
-        <p>Merci d'activer Javascript afin de jouer aux Chrominos</p>
+        <p>Merci d'activer Javascript afin de pouvoir jouer aux Chrominos</p>
     </noscript>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -23,7 +23,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">A propos</a>
                         </li>
@@ -34,6 +34,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Rgpd">Rgpd</a>
                         </li>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -43,7 +44,10 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top text-muted">
+        <div class="container">
+            &copy; @DateTime.Today.Year - Chromino - <a asp-area="" asp-controller="Home" asp-action="Rgpd">Vie privée</a>
+        </div>
     </footer>
 </body>
 </html>

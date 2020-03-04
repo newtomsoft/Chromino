@@ -326,7 +326,7 @@ namespace Data.Core
                     else
                     {
                         int chrominosInGame = GameChrominoDal.InGame(GameId);
-                        PlayerDal.Details(playerId).PointsSinglePlayerGames += chrominosInGame switch
+                        PlayerDal.Details(playerId).SinglePlayerGamesPoints += chrominosInGame switch
                         {
                             8 => 100,
                             9 => 90,
@@ -334,7 +334,7 @@ namespace Data.Core
                             11 => 82,
                             _ => 92 - chrominosInGame,
                         };
-                        PlayerDal.Details(playerId).FinishedSinglePlayerGames++;
+                        PlayerDal.Details(playerId).SinglePlayerGamesFinished++;
                         Ctx.SaveChanges();
                     }
                     if (IsRoundLastPlayer(playerId))

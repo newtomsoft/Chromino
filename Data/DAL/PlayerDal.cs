@@ -34,19 +34,10 @@ namespace Data.DAL
         public Player Details(string pseudo)
         {
             Player player = (from p in Ctx.Players
-                             where p.Pseudo == pseudo
+                             where p.UserName == pseudo
                              select p).FirstOrDefault();
 
             return player;
-        }
-
-        public Player GetPlayer(Player player)
-        {
-            var result = (from p in Ctx.Players
-                          where p.Pseudo == player.Pseudo && p.Password == player.Password
-                          select p).AsNoTracking().FirstOrDefault();
-
-            return result;
         }
 
         public void AddPoints(int playerId, int points)

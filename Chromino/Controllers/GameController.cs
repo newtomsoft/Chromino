@@ -4,18 +4,22 @@ using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
 using Data.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Controllers
 {
+    [Authorize]
     public class GameController : CommonController
     {
         private static readonly Random Random = new Random();
 
-        public GameController(Context context) : base(context)
+        public GameController(Context context, UserManager<Player> userManager) : base(context, userManager)
         {
         }
 
@@ -26,7 +30,7 @@ namespace Controllers
         [HttpGet]
         public IActionResult New()
         {
-            GetPlayerInfosFromSession();
+            GetPlayerInfos();
             return View(null);
         }
 
@@ -38,8 +42,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult New(string[] pseudos)
         {
-            GetPlayerInfosFromSession();
-
             if (pseudos == null || pseudos.Length == 0)
             {
                 return View();
@@ -83,7 +85,7 @@ namespace Controllers
         [HttpPost]
         public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
         {
-            GetPlayerInfosFromSession();
+            GetPlayerInfos();
 
             GameCore gameCore = new GameCore(Ctx, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
@@ -113,7 +115,7 @@ namespace Controllers
         [HttpPost]
         public IActionResult DrawChromino(int playerId, int gameId)
         {
-            GetPlayerInfosFromSession();
+            GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
@@ -127,7 +129,7 @@ namespace Controllers
         [HttpPost]
         public IActionResult PassTurn(int playerId, int gameId)
         {
-            GetPlayerInfosFromSession();
+            GetPlayerInfos();
             if (playerId == PlayerId)
             {
                 GameCore gameCore = new GameCore(Ctx, gameId);
@@ -147,7 +149,7 @@ namespace Controllers
             if (id == 0)
                 return RedirectToAction("NotFound");
 
-            GetPlayerInfosFromSession();
+            GetPlayerInfos();
             //TODO passer l'essentiel de l'algo dans GameCore
             List<Player> players = GamePlayerDal.Players(id);
             int playersNumber = players.Count;
@@ -160,7 +162,7 @@ namespace Controllers
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
-                    pseudos_chrominos.Add(player.Pseudo, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
+                    pseudos_chrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudos_chrominos)
                 {
@@ -186,7 +188,7 @@ namespace Controllers
                 foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
                 {
                     if (chrominoInGame.PlayerId != null)
-                        pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).Pseudo);
+                        pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).UserName);
                     else
                         pseudoChrominosInGamePlayed.Add("premier chromino");
                 }

@@ -1,9 +1,10 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<Player, Role, int>
     {
         public DbSet<Chromino> Chrominos { get; set; }
         public DbSet<Player> Players { get; set; }

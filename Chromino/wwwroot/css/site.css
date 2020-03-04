@@ -60,6 +60,9 @@ a {
         text-align: center;
     }
 
+#about {
+    text-align:justify;
+}
 
 #gameArea {
     height: 85vm;

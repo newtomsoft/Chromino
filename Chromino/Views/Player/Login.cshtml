@@ -23,24 +23,5 @@
     <p class="error">@ViewBag.error</p>
 }
 
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Pseudo" class="control-label"></label>
-                <input asp-for="Pseudo" class="form-control" />
-                <span asp-validation-for="Pseudo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" type="password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Connexion" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+
 

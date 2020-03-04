@@ -33,7 +33,7 @@ namespace Data.ViewModel
 
         public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudoChrominosInGamePlayed)
         {
-            PlayerPseudoTurn = playerTurn.Pseudo;
+            PlayerPseudoTurn = playerTurn.UserName;
             PlayerIdTurn = playerTurn.Id;
             GamePlayerTurn = gamePlayerTurn;
             GameId = gameId;
