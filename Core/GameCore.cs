@@ -13,7 +13,7 @@ namespace Data.Core
         /// nombre de chromino dans la main des joueurs en début de partie
         /// </summary>
         private const int BeginGameChrominoInHand = 8;
-        
+
         /// <summary>
         /// DbContext du jeu
         /// </summary>
@@ -28,17 +28,17 @@ namespace Data.Core
         private readonly PlayerDal PlayerDal;
         private readonly GamePlayerDal GamePlayerDal;
         private readonly GameDal GameDal;
-        
+
         /// <summary>
         /// Id du jeu
         /// </summary>
         private int GameId { get; set; }
-        
+
         /// <summary>
         /// Liste de carré de la grille du jeu
         /// </summary>
         public List<Square> Squares { get; set; }
-        
+
         /// <summary>
         /// Liste des joueurs du jeu
         /// </summary>
@@ -345,6 +345,7 @@ namespace Data.Core
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
 
+                MakePictureGame(GameId);
                 ChangePlayerTurn();
             }
             return playReturn;
@@ -503,6 +504,25 @@ namespace Data.Core
                     hand.Add(chrominoAt0);
                 }
             }
+        }
+
+        /// <summary>
+        /// créé le visuel du jeu pour affichage minuature par exemple
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        private void MakePictureGame(int gameId)
+        {
+            List<Square> squares = SquareDal.List(gameId);
+
+
+            //for (int j = 0; j < Model.LinesNumber; j++)
+            //{
+            //    for (int i = 0; i < Model.ColumnsNumber; i++)
+            //    {
+            //        int index = i + j * Model.ColumnsNumber;
+            //        Color state = Model.SquaresViewModel[index].Color;
+            //     }
+            //}
         }
     }
 }

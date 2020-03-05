@@ -55,16 +55,7 @@ namespace Data.ViewModel
 
             SquaresViewModel = new SquareVM[SquaresNumber];
             for (int i = 0; i < SquaresViewModel.Length; i++)
-            {
-                SquaresViewModel[i] = new SquareVM
-                {
-                    Color = Color.None,
-                    OpenRight = true,
-                    OpenBottom = true,
-                    OpenLeft = true,
-                    OpenTop = true,
-                };
-            }
+                SquaresViewModel[i] = new SquareVM(Color.None, true, true, true, true);
 
             foreach (Square square in Squares)
             {
@@ -75,9 +66,9 @@ namespace Data.ViewModel
             IdentifiedPlayerChrominosVM = new List<ChrominoVM>();
             foreach (Chromino chromino in identifiedPlayerChrominos)
             {
-                SquareVM square1 = new SquareVM { Color = chromino.FirstColor, OpenRight = true };
-                SquareVM square2 = new SquareVM { Color = chromino.SecondColor, OpenRight = true, OpenLeft = true };
-                SquareVM square3 = new SquareVM { Color = chromino.ThirdColor, OpenLeft = true };
+                SquareVM square1 = new SquareVM(chromino.FirstColor, true, false, false, false);
+                SquareVM square2 = new SquareVM(chromino.SecondColor, true, false, true, false);
+                SquareVM square3 = new SquareVM(chromino.ThirdColor, true, false, true, false);
                 ChrominoVM chrominoViewModel = new ChrominoVM();
                 chrominoViewModel.SquaresViewModel[0] = square1;
                 chrominoViewModel.SquaresViewModel[1] = square2;
@@ -89,9 +80,9 @@ namespace Data.ViewModel
             Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
             foreach (var pseudo_chromino in pseudos_lastChrominos)
             {
-                SquareVM square1 = new SquareVM { Color = pseudo_chromino.Value.FirstColor, OpenRight = true };
-                SquareVM square2 = new SquareVM { Color = pseudo_chromino.Value.SecondColor, OpenRight = true, OpenLeft = true };
-                SquareVM square3 = new SquareVM { Color = pseudo_chromino.Value.ThirdColor, OpenLeft = true };
+                SquareVM square1 = new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false);
+                SquareVM square2 = new SquareVM(pseudo_chromino.Value.SecondColor, true, false, true, false);
+                SquareVM square3 = new SquareVM(pseudo_chromino.Value.ThirdColor, true, false, true, false);
                 ChrominoVM chrominoViewModel = new ChrominoVM();
                 chrominoViewModel.SquaresViewModel[0] = square1;
                 chrominoViewModel.SquaresViewModel[1] = square2;
