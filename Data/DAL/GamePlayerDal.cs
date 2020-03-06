@@ -24,6 +24,15 @@ namespace Data.DAL
             return gamePlayer;
         }
 
+        public List<GamePlayer> List(int gameId)
+        {
+            List<GamePlayer> gamesPlayer = (from gp in Ctx.GamesPlayers
+                                            where gp.GameId == gameId
+                                            select gp).ToList();
+
+            return gamesPlayer;
+        }
+
         public int PlayerId(int gameId, string playerPseudo)
         {
             int playerId = (from gp in Ctx.GamesPlayers

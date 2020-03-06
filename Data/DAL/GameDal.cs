@@ -44,6 +44,17 @@ namespace Data.DAL
             return games;
         }
 
+
+        public List<Game> ListInProgress()
+        {
+
+            var games = (from g in Ctx.Games
+                         where g.Status == GameStatus.InProgress || g.Status == GameStatus.SingleInProgress
+                         select g).ToList();
+
+            return games;
+        }
+
         public Game Add()
         {
             string guid = Guid.NewGuid().ToString("N");

@@ -1,8 +1,11 @@
 ﻿using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
+using Data.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 
 namespace Data.Core
@@ -79,6 +82,7 @@ namespace Data.Core
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
             GameChrominoDal.FirstRandomToGame(GameId);
+            MakePicture();
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -147,7 +151,7 @@ namespace Data.Core
             List<PossiblesPositions> possiblesPositions = new List<PossiblesPositions>();
             foreach (Coordinate coordinate in coordinates)
             {
-                Color? firstColor = OkColorFor(coordinate, out int commonSidesFirstColor);
+                Enumeration.Color? firstColor = OkColorFor(coordinate, out int commonSidesFirstColor);
                 if (firstColor != null)
                 {
                     //cherche placement possible d'un square
@@ -158,8 +162,8 @@ namespace Data.Core
                         if (SquareDal.IsFree(GameId, secondCoordinate) && SquareDal.IsFree(GameId, thirdCoordinate))
                         {
                             //calcul si chromino posable et dans quelle position
-                            Color? secondColor = OkColorFor(secondCoordinate, out int adjacentChrominoSecondColor);
-                            Color? thirdColor = OkColorFor(thirdCoordinate, out int adjacentChrominosThirdColor);
+                            Enumeration.Color? secondColor = OkColorFor(secondCoordinate, out int adjacentChrominoSecondColor);
+                            Enumeration.Color? thirdColor = OkColorFor(thirdCoordinate, out int adjacentChrominosThirdColor);
 
                             if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
                             {
@@ -201,7 +205,7 @@ namespace Data.Core
                     foreach (PossiblesPositions possiblePosition in possiblesPositions)
                     {
                         Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
-                        if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon))
+                        if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon))
                         {
                             goodChrominoInHand = chrominoInHand;
                             firstCoordinate = possiblePosition.Coordinate;
@@ -213,7 +217,7 @@ namespace Data.Core
                             };
                             break;
                         }
-                        else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Color.Cameleon || possiblePosition.SecondColor == Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Color.Cameleon))
+                        else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon))
                         {
                             goodChrominoInHand = chrominoInHand;
                             firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
@@ -236,7 +240,7 @@ namespace Data.Core
                         break;
                 }
             }
-            if (goodChrominoInGame == null)
+            if (goodChrominoInGame == null) // pas de chromino à jouer
             {
                 if (!isPreviouslyDraw || playersNumber == 1)
                 {
@@ -249,11 +253,12 @@ namespace Data.Core
                     return PlayReturn.Ok;
                 }
             }
-            else
+            else // chromino à jouer trouver
             {
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
                 PlayReturn playReturn = Play(goodChrominoInGame, botId);
+                MakePicture();
                 if (IsRoundLastPlayer(botId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
                 return playReturn;
@@ -345,7 +350,7 @@ namespace Data.Core
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
 
-                MakePictureGame(GameId);
+                MakePicture();
                 ChangePlayerTurn();
             }
             return playReturn;
@@ -357,43 +362,43 @@ namespace Data.Core
         /// <param name="coordinate"></param>
         /// <param name="adjacentChrominos"></param>
         /// <returns>Cameleon si toute couleur peut se poser ; null si aucune possible</returns>
-        public Color? OkColorFor(Coordinate coordinate, out int adjacentChrominos)
+        public Enumeration.Color? OkColorFor(Coordinate coordinate, out int adjacentChrominos)
         {
-            HashSet<Color> colors = new HashSet<Color>();
-            Color? rightColor = coordinate.GetRightColor(Squares);
-            Color? bottomColor = coordinate.GetBottomColor(Squares);
-            Color? leftColor = coordinate.GetLeftColor(Squares);
-            Color? topColor = coordinate.GetTopColor(Squares);
+            HashSet<Enumeration.Color> colors = new HashSet<Enumeration.Color>();
+            Enumeration.Color? rightColor = coordinate.GetRightColor(Squares);
+            Enumeration.Color? bottomColor = coordinate.GetBottomColor(Squares);
+            Enumeration.Color? leftColor = coordinate.GetLeftColor(Squares);
+            Enumeration.Color? topColor = coordinate.GetTopColor(Squares);
             adjacentChrominos = 0;
             if (rightColor != null)
             {
                 adjacentChrominos++;
-                colors.Add((Color)rightColor);
+                colors.Add((Enumeration.Color)rightColor);
             }
             if (bottomColor != null)
             {
                 adjacentChrominos++;
-                colors.Add((Color)bottomColor);
+                colors.Add((Enumeration.Color)bottomColor);
             }
             if (leftColor != null)
             {
                 adjacentChrominos++;
-                colors.Add((Color)leftColor);
+                colors.Add((Enumeration.Color)leftColor);
             }
             if (topColor != null)
             {
                 adjacentChrominos++;
-                colors.Add((Color)topColor);
+                colors.Add((Enumeration.Color)topColor);
             }
 
             if (colors.Count == 0)
             {
-                return Color.Cameleon;
+                return Enumeration.Color.Cameleon;
             }
             else if (colors.Count == 1)
             {
-                Color theColor = new Color();
-                foreach (Color color in colors)
+                Enumeration.Color theColor = new Enumeration.Color();
+                foreach (Enumeration.Color color in colors)
                 {
                     theColor = color;
                 }
@@ -507,22 +512,106 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// créé le visuel du jeu pour affichage minuature par exemple
+        /// créer le visuel du jeu
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
-        private void MakePictureGame(int gameId)
+        private void MakePicture()
         {
-            List<Square> squares = SquareDal.List(gameId);
+            //obtention des couleurs de différents carrés de l'image
+            List<Square> squares = SquareDal.List(GameId);
+            int xMin = squares.Select(g => g.X).Min() - 1;
+            int xMax = squares.Select(g => g.X).Max() + 1;
+            int yMin = squares.Select(g => g.Y).Min() - 1;
+            int yMax = squares.Select(g => g.Y).Max() + 1;
+            int columnsNumber = xMax - xMin + 1;
+            int linesNumber = yMax - yMin + 1;
+            int squaresNumber = columnsNumber * linesNumber;
+            var squaresViewModel = new SquareVM[squaresNumber];
+            for (int i = 0; i < squaresViewModel.Length; i++)
+                squaresViewModel[i] = new SquareVM(Enumeration.Color.None, true, true, true, true);
+            foreach (Square square in squares)
+            {
+                int index = square.Y * columnsNumber + square.X - (yMin * columnsNumber + xMin);
+                squaresViewModel[index] = square.SquareViewModel;
+            }
 
-
-            //for (int j = 0; j < Model.LinesNumber; j++)
-            //{
-            //    for (int i = 0; i < Model.ColumnsNumber; i++)
-            //    {
-            //        int index = i + j * Model.ColumnsNumber;
-            //        Color state = Model.SquaresViewModel[index].Color;
-            //     }
-            //}
+            const int imageSquareSize = 30;
+            int width = columnsNumber * imageSquareSize;
+            int height = linesNumber * imageSquareSize;
+            Bitmap bitmap = new Bitmap(width, height);
+            
+            //construction de l'image
+            for (int j = 0; j < linesNumber; j++)
+            {
+                for (int i = 0; i < columnsNumber; i++)
+                {
+                    int index = i + j * columnsNumber;
+                    Enumeration.Color colorSquare = squaresViewModel[index].Color;
+                    Enumeration.Color colorSquareLeft = i != 0 ? squaresViewModel[i - 1 + j * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareRight = i != columnsNumber - 1 ? squaresViewModel[i + 1 + j * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareTop = j != 0 ? squaresViewModel[i + (j - 1) * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareBottom = j != linesNumber - 1 ? squaresViewModel[i + (j + 1) * columnsNumber].Color : Enumeration.Color.None;
+                    bool openRight = squaresViewModel[index].OpenRight;
+                    bool openBottom = squaresViewModel[index].OpenBottom;
+                    bool openLeft = squaresViewModel[index].OpenLeft;
+                    bool openTop = squaresViewModel[index].OpenTop;
+                    for (int x = i * imageSquareSize; x < (i + 1) * imageSquareSize; x++)
+                    {
+                        for (int y = j * imageSquareSize; y < (j + 1) * imageSquareSize; y++)
+                        {
+                            if (x == i * imageSquareSize)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openLeft ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareLeft == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (x == (i + 1) * imageSquareSize - 1)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openRight ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareRight == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (y == j * imageSquareSize)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openTop ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareTop == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (y == (j + 1) * imageSquareSize - 1)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openBottom ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareBottom == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else
+                            {
+                                bitmap.SetPixel(x, y, ColorToColor(colorSquare));
+                            }
+                        }
+                    }
+                }
+            }
+            string filename = $"game{GameId}.png"; //todo définir chemin
+            bitmap.Save(filename, ImageFormat.Png);
         }
+
+        private System.Drawing.Color ColorToColor(Enumeration.Color color)
+        {
+            return color switch
+            {
+                Enumeration.Color.Blue => System.Drawing.Color.FromArgb(58, 194, 238),
+                Enumeration.Color.Green => System.Drawing.Color.FromArgb(76, 174, 68),
+                Enumeration.Color.Purple => System.Drawing.Color.FromArgb(86, 27, 108),
+                Enumeration.Color.Red => System.Drawing.Color.FromArgb(250, 44, 46),
+                Enumeration.Color.Yellow => System.Drawing.Color.FromArgb(255, 235, 71),
+                Enumeration.Color.Cameleon => System.Drawing.Color.AntiqueWhite,
+                _ => System.Drawing.Color.Transparent,
+            };
+        }
+
     }
 }

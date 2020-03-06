@@ -47,16 +47,12 @@ namespace Data.ViewModel
             XMax = squares.Select(g => g.X).Max() + 1;
             YMin = squares.Select(g => g.Y).Min() - 1;
             YMax = squares.Select(g => g.Y).Max() + 1;
-
             ColumnsNumber = XMax - XMin + 1;
             LinesNumber = YMax - YMin + 1;
-
             SquaresNumber = ColumnsNumber * LinesNumber;
-
             SquaresViewModel = new SquareVM[SquaresNumber];
             for (int i = 0; i < SquaresViewModel.Length; i++)
                 SquaresViewModel[i] = new SquareVM(Color.None, true, true, true, true);
-
             foreach (Square square in Squares)
             {
                 int index = IndexGridState(square.X, square.Y);
@@ -100,7 +96,7 @@ namespace Data.ViewModel
             PseudoChrominosPlayedVM = pseudoChrominosInGamePlayed;
         }
 
-        public int IndexGridState(int x, int y)
+        private int IndexGridState(int x, int y)
         {
             if (x < XMin || x > XMax || y < YMin || y > YMax)
                 throw new IndexOutOfRangeException();
