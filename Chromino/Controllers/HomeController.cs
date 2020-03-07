@@ -1,5 +1,6 @@
 ﻿using ChrominoGame.Models;
 using Data;
+using Data.Core;
 using Data.DAL;
 using Data.Models;
 using Data.ViewModel;
@@ -34,7 +35,7 @@ namespace Controllers
             ViewData["SingleGames"] = MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId));
             return View();
         }
-   
+
         /// <summary>
         /// Page des parties en cours (tour d'un adversaire)
         /// </summary>
@@ -99,11 +100,14 @@ namespace Controllers
                 foreach (Player player in players)
                 {
                     int chrominosNumber = GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id);
-                    if (keepSuspens && chrominosNumber == 0) // pour garder le suspens, si le joueur a terminé on affiche 1 au lieu de 0 
+                    if (keepSuspens && chrominosNumber == 0)
                         chrominosNumber = 1;
                     pseudos_chrominos.Add(player.UserName, chrominosNumber);
                 }
-                string pictureName = Path.Combine(@"image\game", $"{GameDal.Details(game.Id).Guid}.png");
+                string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
+                if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image\game", pictureName)))
+                    new GameCore(Ctx, Env, game.Id).MakePicture();
+
                 listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
             }
             return listPictureGameVM;

@@ -300,6 +300,12 @@ namespace Data.Core
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
         }
 
+        /// <summary>
+        /// Tente de jouer chrominoInGame
+        /// </summary>
+        /// <param name="chrominoInGame">Chromino à jouer avec positions et orientation</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns>PlayReturn.Ok si valide</returns>
         public PlayReturn Play(ChrominoInGame chrominoInGame, int playerId)
         {
             if (!PlayerDal.IsBot(playerId))
@@ -446,6 +452,93 @@ namespace Data.Core
         }
 
         /// <summary>
+        /// créer le visuel du jeu
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        public void MakePicture()
+        {
+            //obtention des couleurs de différents carrés de l'image
+            List<Square> squares = SquareDal.List(GameId);
+            int xMin = squares.Select(g => g.X).Min() - 1;
+            int xMax = squares.Select(g => g.X).Max() + 1;
+            int yMin = squares.Select(g => g.Y).Min() - 1;
+            int yMax = squares.Select(g => g.Y).Max() + 1;
+            int columnsNumber = xMax - xMin + 1;
+            int linesNumber = yMax - yMin + 1;
+            int squaresNumber = columnsNumber * linesNumber;
+            var squaresViewModel = new SquareVM[squaresNumber];
+            for (int i = 0; i < squaresViewModel.Length; i++)
+                squaresViewModel[i] = new SquareVM(Enumeration.Color.None, true, true, true, true);
+            foreach (Square square in squares)
+            {
+                int index = square.Y * columnsNumber + square.X - (yMin * columnsNumber + xMin);
+                squaresViewModel[index] = square.SquareViewModel;
+            }
+
+            const int imageSquareSize = 30;
+            int width = columnsNumber * imageSquareSize;
+            int height = linesNumber * imageSquareSize;
+            Bitmap bitmap = new Bitmap(width, height);
+
+            //construction de l'image
+            for (int j = 0; j < linesNumber; j++)
+            {
+                for (int i = 0; i < columnsNumber; i++)
+                {
+                    int index = i + j * columnsNumber;
+                    Enumeration.Color colorSquare = squaresViewModel[index].Color;
+                    Enumeration.Color colorSquareLeft = i != 0 ? squaresViewModel[i - 1 + j * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareRight = i != columnsNumber - 1 ? squaresViewModel[i + 1 + j * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareTop = j != 0 ? squaresViewModel[i + (j - 1) * columnsNumber].Color : Enumeration.Color.None;
+                    Enumeration.Color colorSquareBottom = j != linesNumber - 1 ? squaresViewModel[i + (j + 1) * columnsNumber].Color : Enumeration.Color.None;
+                    bool openRight = squaresViewModel[index].OpenRight;
+                    bool openBottom = squaresViewModel[index].OpenBottom;
+                    bool openLeft = squaresViewModel[index].OpenLeft;
+                    bool openTop = squaresViewModel[index].OpenTop;
+                    for (int x = i * imageSquareSize; x < (i + 1) * imageSquareSize; x++)
+                    {
+                        for (int y = j * imageSquareSize; y < (j + 1) * imageSquareSize; y++)
+                        {
+                            if (x == i * imageSquareSize)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openLeft ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareLeft == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (x == (i + 1) * imageSquareSize - 1)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openRight ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareRight == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (y == j * imageSquareSize)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openTop ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareTop == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else if (y == (j + 1) * imageSquareSize - 1)
+                            {
+                                if (colorSquare != Enumeration.Color.None)
+                                    bitmap.SetPixel(x, y, openBottom ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                else
+                                    bitmap.SetPixel(x, y, colorSquareBottom == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                            }
+                            else
+                            {
+                                bitmap.SetPixel(x, y, EnumColorToColor(colorSquare));
+                            }
+                        }
+                    }
+                }
+            }
+            bitmap.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+        }
+
+        /// <summary>
         /// rempli la main de tous les joueurs
         /// </summary>
         /// <param name="gamePlayer"></param>
@@ -517,93 +610,6 @@ namespace Data.Core
                     hand.Add(chrominoAt0);
                 }
             }
-        }
-
-        /// <summary>
-        /// créer le visuel du jeu
-        /// </summary>
-        /// <param name="gameId">Id du jeu</param>
-        private void MakePicture()
-        {
-            //obtention des couleurs de différents carrés de l'image
-            List<Square> squares = SquareDal.List(GameId);
-            int xMin = squares.Select(g => g.X).Min() - 1;
-            int xMax = squares.Select(g => g.X).Max() + 1;
-            int yMin = squares.Select(g => g.Y).Min() - 1;
-            int yMax = squares.Select(g => g.Y).Max() + 1;
-            int columnsNumber = xMax - xMin + 1;
-            int linesNumber = yMax - yMin + 1;
-            int squaresNumber = columnsNumber * linesNumber;
-            var squaresViewModel = new SquareVM[squaresNumber];
-            for (int i = 0; i < squaresViewModel.Length; i++)
-                squaresViewModel[i] = new SquareVM(Enumeration.Color.None, true, true, true, true);
-            foreach (Square square in squares)
-            {
-                int index = square.Y * columnsNumber + square.X - (yMin * columnsNumber + xMin);
-                squaresViewModel[index] = square.SquareViewModel;
-            }
-
-            const int imageSquareSize = 30;
-            int width = columnsNumber * imageSquareSize;
-            int height = linesNumber * imageSquareSize;
-            Bitmap bitmap = new Bitmap(width, height);
-            
-            //construction de l'image
-            for (int j = 0; j < linesNumber; j++)
-            {
-                for (int i = 0; i < columnsNumber; i++)
-                {
-                    int index = i + j * columnsNumber;
-                    Enumeration.Color colorSquare = squaresViewModel[index].Color;
-                    Enumeration.Color colorSquareLeft = i != 0 ? squaresViewModel[i - 1 + j * columnsNumber].Color : Enumeration.Color.None;
-                    Enumeration.Color colorSquareRight = i != columnsNumber - 1 ? squaresViewModel[i + 1 + j * columnsNumber].Color : Enumeration.Color.None;
-                    Enumeration.Color colorSquareTop = j != 0 ? squaresViewModel[i + (j - 1) * columnsNumber].Color : Enumeration.Color.None;
-                    Enumeration.Color colorSquareBottom = j != linesNumber - 1 ? squaresViewModel[i + (j + 1) * columnsNumber].Color : Enumeration.Color.None;
-                    bool openRight = squaresViewModel[index].OpenRight;
-                    bool openBottom = squaresViewModel[index].OpenBottom;
-                    bool openLeft = squaresViewModel[index].OpenLeft;
-                    bool openTop = squaresViewModel[index].OpenTop;
-                    for (int x = i * imageSquareSize; x < (i + 1) * imageSquareSize; x++)
-                    {
-                        for (int y = j * imageSquareSize; y < (j + 1) * imageSquareSize; y++)
-                        {
-                            if (x == i * imageSquareSize)
-                            {
-                                if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openLeft ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
-                                else
-                                    bitmap.SetPixel(x, y, colorSquareLeft == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
-                            }
-                            else if (x == (i + 1) * imageSquareSize - 1)
-                            {
-                                if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openRight ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
-                                else
-                                    bitmap.SetPixel(x, y, colorSquareRight == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
-                            }
-                            else if (y == j * imageSquareSize)
-                            {
-                                if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openTop ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
-                                else
-                                    bitmap.SetPixel(x, y, colorSquareTop == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
-                            }
-                            else if (y == (j + 1) * imageSquareSize - 1)
-                            {
-                                if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openBottom ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
-                                else
-                                    bitmap.SetPixel(x, y, colorSquareBottom == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
-                            }
-                            else
-                            {
-                                bitmap.SetPixel(x, y, EnumColorToColor(colorSquare));
-                            }
-                        }
-                    }
-                }
-            }
-            bitmap.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
         }
 
         private System.Drawing.Color EnumColorToColor(Enumeration.Color color)

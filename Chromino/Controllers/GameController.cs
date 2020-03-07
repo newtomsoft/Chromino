@@ -87,7 +87,6 @@ namespace Controllers
         public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
         {
             GetPlayerInfos();
-
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
