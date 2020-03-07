@@ -8,13 +8,10 @@
 {
     <p><b>Vous n'avez pas encore de parties terminées</b></p>
 }
-else
-{
-    <p><b>Vous avez des parties terminées</b></p>
-}
 
 @if ((ViewBag.GamesWon as List<PictureGameVM>).Count() > 0)
 {
+    <h3>Parties gagnées</h3>
     <div class="thumbnails">
         @foreach (var gameToPlay in ViewBag.GamesWon as List<PictureGameVM>)
         {
@@ -22,9 +19,10 @@ else
                 <div class="thumbnail">
                     <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
                     <div>
-                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        Jeu n° @gameToPlay.GameId
                         <br />
                         <ul>
+                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
                             @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
                             {
                                 string pseudo = pseudo_chromino.Key;
@@ -43,6 +41,7 @@ else
 
 @if ((ViewBag.GamesLost as List<PictureGameVM>).Count() > 0)
 {
+    <h3>Parties perdues</h3>
     <div class="thumbnails">
         @foreach (var gameToPlay in ViewBag.GamesLost as List<PictureGameVM>)
         {
@@ -50,9 +49,10 @@ else
                 <div class="thumbnail">
                     <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
                     <div>
-                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        Jeu n° @gameToPlay.GameId
                         <br />
                         <ul>
+                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
                             @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
                             {
                                 string pseudo = pseudo_chromino.Key;
@@ -71,6 +71,7 @@ else
 
 @if ((ViewBag.SingleGamesFinished as List<PictureGameVM>).Count() > 0)
 {
+    <h3>Parties solo terminées</h3>
     <div class="thumbnails">
         @foreach (var gameToPlay in ViewBag.SingleGamesFinished as List<PictureGameVM>)
         {
@@ -78,9 +79,10 @@ else
                 <div class="thumbnail">
                     <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
                     <div>
-                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        Jeu n° @gameToPlay.GameId
                         <br />
                         <ul>
+                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
                             @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
                             {
                                 string pseudo = pseudo_chromino.Key;

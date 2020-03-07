@@ -475,16 +475,22 @@ namespace Data.Core
                 squaresViewModel[index] = square.SquareViewModel;
             }
 
-            const int imageSquareSize = 30;
+            const int imageSquareSize = 32;
             int width = columnsNumber * imageSquareSize;
             int height = linesNumber * imageSquareSize;
-            Bitmap bitmap = new Bitmap(width, height);
+            Bitmap thumbnail = new Bitmap(width, height);
 
             //construction de l'image
+            string cameleonFullFileName = Path.Combine(Env.WebRootPath, @"image\Cameleon.png");
+            Bitmap cameleonBitmap = new Bitmap(cameleonFullFileName);
+            if (cameleonBitmap.Width != imageSquareSize - 2)
+                cameleonBitmap = new Bitmap(cameleonBitmap, new Size(imageSquareSize - 2, imageSquareSize - 2));
+
             for (int j = 0; j < linesNumber; j++)
             {
                 for (int i = 0; i < columnsNumber; i++)
                 {
+                    bool firstCameleonPixel = true;
                     int index = i + j * columnsNumber;
                     Enumeration.Color colorSquare = squaresViewModel[index].Color;
                     Enumeration.Color colorSquareLeft = i != 0 ? squaresViewModel[i - 1 + j * columnsNumber].Color : Enumeration.Color.None;
@@ -502,40 +508,67 @@ namespace Data.Core
                             if (x == i * imageSquareSize)
                             {
                                 if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openLeft ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, openLeft ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
                                 else
-                                    bitmap.SetPixel(x, y, colorSquareLeft == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, colorSquareLeft == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
                             }
                             else if (x == (i + 1) * imageSquareSize - 1)
                             {
                                 if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openRight ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, openRight ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
                                 else
-                                    bitmap.SetPixel(x, y, colorSquareRight == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, colorSquareRight == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
                             }
                             else if (y == j * imageSquareSize)
                             {
                                 if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openTop ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, openTop ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
                                 else
-                                    bitmap.SetPixel(x, y, colorSquareTop == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, colorSquareTop == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
                             }
                             else if (y == (j + 1) * imageSquareSize - 1)
                             {
                                 if (colorSquare != Enumeration.Color.None)
-                                    bitmap.SetPixel(x, y, openBottom ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, openBottom ? System.Drawing.Color.Gray : System.Drawing.Color.Black);
                                 else
-                                    bitmap.SetPixel(x, y, colorSquareBottom == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
+                                    thumbnail.SetPixel(x, y, colorSquareBottom == Enumeration.Color.None ? System.Drawing.Color.Transparent : System.Drawing.Color.Black);
                             }
                             else
                             {
-                                bitmap.SetPixel(x, y, EnumColorToColor(colorSquare));
+                                if (colorSquare == Enumeration.Color.Cameleon)
+                                {
+                                    if (firstCameleonPixel)
+                                    {
+                                        firstCameleonPixel = false;
+                                        CopyPasteCameleonBitmap(ref thumbnail, ref cameleonBitmap, x, y);
+                                    }
+                                }
+                                else
+                                {
+                                    thumbnail.SetPixel(x, y, EnumColorToColor(colorSquare));
+                                }
                             }
                         }
                     }
                 }
             }
-            bitmap.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+            // augmentation de la taille du canvas si pas assez de squares dans l'image
+            const int minColumnsDisplayed = 15;
+            const int minLinesDisplayed = 15;
+            if (columnsNumber < minColumnsDisplayed || linesNumber < minLinesDisplayed)
+            {
+                int newWidth = Math.Max(minColumnsDisplayed * imageSquareSize, width);
+                int newHeight = Math.Max(minLinesDisplayed * imageSquareSize, height);
+                Bitmap resizedthumbnail = new Bitmap(newWidth, newHeight);
+                Graphics graphics = Graphics.FromImage(resizedthumbnail);
+                graphics.FillRectangle(Brushes.Transparent, 0, 0, newWidth, newHeight);
+                graphics.DrawImage(thumbnail, (newWidth - thumbnail.Width) / 2, (newHeight - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height);
+                resizedthumbnail.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+            }
+            else
+            {
+                thumbnail.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+            }
         }
 
         /// <summary>
@@ -612,6 +645,11 @@ namespace Data.Core
             }
         }
 
+        /// <summary>
+        /// converti le Enumeration.Color en System.Drawing.Color
+        /// </summary>
+        /// <param name="color">couleur en Enumeration.Color</param>
+        /// <returns>couleur en System.Drawing.Color</returns>
         private System.Drawing.Color EnumColorToColor(Enumeration.Color color)
         {
             return color switch
@@ -626,5 +664,22 @@ namespace Data.Core
             };
         }
 
+        /// <summary>
+        /// rempli la zone correspondant à un caméléon par l'image du caméléon
+        /// </summary>
+        /// <param name="thumbnail">bitmap de la vignette du jeu</param>
+        /// <param name="bitmapCameleon">bitmap du caméléon</param>
+        /// <param name="x">coordonnée x du coin supérieur gauche de la zone à remplir</param>
+        /// <param name="y">coordonnée y du coin supérieur gauche de la zone à remplir</param>
+        private void CopyPasteCameleonBitmap(ref Bitmap thumbnail, ref Bitmap bitmapCameleon, int x, int y)
+        {
+            for (int j = 0; j < bitmapCameleon.Height; j++)
+            {
+                for (int i = 0; i < bitmapCameleon.Width; i++)
+                {
+                    thumbnail.SetPixel(x + i, y + j, bitmapCameleon.GetPixel(i, j));
+                }
+            }
+        }
     }
 }

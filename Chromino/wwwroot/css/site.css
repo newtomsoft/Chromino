@@ -93,29 +93,52 @@ figcaption {
     flex-wrap: wrap;
 }
 
-
     .thumbnails a {
         text-decoration: none;
-        color:black;
+        color: black;
     }
 
 .thumbnail {
+    display: flex;
+    flex-shrink: 1;
+    flex-flow: column;
     border-style: solid;
-    border: medium;
-    border-color: chocolate;
-    display: inline-block;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 450px;
-    max-width: 45%;
-    height: 300px;
+    border-color: #3AC2EE;
+    width: 350px;
+    max-width: 75%;
+    height: 400px;
+    margin: 10px;
 }
 
-    .thumbnail img {
-        width: auto;
-        max-width: 150px;
-        height: auto;
+    .thumbnail:hover, .thumbnail .title:hover, .thumbnail .description:hover {
+        background-color: azure;
     }
+
+    .thumbnail img {
+        flex-shrink: 1;
+        max-height: 60%;
+        object-fit: contain;
+    }
+
+    .thumbnail .title {
+        max-height: 13%;
+    }
+
+        .thumbnail .title p {
+            margin: 0px;
+            text-align: center;
+        }
+
+    .thumbnail .description {
+        max-height: 27%;
+    }
+
+        .thumbnail .description p {
+            margin: 0px;
+            padding-left: 10px;
+        }
+
+
 
 #gameArea {
     height: 85vm;

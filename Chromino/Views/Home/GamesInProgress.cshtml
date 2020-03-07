@@ -14,9 +14,10 @@
                 <div class="thumbnail">
                     <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
                     <div>
-                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        Jeu n° @gameToPlay.GameId
                         <br />
                         <ul>
+                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
                             @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
                             {
                                 string pseudo = pseudo_chromino.Key;
