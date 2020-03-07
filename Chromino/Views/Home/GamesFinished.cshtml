@@ -4,7 +4,7 @@
     ViewData["Title"] = "Games finished";
 }
 
-@if ((ViewBag.ListGamesWon as List<PictureGameVM>).Count() == 0 && (ViewBag.ListGamesLost as List<PictureGameVM>).Count() == 0 && (ViewBag.ListSingleGamesFinished as List<PictureGameVM>).Count() == 0)
+@if ((ViewBag.GamesWon as List<PictureGameVM>).Count() == 0 && (ViewBag.GamesLost as List<PictureGameVM>).Count() == 0 && (ViewBag.SingleGamesFinished as List<PictureGameVM>).Count() == 0)
 {
     <p><b>Vous n'avez pas encore de parties terminées</b></p>
 }
@@ -13,10 +13,10 @@ else
     <p><b>Vous avez des parties terminées</b></p>
 }
 
-@if ((ViewBag.ListGamesWon as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.GamesWon as List<PictureGameVM>).Count() > 0)
 {
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListGamesWon as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.GamesWon as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">
@@ -41,10 +41,10 @@ else
     </div>
 }
 
-@if ((ViewBag.ListGamesLost as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.GamesLost as List<PictureGameVM>).Count() > 0)
 {
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListGamesLost as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.GamesLost as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">
@@ -69,10 +69,10 @@ else
     </div>
 }
 
-@if ((ViewBag.ListSingleGamesFinished as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.SingleGamesFinished as List<PictureGameVM>).Count() > 0)
 {
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListSingleGamesFinished as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.SingleGamesFinished as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">

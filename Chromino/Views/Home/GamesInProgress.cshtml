@@ -5,10 +5,10 @@
 }
 
 
-@if ((ViewBag.ListGamesWaitTurn as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.GamesWaitTurn as List<PictureGameVM>).Count() > 0)
 {
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListGamesWaitTurn as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.GamesWaitTurn as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">

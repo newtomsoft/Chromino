@@ -30,8 +30,8 @@ namespace Controllers
         public IActionResult Index()
         {
             GetPlayerInfos();
-            ViewData["ListGamesToPlay"] = MakePicturesGameVM(GamePlayerDal.MultiGamesToPlay(PlayerId));
-            ViewData["ListSingleGames"] = MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId));
+            ViewData["GamesToPlay"] = MakePicturesGameVM(GamePlayerDal.MultiGamesToPlay(PlayerId), true);
+            ViewData["SingleGames"] = MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId));
             return View();
         }
    
@@ -42,7 +42,7 @@ namespace Controllers
         public IActionResult GamesInProgress()
         {
             GetPlayerInfos();
-            ViewData["ListGamesWaitTurn"] = MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId));
+            ViewData["GamesWaitTurn"] = MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true);
             return View();
         }
 
@@ -53,9 +53,9 @@ namespace Controllers
         public IActionResult GamesFinished()
         {
             GetPlayerInfos();
-            ViewData["ListGamesWon"] = MakePicturesGameVM(GamePlayerDal.GamesWon(PlayerId));
-            ViewData["ListGamesLost"] = MakePicturesGameVM(GamePlayerDal.GamesLost(PlayerId));
-            ViewData["ListSingleGamesFinished"] = MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId));
+            ViewData["GamesWon"] = MakePicturesGameVM(GamePlayerDal.GamesWon(PlayerId));
+            ViewData["GamesLost"] = MakePicturesGameVM(GamePlayerDal.GamesLost(PlayerId));
+            ViewData["SingleGamesFinished"] = MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId));
             return View();
         }
 
@@ -88,7 +88,7 @@ namespace Controllers
         /// </summary>
         /// <param name="games">liste des jeux</param>
         /// <returns></returns>
-        private List<PictureGameVM> MakePicturesGameVM(List<Game> games)
+        private List<PictureGameVM> MakePicturesGameVM(List<Game> games, bool keepSuspens = false)
         {
             List<PictureGameVM> listPictureGameVM = new List<PictureGameVM>();
             foreach (Game game in games)
@@ -99,7 +99,7 @@ namespace Controllers
                 foreach (Player player in players)
                 {
                     int chrominosNumber = GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id);
-                    if (chrominosNumber == 0) // pour garder le suspens, si le joueur a terminé on affiche 1 au lieu de 0 
+                    if (keepSuspens && chrominosNumber == 0) // pour garder le suspens, si le joueur a terminé on affiche 1 au lieu de 0 
                         chrominosNumber = 1;
                     pseudos_chrominos.Add(player.UserName, chrominosNumber);
                 }

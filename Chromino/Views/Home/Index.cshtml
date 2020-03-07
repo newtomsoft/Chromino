@@ -8,11 +8,11 @@
     <h2>Bienvenue @ViewBag.PlayerPseudo</h2>
 </div>
 
-@if ((ViewBag.ListGamesToPlay as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.GamesToPlay as List<PictureGameVM>).Count() > 0)
 {
     <h3>Jeux multijoueurs</h3>
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListGamesToPlay as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.GamesToPlay as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">
@@ -39,12 +39,12 @@
 
 }
 
-@if ((ViewBag.ListSingleGames as List<PictureGameVM>).Count() > 0)
+@if ((ViewBag.SingleGames as List<PictureGameVM>).Count() > 0)
 {
     <h3>Jeux solo</h3>
 
     <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.ListSingleGames as List<PictureGameVM>)
+        @foreach (var gameToPlay in ViewBag.SingleGames as List<PictureGameVM>)
         {
             <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
                 <div class="thumbnail">
