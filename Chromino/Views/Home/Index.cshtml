@@ -1,6 +1,5 @@
-﻿@model Data.Models.Game
-@using  Data.ViewModel;
-
+﻿@using  Data.ViewModel;
+@model Data.Models.Game
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -42,7 +41,7 @@
 
 @if ((ViewBag.ListSingleGames as List<PictureGameVM>).Count() > 0)
 {
- <h3>Jeux solo</h3>
+    <h3>Jeux solo</h3>
 
     <div class="thumbnails">
         @foreach (var gameToPlay in ViewBag.ListSingleGames as List<PictureGameVM>)

@@ -142,7 +142,7 @@ namespace Data.DAL
             return multiGameToPlay;
         }
 
-        public IEnumerable<Game> SingleGamesFinished(int playerId)
+        public List<Game> SingleGamesFinished(int playerId)
         {
             List<Game> singleGameFinished = (from gp in Ctx.GamesPlayers
                                              join g in Ctx.Games on gp.GameId equals g.Id
