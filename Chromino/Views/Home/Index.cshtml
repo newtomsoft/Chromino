@@ -1,43 +1,68 @@
 ﻿@model Data.Models.Game
+@using  Data.ViewModel;
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h2 class="display-5">Bienvenue @ViewBag.PlayerPseudo</h2>
+    <h2>Bienvenue @ViewBag.PlayerPseudo</h2>
 </div>
 
-
-@if ((ViewBag.GamesToPlay as SelectList).Count() > 1 || (ViewBag.SingleGames as SelectList).Count() > 1)
+@if ((ViewBag.ListGamesToPlay as List<PictureGameVM>).Count() > 0)
 {
-    <p><b>Vous avez des parties à jouer</b></p>
+    <h3>Jeux multijoueurs</h3>
+    <div class="thumbnails">
+        @foreach (var gameToPlay in ViewBag.ListGamesToPlay as List<PictureGameVM>)
+        {
+            <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
+                <div class="thumbnail">
+                    <img src="@gameToPlay.FullName" alt="vignette" />
+                    <div>
+                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        <br />
+                        <ul>
+                            @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
+                            {
+                                string pseudo = pseudo_chromino.Key;
+                                if (pseudo == ViewBag.PlayerPseudo)
+                                    pseudo = "Vous";
+
+                                <li>@pseudo : @pseudo_chromino.Value chrominos en main</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+
+
 }
 
-@if ((ViewBag.GamesToPlay as SelectList).Count() > 1)
+@if ((ViewBag.ListSingleGames as List<PictureGameVM>).Count() > 0)
 {
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesMulti" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.GamesToPlay" onchange="window.document.formGamesMulti.submit();"></select>
-                </div>
-            </form>
-        </div>
-    </div>
-}
+ <h3>Jeux solo</h3>
 
-@if ((ViewBag.SingleGames as SelectList).Count() > 1)
-{
-    <div class="row">
-        <div class="col-md-8">
-            <form method="get" name="formGamesAlone" asp-action="Show" asp-controller="Game">
-                <div class="form-group">
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.SingleGames" onchange="window.document.formGamesAlone.submit();"></select>
+    <div class="thumbnails">
+        @foreach (var gameToPlay in ViewBag.ListSingleGames as List<PictureGameVM>)
+        {
+            <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
+                <div class="thumbnail">
+                    <img src="@gameToPlay.FullName" alt="vignette" />
+                    <div>
+                        Jeu n° @gameToPlay.GameId joué le @gameToPlay.PlayedDate
+                        <br />
+                        @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
+                        {
+                            <p>@pseudo_chromino.Value chrominos en main</p>
+                        }
+                    </div>
                 </div>
-            </form>
-        </div>
+            </a>
+        }
     </div>
+
 }
 
 <div>

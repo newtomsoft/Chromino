@@ -5,6 +5,7 @@ using Data.Enumeration;
 using Data.Models;
 using Data.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,7 +20,7 @@ namespace Controllers
     {
         private static readonly Random Random = new Random();
 
-        public GameController(Context context, UserManager<Player> userManager) : base(context, userManager)
+        public GameController(Context context, UserManager<Player> userManager, IWebHostEnvironment env) : base(context, userManager, env)
         {
         }
 
@@ -67,7 +68,7 @@ namespace Controllers
             ChrominoDal.CreateChrominos();
             int gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);
-            GameCore gamecore = new GameCore(Ctx, gameId);
+            GameCore gamecore = new GameCore(Ctx, Env, gameId);
             gamecore.BeginGame(randomPlayers.Count);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -87,7 +88,7 @@ namespace Controllers
         {
             GetPlayerInfos();
 
-            GameCore gameCore = new GameCore(Ctx, gameId);
+            GameCore gameCore = new GameCore(Ctx, Env, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -116,7 +117,7 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfos();
-            GameCore gameCore = new GameCore(Ctx, gameId);
+            GameCore gameCore = new GameCore(Ctx, Env, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
             if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
@@ -126,13 +127,19 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
+        /// <summary>
+        /// Passe le tour du joueur
+        /// </summary>
+        /// <param name="playerId">Id du joueur</param>
+        /// <param name="gameId">Id du jeu</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult PassTurn(int playerId, int gameId)
         {
             GetPlayerInfos();
             if (playerId == PlayerId)
             {
-                GameCore gameCore = new GameCore(Ctx, gameId);
+                GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.PassTurn(playerId);
                 NextPlayerPlayIfBot(gameId, gameCore);
             }
@@ -218,7 +225,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult PlayBot(int id, int botId)
         {
-            GameCore gamecore = new GameCore(Ctx, id);
+            GameCore gamecore = new GameCore(Ctx, Env, id);
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
         }

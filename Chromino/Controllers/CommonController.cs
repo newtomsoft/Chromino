@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.DAL;
 using Data.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,7 @@ namespace Controllers
 {
     public class CommonController : Controller
     {
-        
-        protected const string SessionKeyPlayerId = "PlayerId";
-        protected const string SessionKeyPlayerPseudo = "PlayerPseudo";
+        protected readonly IWebHostEnvironment Env;
         protected Context Ctx { get; }
         protected GameDal GameDal { get; }
         protected GameChrominoDal GameChrominoDal { get; }
@@ -21,11 +20,11 @@ namespace Controllers
         protected SquareDal SquareDal { get; }
         protected int PlayerId { get; private set; }
         protected string PlayerPseudo { get; private set; }
+        private UserManager<Player> UserManager {get; set; }
 
-        private UserManager<Player> UserManager;
-
-        public CommonController(Context context, UserManager<Player> userManager)
+        public CommonController(Context context, UserManager<Player> userManager, IWebHostEnvironment env)
         {
+            Env = env;
             Ctx = context;
             GameDal = new GameDal(Ctx);
             GameChrominoDal = new GameChrominoDal(Ctx);

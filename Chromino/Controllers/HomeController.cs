@@ -4,32 +4,32 @@ using Data.DAL;
 using Data.Models;
 using Data.ViewModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Controllers
 {
     [Authorize]
     public class HomeController : CommonController
     {
-        public HomeController(Context context, UserManager<Player> userManager) : base(context, userManager)
+        public HomeController(Context context, UserManager<Player> userManager, IWebHostEnvironment env) : base(context, userManager, env)
         {
         }
 
         /// <summary>
-        /// Pages des parties à jouer
+        /// Page des parties à jouer
         /// </summary>
         /// <returns></returns>
         public IActionResult Index()
         {
             GetPlayerInfos();
-            List<SelectListItem> listSelectListItem = new List<SelectListItem>();
-            SelectListItem intro = new SelectListItem() { Value = "selected", Text = "Parties à plusieurs (votre tour)", Disabled = true };
-            listSelectListItem.Add(intro);
+            List<PictureGameVM> listPictureGameVM = new List<PictureGameVM>();
             foreach (Game game in GamePlayerDal.MultiGamesToPlay(PlayerId))
             {
                 List<Player> players = GamePlayerDal.Players(game.Id);
@@ -42,29 +42,24 @@ namespace Controllers
                         chrominosNumber = 1;
                     pseudos_chrominos.Add(player.UserName, chrominosNumber);
                 }
-                GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
-                SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
-                listSelectListItem.Add(selectListItem);
+                string pictureName = Path.Combine(@"image\game", $"{GameDal.Details(game.Id).Guid}.png");
+                listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
             }
-            ViewData["GamesToPlay"] = new SelectList(listSelectListItem, "Value", "Text");
+            ViewData["ListGamesToPlay"] = listPictureGameVM;
 
-            listSelectListItem = new List<SelectListItem>();
-            intro = new SelectListItem() { Value = "selected", Text = "Parties seul", Disabled = true };
-            listSelectListItem.Add(intro);
+            listPictureGameVM = new List<PictureGameVM>();
             foreach (Game game in GamePlayerDal.SingleGamesInProgress(PlayerId))
             {
                 List<Player> players = GamePlayerDal.Players(game.Id);
                 string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).UserName;
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
-                {
                     pseudos_chrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id));
-                }
-                GameForListVM gameForListVM = new GameForListVM(game, pseudos_chrominos, playerPseudoTurn);
-                SelectListItem selectListItem = new SelectListItem() { Value = gameForListVM.GameId.ToString(), Text = gameForListVM.Infos };
-                listSelectListItem.Add(selectListItem);
+                
+                string pictureName = Path.Combine(@"image\game", $"{GameDal.Details(game.Id).Guid}.png");
+                listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
             }
-            ViewData["SingleGames"] = new SelectList(listSelectListItem, "Value", "Text");
+            ViewData["ListSingleGames"] = listPictureGameVM;
 
             return View();
         }

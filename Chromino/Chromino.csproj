@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\doc\" />
+    <Folder Include="wwwroot\image\game\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

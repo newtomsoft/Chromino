@@ -14,7 +14,7 @@ namespace Controllers
 {
     public class PlayerController : CommonController
     {
-        public PlayerController(Context context, UserManager<Player> userManager) : base(context, userManager)
+        public PlayerController(Context context, UserManager<Player> userManager) : base(context, userManager, null)
         {
         }
 
@@ -59,8 +59,7 @@ namespace Controllers
             Player found = PlayerDal.Details("Invité");
             if (found != null)
             {
-                HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-                HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.UserName);
+                // todo se loguer avec ce compte
             }
             return RedirectToAction("Index", "Home");
         }

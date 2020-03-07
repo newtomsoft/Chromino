@@ -2,10 +2,12 @@
 using Data.Enumeration;
 using Data.Models;
 using Data.ViewModel;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 
 namespace Data.Core
@@ -23,7 +25,12 @@ namespace Data.Core
         private readonly Context Ctx;
 
         /// <summary>
-        /// les différentes Dal du contexte utilisées
+        /// variables d'environnement
+        /// </summary>
+        private readonly IWebHostEnvironment Env;
+
+        /// <summary>
+        /// les différentes Dal utilisées du context 
         /// </summary>
         private readonly GameChrominoDal GameChrominoDal;
         private readonly ChrominoDal ChrominoDal;
@@ -52,10 +59,11 @@ namespace Data.Core
         /// </summary>
         public List<GamePlayer> GamePlayers { get; set; }
 
-        public GameCore(Context ctx, int gameId)
+        public GameCore(Context ctx, IWebHostEnvironment env, int gameId)
         {
-            GameId = gameId;
+            Env = env;
             Ctx = ctx;
+            GameId = gameId;
             GameDal = new GameDal(ctx);
             GameChrominoDal = new GameChrominoDal(ctx);
             ChrominoDal = new ChrominoDal(ctx);
@@ -589,17 +597,16 @@ namespace Data.Core
                             }
                             else
                             {
-                                bitmap.SetPixel(x, y, ColorToColor(colorSquare));
+                                bitmap.SetPixel(x, y, EnumColorToColor(colorSquare));
                             }
                         }
                     }
                 }
             }
-            string filename = $"game{GameId}.png"; //todo définir chemin
-            bitmap.Save(filename, ImageFormat.Png);
+            bitmap.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
         }
 
-        private System.Drawing.Color ColorToColor(Enumeration.Color color)
+        private System.Drawing.Color EnumColorToColor(Enumeration.Color color)
         {
             return color switch
             {

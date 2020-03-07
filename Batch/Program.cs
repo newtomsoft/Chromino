@@ -3,7 +3,6 @@ using Data.DAL;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,12 +16,12 @@ namespace Batch
             Console.WriteLine("**********************");
             Console.WriteLine("*** Batch Chromino ***");
             Console.WriteLine("**********************\n");
-
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\..\\..", "Chromino");
+          
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (env == null)
                 env = "Development";
             Console.WriteLine($"ASPNETCORE_ENVIRONMENT : {env}\n");
+            string path = Directory.GetCurrentDirectory();
             IConfigurationBuilder builder = new ConfigurationBuilder()
                                .SetBasePath(path)
                                .AddJsonFile($"appsettings.{env}.json");
@@ -51,7 +50,7 @@ namespace Batch
                 context.Games.Remove(gameDal.Details(id));
             }
             context.SaveChanges();
-            Console.WriteLine("Fin de suppression des jeux en cours sans joueur dont c'est le tour\n");
+            Console.WriteLine("\n");
             #endregion
 
 

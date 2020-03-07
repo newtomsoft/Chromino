@@ -6,8 +6,32 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Les règles officielles dans leurs versions classiques sont appliquées ici.</p>
-<p>Retrouvez-les dans le pdf suivant : (également accessible depuis la page <a href="https://fr.asmodee.com/fr/games/chromino/" target="_blank">Asmodee</a>)</p>
-<embed src="~/doc/chrominoRules.pdf#view=FitH" type="application/pdf" width="100%" height="600px" />
+<p><a href="~/doc/chrominoRules.pdf" target="_blank">Retrouvez-les dans ce pdf</a> : (également accessible depuis la page <a href="https://fr.asmodee.com/fr/games/chromino/" target="_blank">Asmodee</a>)</p>
+
+<object class="pdfRules" data="https://docs.google.com/gview?url=http://chromino.fr/doc/chrominoRules.pdf&embedded=true" width="100%" height="600">
+    <embed class="pdfRules" src="https://docs.google.com/gview?url=http://chromino.fr/doc/chrominoRules.pdf&embedded=true" width="100%" height="600px" />
+    Votre navigateur ne peut pas afficher les fichiers pdf. Vous devez le télécharger.
+    </embed>
+</object>
+<br />
+<br />
+
+<p>Voici également une vidéo explicative qui reprend les règles ci-dessus :</p>
+<iframe id="videoRules" marginwidth="auto" width="100%" height="600px" src="https://www.youtube-nocookie.com/embed/4pxgNY4hyIc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 <div>
     <a asp-controller="Home" asp-action="Index">Retour</a>
 </div>
+
+<script>
+    $(window).resize(function () {
+        setHeights();
+    });
+
+    function setHeights() {
+        var width = $('#videoRules').width();
+        $('#videoRules').height(width / 1.78);
+        $('.pdfRules').height(window.innerHeight * 3/4);
+    }
+
+</script>

@@ -7,6 +7,8 @@
 /Chromino/appsettings.Production.json
 /Chromino/appsettings.Stage.json
 /Chromino/appsettings.Test.json
+/Batch/appsettings.Production.json
+
 
 # User-specific files
 *.rsuser
@@ -343,3 +345,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+/Chromino/wwwroot/image/game
