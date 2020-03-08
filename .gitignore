@@ -3,11 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#thumbnail games
+/Chromino/wwwroot/image/game
+
 #env files
 /Chromino/appsettings.Production.json
 /Chromino/appsettings.Stage.json
 /Chromino/appsettings.Test.json
 /Batch/appsettings.Production.json
+/Chromino/appsettings.Staging.json
 
 
 # User-specific files
@@ -346,4 +350,3 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-/Chromino/wwwroot/image/game

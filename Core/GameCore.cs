@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Data.Core
 {
@@ -475,13 +477,13 @@ namespace Data.Core
                 squaresViewModel[index] = square.SquareViewModel;
             }
 
+            //construction de l'image
             const int imageSquareSize = 32;
             int width = columnsNumber * imageSquareSize;
             int height = linesNumber * imageSquareSize;
             Bitmap thumbnail = new Bitmap(width, height);
 
-            //construction de l'image
-            string cameleonFullFileName = Path.Combine(Env.WebRootPath, @"image\Cameleon.png");
+            string cameleonFullFileName = Path.Combine(Env.WebRootPath, @"image/Cameleon.png");
             Bitmap cameleonBitmap = new Bitmap(cameleonFullFileName);
             if (cameleonBitmap.Width != imageSquareSize - 2)
                 cameleonBitmap = new Bitmap(cameleonBitmap, new Size(imageSquareSize - 2, imageSquareSize - 2));
@@ -552,6 +554,7 @@ namespace Data.Core
                     }
                 }
             }
+            string thumbnailFullName = Path.Combine(Env.WebRootPath, @"image/game", $"{GameDal.Details(GameId).Guid}.png");
             // augmentation de la taille du canvas si pas assez de squares dans l'image
             const int minColumnsDisplayed = 15;
             const int minLinesDisplayed = 15;
@@ -563,11 +566,11 @@ namespace Data.Core
                 Graphics graphics = Graphics.FromImage(resizedthumbnail);
                 graphics.FillRectangle(Brushes.Transparent, 0, 0, newWidth, newHeight);
                 graphics.DrawImage(thumbnail, (newWidth - thumbnail.Width) / 2, (newHeight - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height);
-                resizedthumbnail.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+                resizedthumbnail.Save(thumbnailFullName, ImageFormat.Png);
             }
             else
             {
-                thumbnail.Save(Path.Combine(Env.WebRootPath, @"image\game", $"{GameDal.Details(GameId).Guid}.png"), ImageFormat.Png);
+                thumbnail.Save(thumbnailFullName, ImageFormat.Png);
             }
         }
 

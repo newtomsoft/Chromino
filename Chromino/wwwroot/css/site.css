@@ -112,6 +112,7 @@ figcaption {
 
     .thumbnail:hover, .thumbnail .title:hover, .thumbnail .description:hover {
         background-color: azure;
+        border-color: darkblue;
     }
 
     .thumbnail img {

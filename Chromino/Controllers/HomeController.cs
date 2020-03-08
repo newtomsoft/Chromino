@@ -105,9 +105,8 @@ namespace Controllers
                     pseudos_chrominos.Add(player.UserName, chrominosNumber);
                 }
                 string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
-                if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image\game", pictureName)))
+                if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image/game", pictureName)))
                     new GameCore(Ctx, Env, game.Id).MakePicture();
-
                 listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
             }
             return listPictureGameVM;
