@@ -208,6 +208,18 @@ namespace Controllers
         }
 
         /// <summary>
+        /// affiche à l'écran la première partie à jouer
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult FirstGameToPlay()
+        {
+            GetPlayerInfos();
+            TempData["ShowInfos"] = "FirstGameToPlay";
+            int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
+            return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
+        }
+
+        /// <summary>
         /// Page de partie non trouvée ou non autorisée
         /// </summary>
         /// <returns></returns>

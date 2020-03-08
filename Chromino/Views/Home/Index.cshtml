@@ -11,65 +11,16 @@
 @if ((ViewBag.GamesToPlay as List<PictureGameVM>).Count() > 0)
 {
     <h3>Jeux multijoueurs</h3>
-    <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.GamesToPlay as List<PictureGameVM>)
-        {
-            <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
-                <div class="thumbnail">
-                    <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
-                    <div>
-                        Jeu n° @gameToPlay.GameId
-                        <br />
-                        <ul>
-                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
-                            @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
-                            {
-                                string pseudo = pseudo_chromino.Key;
-                                if (pseudo == ViewBag.PlayerPseudo)
-                                    pseudo = "Vous";
-
-                                <li>@pseudo : @pseudo_chromino.Value chrominos en main</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
-
-
+    <partial name="_ThumbnailPartial" model="ViewBag.GamesToPlay" />
 }
 
 @if ((ViewBag.SingleGames as List<PictureGameVM>).Count() > 0)
 {
     <h3>Jeux solo</h3>
-
-    <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.SingleGames as List<PictureGameVM>)
-        {
-            <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
-                <div class="thumbnail">
-                    <div class="title">
-                        <p>Jeu n° @gameToPlay.GameId</p>
-                        <p>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</p>
-                    </div>
-                    <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
-                    <div class="description">
-                        @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
-                        {
-                            string pseudo = pseudo_chromino.Key;
-                            if (pseudo == ViewBag.PlayerPseudo)
-                                pseudo = "Vous";
-                        <p>@pseudo : @pseudo_chromino.Value chrominos en main</p>
-                        }
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
-
+    <partial name="_ThumbnailPartial" model="ViewBag.SingleGames" />
 }
 
+<br />
 <div>
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Créer nouvelle partie" /></a>
 </div>

@@ -557,7 +557,7 @@ namespace Data.Core
             string thumbnailFullName = Path.Combine(Env.WebRootPath, @"image/game", $"{GameDal.Details(GameId).Guid}.png");
             // augmentation de la taille du canvas si pas assez de squares dans l'image
             const int minColumnsDisplayed = 15;
-            const int minLinesDisplayed = 15;
+            const int minLinesDisplayed = minColumnsDisplayed;
             if (columnsNumber < minColumnsDisplayed || linesNumber < minLinesDisplayed)
             {
                 int newWidth = Math.Max(minColumnsDisplayed * imageSquareSize, width);
@@ -566,12 +566,13 @@ namespace Data.Core
                 Graphics graphics = Graphics.FromImage(resizedthumbnail);
                 graphics.FillRectangle(Brushes.Transparent, 0, 0, newWidth, newHeight);
                 graphics.DrawImage(thumbnail, (newWidth - thumbnail.Width) / 2, (newHeight - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height);
-                resizedthumbnail.Save(thumbnailFullName, ImageFormat.Png);
+                thumbnail = new Bitmap(resizedthumbnail, newWidth / 2, newHeight / 2);
             }
             else
             {
-                thumbnail.Save(thumbnailFullName, ImageFormat.Png);
+                thumbnail = new Bitmap(thumbnail, width / 2, height / 2);
             }
+            thumbnail.Save(thumbnailFullName, ImageFormat.Png);
         }
 
         /// <summary>

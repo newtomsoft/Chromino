@@ -4,34 +4,9 @@
     ViewData["Title"] = "Games in progress";
 }
 
-
 @if ((ViewBag.GamesWaitTurn as List<PictureGameVM>).Count() > 0)
 {
-    <div class="thumbnails">
-        @foreach (var gameToPlay in ViewBag.GamesWaitTurn as List<PictureGameVM>)
-        {
-            <a asp-controller="Game" asp-action="Show" asp-route-id="@gameToPlay.GameId">
-                <div class="thumbnail">
-                    <img src="~/image/game/@gameToPlay.FullName" alt="vignette" />
-                    <div>
-                        Jeu n° @gameToPlay.GameId
-                        <br />
-                        <ul>
-                            <li>joué le @gameToPlay.PlayedDate.ToString("dd/MM/yyyy à HH:mm:ss")</li>
-                            @foreach (var pseudo_chromino in gameToPlay.Pseudos_chrominos)
-                            {
-                                string pseudo = pseudo_chromino.Key;
-                                if (pseudo == ViewBag.PlayerPseudo)
-                                    pseudo = "Vous";
-
-                                <li>@pseudo : @pseudo_chromino.Value chrominos en main</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </a>
-        }
-    </div>
+    <partial name="_ThumbnailPartial" model="ViewBag.GamesWaitTurn" />
 }
 else
 {
