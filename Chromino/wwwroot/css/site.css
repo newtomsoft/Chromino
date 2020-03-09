@@ -98,48 +98,65 @@ figcaption {
         color: black;
     }
 
+@media (max-width: 450px) {
+    .thumbnails {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .thumbnail {
+        width: 100%;
+        min-width: 100%;
+        height: 400px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width: 450px) {
+    .thumbnail {
+        width: 400px;
+        height: 400px;
+        margin: 10px;
+    }
+}
+
 .thumbnail {
     display: flex;
-    flex-shrink: 1;
     flex-flow: column;
     border-style: solid;
     border-color: #3AC2EE;
-    width: 350px;
-    max-width: 75%;
-    height: 400px;
-    margin: 10px;
 }
 
-    .thumbnail:hover, .thumbnail .title:hover, .thumbnail .description:hover {
+    .thumbnail:hover, .thumbnail .header:hover, .thumbnail .description:hover {
         background-color: azure;
         border-color: darkblue;
     }
 
     .thumbnail img {
-        flex-shrink: 1;
         max-height: 60%;
         object-fit: contain;
     }
 
-    .thumbnail .title {
+    .thumbnail .header {
         max-height: 13%;
     }
 
-        .thumbnail .title p {
+        .thumbnail .header p {
             margin: 0px;
             text-align: center;
         }
 
     .thumbnail .description {
         max-height: 27%;
+        overflow: auto;
     }
 
         .thumbnail .description p {
             margin: 0px;
             padding-left: 10px;
         }
-
-
 
 #gameArea {
     height: 85vm;
@@ -496,8 +513,6 @@ figcaption {
         height: 100%;
     }
 }
-
-
 
 /* Sticky footer styles
 -------------------------------------------------- */
