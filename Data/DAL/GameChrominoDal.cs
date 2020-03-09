@@ -47,6 +47,11 @@ namespace Data.DAL
             return nbChrominos;
         }
 
+        /// <summary>
+        /// Nombre total de chrominos dans toutes les mains des joueurs
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <returns></returns>
         public int InHands(int gameId)
         {
             int nbChrominos = (from ch in Ctx.ChrominosInHand
@@ -56,6 +61,12 @@ namespace Data.DAL
             return nbChrominos;
         }
 
+        /// <summary>
+        /// Nombre de chrominos dans la main du joueur
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns></returns>
         public int InHand(int gameId, int playerId)
         {
             int nbChrominos = (from ch in Ctx.ChrominosInHand

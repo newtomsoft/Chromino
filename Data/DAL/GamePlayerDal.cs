@@ -294,6 +294,11 @@ namespace Data.DAL
                 return true;
         }
 
+        /// <summary>
+        /// retourne l'Id du dernier joueur du tour du jeu
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <returns></returns>
         public int RoundLastPlayerId(int gameId)
         {
             int playerId = (from gp in Ctx.GamesPlayers
@@ -302,6 +307,23 @@ namespace Data.DAL
                             select gp.PlayerId).FirstOrDefault();
 
             return playerId;
+        }
+
+        /// <summary>
+        /// retourne la liste des joueurs à jouer après le joueur renseigné
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur à renseigner</param>
+        /// <returns></returns>
+        public List<int> NextPlayersId(int gameId, int playerId)
+        {
+            int gamePlayerId = Details(gameId, playerId).Id;
+
+            List<int> playersId = (from gp in Ctx.GamesPlayers
+                                   where gp.GameId == gameId && gp.Id > gamePlayerId
+                                   select gp.PlayerId).ToList();
+
+            return playersId;
         }
 
         public bool IsSomePlayerWon(int gameId)

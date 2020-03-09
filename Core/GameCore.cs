@@ -358,9 +358,13 @@ namespace Data.Core
                         PlayerDal.Details(playerId).SinglePlayerGamesFinished++;
                         Ctx.SaveChanges();
                     }
-                    if (IsRoundLastPlayer(playerId))
+                    if (IsRoundLastPlayer(playerId) || !IsNextPlayersCanWin(playerId))
                     {
                         SetGameFinished();
+                    }
+                    else
+                    {
+
                     }
                 }
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
@@ -612,17 +616,6 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// return true si l'id du joueur est l'id du dernier dans le tour
-        /// </summary>
-        /// <param name="playerId">id du joueur courant</param>
-        /// <returns></returns>
-        private bool IsRoundLastPlayer(int playerId)
-        {
-            int roundLastPlayerId = GamePlayerDal.RoundLastPlayerId(GameId);
-            return playerId == roundLastPlayerId ? true : false;
-        }
-
-        /// <summary>
         /// change l'ordre des n chrominos de la main s'il y a n-1 cameleon
         /// afin de jouer les cameleon et finir avec un chromino normal
         /// </summary>
@@ -684,6 +677,32 @@ namespace Data.Core
                     thumbnail.SetPixel(x + i, y + j, bitmapCameleon.GetPixel(i, j));
                 }
             }
+        }
+
+        /// <summary>
+        /// return true si l'id du joueur est l'id du dernier dans le tour
+        /// </summary>
+        /// <param name="playerId">id du joueur courant</param>
+        /// <returns></returns>
+        private bool IsRoundLastPlayer(int playerId)
+        {
+            int roundLastPlayerId = GamePlayerDal.RoundLastPlayerId(GameId);
+            return playerId == roundLastPlayerId ? true : false;
+        }
+
+        /// <summary>
+        /// indique si les autres joueurs à suivre dans le tour peuvent potentiellement gagner
+        /// </summary>
+        /// <param name="playerId">Id du joueur à partir duquel les autres joueurs sont déterminés</param>
+        /// <returns></returns>
+        private bool IsNextPlayersCanWin(int playerId)
+        {
+            foreach (int currentPlayerId in GamePlayerDal.NextPlayersId(GameId, playerId))
+            {
+                if (GameChrominoDal.InHand(GameId, currentPlayerId) == 1)
+                    return true;
+            }
+            return false;
         }
     }
 }

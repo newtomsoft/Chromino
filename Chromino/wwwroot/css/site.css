@@ -98,11 +98,8 @@ figcaption {
         color: black;
     }
 
-@media (max-width: 450px) {
+@media (max-width: 700px) {
     .thumbnails {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
         justify-content: center;
     }
 
@@ -114,7 +111,7 @@ figcaption {
     }
 }
 
-@media (min-width: 450px) {
+@media (min-width: 700) {
     .thumbnail {
         width: 400px;
         height: 400px;
