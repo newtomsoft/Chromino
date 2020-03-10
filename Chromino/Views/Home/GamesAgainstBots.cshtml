@@ -1,7 +1,7 @@
 ﻿@using  Data.ViewModel;
 @model List<PictureGameVM>;
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Games against bots";
     int gamesNumber = Model.Count;
 }
 
@@ -12,23 +12,20 @@
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie multijoueurs à jouer</b></p>
+        <p><b>Vous n'avez aucune partie contre l'ordinateur en cours</b></p>
         break;
     case 1:
-        <h3>Vous avez 1 partie multijoueurs à jouer</h3>
+        <h3>Vous avez 1 partie contre l'ordinateur en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
     default:
-        <h3>Vous avez @gamesNumber parties multijoueurs à jouer</h3>
+        <h3>Vous avez @gamesNumber parties contre l'ordinateur en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
 <br />
 <p>
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
-</p>
-<p>
-    Voir vos <a asp-controller="Home" asp-action="GamesAgainstBots">parties contre l'ordinateur</a>
 </p>
 <p>
     Voir vos <a asp-controller="Home" asp-action="SingleGames">parties solo en cours</a>
@@ -44,4 +41,7 @@
 </p>
 <p>
     Voir vos <a asp-controller="Home" asp-action="GamesInProgress">parties en attente (tour d'un adversaire)</a>
+</p>
+<p>
+    <a asp-controller="Home" asp-action="Index">Retour</a>
 </p>

@@ -59,6 +59,17 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public void AddSingle(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = new GamePlayer
+            {
+                GameId = gameId,
+                PlayerId = playerId,
+            };
+            Ctx.GamesPlayers.Add(gamePlayer);
+            Ctx.SaveChanges();
+        }
+
         public List<Player> Players(int gameId)
         {
             List<Player> players = (from gp in Ctx.GamesPlayers
@@ -131,13 +142,36 @@ namespace Data.DAL
             return games;
         }
 
-        public List<Game> MultiGamesToPlay(int playerId)
+        public List<Game> MultiGamesAgainstBotsOnly(int playerId)
         {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
-                                orderby g.PlayedDate
-                                select g).AsNoTracking().ToList();
+            var firstFilter = (from gp in Ctx.GamesPlayers
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               join p in Ctx.Players on gp.PlayerId equals p.Id
+                               where p.Bot
+                               select g).AsNoTracking();
+
+            var games = (from gp in Ctx.GamesPlayers
+                         join g in firstFilter on gp.GameId equals g.Id
+                         where gp.PlayerId == playerId && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
+                         orderby g.PlayedDate
+                         select g).ToList();
+
+            return games;
+        }
+
+        public List<Game> MultiGamesAgainstAtLeast1HumanToPlay(int playerId)
+        {
+            var firstFilter = (from gp in Ctx.GamesPlayers
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               join p in Ctx.Players on gp.PlayerId equals p.Id
+                               where !p.Bot && p.Id != playerId
+                               select g).AsNoTracking();
+
+            var games = (from gp in Ctx.GamesPlayers
+                         join g in firstFilter on gp.GameId equals g.Id
+                         where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
+                         orderby g.PlayedDate
+                         select g).ToList();
 
             return games;
         }

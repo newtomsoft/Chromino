@@ -43,25 +43,31 @@ namespace Controllers
         [HttpPost]
         public IActionResult New(string[] pseudos)
         {
+            GetPlayerInfos();
             if (pseudos == null || pseudos.Length == 0)
             {
                 return View();
             }
-            string[] pseudosNotNull = pseudos.Where(c => c != null).ToArray();
+            List<string> listPseudos = pseudos.ToList();
+            listPseudos.Add(PlayerPseudo);
+            listPseudos.Reverse();
+            string[] pseudosNotNull = listPseudos.Where(c => c != null).ToArray();
 
-            string error = null;
+            List<string> errors = new List<String>();
             List<Player> players = new List<Player>(8);
             for (int i = 0; i < pseudosNotNull.Length; i++)
             {
                 Player player = PlayerDal.Details(pseudosNotNull[i]);
-                if (player != null && !players.Contains(player))
-                    players.Add(player);
+                if (player == null)
+                    errors.Add($"Le joueur {pseudosNotNull[i]} n'existe pas");
+                else if (players.Contains(player))
+                    errors.Add($"Le joueur {pseudosNotNull[i]} est ajouté plusieurs fois dans la partie");
                 else
-                    error = $"Le pseudo {pseudosNotNull[i]} n'existe pas ou est déjà dans la partie";
+                    players.Add(player);
             }
-            if (error != null)
+            if (errors.Count !=0)
             {
-                ViewBag.error = error;
+                ViewBag.errors = errors;
                 return View(pseudos);
             }
             List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
@@ -70,6 +76,22 @@ namespace Controllers
             GamePlayerDal.Add(gameId, randomPlayers);
             GameCore gamecore = new GameCore(Ctx, Env, gameId);
             gamecore.BeginGame(randomPlayers.Count);
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
+        /// <summary>
+        /// page de création de partie solo
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewSingle()
+        {
+            GetPlayerInfos();
+            ChrominoDal.CreateChrominos();
+            int gameId = GameDal.Add().Id;
+            GamePlayerDal.AddSingle(gameId, PlayerId);
+            GameCore gamecore = new GameCore(Ctx, Env, gameId);
+            gamecore.BeginGame(1);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -98,10 +120,8 @@ namespace Controllers
             };
             PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
 
-            if (playReturn == PlayReturn.Ok)
-                NextPlayerPlayIfBot(gameId, gameCore);
-            else
-                TempData["PlayReturn"] = playReturn;
+            if (playReturn != PlayReturn.Ok)
+                TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
 
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -140,7 +160,7 @@ namespace Controllers
             {
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.PassTurn(playerId);
-                NextPlayerPlayIfBot(gameId, gameCore);
+                //NextPlayerPlayIfBot(gameId, gameCore); todo voir si on doit appeler NextPlayerPlayIfBot
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -211,10 +231,10 @@ namespace Controllers
         /// affiche à l'écran la première partie à jouer
         /// </summary>
         /// <returns></returns>
-        public IActionResult FirstGameToPlay()
+        public IActionResult FirstToPlay()
         {
             GetPlayerInfos();
-            TempData["ShowInfos"] = "FirstGameToPlay";
+            TempData["ShowInfos"] = true;
             int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
             return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
         }
@@ -241,18 +261,19 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id });
         }
 
-        /// <summary>
-        /// Fait jouer le prochain joueur si c'est un bot
-        /// </summary>
-        /// <param name="gameId"></param>
-        /// <param name="gameCore"></param>
-        private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
-        {
-            int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
-            if (PlayerDal.IsBot(playerId) && !GameDal.IsFinished(gameId))
-            {
-                while (gameCore.PlayBot(playerId) != PlayReturn.Ok) ;
-            }
-        }
+        //todo voir si on doit réactiver cette fonction
+        ///// <summary>
+        ///// Fait jouer le prochain joueur si c'est un bot
+        ///// </summary>
+        ///// <param name="gameId"></param>
+        ///// <param name="gameCore"></param>
+        //private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
+        //{
+        //    int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
+        //    if (PlayerDal.IsBot(playerId) && !GameDal.IsFinished(gameId))
+        //    {
+        //        while (gameCore.PlayBot(playerId) != PlayReturn.Ok) ;
+        //    }
+        //}
     }
 }

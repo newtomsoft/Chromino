@@ -31,9 +31,27 @@ namespace Controllers
         public IActionResult Index()
         {
             GetPlayerInfos();
-            ViewData["GamesToPlay"] = MakePicturesGameVM(GamePlayerDal.MultiGamesToPlay(PlayerId), true);
-            ViewData["SingleGames"] = MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId));
-            return View();
+            return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));
+        }
+
+        /// <summary>
+        /// Page des parties à jouer contre uniquement des bots 
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GamesAgainstBots()
+        {
+            GetPlayerInfos();
+            return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstBotsOnly(PlayerId), true));
+        }
+
+        /// <summary>
+        /// Page des parties solo en cours
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult SingleGames()
+        {
+            GetPlayerInfos();
+            return View(MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId)));
         }
 
         /// <summary>
@@ -43,21 +61,37 @@ namespace Controllers
         public IActionResult GamesInProgress()
         {
             GetPlayerInfos();
-            ViewData["GamesWaitTurn"] = MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true);
-            return View();
+            return View(MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true));
         }
 
         /// <summary>
-        /// Page des parties terminées
+        /// Page des parties solo terminées
         /// </summary>
         /// <returns></returns>
-        public IActionResult GamesFinished()
+        public IActionResult SingleGamesFinished()
         {
             GetPlayerInfos();
-            ViewData["GamesWon"] = MakePicturesGameVM(GamePlayerDal.GamesWon(PlayerId));
-            ViewData["GamesLost"] = MakePicturesGameVM(GamePlayerDal.GamesLost(PlayerId));
-            ViewData["SingleGamesFinished"] = MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId));
-            return View();
+            return View(MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId)));
+        }
+
+        /// <summary>
+        /// Page des parties gagnées
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GamesWon()
+        {
+            GetPlayerInfos();
+            return View(MakePicturesGameVM(GamePlayerDal.GamesWon(PlayerId)));
+        }
+
+        /// <summary>
+        /// Page des parties perdues
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GamesLost()
+        {
+            GetPlayerInfos();
+            return View(MakePicturesGameVM(GamePlayerDal.GamesLost(PlayerId)));
         }
 
         [AllowAnonymous]

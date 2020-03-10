@@ -1,18 +1,36 @@
 ﻿@using  Data.ViewModel;
-@model Data.Models.Game
+@model List<PictureGameVM>;
 @{
     ViewData["Title"] = "Games in progress";
+    int gamesNumber = Model.Count;
 }
 
-@if ((ViewBag.GamesWaitTurn as List<PictureGameVM>).Count() > 0)
+@switch (gamesNumber)
 {
-    <partial name="_ThumbnailPartial" model="ViewBag.GamesWaitTurn" />
+    case 0:
+        <p><b>Vous n'avez aucune partie où c'est le tour d'un adversaire</b></p>
+        break;
+    case 1:
+        <h3>Vous avez 1 partie où c'est le tour d'un adversaire</h3>
+        <partial name="_ThumbnailPartial" model="Model" />
+        break;
+    default:
+        <h3>Vous avez @gamesNumber parties où c'est le tour d'un adversaire</h3>
+        <partial name="_ThumbnailPartial" model="Model" />
+        break;
 }
-else
-{
-    <p><b>Vous n'avez pas de parties où c'est au tour d'un adversaire de jouer</b></p>
-}
-
-<div>
+<p>
+    Voir vos <a asp-controller="Home" asp-action="SingleGames">parties solo en cours</a>
+</p>
+<p>
+    Voir vos <a asp-controller="Home" asp-action="GamesWon">parties gagnées</a>
+</p>
+<p>
+    Voir vos <a asp-controller="Home" asp-action="GamesLost">parties perdues</a>
+</p>
+<p>
+    Voir vos <a asp-controller="Home" asp-action="SingleGamesFinished">parties solo terminées</a>
+</p>
+<p>
     <a asp-controller="Home" asp-action="Index">Retour</a>
-</div>
+</p>

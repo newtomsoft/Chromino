@@ -5,21 +5,17 @@
     int gamesNumber = Model.Count;
 }
 
-<div class="text-center">
-    <h2>Bienvenue @ViewBag.PlayerPseudo</h2>
-</div>
-
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie multijoueurs à jouer</b></p>
+        <p><b>Vous n'avez aucune partie gagnée</b></p>
         break;
     case 1:
-        <h3>Vous avez 1 partie multijoueurs à jouer</h3>
+        <h3>Vous avez 1 partie gagnée</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
     default:
-        <h3>Vous avez @gamesNumber parties multijoueurs à jouer</h3>
+        <h3>Vous avez @gamesNumber parties gagnées</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
@@ -28,13 +24,7 @@
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
 </p>
 <p>
-    Voir vos <a asp-controller="Home" asp-action="GamesAgainstBots">parties contre l'ordinateur</a>
-</p>
-<p>
     Voir vos <a asp-controller="Home" asp-action="SingleGames">parties solo en cours</a>
-</p>
-<p>
-    Voir vos <a asp-controller="Home" asp-action="GamesWon">parties gagnées</a>
 </p>
 <p>
     Voir vos <a asp-controller="Home" asp-action="GamesLost">parties perdues</a>
@@ -44,4 +34,7 @@
 </p>
 <p>
     Voir vos <a asp-controller="Home" asp-action="GamesInProgress">parties en attente (tour d'un adversaire)</a>
+</p>
+<p>
+    <a asp-controller="Home" asp-action="Index">Retour</a>
 </p>
