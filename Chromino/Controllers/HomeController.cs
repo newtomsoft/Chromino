@@ -41,7 +41,7 @@ namespace Controllers
         public IActionResult GamesAgainstBots()
         {
             GetPlayerInfos();
-            return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstBotsOnly(PlayerId), true));
+            return View(MakePicturesGameVM(GamePlayerDal.GamesAgainstBotsOnly(PlayerId), true));
         }
 
         /// <summary>

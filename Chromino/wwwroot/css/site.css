@@ -89,7 +89,6 @@ figcaption {
 
 .thumbnails {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
 }
 
@@ -104,18 +103,20 @@ figcaption {
     }
 
     .thumbnail {
-        width: 100%;
-        min-width: 100%;
-        height: 400px;
-        margin-bottom: 10px;
+        width: 355px;
+        max-width: 77%;
+        margin-left:auto;
+        margin-right:auto;
+        margin-bottom: 6px;
+        margin-top: 6px;
     }
 }
 
-@media (min-width: 700) {
+@media (min-width: 700px) {
     .thumbnail {
-        width: 400px;
+        width: 355px;
         height: 400px;
-        margin: 10px;
+        margin: 6px;
     }
 }
 
@@ -124,6 +125,7 @@ figcaption {
     flex-flow: column;
     border-style: solid;
     border-color: #3AC2EE;
+    height: 400px;
 }
 
     .thumbnail:hover, .thumbnail .header:hover, .thumbnail .description:hover {

@@ -142,16 +142,24 @@ namespace Data.DAL
             return games;
         }
 
-        public List<Game> MultiGamesAgainstBotsOnly(int playerId)
+        public List<Game> GamesAgainstBotsOnly(int playerId)
         {
-            var firstFilter = (from gp in Ctx.GamesPlayers
-                               join g in Ctx.Games on gp.GameId equals g.Id
+            // groupement de tous les GamePlayer (sans le joueur concerné) par Id de jeu Humain étant le nombre d'adversaires humains
+            var resultQuery1 = from gp in Ctx.GamesPlayers
                                join p in Ctx.Players on gp.PlayerId equals p.Id
-                               where p.Bot
-                               select g).AsNoTracking();
+                               where p.Id != playerId
+                               select new { gp.GameId, p.Bot } into idnBot
+                               group idnBot by idnBot.GameId into grp
+                               select new { Id = grp.Key, Humain = grp.Sum(x => x.Bot ? 0 : 1) };
+
+            // Obtention des Id des jeux qui n'ont pas d'humain en adversaire du joueur
+            var idGamesNoHuman = from g in resultQuery1
+                                 where g.Humain == 0
+                                 select g.Id;
 
             var games = (from gp in Ctx.GamesPlayers
-                         join g in firstFilter on gp.GameId equals g.Id
+                         join gnh in idGamesNoHuman on gp.GameId equals gnh
+                         join g in Ctx.Games on gp.GameId equals g.Id
                          where gp.PlayerId == playerId && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
                          orderby g.PlayedDate
                          select g).ToList();
