@@ -105,8 +105,8 @@ figcaption {
     .thumbnail {
         width: 355px;
         max-width: 77%;
-        margin-left:auto;
-        margin-right:auto;
+        margin-left: auto;
+        margin-right: auto;
         margin-bottom: 6px;
         margin-top: 6px;
     }
@@ -467,6 +467,8 @@ figcaption {
 }
 
 #previousNextButton {
+    position: relative;
+    top: -3px;
     display: flex;
     flex-direction: row;
 }
@@ -478,7 +480,10 @@ figcaption {
     background-size: 22px;
     background-repeat: no-repeat;
     background-position: center;
-    margin: 7px;
+    margin: 8px;
+}
+
+#previousButton {
     background-image: url(/image/LeftArrow.svg);
 }
 
@@ -489,8 +494,15 @@ figcaption {
 #PlayerHistory {
     position: absolute;
     top: 0px;
+    left: 50%;
+    transform: translateX(-75px);
     width: 100%;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+#PlayerHistoryPseudo {
+    font-size: x-large;
 }
 
 @media screen and (orientation: portrait) {
@@ -512,7 +524,6 @@ figcaption {
         height: 100%;
     }
 }
-
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

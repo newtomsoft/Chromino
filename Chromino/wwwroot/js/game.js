@@ -24,7 +24,6 @@
             IndexMove++;
         }
         AnimateChrominosPlayed();
-
     });
     $("#nextButton").click(function () {
         if (IndexMove > 0) {
@@ -43,7 +42,7 @@ function AnimateChrominosPlayed() {
     for (var i = index; i < index + 3; i++) {
         AnimateSquare('#' + Squares[i]);
     }
-    $('#PlayerHistory').html(Pseudos[IndexMove]).fadeIn(300).delay(400).fadeOut(300);
+    $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn(300).delay(400).fadeOut(300);
 }
 function AnimateSquare(squareId) {
     $(squareId).fadeToggle(500, function () {

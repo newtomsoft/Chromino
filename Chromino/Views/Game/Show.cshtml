@@ -66,14 +66,17 @@
                 </div>
             </div>
         }
-        <div id="previousNextButton">
-            <div id="previousButton"></div>
-            <div id="nextButton"></div>
-        </div>
+
     </div>
     <br>
     <div id="gameArea" display="none">
-        <div id="PlayerHistory"></div>
+        <div id="PlayerHistory">
+            <div id="previousNextButton">
+                <div id="previousButton"></div>
+                <div id="nextButton"></div>
+                <div id="PlayerHistoryPseudo"></div>
+            </div>
+        </div>
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
             <div class="gameLineArea">
@@ -300,7 +303,7 @@ else
     @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo)
     {
         <form asp-action="FirstToPlay" style="text-align:center">
-            <input type="submit" class="btn btn-primary" value="Jouer prochaine partie" />
+            <input type="submit" class="btn btn-primary" value="Jouer partie suivante" />
         </form>
     }
 </div>
