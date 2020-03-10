@@ -179,20 +179,15 @@ namespace Data.DAL
                          join g in firstFilter on gp.GameId equals g.Id
                          where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
                          orderby g.PlayedDate
-                         select g).ToList();
+                         select g).AsNoTracking().ToList();
 
             return games;
         }
 
         public int FirstIdMultiGameToPlay(int playerId)
         {
-            int gameId = (from gp in Ctx.GamesPlayers
-                          join g in Ctx.Games on gp.GameId equals g.Id
-                          where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
-                          orderby g.PlayedDate
-                          select g.Id).FirstOrDefault();
-
-            return gameId;
+            Game game = MultiGamesAgainstAtLeast1HumanToPlay(playerId).FirstOrDefault();
+            return game != null ? game.Id : 0;
         }
 
         public List<Game> SingleGamesFinished(int playerId)

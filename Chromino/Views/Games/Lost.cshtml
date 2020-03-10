@@ -1,7 +1,7 @@
 ﻿@using  Data.ViewModel;
 @model List<PictureGameVM>;
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Games lost";
     int gamesNumber = Model.Count;
 }
 
@@ -24,17 +24,17 @@
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
 </p>
 <p>
-    Voir vos <a asp-controller="Home" asp-action="SingleGames">parties solo en cours</a>
+    Voir vos <a asp-controller="Games" asp-action="Single">parties solo en cours</a>
 </p>
 <p>
-    Voir vos <a asp-controller="Home" asp-action="GamesWon">parties gagnées</a>
+    Voir vos <a asp-controller="Games" asp-action="Won">parties gagnées</a>
 </p>
 <p>
-    Voir vos <a asp-controller="Home" asp-action="SingleGamesFinished">parties solo terminées</a>
+    Voir vos <a asp-controller="Games" asp-action="SingleFinished">parties solo terminées</a>
 </p>
 <p>
-    Voir vos <a asp-controller="Home" asp-action="GamesInProgress">parties en attente (tour d'un adversaire)</a>
+    Voir vos <a asp-controller="Games" asp-action="InProgress">parties en attente (tour d'un adversaire)</a>
 </p>
 <p>
-    <a asp-controller="Home" asp-action="Index">Retour</a>
+    <a asp-controller="Games" asp-action="ToPlay">Retour</a>
 </p>

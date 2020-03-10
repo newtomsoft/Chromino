@@ -260,20 +260,5 @@ namespace Controllers
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
         }
-
-        //todo voir si on doit réactiver cette fonction
-        ///// <summary>
-        ///// Fait jouer le prochain joueur si c'est un bot
-        ///// </summary>
-        ///// <param name="gameId"></param>
-        ///// <param name="gameCore"></param>
-        //private void NextPlayerPlayIfBot(int gameId, GameCore gameCore)
-        //{
-        //    int playerId = GamePlayerDal.PlayerTurn(gameId).Id;
-        //    if (PlayerDal.IsBot(playerId) && !GameDal.IsFinished(gameId))
-        //    {
-        //        while (gameCore.PlayBot(playerId) != PlayReturn.Ok) ;
-        //    }
-        //}
     }
 }
