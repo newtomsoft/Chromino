@@ -169,7 +169,9 @@
         byte move = Model.Moves;
         for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
         {
-            while ( move > Model.ChrominosPlayedVM[iChromino].Move)
+            if (move == 0)
+                break;
+            while (move > Model.ChrominosPlayedVM[iChromino].Move)
             {
                 string playerPass = Model.Pseudos[(move - 1) % Model.Pseudos.Count] + " a passé";
                 @:Pseudos.push("@playerPass");
@@ -179,11 +181,11 @@
                 }
                 move--;
             }
-    @:Pseudos.push("@Model.Pseudos[(move-1) % Model.Pseudos.Count]");
+            @:Pseudos.push("@Model.Pseudos[(move - 1) % Model.Pseudos.Count]");
             for (int i = 0; i < 3; i++)
             {
                 int index = Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber;
-    @:Squares.push("Grid_" + @index);
+                @:Squares.push("Grid_" + @index);
             }
             move--;
         }
