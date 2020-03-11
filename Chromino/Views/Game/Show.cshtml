@@ -31,19 +31,19 @@
                 playerTurn = "C'est à vous de jouer";
         @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
                 {
-                    <form id="FormDrawChromino" asp-action="DrawChromino">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                    </form>
-                    <button type="submit" form="FormDrawChromino" class="btn btn-toolbar">Piocher</button>
+        <form id="FormDrawChromino" asp-action="DrawChromino">
+            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+            <input name="gameId" value="@Model.GameId" type="hidden" />
+        </form>
+        <button type="submit" form="FormDrawChromino" class="btn btn-toolbar">Piocher</button>
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
-                    <form id="FormPassTurn" asp-action="PassTurn">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                    </form>
-                    <button type="submit" form="FormPassTurn" class="btn btn-toolbar">Passer</button>
+        <form id="FormPassTurn" asp-action="PassTurn">
+            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+            <input name="gameId" value="@Model.GameId" type="hidden" />
+        </form>
+        <button type="submit" form="FormPassTurn" class="btn btn-toolbar">Passer</button>
                 }
             }
             else
@@ -114,11 +114,13 @@
         </div>
         }
     </div>
-    @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+
+    <div id="hand">
+        @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
     {
         string id = chrominosViewModel.ChrominoId.ToString();
-    <div id="@id" class="handPlayerChromino">
-        @for (int i = 0; i < 3; i++)
+        <div id="@id" class="handPlayerChromino">
+            @for (int i = 0; i < 3; i++)
             {
                 string classOpenSides;
                 switch (i)
@@ -136,10 +138,12 @@
                 }
                 Color state = chrominosViewModel.SquaresViewModel[i].Color;
                 string classColor = state.ToString();
-        <div class="Square @classOpenSides @classColor"></div>
+            <div class="Square @classOpenSides @classColor"></div>
             }
-    </div>
+        </div>
     }
+    </div>
+
     <form id="FormSendMove" asp-action="Play" hidden>
         <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
         <input id="FormGameId" name="gameId" value="@Model.GameId" />
