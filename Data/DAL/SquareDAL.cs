@@ -19,7 +19,7 @@ namespace Data.DAL
         /// put a chrominoInGame in game (playerId = 0 : first chromino in center)
         /// </summary>
         /// <param name="chrominoInGame"></param>
-        /// <param name="playerId">0 for first chromino</param>
+        /// <param name="playerId">null for first chromino</param>
         /// <returns></returns>
         public PlayReturn PlayChromino(ChrominoInGame chrominoInGame, int? playerId)
         {
@@ -93,10 +93,12 @@ namespace Data.DAL
                     Ctx.Squares.Add(new Square { GameId = gameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, OpenRight = firstSquareOpenRight, OpenBottom = firstSquareOpenBottom, OpenLeft = firstSquareOpenLeft, OpenTop = firstSquareOpenTop });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop });
                     Ctx.Squares.Add(new Square { GameId = gameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop });
-                    chrominoInGame.Move = (byte)(new GameChrominoDal(Ctx).MaxMove(gameId) + 1);
+                    Game game = Ctx.Games.Where(g => g.Id == gameId).FirstOrDefault();
+                    chrominoInGame.Move = game.Move;
                     chrominoInGame.PlayerId = playerId;
                     Ctx.ChrominosInGame.Add(chrominoInGame);
                     new GameChrominoDal(Ctx).DeleteInHand(gameId, chromino.Id);
+                    game.Move++;
                     Ctx.SaveChanges();
                     return PlayReturn.Ok;
                 }

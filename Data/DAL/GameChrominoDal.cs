@@ -185,23 +185,16 @@ namespace Data.DAL
             return chrominos;
         }
 
-        public byte MaxMove(int gameId)
-        {
-            List<byte> moves = (from cg in Ctx.ChrominosInGame
-                                where cg.GameId == gameId
-                                select cg.Move).ToList();
-
-            if (moves.Count == 0)
-                return 0;
-
-            else
-                return moves.Max();
-        }
-
+        /// <summary>
+        /// tous les chrominosInGame joués du jeu
+        /// le 1er placé aléatoirement n'est pas inclus
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
         public List<ChrominoInGame> ChrominosInGamePlayed(int gameId)
         {
             List<ChrominoInGame> chrominosInGame = (from cg in Ctx.ChrominosInGame
-                                                    where cg.GameId == gameId
+                                                    where cg.GameId == gameId && cg.Move !=0
                                                     orderby cg.Move descending
                                                     select cg).AsNoTracking().ToList();
 

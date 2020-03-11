@@ -35,6 +35,22 @@ namespace Data.DAL
             return game;
         }
 
+        /// <summary>
+        /// nombre de coups joué dans la partie
+        /// le premier chromino placé aléatoirement n'est pas compté
+        /// le coup en cours (non joué) n'est pas compté
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public byte Moves(int id)
+        {
+            byte move = (from games in Ctx.Games
+                         where games.Id == id
+                         select games.Move).FirstOrDefault();
+
+            return (byte)(move - 1);
+        }
+
         public List<Game> List()
         {
 
@@ -58,7 +74,7 @@ namespace Data.DAL
         public Game Add()
         {
             string guid = Guid.NewGuid().ToString("N");
-            Game game = new Game { CreateDate = DateTime.Now, Guid = guid };
+            Game game = new Game { CreateDate = DateTime.Now, Guid = guid, Move = 0 };
             Ctx.Games.Add(game);
             Ctx.SaveChanges();
             return Details(guid);

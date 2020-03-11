@@ -16,5 +16,6 @@ namespace Data.Models
         public DateTime CreateDate { get; set; }
         public GameStatus Status { get; set; }
         public DateTime PlayedDate { get; set; }
+        public byte Move { get; set; }
     }
 }

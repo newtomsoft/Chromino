@@ -158,6 +158,7 @@
         <input id="FormOrientation" name="orientation" />
     </form>
 
+
     <script>
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
     @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
@@ -165,17 +166,30 @@
         Squares = new Array;
         Pseudos = new Array;
     @{
+        byte move = Model.Moves;
         for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
         {
-    @:Pseudos.push("@Model.PseudoChrominosPlayedVM[iChromino]");
+            while ( move > Model.ChrominosPlayedVM[iChromino].Move)
+            {
+                string playerPass = Model.Pseudos[(move - 1) % Model.Pseudos.Count] + " a passé";
+                @:Pseudos.push("@playerPass");
+                for (int i = 0; i < 3; i++)
+                {
+                    @:Squares.push("Na");
+                }
+                move--;
+            }
+    @:Pseudos.push("@Model.Pseudos[(move-1) % Model.Pseudos.Count]");
             for (int i = 0; i < 3; i++)
             {
                 int index = Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber;
     @:Squares.push("Grid_" + @index);
             }
+            move--;
         }
     }
     </script>
+
 
     @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
     {

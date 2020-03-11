@@ -284,7 +284,8 @@ namespace Data.DAL
         }
 
         /// <summary>
-        /// indique si le joueur a pasé son tour
+        /// enregistre si le joueur a pasé son tour ou non
+        /// si je joueur passe, augmente le nombre de mouvement (Move) du jeu
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <param name="playerId">id du joueur</param>
@@ -296,6 +297,15 @@ namespace Data.DAL
                                      select gp).FirstOrDefault();
 
             gamePlayer.PreviouslyPass = pass;
+
+            if (pass)
+            {
+                Game game = (from g in Ctx.Games
+                             where g.Id == gameId
+                             select g).FirstOrDefault();
+
+                game.Move++;
+            }
             Ctx.SaveChanges();
         }
 

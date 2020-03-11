@@ -29,10 +29,13 @@ namespace Data.ViewModel
         public GamePlayer GamePlayerTurn { get; set; }
         public List<int> BotsId { get; set; }
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
-        public List<string> PseudoChrominosPlayedVM { get; set; }
+        public List<string> Pseudos { get; set; }
+        public byte Moves { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudoChrominosInGamePlayed)
+        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, byte moves)
         {
+            Moves = moves;
+            Pseudos = pseudos;
             PlayerPseudoTurn = playerTurn.UserName;
             PlayerIdTurn = playerTurn.Id;
             GamePlayerTurn = gamePlayerTurn;
@@ -93,7 +96,6 @@ namespace Data.ViewModel
                 ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM(chrominoInGame, XMin, YMin);
                 ChrominosPlayedVM.Add(chrominoPlayedVM);
             }
-            PseudoChrominosPlayedVM = pseudoChrominosInGamePlayed;
         }
 
         private int IndexGridState(int x, int y)

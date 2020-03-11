@@ -65,7 +65,7 @@ namespace Controllers
                 else
                     players.Add(player);
             }
-            if (errors.Count !=0)
+            if (errors.Count != 0)
             {
                 ViewBag.errors = errors;
                 return View(pseudos);
@@ -187,8 +187,12 @@ namespace Controllers
                 int chrominosInStackNumber = GameChrominoDal.InStack(id);
 
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                List<string> pseudos = new List<string>();
                 foreach (Player player in players)
+                {
                     pseudos_chrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
+                    pseudos.Add(player.UserName);
+                }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudos_chrominos)
                 {
@@ -211,14 +215,9 @@ namespace Controllers
                 List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
-                foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
-                {
-                    if (chrominoInGame.PlayerId != null)
-                        pseudoChrominosInGamePlayed.Add(PlayerDal.Details((int)chrominoInGame.PlayerId).UserName);
-                    else
-                        pseudoChrominosInGamePlayed.Add("premier chromino");
-                }
-                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudoChrominosInGamePlayed);
+
+                byte moves = GameDal.Moves(id);
+                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves);
                 return View(gameViewModel);
             }
             else

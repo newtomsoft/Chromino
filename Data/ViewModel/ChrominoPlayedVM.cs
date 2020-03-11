@@ -9,7 +9,7 @@ namespace Data.ViewModel
         public short[] IndexesY { get; set; } = new short[3];
         public int PlayerId { get; set; }
         public string PlayerPseudo { get; set; }
-
+        public byte Move { get; set; }
 
         public ChrominoPlayedVM(ChrominoInGame chrominoInGame, int xMin, int yMin)
         {
@@ -47,6 +47,7 @@ namespace Data.ViewModel
             }
             PlayerId = chrominoInGame.PlayerId ?? 0;
             PlayerPseudo = chrominoInGame.Player == null ? "First chromino" : chrominoInGame.Player.UserName;
+            Move = chrominoInGame.Move;
         }
     }
 }
