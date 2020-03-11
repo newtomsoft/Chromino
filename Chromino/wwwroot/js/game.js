@@ -45,14 +45,16 @@
 var IndexMove = 0;
 function AnimateChrominosPlayed() {
     index = IndexMove * 3;
-    for (var i = index; i < index + 3; i++) {
-        AnimateSquare('#' + Squares[i]);
+    for (i = index; i < index + 3; i++) {
+        for (iflash = 0; iflash < 3; iflash++) {
+            AnimateSquare('#' + Squares[i]);
+        }      
     }
-    $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn(300).delay(400).fadeOut(300);
+    $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn().delay(1000).fadeOut();
 }
 function AnimateSquare(squareId) {
-    $(squareId).fadeToggle(500, function () {
-        $(this).fadeToggle(500);
+    $(squareId).fadeToggle(150, function () {
+        $(this).fadeToggle(150);
     });
 }
 
