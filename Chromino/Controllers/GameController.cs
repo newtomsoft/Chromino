@@ -70,12 +70,36 @@ namespace Controllers
                 ViewBag.errors = errors;
                 return View(pseudos);
             }
-            List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
-            ChrominoDal.CreateChrominos();
-            int gameId = GameDal.Add().Id;
-            GamePlayerDal.Add(gameId, randomPlayers);
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            gamecore.BeginGame(randomPlayers.Count);
+
+            CreateGame(ref players, out int gameId);
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
+        /// <summary>
+        /// page de création de partie contre bots
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult NewAgainstBots()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// retour du formulaire de création de partie contre bots
+        /// </summary>
+        /// <param name="botsNumber">nombre d'adversaires bots</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult NewAgainstBots(int botsNumber)
+        {
+            GetPlayerInfos();
+            List<Player> players = new List<Player>(botsNumber + 1);
+            players.Add(PlayerDal.Details(PlayerId));
+            for (int iBot = 1; iBot <= botsNumber; iBot++)
+                players.Add(PlayerDal.Details("Bot" + iBot));
+
+            CreateGame(ref players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -87,11 +111,8 @@ namespace Controllers
         public IActionResult NewSingle()
         {
             GetPlayerInfos();
-            ChrominoDal.CreateChrominos();
-            int gameId = GameDal.Add().Id;
-            GamePlayerDal.AddSingle(gameId, PlayerId);
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            gamecore.BeginGame(1);
+            List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
+            CreateGame(ref players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -258,6 +279,16 @@ namespace Controllers
             GameCore gamecore = new GameCore(Ctx, Env, id);
             gamecore.PlayBot(botId);
             return RedirectToAction("Show", "Game", new { id });
+        }
+
+        private void CreateGame(ref List<Player> players, out int gameId)
+        {
+            List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
+            ChrominoDal.CreateChrominos();
+            gameId = GameDal.Add().Id;
+            GamePlayerDal.Add(gameId, randomPlayers);
+            GameCore gamecore = new GameCore(Ctx, Env, gameId);
+            gamecore.BeginGame(randomPlayers.Count);
         }
     }
 }

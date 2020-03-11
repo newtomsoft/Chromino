@@ -59,17 +59,6 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void AddSingle(int gameId, int playerId)
-        {
-            GamePlayer gamePlayer = new GamePlayer
-            {
-                GameId = gameId,
-                PlayerId = playerId,
-            };
-            Ctx.GamesPlayers.Add(gamePlayer);
-            Ctx.SaveChanges();
-        }
-
         public List<Player> Players(int gameId)
         {
             List<Player> players = (from gp in Ctx.GamesPlayers

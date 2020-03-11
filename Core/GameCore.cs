@@ -92,7 +92,7 @@ namespace Data.Core
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
             GameChrominoDal.FirstRandomToGame(GameId);
-            MakePicture();
+            MakeThumbnail();
             FillHandPlayers();
             ChangePlayerTurn();
         }
@@ -263,12 +263,12 @@ namespace Data.Core
                     return PlayReturn.Ok;
                 }
             }
-            else // chromino à jouer trouver
+            else // chromino à jouer trouvé
             {
                 goodChrominoInGame.XPosition = firstCoordinate.X;
                 goodChrominoInGame.YPosition = firstCoordinate.Y;
                 PlayReturn playReturn = Play(goodChrominoInGame, botId);
-                MakePicture();
+                MakeThumbnail();
                 if (IsRoundLastPlayer(botId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
                 return playReturn;
@@ -370,7 +370,7 @@ namespace Data.Core
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
 
-                MakePicture();
+                MakeThumbnail();
                 ChangePlayerTurn();
             }
             return playReturn;
@@ -461,7 +461,7 @@ namespace Data.Core
         /// créer le visuel du jeu
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
-        public void MakePicture()
+        public void MakeThumbnail()
         {
             //obtention des couleurs de différents carrés de l'image
             List<Square> squares = SquareDal.List(GameId);
