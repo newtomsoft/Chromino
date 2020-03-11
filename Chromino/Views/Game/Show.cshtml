@@ -22,13 +22,8 @@
 
 <body>
     <div id="toolbar">
-        <div>
-            <a asp-area="" asp-controller="Home" asp-action="Index"><input type="button" class="btn btn-primary" value="Accueil" /></a>
-        </div>
-        <div>
-            <button class="btn btn-primary" onclick="ShowInfoPopup();">Infos</button>
-        </div>
-        <br />
+        <a asp-area="" asp-controller="Home" asp-action="Index"><input type="button" class="btn btn-toolbar" value="Accueil" /></a>
+        <button class="btn btn-toolbar" onclick="ShowInfoPopup();">Infos</button>
         @if (Model.GameStatus == GameStatus.InProgress || Model.GameStatus == GameStatus.SingleInProgress)
         {
             if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
@@ -39,7 +34,7 @@
                     <form id="FormDrawChromino" asp-action="DrawChromino">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Piocher" />
+                        <input type="submit" class="btn btn-toolbar" value="Piocher" />
                     </form>
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
@@ -47,7 +42,7 @@
                     <form id="FormPassTurn" asp-action="PassTurn">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
-                        <input type="submit" class="btn btn-primary" value="Passer" />
+                        <input type="submit" class="btn btn-toolbar" value="Passer" />
                     </form>
                 }
             }
@@ -60,11 +55,7 @@
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon)
 )
         {
-            <div class="row">
-                <div class="col-md-4">
-                    <button class="btn btn-primary" onclick="PutChromino();">Jouer</button>
-                </div>
-            </div>
+            <button class="btn btn-toolbar btn-play" onclick="PutChromino();">Jouer</button>
         }
 
     </div>

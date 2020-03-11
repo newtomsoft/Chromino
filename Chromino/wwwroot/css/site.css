@@ -16,6 +16,21 @@ a {
     margin: 2px;
 }
 
+.btn-toolbar {
+    display: inline !important;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    font-family: cursive;
+}
+
+.btn-play {
+    border-width: 3px;
+    border-color: #1861ac;
+    font-size: larger;
+    text-decoration: solid;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
     background-color: #1b6ec2;
@@ -448,7 +463,6 @@ figcaption {
     flex-shrink: 0;
 }
 
-
 .opponentLastChromino {
     height: 30px;
     display: flex;
@@ -514,6 +528,11 @@ figcaption {
         height: 100px;
         width: 100%;
     }
+
+    .btn-toolbar {
+        height: 50px;
+        margin: 6px;
+    }
 }
 
 @media screen and (orientation: landscape) {
@@ -522,6 +541,12 @@ figcaption {
         left: 0px;
         width: 100px;
         height: 100%;
+    }
+
+    .btn-toolbar {
+        height: 50px;
+        width: 100%;
+        margin: 6px;
     }
 }
 /* Sticky footer styles

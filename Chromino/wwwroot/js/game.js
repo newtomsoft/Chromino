@@ -31,6 +31,12 @@
         }
         AnimateChrominosPlayed();
     });
+
+    // désactivation du menu contextuel
+    window.oncontextmenu = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    };
 });
 
 //***************************************************//
