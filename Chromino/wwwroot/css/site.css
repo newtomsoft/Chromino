@@ -17,18 +17,21 @@ a {
 }
 
 .btn-toolbar {
-    display: inline !important;
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
     font-family: cursive;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 1;
+    height: 50px;
+    width: 100px;
+    margin: 6px;
 }
 
 .btn-play {
     border-width: 3px;
-    border-color: #1861ac;
     font-size: larger;
-    text-decoration: solid;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -519,34 +522,25 @@ figcaption {
     font-size: x-large;
 }
 
+#toolbar {
+    position: fixed;
+    display: flex;
+}
+
 @media screen and (orientation: portrait) {
     #toolbar {
-        position: fixed;
-        display: flex;
         flex-direction: row;
         top: 0px;
-        height: 100px;
         width: 100%;
-    }
-
-    .btn-toolbar {
-        height: 50px;
-        margin: 6px;
     }
 }
 
 @media screen and (orientation: landscape) {
     #toolbar {
-        position: fixed;
+        flex-direction: column;
         left: 0px;
         width: 100px;
         height: 100%;
-    }
-
-    .btn-toolbar {
-        height: 50px;
-        width: 100%;
-        margin: 6px;
     }
 }
 /* Sticky footer styles
