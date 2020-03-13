@@ -42,7 +42,7 @@
 //***************************************************//
 //**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
-var IndexMove = 0;
+let IndexMove = 0;
 function AnimateChrominosPlayed() {
     index = IndexMove * 3;
     for (i = index; i < index + 3; i++) {
@@ -93,8 +93,10 @@ let OffsetLastChromino;
 let TimeoutRotate = null;
 let ToRotate = true;
 let LastChrominoMove = null;
-let LeftOffsetHand = null;
 let OffsetHand = null;
+let OffsetGameArea = null;
+let HeightGameArea = null;
+let WidthGameArea = null;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -151,7 +153,7 @@ function StartDraggable() {
                 clearTimeout(TimeoutRotate);
                 Rotation(LastChrominoMove);
             }
-            var offset = $(LastChrominoMove).offset();
+            let offset = $(LastChrominoMove).offset();
             if (ToPut && OffsetLastChromino.left == offset.left && OffsetLastChromino.top == offset.top) {
                 clearTimeout(TimeoutPut);
                 PutChromino();
@@ -161,7 +163,7 @@ function StartDraggable() {
 }
 
 function Rotation(chromino) {
-    var transform = $(chromino).css("transform");
+    let transform = $(chromino).css("transform");
     switch (transform) {
         case "none":
         case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
@@ -189,14 +191,22 @@ function StopDraggable() {
 }
 
 function MagnetChromino() {
-    if (LastChrominoMove != null) {
-        var offset = $(LastChrominoMove).offset();
-        var x = offset.left - GameAreaOffsetX;
-        var y = offset.top - GameAreaOffsetY;
-        var difX = SquareSize * Math.round(x / SquareSize) - x;
-        var difY = SquareSize * Math.round(y / SquareSize) - y;
+    if (LastChrominoMove != null && IsChrominoInGameArea()) {
+        let offset = $(LastChrominoMove).offset();
+        let x = offset.left - GameAreaOffsetX;
+        let y = offset.top - GameAreaOffsetY;
+        let difX = SquareSize * Math.round(x / SquareSize) - x;
+        let difY = SquareSize * Math.round(y / SquareSize) - y;
         $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
     }
+}
+
+function IsChrominoInGameArea() {
+    let offset = SquareSize * 2;
+    if (OffsetLastChromino.left + offset >= OffsetGameArea.left && OffsetLastChromino.left <= OffsetGameArea.left + WidthGameArea && OffsetLastChromino.top + offset >= OffsetGameArea.top && OffsetLastChromino.top <= OffsetGameArea.top + HeightGameArea)
+        return true;
+    else
+        return false;
 }
 
 function PutChromino() {
@@ -207,7 +217,7 @@ function PutChromino() {
         return;
     }
     if (LastChrominoMove != null) {
-        var id = LastChrominoMove.id;
+        let id = LastChrominoMove.id;
         switch ($(LastChrominoMove).css("transform")) {
             case "none":
             case "matrix(1, 0, 0, 1, 0, 0)":
@@ -225,9 +235,9 @@ function PutChromino() {
             default:
                 break;
         }
-        var offset = $(LastChrominoMove).offset();
-        var xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
-        var yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
+        let offset = $(LastChrominoMove).offset();
+        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
         $("#FormChrominoId").val(id);
@@ -239,6 +249,29 @@ function PutChromino() {
     }
 }
 
+//***************************************************//
+//**** gestion drag chromino en dehors/ dans main ***//
+//***************************************************//
+
+function hideSpace(event) {
+    //alert("le chromino quitte la main");
+    index = IndexMove * 3;
+    let id = event.fromElement.id;
+    for (iflash = 0; iflash < 3; iflash++) {
+        AnimateSquare('#' + id);
+    }
+}
+
+function showSpace(event) {
+    //alert("le chromino entre dans la main");
+
+}
+
+function computeOrder(event) {
+    //alert("le chromino est déposé dans la main");
+}
+
+
 //***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
@@ -247,10 +280,10 @@ let GameAreaOffsetY;
 let SquareSize;
 
 function ResizeGameArea() {
-    var documentWidth = $(document).width();
-    var documentHeight = $(document).height();
-    var width = documentWidth;
-    var height = documentHeight;
+    let documentWidth = $(document).width();
+    let documentHeight = $(document).height();
+    let width = documentWidth;
+    let height = documentHeight;
     if (width > height) {
         width -= 160; //-160 : somme de la taille des 2 bandeaux
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
@@ -275,9 +308,12 @@ function ResizeGameArea() {
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
     $('.gameLineArea').css('display', 'flex');
-    var gameAreaOffset = $('#gameArea').offset();
+    let gameAreaOffset = $('#gameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
 
     OffsetHand = $('#hand').offset();
+    OffsetGameArea = $('#gameArea').offset();
+    HeightGameArea = $('#gameArea').height();
+    WidthGameArea = $('#gameArea').width();
 }

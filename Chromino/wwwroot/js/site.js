@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-
     // Action New events
     $('#addPlayer').click(function () {
         AddPlayer();
