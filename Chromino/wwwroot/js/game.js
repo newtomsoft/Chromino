@@ -89,10 +89,12 @@ function HideInfoPopup() {
 //***************************************************//
 let TimeoutPut = null;
 let ToPut = false;
-let PositionLastChromino;
+let OffsetLastChromino;
 let TimeoutRotate = null;
 let ToRotate = true;
 let LastChrominoMove = null;
+let LeftOffsetHand = null;
+let OffsetHand = null;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -104,10 +106,10 @@ function ScheduleRotate() {
 
 function SchedulePut() {
     clearTimeout(TimeoutPut);
-    PositionLastChromino = $(LastChrominoMove).offset();
+    OffsetLastChromino = $(LastChrominoMove).offset();
     TimeoutPut = setTimeout(function () {
-        position = $(LastChrominoMove).offset();
-        if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+        offset = $(LastChrominoMove).offset();
+        if (OffsetLastChromino.left == offset.left && OffsetLastChromino.top == offset.top) {
             ToPut = true;
             ShowOkToPut();
         }
@@ -129,23 +131,28 @@ function StartDraggable() {
             $(this).css('cursor', 'grabbing');
             ScheduleRotate();
             LastChrominoMove = this;
-            PositionLastChromino = $(LastChrominoMove).offset();
-            if ($(LastChrominoMove).css('position') != "fixed") {
-                $(LastChrominoMove).css('position', 'fixed');
-                $(LastChrominoMove).offset({ top: PositionLastChromino.top, left: PositionLastChromino.left });
+            OffsetLastChromino = $(this).offset();
+            if ($(this).css('position') != "fixed") {
+                $(this).css('position', 'fixed');
+                $(this).offset(OffsetLastChromino);
+                $("#" + $(this).attr('id') + "-hidden").show();
             }
             SchedulePut();
         }).on("dragend", function () {
             $(this).css('cursor', 'grab');
             LastChrominoMove = this;
+            OffsetLastChromino = $(this).offset();
+            if (OffsetLastChromino.left < OffsetHand.left || OffsetLastChromino.top < OffsetHand.top) {
+                $("#" + $(this).attr('id') + "-hidden").hide();
+            }
             MagnetChromino();
             if (ToRotate) {
                 ToRotate = false;
                 clearTimeout(TimeoutRotate);
                 Rotation(LastChrominoMove);
             }
-            var position = $(LastChrominoMove).offset();
-            if (ToPut && PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+            var offset = $(LastChrominoMove).offset();
+            if (ToPut && OffsetLastChromino.left == offset.left && OffsetLastChromino.top == offset.top) {
                 clearTimeout(TimeoutPut);
                 PutChromino();
             }
@@ -244,29 +251,22 @@ function ResizeGameArea() {
     var documentHeight = $(document).height();
     var width = documentWidth;
     var height = documentHeight;
-    var offset = 0;
     if (width > height) {
         width -= 160; //-160 : somme de la taille des 2 bandeaux
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
-            //    $(this).css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
-            //    $(this).css({ top: offset });
             $(this).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
             $(this).width(SquareSize * 3);
             $(this).height(SquareSize);
-            //    offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
     else {
         height -= 160;
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
-            //    $(this).css({ left: offset });
-            //    $(this).css({ top: documentHeight - SquareSize * 3 }); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
             $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
             $(this).width(SquareSize);
             $(this).height(SquareSize * 3);
-            //    offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
     $('#gameArea').height(SquareSize * GameAreaLinesNumber);
@@ -274,10 +274,10 @@ function ResizeGameArea() {
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
-    //$('.handPlayerChromino').outerHeight(SquareSize);
-    $('#gameArea').show();
     $('.gameLineArea').css('display', 'flex');
     var gameAreaOffset = $('#gameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
+
+    OffsetHand = $('#hand').offset();
 }

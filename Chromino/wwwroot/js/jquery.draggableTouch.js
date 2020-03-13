@@ -1,15 +1,11 @@
 /**
  * jQuery Draggable Touch v0.5
  * Jonatan Heyman | http://heyman.info 
- *
- * Make HTML elements draggable by using uses touch events.
- * The plugin also has a fallback that uses mouse events, 
- * in case the device doesn't support touch events.
- * 
  * Licenced under THE BEER-WARE LICENSE (Revision 42):
  * Jonatan Heyman (http://heyman.info) wrote this file. As long as you retain this 
  * notice you can do whatever you want with this stuff. If we meet some day, and 
  * you think this stuff is worth it, you can buy me a beer in return.
+ * Modify 2020-03-13 by Thomas Vuille using offset() instead of position()
  */
 ;(function($){
     $.fn.draggableTouch = function(action) {
@@ -44,7 +40,7 @@
             
             element.bind("touchstart", function(e) {
                 var orig = e.originalEvent;
-                var pos = $(this).position();
+                var pos = $(this).offset();
                 offset = {
                     x: orig.changedTouches[0].pageX - pos.left,
                     y: orig.changedTouches[0].pageY - pos.top
@@ -100,7 +96,7 @@
                 });
             };
             element.bind("mousedown", function(e) {
-                var pos = element.position();
+                var pos = element.offset();
                 offset = {
                     x: e.pageX - pos.left,
                     y: e.pageY - pos.top

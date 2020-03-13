@@ -60,7 +60,7 @@
 
     </div>
     <br>
-    <div id="gameArea" display="none">
+    <div id="gameArea">
         <div id="PlayerHistory">
             <div id="previousNextButton">
                 <div id="previousButton"></div>
@@ -117,44 +117,46 @@
 
     <div id="hand">
         @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
-    {
-        string id = chrominosViewModel.ChrominoId.ToString();
-        <div id="@id" class="handPlayerChromino">
-            @for (int i = 0; i < 3; i++)
-            {
-                string classOpenSides;
-                switch (i)
+        {
+            string id = chrominosViewModel.ChrominoId.ToString();
+            string idHidden = id + "-hidden";
+            <div id="@id" class="handPlayerChromino">
+                @for (int i = 0; i < 3; i++)
                 {
-                    case 0:
-                        classOpenSides = "OpenRight";
-                        break;
-                    case 1:
-                        classOpenSides = "OpenRightLeft";
-                        break;
-                    case 2:
-                    default:
-                        classOpenSides = "OpenLeft";
-                        break;
+                    string classOpenSides;
+                    switch (i)
+                    {
+                        case 0:
+                            classOpenSides = "OpenRight";
+                            break;
+                        case 1:
+                            classOpenSides = "OpenRightLeft";
+                            break;
+                        case 2:
+                        default:
+                            classOpenSides = "OpenLeft";
+                            break;
+                    }
+                    Color state = chrominosViewModel.SquaresViewModel[i].Color;
+                    string classColor = state.ToString();
+                    <div class="Square @classOpenSides @classColor"></div>
                 }
-                Color state = chrominosViewModel.SquaresViewModel[i].Color;
-                string classColor = state.ToString();
-            <div class="Square @classOpenSides @classColor"></div>
-            }
-        </div>
-    }
-    </div>
+            </div>
+            <div id="@idHidden" class="handPlayerChromino" style="display:none" ></div>
+                }
+            </div>
 
-    <form id="FormSendMove" asp-action="Play" hidden>
-        <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
-        <input id="FormGameId" name="gameId" value="@Model.GameId" />
-        <input id="FormChrominoId" name="chrominoId" />
-        <input id="FormX" name="x" />
-        <input id="FormY" name="y" />
-        <input id="FormOrientation" name="orientation" />
-    </form>
+            <form id="FormSendMove" asp-action="Play" hidden>
+                <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
+                <input id="FormGameId" name="gameId" value="@Model.GameId" />
+                <input id="FormChrominoId" name="chrominoId" />
+                <input id="FormX" name="x" />
+                <input id="FormY" name="y" />
+                <input id="FormOrientation" name="orientation" />
+            </form>
 
 
-    <script>
+            <script>
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
     @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
     ThisPlayerTurn = @thisPlayerTurn;
@@ -185,26 +187,26 @@
             move--;
         }
     }
-    </script>
+            </script>
 
 
-    @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
-    {
-    <script>
+            @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
+            {
+                <script>
             window.onload = function () { playBot(); }
 
             function playBot() {
                 location.assign("@Url.Action("PlayBot", "Game", new { id = Model.GameId, botId = Model.PlayerIdTurn})");
             }
-    </script>
-    }
+                </script>
+            }
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/jquery.draggableTouch.js"></script>
-    <script src="~/js/jquery.popupoverlay.min.js"></script>
-    <script src="~/js/game.js" asp-append-version="true"></script>
-    <script>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/jquery.draggableTouch.js"></script>
+            <script src="~/js/jquery.popupoverlay.min.js"></script>
+            <script src="~/js/game.js" asp-append-version="true"></script>
+            <script>
         var GameAreaLinesNumber = @Model.LinesNumber;
         var GameAreaColumnsNumber = @Model.ColumnsNumber;
         var XMin = @Model.XMin;
@@ -219,7 +221,7 @@
         var HorizontalFlip = @horizontalFlip;
         var Vertical = @vertical;
         var VerticalFlip = @verticalFlip;
-    </script>
+            </script>
 </body>
 </html>
 
