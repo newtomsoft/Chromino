@@ -163,25 +163,59 @@ function StartDraggable() {
 }
 
 function Rotation(chromino) {
-    let transform = $(chromino).css("transform");
-    switch (transform) {
-        case "none":
-        case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-            $(chromino).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+    switch (GetRotation(chromino)) {
+        case 0:
+            SetRotation(chromino, 90);
             break;
-        case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-            $(chromino).css("transform", "matrix(-1, 0, 0, -1, 0, 0)");
+        case 90:
+            SetRotation(chromino, 180);
             break;
-        case "matrix(-1, 0, 0, -1, 0, 0)": // 180° => 270°
-            $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
+        case 180:
+            SetRotation(chromino, 270);
             break;
-        case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
-            break;
+        case 270:
         default:
+            SetRotation(chromino, 0);
             break;
     }
 }
+
+function GetRotation(chromino) {
+    switch ($(chromino).css("transform")) {
+        case "none":
+        case "matrix(1, 0, 0, 1, 0, 0)":
+            return 0
+            break;
+        case "matrix(0, 1, -1, 0, 0, 0)":
+            return 90;
+            break;
+        case "matrix(-1, 0, 0, -1, 0, 0)":
+            return 180;
+            break;
+        case "matrix(0, -1, 1, 0, 0, 0)":
+        default:
+            return 270;
+            break;
+    }
+}
+
+function SetRotation(chromino, rotate) {
+    switch (rotate) {
+        case 0:
+            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
+            break;
+        case 90:
+            $(chromino).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+            break;
+        case 180:
+            $(chromino).css("transform", "matrix(-1, 0, 0, -1, 0, 0)");
+            break;
+        case 270:
+            $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
+            break;
+    }
+}
+
 
 function StopDraggable() {
     $(this).off("mouseup");
@@ -249,29 +283,6 @@ function PutChromino() {
     }
 }
 
-//***************************************************//
-//**** gestion drag chromino en dehors/ dans main ***//
-//***************************************************//
-
-function hideSpace(event) {
-    //alert("le chromino quitte la main");
-    index = IndexMove * 3;
-    let id = event.fromElement.id;
-    for (iflash = 0; iflash < 3; iflash++) {
-        AnimateSquare('#' + id);
-    }
-}
-
-function showSpace(event) {
-    //alert("le chromino entre dans la main");
-
-}
-
-function computeOrder(event) {
-    //alert("le chromino est déposé dans la main");
-}
-
-
 //***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
@@ -280,6 +291,10 @@ let GameAreaOffsetY;
 let SquareSize;
 
 function ResizeGameArea() {
+    OffsetHand = $('#hand').offset();
+    OffsetGameArea = $('#gameArea').offset();
+    HeightGameArea = $('#gameArea').height();
+    WidthGameArea = $('#gameArea').width();
     let documentWidth = $(document).width();
     let documentHeight = $(document).height();
     let width = documentWidth;
@@ -311,9 +326,4 @@ function ResizeGameArea() {
     let gameAreaOffset = $('#gameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
-
-    OffsetHand = $('#hand').offset();
-    OffsetGameArea = $('#gameArea').offset();
-    HeightGameArea = $('#gameArea').height();
-    WidthGameArea = $('#gameArea').width();
 }
