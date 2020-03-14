@@ -116,34 +116,38 @@
     </div>
 
     <div id="hand">
-        @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
-        {
-            string id = chrominosViewModel.ChrominoId.ToString();
-            string idHidden = id + "-hidden";
-            <div id="@id" class="handPlayerChromino">
-                @for (int i = 0; i < 3; i++)
-                {
-                    string idHandSquare = id + "-handSquare" + i;
-                    string classOpenSides;
-                    switch (i)
+        @{
+            int iOrder = 0;
+            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+            {
+                iOrder++;
+                string id = chrominosViewModel.ChrominoId.ToString();
+                string idHidden = id + "-hidden";
+                <div id="@id" class="handPlayerChromino" style="order:@iOrder">
+                    @for (int isquare = 0; isquare < 3; isquare++)
                     {
-                        case 0:
-                            classOpenSides = "OpenRight";
-                            break;
-                        case 1:
-                            classOpenSides = "OpenRightLeft";
-                            break;
-                        case 2:
-                        default:
-                            classOpenSides = "OpenLeft";
-                            break;
+                        string idSquare = id + "-" + isquare;
+                        string classOpenSides;
+                        switch (isquare)
+                        {
+                            case 0:
+                                classOpenSides = "OpenRight";
+                                break;
+                            case 1:
+                                classOpenSides = "OpenRightLeft";
+                                break;
+                            case 2:
+                            default:
+                                classOpenSides = "OpenLeft";
+                                break;
+                        }
+                        Color state = chrominosViewModel.SquaresViewModel[isquare].Color;
+                        string classColor = state.ToString();
+                        <div id="@idSquare" class="Square @classOpenSides @classColor"></div>
                     }
-                    Color state = chrominosViewModel.SquaresViewModel[i].Color;
-                    string classColor = state.ToString();
-                    <div id="@idHandSquare" class="Square @classOpenSides @classColor"></div>
-                }
-            </div>
-            <div id="@idHidden" class="handPlayerChromino" style="display:none"></div>
+                </div>
+                <div id="@idHidden" class="handPlayerChromino" style="display:none; order:@iOrder"></div>
+            }
         }
     </div>
 

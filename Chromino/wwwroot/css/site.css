@@ -481,7 +481,7 @@ figcaption {
 
 .handPlayerChromino {
     cursor: grab;
-    position: relative;
+    position: static;
     height: 30px;
     display: flex;
     flex-direction: row;
@@ -541,6 +541,7 @@ figcaption {
 
     #hand {
         flex-direction: row;
+        left: 0px;
         bottom: 0px;
         width: 100%;
     }
@@ -557,6 +558,8 @@ figcaption {
     #hand {
         flex-direction: column;
         right: 0px;
+        top: 0px;
+        height: 100%;
     }
 }
 /* Sticky footer styles
