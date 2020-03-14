@@ -97,6 +97,7 @@ let LastChrominoMove = null;
 let OffsetLastChromino;
 let LastChrominoMoveBeforeMove = null;
 let OffsetLastChrominoBeforeMove;
+let Landscape = true;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -138,8 +139,8 @@ function StartDraggable() {
                 OffsetLastChrominoBeforeMove = $(LastChrominoMove).offset();
                 $(LastChrominoMove).css('position', 'fixed');
                 $(LastChrominoMove).offset(OffsetLastChrominoBeforeMove);
-                $("#" + $(this).attr('id') + "-hidden").show();
-                $("#" + $(this).attr('id') + "-hidden").css('position', 'static');
+                ShowTwin(this);
+                //$("#" + $(this).attr('id') + "-twin").css('position', 'static');
             }
             OffsetLastChrominoBeforeMove = $(LastChrominoMove).offset();
             SchedulePut();
@@ -149,34 +150,37 @@ function StartDraggable() {
             OffsetLastChromino = $(LastChrominoMove).offset();
             MagnetChromino();
             if (!IsChrominoInHand()) {
-                $("#" + $(this).attr('id') + "-hidden").hide();
-                $("#" + $(this).attr('id') + "-hidden").css('position', 'static');
+                HideTwin(this);
+                //$("#" + $(this).attr('id') + "-twin").css('position', 'static');
             }
-            else if ($(LastChrominoMove).css('position', 'fixed')){
+            else if (IsFixed(LastChrominoMove)) {
                 let orderFound = 0;
-                $(".handPlayerChromino").each(function (i) {
-                    // tester le left ou top en fonction de l'orientation tant que < continuer.
-                    // prendre l'id et order qui est > remplacer son order et incrémenter les order des suivants
+                let orderMax = 0;
+                $(".handPlayerChromino").each(function () {
+                    if (IsFixed(this) || IsTwin(this, LastChrominoMove))
+                        return true;
+                    let currentOrder = GetOrder(this);
+                    if (currentOrder > orderMax)
+                        orderMax = currentOrder;
                     //cas paysage
-                    if ($(LastChrominoMove).offset().top < $(this).offset().top && orderFound == 0 && LastChrominoMove != this) {
-                        orderFound = $(this).css('order');
-                        $(LastChrominoMove).css('order', orderFound);
-                        return false;
+                    if (Landscape && $(LastChrominoMove).offset().top < $(this).offset().top && orderFound == 0) {
+                        orderFound = currentOrder;
+                        SetOrder(LastChrominoMove, orderFound);
+                        SetTwinOrder(LastChrominoMove, orderFound);
+                        SetOrder(this, currentOrder + 1);
+                        //SetTwinOrder(this, currentOrder + 1);
+                        return true;
                     }
-
-                    ////cas portrait :
-                    //$(this).offset().left;
+                    if (orderFound != 0 && orderFound <= currentOrder) {
+                        SetOrder(this, currentOrder + 1);
+                        //SetTwinOrder(this, currentOrder + 1);
+                    }
                 });
                 if (orderFound == 0) {
-                    // prendre le dernier
+                    let currentOrder = orderMax + 1;
+                    SetOrder(LastChrominoMove, currentOrder);
+                    SetTwinOrder(LastChrominoMove, currentOrder);
                 }
-
-                $(".handPlayerChromino").each(function (i) {
-                    if (orderFound <= $(this).css('order') && this != LastChrominoMove) {
-                        $(this).css('order', parseInt($(this).css('order'), 10) + 1);
-                    }
-                });
-
                 $(LastChrominoMove).css('position', 'static');
             }
             if (ToRotate) {
@@ -192,6 +196,40 @@ function StartDraggable() {
             }
             ToPut = false;
         });
+}
+
+function ShowTwin(chromino) {
+    $("#" + $(chromino).attr('id') + "-twin").show();
+}
+
+function HideTwin(chromino) {
+    $("#" + $(chromino).attr('id') + "-twin").hide();
+}
+
+function IsTwin(toTest, chromino) {
+    if ($(toTest).attr('id') == $(chromino).attr('id') + "-twin")
+        return true;
+    else
+        return false;
+}
+
+function IsFixed(chromino) {
+    if ($(chromino).css('position') == "fixed")
+        return true;
+    else
+        return false;
+}
+
+function GetOrder(chromino) {
+    return parseInt($(chromino).css('order'));
+}
+
+function SetOrder(chromino, order) {
+    $(chromino).css('order', order);
+}
+
+function SetTwinOrder(chromino, order) {
+    $("#" + $(chromino).attr('id') + "-twin").css('order', order);
 }
 
 function Rotation(chromino) {
@@ -279,6 +317,14 @@ function IsChrominoInGameArea() {
 function IsChrominoInHand() {
     let heightHand = $('#hand').height();
     let widthHand = $('#hand').width();
+
+    if (heightHand == 0) {
+        heightHand = 100;
+    }
+    if (widthHand == 0) {
+        widthHand = 100;
+    }
+
     if (OffsetLastChromino.left >= OffsetHand.left && OffsetLastChromino.left <= OffsetHand.left + widthHand && OffsetLastChromino.top >= OffsetHand.top && OffsetLastChromino.top <= OffsetHand.top + heightHand)
         return true;
     else
@@ -336,6 +382,7 @@ function ResizeGameArea() {
     let width = documentWidth;
     let height = documentHeight;
     if (width > height) {
+        Landscape = true;
         width -= 160; //-160 : somme de la taille des 2 bandeaux
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
@@ -345,6 +392,7 @@ function ResizeGameArea() {
         });
     }
     else {
+        Landscape = false;
         height -= 160;
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
         $(".handPlayerChromino").each(function () {
