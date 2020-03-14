@@ -42,8 +42,17 @@
                     <form id="FormPassTurn" asp-action="PassTurn">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
+                        @{
+                            int iOrderFormPass = 0;
+                            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+                            {
+                                string id = "FormOrderPass" + iOrderFormPass;
+                                <input id=@id type="number" name="orders[]" hidden />
+                                iOrderFormPass++;
+                            }
+                        }
                     </form>
-                    <button type="submit" form="FormPassTurn" class="btn btn-toolbar">Passer</button>
+                    <button class="btn btn-toolbar" onclick="PassTurn()">Passer</button>
                 }
             }
             else
@@ -146,7 +155,7 @@
                         <div id="@idSquare" class="Square @classOpenSides @classColor"></div>
                     }
                 </div>
-                <div id="@idTwin" class="handPlayerChromino" style="display:none; order:@iOrder"></div>
+                <div id="@idTwin" class="handPlayerChromino twin" style="display:none; order:@iOrder"></div>
             }
         }
     </div>
@@ -158,6 +167,15 @@
         <input id="FormX" name="x" />
         <input id="FormY" name="y" />
         <input id="FormOrientation" name="orientation" />
+        @{
+            int iOrderForm = 0;
+            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+            {
+                string id = "FormOrder" + iOrderForm;
+                <input id=@id name="orders[]" />
+                iOrderForm++;
+            }
+        }
     </form>
 
 

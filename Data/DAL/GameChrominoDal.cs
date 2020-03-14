@@ -194,7 +194,7 @@ namespace Data.DAL
         public List<ChrominoInGame> ChrominosInGamePlayed(int gameId)
         {
             List<ChrominoInGame> chrominosInGame = (from cg in Ctx.ChrominosInGame
-                                                    where cg.GameId == gameId && cg.Move !=0
+                                                    where cg.GameId == gameId && cg.Move != 0
                                                     orderby cg.Move descending
                                                     select cg).AsNoTracking().ToList();
 
@@ -210,6 +210,29 @@ namespace Data.DAL
                                        select ch).FirstOrDefault();
 
             return chromino;
+        }
+
+        public void ChangePositions(int gameId, int playerId, List<byte> positions)
+        {
+            List<ChrominoInHand> chrominosInHand = (from ch in Ctx.ChrominosInHand
+                                                    where ch.GameId == gameId && ch.PlayerId == playerId
+                                                    orderby ch.Position
+                                                    select ch).ToList();
+
+            List<byte> copyPositions = new List<byte>(positions);
+            byte[] pos = new byte[positions.Count];
+            byte value = 1;
+            while (positions.Count > 0)
+            {
+                byte min = positions.Min();
+                int index = copyPositions.IndexOf(min);
+                positions.Remove(min);
+                pos[index] = value++;
+            }
+            for (int i = 0; i < pos.Count(); i++)
+                chrominosInHand[i].Position = pos[i];
+
+            Ctx.SaveChanges();
         }
     }
 }

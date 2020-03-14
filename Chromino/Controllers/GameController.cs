@@ -127,7 +127,7 @@ namespace Controllers
         /// <param name="orientation">vertical, horizontal, etc</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
+        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation, string[] orders)
         {
             GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
@@ -141,9 +141,27 @@ namespace Controllers
             };
             PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
 
-            if (playReturn != PlayReturn.Ok)
-                TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
+            if (playReturn == PlayReturn.Ok)
+            {
+                //todo voir si ajax doit appeler NextPlayerPlayIfBot
 
+                // tri des chrominos restant dans la main 
+                List<byte> positions = new List<byte>();
+                foreach (string order in orders)
+                {
+                    if (order == null)
+                        continue;
+                    positions.Add(byte.Parse(order));
+                }
+                if (positions.Count > 0)
+                {
+                    GameChrominoDal.ChangePositions(gameId, playerId, positions);
+                }
+            }
+            else
+            {
+                TempData["PlayReturn"] = playReturn;
+            }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -174,7 +192,7 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult PassTurn(int playerId, int gameId)
+        public IActionResult PassTurn(int playerId, int gameId, string[] orders)
         {
             GetPlayerInfos();
             if (playerId == PlayerId)
@@ -182,6 +200,21 @@ namespace Controllers
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.PassTurn(playerId);
                 //NextPlayerPlayIfBot(gameId, gameCore); todo voir si on doit appeler NextPlayerPlayIfBot
+                
+                // tri des chrominos restant dans la main 
+                List<byte> positions = new List<byte>();
+                foreach (string order in orders)
+                {
+                    byte.TryParse(order, out byte value);
+                    positions.Add(value);
+                }
+                byte max = positions.Max();
+                for (int i = 0; i < positions.Count; i++)
+                {
+                    if (positions[i] == 0)
+                        positions[i] = ++max;
+                }
+                GameChrominoDal.ChangePositions(gameId, playerId, positions);
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }

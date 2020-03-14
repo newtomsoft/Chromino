@@ -82,6 +82,7 @@ namespace Data.DAL
             var chrominos = (from c in Ctx.Chrominos
                              join gc in Ctx.ChrominosInHand on c.Id equals gc.ChrominoId
                              where gc.GameId == gameId && gc.PlayerId == playerId
+                             orderby gc.Position // todo : voir si pas effet de bord lorsque c'est le bot que joue et qui les classent différement ?
                              select c).ToList();
 
             return chrominos;

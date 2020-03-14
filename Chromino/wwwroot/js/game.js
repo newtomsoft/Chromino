@@ -130,17 +130,19 @@ function OkToPut() {
 }
 
 function StartDraggable() {
-    $(".handPlayerChromino").draggableTouch()
+    $(".handPlayerChromino:not(.twin)").draggableTouch()
         .on("dragstart", function () {
             $(this).css('cursor', 'grabbing');
-            ScheduleRotate();
+
+            if (!IsChrominoInHand(this))
+                ScheduleRotate();
+
             LastChrominoMove = this;
             if ($(LastChrominoMove).css('position') != "fixed") {
                 OffsetLastChrominoBeforeMove = $(LastChrominoMove).offset();
                 $(LastChrominoMove).css('position', 'fixed');
                 $(LastChrominoMove).offset(OffsetLastChrominoBeforeMove);
                 ShowTwin(this);
-                //$("#" + $(this).attr('id') + "-twin").css('position', 'static');
             }
             OffsetLastChrominoBeforeMove = $(LastChrominoMove).offset();
             SchedulePut();
@@ -149,11 +151,11 @@ function StartDraggable() {
             LastChrominoMove = this;
             OffsetLastChromino = $(LastChrominoMove).offset();
             MagnetChromino();
-            if (!IsChrominoInHand()) {
+            if (!IsChrominoInHand(this)) {
                 HideTwin(this);
-                //$("#" + $(this).attr('id') + "-twin").css('position', 'static');
             }
-            else if (IsFixed(LastChrominoMove)) {
+            else if (IsFixed(this)) {
+                SetGoodOrientation(this);
                 let orderFound = 0;
                 let orderMax = 0;
                 $(".handPlayerChromino").each(function () {
@@ -162,18 +164,17 @@ function StartDraggable() {
                     let currentOrder = GetOrder(this);
                     if (currentOrder > orderMax)
                         orderMax = currentOrder;
-                    //cas paysage
-                    if (Landscape && $(LastChrominoMove).offset().top < $(this).offset().top && orderFound == 0) {
+
+                    if (IsPositionIsBefore(LastChrominoMove, this) && orderFound == 0) {
                         orderFound = currentOrder;
                         SetOrder(LastChrominoMove, orderFound);
                         SetTwinOrder(LastChrominoMove, orderFound);
                         SetOrder(this, currentOrder + 1);
-                        //SetTwinOrder(this, currentOrder + 1);
                         return true;
                     }
+
                     if (orderFound != 0 && orderFound <= currentOrder) {
                         SetOrder(this, currentOrder + 1);
-                        //SetTwinOrder(this, currentOrder + 1);
                     }
                 });
                 if (orderFound == 0) {
@@ -196,6 +197,15 @@ function StartDraggable() {
             }
             ToPut = false;
         });
+}
+
+function IsPositionIsBefore(firstChromino, secondChromino) {
+    if (Landscape && $(firstChromino).offset().top < $(secondChromino).offset().top)
+        return true;
+    else if (!Landscape && $(firstChromino).offset().left < $(secondChromino).offset().left)
+        return true;
+    else
+        return false;
 }
 
 function ShowTwin(chromino) {
@@ -248,6 +258,27 @@ function Rotation(chromino) {
             SetRotation(chromino, 0);
             break;
     }
+}
+
+function SetGoodOrientation(chromino) {
+    if (Landscape)
+        SetHorizontal(chromino);
+    else
+        SetVertical(chromino);
+}
+
+function SetHorizontal(chromino) {
+    if (GetRotation(chromino) == 90)
+        SetRotation(chromino, 180);
+    else if (GetRotation(chromino) == 270)
+        SetRotation(chromino, 0);
+}
+
+function SetVertical(chromino) {
+    if (GetRotation(chromino) == 0)
+        SetRotation(chromino, 90);
+    else if (GetRotation(chromino) == 180)
+        SetRotation(chromino, 270);
 }
 
 function GetRotation(chromino) {
@@ -308,24 +339,16 @@ function IsChrominoInGameArea() {
     let offset = SquareSize * 2;
     let heightGameArea = $('#gameArea').height();
     let widthGameArea = $('#gameArea').width();
+
     if (OffsetLastChromino.left + offset >= OffsetGameArea.left && OffsetLastChromino.left <= OffsetGameArea.left + widthGameArea && OffsetLastChromino.top + offset >= OffsetGameArea.top && OffsetLastChromino.top <= OffsetGameArea.top + heightGameArea)
         return true;
     else
         return false;
 }
 
-function IsChrominoInHand() {
-    let heightHand = $('#hand').height();
-    let widthHand = $('#hand').width();
-
-    if (heightHand == 0) {
-        heightHand = 100;
-    }
-    if (widthHand == 0) {
-        widthHand = 100;
-    }
-
-    if (OffsetLastChromino.left >= OffsetHand.left && OffsetLastChromino.left <= OffsetHand.left + widthHand && OffsetLastChromino.top >= OffsetHand.top && OffsetLastChromino.top <= OffsetHand.top + heightHand)
+function IsChrominoInHand(chromino) {
+    let offsetChromino = $(chromino).offset()
+    if (Landscape && offsetChromino.left >= OffsetHand.left || !Landscape && offsetChromino.top >= OffsetHand.top)
         return true;
     else
         return false;
@@ -361,12 +384,32 @@ function PutChromino() {
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
         $("#FormChrominoId").val(LastChrominoMove.id);
+        let iOrder = 0;
+        $(".handPlayerChromino:not(.twin)").each(function () {
+            if ($(this).css('position') == "fixed")
+                return true;
+            let form = "#" + "FormOrder" + iOrder;
+            $(form).val(GetOrder(this));
+            iOrder++;
+        });
         $("#FormSendMove").submit();
     }
     else {
         $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
         ShowErrorPopup();
     }
+}
+
+function PassTurn() {
+    let iOrder = 0;
+    $(".handPlayerChromino:not(.twin)").each(function () {
+        if ($(this).css('position') == "fixed")
+            return true;
+        let form = "#" + "FormOrderPass" + iOrder;
+        $(form).val(GetOrder(this));
+        iOrder++;
+    });
+    $("#FormPassTurn").submit();
 }
 
 //***************************************//
