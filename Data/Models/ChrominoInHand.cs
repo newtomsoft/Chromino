@@ -10,6 +10,7 @@ namespace Data.Models
         public int GameId { get; set; }
         public int PlayerId { get; set; }
         public byte Position { get; set; }
+        public bool Flip { get; set; }
 
         public Chromino Chromino { get; set; }
         public Game Game { get; set; }

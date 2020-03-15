@@ -212,7 +212,7 @@ namespace Data.DAL
             return chromino;
         }
 
-        public void ChangePositions(int gameId, int playerId, List<byte> positions)
+        public void ChangePositionsAndFlips(int gameId, int playerId, List<byte> positions, List<bool> flips)
         {
             List<ChrominoInHand> chrominosInHand = (from ch in Ctx.ChrominosInHand
                                                     where ch.GameId == gameId && ch.PlayerId == playerId
@@ -230,8 +230,10 @@ namespace Data.DAL
                 pos[index] = value++;
             }
             for (int i = 0; i < pos.Count(); i++)
+            {
                 chrominosInHand[i].Position = pos[i];
-
+                chrominosInHand[i].Flip = flips[i];
+            }
             Ctx.SaveChanges();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Data.Enumeration;
 using Data.Models;
+using Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,15 +78,29 @@ namespace Data.DAL
         /// <param name="gameId">Id du jeu</param>
         /// <param name="playerId">Id du joueur</param>
         /// <returns></returns>
-        public List<Chromino> PlayerChrominos(int gameId, int playerId)
+        public List<ChrominoVM> PlayerChrominos(int gameId, int playerId)
         {
-            var chrominos = (from c in Ctx.Chrominos
-                             join gc in Ctx.ChrominosInHand on c.Id equals gc.ChrominoId
-                             where gc.GameId == gameId && gc.PlayerId == playerId
-                             orderby gc.Position // todo : voir si pas effet de bord lorsque c'est le bot que joue et qui les classent différement ?
-                             select c).ToList();
+            var chrominosAndFlip = (from chromino in Ctx.Chrominos
+                                    join gc in Ctx.ChrominosInHand on chromino.Id equals gc.ChrominoId
+                                    where gc.GameId == gameId && gc.PlayerId == playerId
+                                    orderby gc.Position // todo : voir si pas effet de bord lorsque c'est le bot que joue et qui les classent différement ?
+                                    select new { chromino, gc.Flip }).ToList();
 
-            return chrominos;
+            List<ChrominoVM> chrominosVM = new List<ChrominoVM>();
+            foreach (var chrominoAndFlip in chrominosAndFlip)
+            {
+                SquareVM square1 = new SquareVM(chrominoAndFlip.chromino.FirstColor, true, false, false, false);
+                SquareVM square2 = new SquareVM(chrominoAndFlip.chromino.SecondColor, true, false, true, false);
+                SquareVM square3 = new SquareVM(chrominoAndFlip.chromino.ThirdColor, true, false, true, false);
+                ChrominoVM chrominoViewModel = new ChrominoVM();
+                chrominoViewModel.SquaresViewModel[0] = square1;
+                chrominoViewModel.SquaresViewModel[1] = square2;
+                chrominoViewModel.SquaresViewModel[2] = square3;
+                chrominoViewModel.ChrominoId = chrominoAndFlip.chromino.Id;
+                chrominoViewModel.Flip = chrominoAndFlip.Flip;
+                chrominosVM.Add(chrominoViewModel);
+            }
+            return chrominosVM;
         }
 
         /// <summary>

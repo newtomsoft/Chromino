@@ -704,5 +704,37 @@ namespace Data.Core
             }
             return false;
         }
+
+        /// <summary>
+        /// Change la position et le retournement des chrominos de la main du joueur
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <param name="playerId">id du joueur</param>
+        /// <param name="strPositions">nouvelles positions</param>
+        /// <param name="strFlips">états des retournements ("1" pour oui, "0" pour non)</param>
+        public void ChangePositionAndFlipChrominosInHand(int gameId, int playerId, string[] strPositions, string[] strFlips)
+        {
+            if (strPositions.Count() != 0)
+            {
+                List<byte> positions = new List<byte>();
+                List<bool> flips = new List<bool>();
+                // creation list positions et flips
+                for (int i = 0; i < strPositions.Count(); i++)
+                {
+                    byte.TryParse(strPositions[i], out byte valuePosition);
+                    int.TryParse(strFlips[i], out int valueFlip);
+                    positions.Add(valuePosition);
+                    flips.Add(valueFlip == 1 ? true : false);
+                }
+                // optimisation des valeurs des positions (ex 4,7,2,9 => 2,3,1,4)
+                byte max = positions.Max();
+                for (int i = 0; i < positions.Count; i++)
+                {
+                    if (positions[i] == 0)
+                        positions[i] = ++max;
+                }
+                GameChrominoDal.ChangePositionsAndFlips(gameId, playerId, positions, flips);
+            }
+        }
     }
 }

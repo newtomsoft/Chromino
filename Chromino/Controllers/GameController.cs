@@ -127,7 +127,7 @@ namespace Controllers
         /// <param name="orientation">vertical, horizontal, etc</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation, string[] orders)
+        public IActionResult Play(int gameId, int playerId, int chrominoId, int x, int y, Orientation orientation, string[] positions, string[] flips)
         {
             GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
@@ -141,27 +141,11 @@ namespace Controllers
             };
             PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
 
+            //todo voir si ajax doit appeler NextPlayerPlayIfBot
             if (playReturn == PlayReturn.Ok)
-            {
-                //todo voir si ajax doit appeler NextPlayerPlayIfBot
-
-                // tri des chrominos restant dans la main 
-                List<byte> positions = new List<byte>();
-                foreach (string order in orders)
-                {
-                    if (order == null)
-                        continue;
-                    positions.Add(byte.Parse(order));
-                }
-                if (positions.Count > 0)
-                {
-                    GameChrominoDal.ChangePositions(gameId, playerId, positions);
-                }
-            }
+                gameCore.ChangePositionAndFlipChrominosInHand(gameId, playerId, positions, flips);
             else
-            {
                 TempData["PlayReturn"] = playReturn;
-            }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -172,12 +156,13 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult DrawChromino(int playerId, int gameId)
+        public IActionResult DrawChromino(int gameId, int playerId, string[] positions, string[] flips)
         {
             GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
+            gameCore.ChangePositionAndFlipChrominosInHand(gameId, playerId, positions, flips);
             if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
             {
                 gameCore.DrawChromino(playerId);
@@ -192,7 +177,7 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult PassTurn(int playerId, int gameId, string[] orders)
+        public IActionResult PassTurn(int gameId, int playerId, string[] positions, string[] flips)
         {
             GetPlayerInfos();
             if (playerId == PlayerId)
@@ -200,21 +185,8 @@ namespace Controllers
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.PassTurn(playerId);
                 //NextPlayerPlayIfBot(gameId, gameCore); todo voir si on doit appeler NextPlayerPlayIfBot
-                
-                // tri des chrominos restant dans la main 
-                List<byte> positions = new List<byte>();
-                foreach (string order in orders)
-                {
-                    byte.TryParse(order, out byte value);
-                    positions.Add(value);
-                }
-                byte max = positions.Max();
-                for (int i = 0; i < positions.Count; i++)
-                {
-                    if (positions[i] == 0)
-                        positions[i] = ++max;
-                }
-                GameChrominoDal.ChangePositions(gameId, playerId, positions);
+
+                gameCore.ChangePositionAndFlipChrominosInHand(gameId, playerId, positions, flips);               
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -253,11 +225,12 @@ namespace Controllers
                     if (pseudo_chromino.Value == 1)
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
                 }
-                List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
+                List<ChrominoVM> identifiedPlayerChrominosVM = new List<ChrominoVM>();
                 if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
+                    identifiedPlayerChrominosVM = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
                 else
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
+                    identifiedPlayerChrominosVM = ChrominoDal.PlayerChrominos(id, PlayerId);
+
                 if (GameDal.IsFinished(id) && !GamePlayerDal.GetViewFinished(id, PlayerId))
                 {
                     GamePlayerDal.SetViewFinished(id, PlayerId);
@@ -271,7 +244,7 @@ namespace Controllers
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
 
                 byte moves = GameDal.Moves(id);
-                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves);
+                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominosVM, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves);
                 return View(gameViewModel);
             }
             else

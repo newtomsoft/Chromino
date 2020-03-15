@@ -1,0 +1,12 @@
+﻿@using  Data.ViewModel;
+@model List<ChrominoVM>;
+
+@{
+    foreach (ChrominoVM chrominosVM in Model)
+    {
+        string idPosition = (string)ViewData["InputPosition"] + chrominosVM.ChrominoId;
+        string idFlip = (string)ViewData["InputFlip"] + chrominosVM.ChrominoId;
+        <input id=@idPosition name="positions[]" />
+        <input id=@idFlip name="flips[]" />
+    }
+}

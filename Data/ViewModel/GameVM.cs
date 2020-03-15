@@ -32,7 +32,7 @@ namespace Data.ViewModel
         public List<string> Pseudos { get; set; }
         public byte Moves { get; set; }
 
-        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, byte moves)
+        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<ChrominoVM> identifiedPlayerChrominosVM, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, byte moves)
         {
             Moves = moves;
             Pseudos = pseudos;
@@ -46,6 +46,7 @@ namespace Data.ViewModel
             Squares = squares;
             GameStatus = gameStatus;
             BotsId = botsId;
+            IdentifiedPlayerChrominosVM = identifiedPlayerChrominosVM;
             XMin = squares.Select(g => g.X).Min() - 1; // +- 1 pour marge permettant de poser un chromino sur un bord
             XMax = squares.Select(g => g.X).Max() + 1;
             YMin = squares.Select(g => g.Y).Min() - 1;
@@ -61,22 +62,9 @@ namespace Data.ViewModel
                 int index = IndexGridState(square.X, square.Y);
                 SquaresViewModel[index] = square.SquareViewModel;
             }
-
-            IdentifiedPlayerChrominosVM = new List<ChrominoVM>();
-            foreach (Chromino chromino in identifiedPlayerChrominos)
-            {
-                SquareVM square1 = new SquareVM(chromino.FirstColor, true, false, false, false);
-                SquareVM square2 = new SquareVM(chromino.SecondColor, true, false, true, false);
-                SquareVM square3 = new SquareVM(chromino.ThirdColor, true, false, true, false);
-                ChrominoVM chrominoViewModel = new ChrominoVM();
-                chrominoViewModel.SquaresViewModel[0] = square1;
-                chrominoViewModel.SquaresViewModel[1] = square2;
-                chrominoViewModel.SquaresViewModel[2] = square3;
-                chrominoViewModel.ChrominoId = chromino.Id;
-                IdentifiedPlayerChrominosVM.Add(chrominoViewModel);
-            }
-
             Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
+
+            //TODO refaire comme pour identifiedPlayerChrominosVM
             foreach (var pseudo_chromino in pseudos_lastChrominos)
             {
                 SquareVM square1 = new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false);

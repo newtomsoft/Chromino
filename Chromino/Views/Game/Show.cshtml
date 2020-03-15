@@ -31,26 +31,23 @@
                 playerTurn = "C'est à vous de jouer";
                 @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
                 {
-                    <form id="FormDrawChromino" asp-action="DrawChromino">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
+                    ViewData["InputPosition"] = "InputOrderDraw";
+                    ViewData["InputFlip"] = "InputFlipDraw";
+                    <form id="FormDrawChromino" asp-action="DrawChromino" hidden>
+                        <input name="playerId" value="@ViewBag.PlayerId" />
+                        <input name="gameId" value="@Model.GameId" />
+                        <partial name="_PositionsFlipsPartial" model="Model.IdentifiedPlayerChrominosVM" view-data="ViewData" />
                     </form>
-                    <button type="submit" form="FormDrawChromino" class="btn btn-toolbar">Piocher</button>
+                    <button class="btn btn-toolbar" onclick="DrawChromino()">Piocher</button>
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
-                    <form id="FormPassTurn" asp-action="PassTurn">
-                        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                        <input name="gameId" value="@Model.GameId" type="hidden" />
-                        @{
-                            int iOrderFormPass = 0;
-                            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
-                            {
-                                string id = "FormOrderPass" + iOrderFormPass;
-                                <input id=@id type="number" name="orders[]" hidden />
-                                iOrderFormPass++;
-                            }
-                        }
+                    ViewData["InputPosition"] = "InputOrderPass";
+                    ViewData["InputFlip"] = "InputFlipPass";
+                    <form id="FormPassTurn" asp-action="PassTurn" hidden>
+                        <input name="playerId" value="@ViewBag.PlayerId" />
+                        <input name="gameId" value="@Model.GameId" />
+                        <partial name="_PositionsFlipsPartial" model="Model.IdentifiedPlayerChrominosVM" view-data="ViewData" />
                     </form>
                     <button class="btn btn-toolbar" onclick="PassTurn()">Passer</button>
                 }
@@ -64,7 +61,18 @@
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon)
 )
         {
-            <button class="btn btn-toolbar btn-play" onclick="PutChromino()">Jouer</button>
+            ViewData["InputPosition"] = "InputOrderPlay";
+            ViewData["InputFlip"] = "InputFlipPlay";
+            <form id="FormSendMove" asp-action="Play" hidden>
+                <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
+                <input id="FormGameId" name="gameId" value="@Model.GameId" />
+                <input id="FormChrominoId" name="chrominoId" />
+                <input id="FormX" name="x" />
+                <input id="FormY" name="y" />
+                <input id="FormOrientation" name="orientation" />
+                <partial name="_PositionsFlipsPartial" model="Model.IdentifiedPlayerChrominosVM" view-data="ViewData" />
+            </form>
+            <button class="btn btn-toolbar btn-play" onclick="PlayChromino()">Jouer</button>
         }
 
     </div>
@@ -127,12 +135,13 @@
     <div id="hand">
         @{
             int iOrder = 0;
-            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+            foreach (ChrominoVM chrominoVM in Model.IdentifiedPlayerChrominosVM)
             {
                 iOrder++;
-                string id = chrominosViewModel.ChrominoId.ToString();
+                string id = chrominoVM.ChrominoId.ToString();
                 string idTwin = id + "-twin";
-                <div id="@id" class="handPlayerChromino" style="order:@iOrder">
+                string transform = chrominoVM.Flip ? "matrix(-1, 0, 0, -1, 0, 0)" : "none";
+                <div id="@id" class="handPlayerChromino" style="order: @iOrder; transform: @transform;">
                     @for (int isquare = 0; isquare < 3; isquare++)
                     {
                         string idSquare = id + "-" + isquare;
@@ -150,7 +159,7 @@
                                 classOpenSides = "OpenLeft";
                                 break;
                         }
-                        Color state = chrominosViewModel.SquaresViewModel[isquare].Color;
+                        Color state = chrominoVM.SquaresViewModel[isquare].Color;
                         string classColor = state.ToString();
                         <div id="@idSquare" class="Square @classOpenSides @classColor"></div>
                     }
@@ -159,25 +168,6 @@
             }
         }
     </div>
-
-    <form id="FormSendMove" asp-action="Play" hidden>
-        <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
-        <input id="FormGameId" name="gameId" value="@Model.GameId" />
-        <input id="FormChrominoId" name="chrominoId" />
-        <input id="FormX" name="x" />
-        <input id="FormY" name="y" />
-        <input id="FormOrientation" name="orientation" />
-        @{
-            int iOrderForm = 0;
-            foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
-            {
-                string id = "FormOrder" + iOrderForm;
-                <input id=@id name="orders[]" />
-                iOrderForm++;
-            }
-        }
-    </form>
-
 
     <script>
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();

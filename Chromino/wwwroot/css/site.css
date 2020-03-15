@@ -197,6 +197,11 @@ figcaption {
     flex-shrink: 0;
 }
 
+.Square {
+    width: 30px;
+    height: 30px;
+}
+
 .Free {
     background-color: white;
 }
