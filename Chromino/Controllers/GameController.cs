@@ -236,9 +236,10 @@ namespace Controllers
                 List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
-
+                string chat = GameDal.Details(id).Chat; // todo peut mieux faire
+                string memo = GamePlayerDal.Details(id, PlayerId).Memo; // todo peut mieux faire
                 byte moves = GameDal.Moves(id);
-                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves);
+                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves, chat, memo);
                 return View(gameViewModel);
             }
             else

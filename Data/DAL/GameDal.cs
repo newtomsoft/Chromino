@@ -117,5 +117,15 @@ namespace Data.DAL
             game.PlayedDate = DateTime.Now;
             Ctx.SaveChanges();
         }
+
+        public void UpdateChat(int id, string chat)
+        {
+            Game game = (from g in Ctx.Games
+                         where g.Id == id
+                         select g).FirstOrDefault();
+
+            game.Chat = chat + game.Chat;
+            Ctx.SaveChanges();
+        }
     }
 }

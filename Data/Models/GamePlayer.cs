@@ -17,6 +17,9 @@ namespace Data.Models
         public bool PreviouslyPass { get; set; }
         public int Points { get; set; }
 
+        [MaxLength(500)]
+        public string Memo { get; set; }
+
         public Game Game { get; set; }
         public Player Player { get; set; }
     }

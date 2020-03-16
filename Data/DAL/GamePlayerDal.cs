@@ -370,5 +370,15 @@ namespace Data.DAL
 
             return somePlayerWon == 0 ? false : true;
         }
+
+        public void ChangeMemo(int gameId, int playerId, string memo)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.Memo = memo;
+            Ctx.SaveChanges();
+        }
     }
 }

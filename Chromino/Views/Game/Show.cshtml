@@ -29,7 +29,7 @@
             if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
             {
                 playerTurn = "C'est à vous de jouer";
-        @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
+                @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
                 {
                     <form id="FormDrawChromino" asp-action="DrawChromino">
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
@@ -55,7 +55,7 @@
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon)
 )
         {
-        <button class="btn btn-toolbar btn-play" onclick="PutChromino();">Jouer</button>
+            <button class="btn btn-toolbar btn-play" onclick="PutChromino();">Jouer</button>
         }
 
     </div>
@@ -70,8 +70,8 @@
         </div>
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
-        <div class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
+            <div class="gameLineArea">
+                @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
                     int index = i + j * Model.ColumnsNumber;
                     Color state = Model.SquaresViewModel[index].Color;
@@ -87,7 +87,7 @@
                             classOpenSides += "Left";
                         if (Model.SquaresViewModel[index].OpenTop)
                             classOpenSides += "Top";
-            <div id="Grid_@index" class="@classOpenSides @classColor"></div>
+                        <div id="Grid_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
                     {
@@ -108,17 +108,17 @@
                         {
                             classCloseEdge += " CloseTop";
                         }
-            <div class="@classCloseEdge"></div>
+                        <div class="@classCloseEdge"></div>
                     }
                 }
-        </div>
+            </div>
         }
     </div>
     @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
     {
         string id = chrominosViewModel.ChrominoId.ToString();
-    <div id="@id" class="handPlayerChromino">
-        @for (int i = 0; i < 3; i++)
+        <div id="@id" class="handPlayerChromino">
+            @for (int i = 0; i < 3; i++)
             {
                 string classOpenSides;
                 switch (i)
@@ -136,9 +136,9 @@
                 }
                 Color state = chrominosViewModel.SquaresViewModel[i].Color;
                 string classColor = state.ToString();
-        <div class="Square @classOpenSides @classColor"></div>
+                <div class="Square @classOpenSides @classColor"></div>
             }
-    </div>
+        </div>
     }
     <form id="FormSendMove" asp-action="Play" hidden>
         <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
@@ -186,13 +186,13 @@
 
     @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.GameStatus != GameStatus.Finished)
     {
-    <script>
+        <script>
             window.onload = function () { playBot(); }
 
             function playBot() {
                 location.assign("@Url.Action("PlayBot", "Game", new { id = Model.GameId, botId = Model.PlayerIdTurn})");
             }
-    </script>
+        </script>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -222,31 +222,31 @@
 
 @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo || TempData["ShowInfos"] != null || (!Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
 {
-<script>
-    $(document).ready(function () {
-        ShowInfoPopup();
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            ShowInfoPopup();
+        });
+    </script>
 }
 else
 {
-<script>
-    $(document).ready(function () {
-        HideInfoPopup();
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            HideInfoPopup();
+        });
+    </script>
 }
 
 <div id="infoPopup" style="display:none">
     <img src="~/image/Info.svg" height="65" width="65" alt="info" />
     @if (Model.GameStatus == GameStatus.Finished || Model.GameStatus == GameStatus.SingleFinished)
     {
-    <h2>La partie est terminée</h2>
-    <br />
+        <h2>La partie est terminée</h2>
+        <br />
     }
     else
     {
-    <h3>@playerTurn</h3>
+        <h3>@playerTurn</h3>
     }
     @foreach (var pseudo_chromino in Model.Pseudos_Chrominos)
     {
@@ -255,13 +255,13 @@ else
             pseudo = "Vous";
         if (pseudo_chromino.Value > 1)
         {
-    <p>@pseudo : @pseudo_chromino.Value chrominos en main</p>
+            <p>@pseudo : @pseudo_chromino.Value chrominos en main</p>
         }
         else if (pseudo_chromino.Value == 1)
         {
-    <div class="opponentLastChromino">
-        @pseudo &nbsp;
-        @for (int i = 0; i < 3; i++)
+            <div class="opponentLastChromino">
+                @pseudo &nbsp;
+                @for (int i = 0; i < 3; i++)
                 {
                     string classOpenSides;
                     switch (i)
@@ -279,19 +279,19 @@ else
                     }
                     Color state = Model.Pseudos_LastChrominoVM[pseudo_chromino.Key].SquaresViewModel[i].Color;
                     string classColor = state.ToString();
-        <div class="Square @classOpenSides @classColor"></div>
+                    <div class="Square @classOpenSides @classColor"></div>
                 }
-    </div>
+            </div>
         }
         else
         {
             if (pseudo_chromino.Key == ViewBag.PlayerPseudo)
             {
-    <p class="winner">Vous avez gagné la partie</p>
+                <p class="winner">Vous avez gagné la partie</p>
             }
             else
             {
-    <p class="winner">@pseudo_chromino.Key a gagné la partie</p>
+                <p class="winner">@pseudo_chromino.Key a gagné la partie</p>
             }
 
         }
@@ -299,57 +299,86 @@ else
     <br />
     @if (Model.ChrominosInStack > 1)
     {
-    <p class="infoMineure">Pioche : @Model.ChrominosInStack chrominos</p>
+        <p class="infoMineure">Pioche : @Model.ChrominosInStack chrominos</p>
     }
     else if (Model.ChrominosInStack == 1)
     {
-    <p class="infoMineure">Pioche : 1 chromino</p>
+        <p class="infoMineure">Pioche : 1 chromino</p>
     }
+    <div>
+        <form asp-action="Add" asp-controller="Chat">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <input name="gameId" value="@Model.GameId" type="hidden" />
+                <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
+                <textarea class="form-control" disabled>@Model.Chat</textarea>
+                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" />
+                <span asp-validation-for="Chat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <form asp-action="Add" asp-controller="Memo">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <input name="gameId" value="@Model.GameId" type="hidden" />
+                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                <textarea asp-for="Memo" name="memo" class="form-control" placeholder="Mémo (visible seulement par vous)">@Model.Memo</textarea>
+                <span asp-validation-for="GamePlayerTurn.Memo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
 
     @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo)
     {
-    <form asp-action="FirstToPlay" style="text-align:center">
-        <input type="submit" class="btn btn-primary" value="Jouer partie suivante" />
-    </form>
+        <form asp-action="FirstToPlay" style="text-align:center">
+            <input type="submit" class="btn btn-primary" value="Jouer partie suivante" />
+        </form>
     }
 </div>
 
 @if (TempData["PlayReturn"] != null)
 {
-<div id="errorPopup" style="display:none">
-    <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
-    @switch ((PlayReturn)TempData["PlayReturn"])
+    <div id="errorPopup" style="display:none">
+        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
+        @switch ((PlayReturn)TempData["PlayReturn"])
         {
             case PlayReturn.NotFree:
-    <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre</p>
+                <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre</p>
                 break;
             case PlayReturn.DifferentColorsAround:
-    <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes</p>
+                <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes</p>
                 break;
             case PlayReturn.NotTwoOrMoreSameColors:
-    <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu</p>
+                <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu</p>
                 break;
             case PlayReturn.LastChrominoIsCameleon:
-    <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher</p>
+                <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher</p>
                 break;
             case PlayReturn.NotPlayerTurn:
-    <p id="errorMessage">Vous avez déjà joué. Attendez votre tour</p>
+                <p id="errorMessage">Vous avez déjà joué. Attendez votre tour</p>
                 break;
         }
-    <p style="text-align:center">Merci de rejouer</p>
-</div>
-<script>
-    $(document).ready(function () {
-        ShowErrorPopup();
-    });
-</script>
+        <p style="text-align:center">Merci de rejouer</p>
+    </div>
+    <script>
+        $(document).ready(function () {
+            ShowErrorPopup();
+        });
+    </script>
 }
 else
 {
-<div id="errorPopup" style="display:none">
-    <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
-    <p id="errorMessage"></p>
-    <p id="errorMessageEnd" style="text-align:center">Merci de rejouer</p>
-</div>
+    <div id="errorPopup" style="display:none">
+        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
+        <p id="errorMessage"></p>
+        <p id="errorMessageEnd" style="text-align:center">Merci de rejouer</p>
+    </div>
 }
 

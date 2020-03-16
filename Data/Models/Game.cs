@@ -17,5 +17,8 @@ namespace Data.Models
         public GameStatus Status { get; set; }
         public DateTime PlayedDate { get; set; }
         public byte Move { get; set; }
+
+        [MaxLength(5000)]
+        public string Chat { get; set; }
     }
 }
