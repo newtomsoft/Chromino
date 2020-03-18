@@ -53,6 +53,19 @@ a {
     background-image: url('/image/button/Memo.svg');
 }
 
+.notification {
+    background-color: red;
+    color: white;
+    position: relative;
+    top: -10px;
+    left: 20px;
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
+    line-height: 18px;
+    text-align: center;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
     background-color: #1b6ec2;

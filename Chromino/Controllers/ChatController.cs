@@ -26,13 +26,29 @@ namespace ChrominoApp.Controllers
             if (playerPseudo == PlayerPseudo)
             {
                 string newChat = $"{playerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
-                GameDal.UpdateChat(gameId, newChat);
+                GameDal.UpdateChat(gameId, newChat, PlayerId);
                 return RedirectToAction("Show", "Game", new { id = gameId });
             }
             else
             {
                 return RedirectToAction("NotFound");
             }
+        }
+
+        [HttpPost]
+        public IActionResult SetRead(int gameId, int playerId)
+        {
+            GetPlayerInfos();
+            if (playerId == PlayerId)
+            {
+                GameDal.SetChatRead(gameId, playerId);
+                return RedirectToAction("Show", "Game", new { id = gameId });
+            }
+            else
+            {
+                return RedirectToAction("NotFound");
+            }
+
         }
     }
 }

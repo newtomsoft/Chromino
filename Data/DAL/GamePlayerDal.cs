@@ -48,11 +48,7 @@ namespace Data.DAL
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
             foreach (Player player in players)
             {
-                GamePlayer gamePlayer = new GamePlayer
-                {
-                    GameId = gameId,
-                    PlayerId = player.Id,
-                };
+                GamePlayer gamePlayer = new GamePlayer { GameId = gameId, PlayerId = player.Id, NotReadMessages = 0 };
                 gamePlayers.Add(gamePlayer);
             }
             Ctx.GamesPlayers.AddRange(gamePlayers);

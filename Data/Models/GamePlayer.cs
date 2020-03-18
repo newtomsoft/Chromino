@@ -22,6 +22,8 @@ namespace Data.Models
         [DisplayName("Votre mémo")]
         public string Memo { get; set; }
 
+        public byte NotReadMessages { get; set; }
+
         public Game Game { get; set; }
         public Player Player { get; set; }
     }

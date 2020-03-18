@@ -14,6 +14,10 @@
 
     ResizeGameArea();
     StartDraggable();
+    if (NotReadMessages != 0) {
+        $('#NotifChat').show();
+        $('#NotifChat').text(NotReadMessages);
+    }
 
     //animate lasts chrominos played
     if (!PreviouslyDraw && ThisPlayerTurn) {
@@ -48,7 +52,7 @@ function AnimateChrominosPlayed() {
     for (i = index; i < index + 3; i++) {
         for (iflash = 0; iflash < 3; iflash++) {
             AnimateSquare('#' + Squares[i]);
-        }      
+        }
     }
     $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn().delay(1000).fadeOut();
 }
@@ -62,28 +66,16 @@ function AnimateSquare(squareId) {
 //***************************************************//
 //********** gestion popups de la partie ************//
 //***************************************************//
-function ShowErrorPopup() {
-    $('#errorPopup').show();
-    $('#errorPopup').popup({
-        autoopen: true,
-        transition: 'all 0.4s'
-    });
-    $.fn.popup.defaults.pagecontainer = '#page'
-}
-
-function ShowInfoPopup() {
-    $('#infoPopup').show();
-    $('#infoPopup').popup({
-        autoopen: true,
-        transition: 'all 0.4s'
-    });
-    $.fn.popup.defaults.pagecontainer = '#page'
-}
-function HideInfoPopup() {
-    $('#infoPopup').hide();
-}
 
 function ShowPopup(popupId) {
+    if (popupId == '#ChatPopup') {
+        let textArea = document.getElementById('ChatPopup-textarea');
+        //textArea.scrollTop = textArea.scrollHeight;
+        textArea.scrollTop = 500;
+        if (NotReadMessages > 0) {
+            $('#ChatPopup-Read').show();
+        }
+    }
     $(popupId).show();
     $(popupId).popup({
         autoopen: true,
@@ -92,6 +84,9 @@ function ShowPopup(popupId) {
     $.fn.popup.defaults.pagecontainer = '#page'
 }
 
+function HidePopup(popupId) {
+    $(popupId).hide();
+}
 
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//

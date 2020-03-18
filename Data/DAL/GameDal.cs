@@ -60,7 +60,6 @@ namespace Data.DAL
             return games;
         }
 
-
         public List<Game> ListInProgress()
         {
 
@@ -118,13 +117,31 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void UpdateChat(int id, string chat)
+        public void UpdateChat(int gameId, string chat, int playerId)
         {
             Game game = (from g in Ctx.Games
-                         where g.Id == id
+                         where g.Id == gameId
                          select g).FirstOrDefault();
 
-            game.Chat = chat + game.Chat;
+            game.Chat += chat;
+
+            var gamesPlayers = from gp in Ctx.GamesPlayers
+                               where gp.GameId == gameId && gp.PlayerId != playerId
+                               select gp;
+
+            foreach (GamePlayer gamePlayer in gamesPlayers)
+                gamePlayer.NotReadMessages++;
+
+            Ctx.SaveChanges();
+        }
+
+        public void SetChatRead(int gameId, int playerId)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            gamePlayer.NotReadMessages = 0;
             Ctx.SaveChanges();
         }
     }

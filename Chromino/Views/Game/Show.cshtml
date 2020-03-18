@@ -23,8 +23,10 @@
 <body>
     <div id="toolbar">
         <a class="btn btn-toolbar btn-home" asp-area="" asp-controller="Home" asp-action="Index"></a>
-        <button class="btn btn-toolbar btn-infogame" onclick="ShowInfoPopup();"></button>
-        <button class="btn btn-toolbar btn-chat" onclick="ShowPopup('#ChatPopup');"></button>
+        <button class="btn btn-toolbar btn-infogame" onclick="ShowPopup('#infoPopup');"></button>
+        <button class="btn btn-toolbar btn-chat" onclick="ShowPopup('#ChatPopup');">
+            <p id="NotifChat" class="notification" style="display:none"></p>
+        </button>
         <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');"></button>
         @if (Model.GameStatus == GameStatus.InProgress || Model.GameStatus == GameStatus.SingleInProgress)
         {
@@ -201,21 +203,23 @@
     <script src="~/js/jquery.draggableTouch.js"></script>
     <script src="~/js/jquery.popupoverlay.min.js"></script>
     <script src="~/js/game.js" asp-append-version="true"></script>
+
+    @{
+        int horizontal = (int)Orientation.Horizontal;
+        int horizontalFlip = (int)Orientation.HorizontalFlip;
+        int vertical = (int)Orientation.Vertical;
+        int verticalFlip = (int)Orientation.VerticalFlip;
+    }
     <script>
         var GameAreaLinesNumber = @Model.LinesNumber;
         var GameAreaColumnsNumber = @Model.ColumnsNumber;
         var XMin = @Model.XMin;
         var YMin = @Model.YMin;
-        @{
-            int horizontal = (int)Orientation.Horizontal;
-            int horizontalFlip = (int)Orientation.HorizontalFlip;
-            int vertical = (int)Orientation.Vertical;
-            int verticalFlip = (int)Orientation.VerticalFlip;
-        }
         var Horizontal = @horizontal;
         var HorizontalFlip = @horizontalFlip;
         var Vertical = @vertical;
         var VerticalFlip = @verticalFlip;
+        var NotReadMessages = @Model.GamePlayerTurn.NotReadMessages;
     </script>
 </body>
 </html>
@@ -225,7 +229,7 @@
 {
     <script>
         $(document).ready(function () {
-            ShowInfoPopup();
+            ShowPopup('#infoPopup');
         });
     </script>
 }
@@ -233,7 +237,7 @@ else
 {
     <script>
         $(document).ready(function () {
-            HideInfoPopup();
+            HidePopup('#infoPopup');
         });
     </script>
 }
@@ -341,7 +345,7 @@ else
     </div>
     <script>
         $(document).ready(function () {
-            ShowErrorPopup();
+            ShowPopup('#errorPopup');
         });
     </script>
 }
@@ -373,6 +377,10 @@ else
 </div>
 
 <div id="ChatPopup" class="popup-memochat" style="display:none">
+    <form id="form-SetReadChat" asp-action="SetRead" asp-controller="Chat" hidden>
+        <input name="gameId" value="@Model.GameId" type="hidden" />
+        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+    </form>
     <div>
         <form asp-action="Add" asp-controller="Chat">
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -380,12 +388,13 @@ else
                 <input name="gameId" value="@Model.GameId" type="hidden" />
                 <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
                 <label asp-for="Chat"></label>
-                <textarea class="form-control" rows="14" disabled>@Model.Chat</textarea>
-                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" />
-                <span asp-validation-for="Chat" class="text-danger"></span>
+                <textarea id="ChatPopup-textarea" class="form-control" rows="14" disabled>@Model.Chat</textarea>
+                <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Messages lus</button>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Envoyer</button>
+                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" />
+                <span asp-validation-for="Chat" class="text-danger"></span>
+                <button id="ChatPopup-Submit" type="submit" class="btn btn-primary">Envoyer</button>
             </div>
         </form>
     </div>
