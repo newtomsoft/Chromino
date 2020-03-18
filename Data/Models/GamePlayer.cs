@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
@@ -18,6 +19,7 @@ namespace Data.Models
         public int Points { get; set; }
 
         [MaxLength(500)]
+        [DisplayName("Votre mémo")]
         public string Memo { get; set; }
 
         public Game Game { get; set; }

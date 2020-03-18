@@ -22,8 +22,10 @@
 
 <body>
     <div id="toolbar">
-        <a class="btn btn-toolbar" asp-area="" asp-controller="Home" asp-action="Index">Accueil</a>
-        <button class="btn btn-toolbar" onclick="ShowInfoPopup();">Infos</button>
+        <a class="btn btn-toolbar btn-home" asp-area="" asp-controller="Home" asp-action="Index"></a>
+        <button class="btn btn-toolbar btn-infogame" onclick="ShowInfoPopup();"></button>
+        <button class="btn btn-toolbar btn-chat" onclick="ShowPopup('#ChatPopup');"></button>
+        <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');"></button>
         @if (Model.GameStatus == GameStatus.InProgress || Model.GameStatus == GameStatus.SingleInProgress)
         {
             if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
@@ -35,7 +37,7 @@
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
                     </form>
-                    <button type="submit" form="FormDrawChromino" class="btn btn-toolbar">Piocher</button>
+                    <button type="submit" form="FormDrawChromino" class="btn btn-toolbar btn-draw"></button>
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
@@ -43,7 +45,7 @@
                         <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
                         <input name="gameId" value="@Model.GameId" type="hidden" />
                     </form>
-                    <button type="submit" form="FormPassTurn" class="btn btn-toolbar">Passer</button>
+                    <button type="submit" form="FormPassTurn" class="btn btn-toolbar btn-skip"></button>
                 }
             }
             else
@@ -55,9 +57,8 @@
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon)
 )
         {
-            <button class="btn btn-toolbar btn-play" onclick="PutChromino();">Jouer</button>
+            <button class="btn btn-toolbar btn-play" onclick="PutChromino();"></button>
         }
-
     </div>
     <br>
     <div id="gameArea" display="none">
@@ -305,35 +306,6 @@ else
     {
         <p class="infoMineure">Pioche : 1 chromino</p>
     }
-    <div>
-        <form asp-action="Add" asp-controller="Chat">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <input name="gameId" value="@Model.GameId" type="hidden" />
-                <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
-                <textarea class="form-control" disabled>@Model.Chat</textarea>
-                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" />
-                <span asp-validation-for="Chat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Envoyer</button>
-            </div>
-        </form>
-    </div>
-    <div>
-        <form asp-action="Add" asp-controller="Memo">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <input name="gameId" value="@Model.GameId" type="hidden" />
-                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
-                <textarea asp-for="Memo" name="memo" class="form-control" placeholder="Mémo (visible seulement par vous)">@Model.Memo</textarea>
-                <span asp-validation-for="GamePlayerTurn.Memo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </div>
-        </form>
-    </div>
 
     @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo)
     {
@@ -382,3 +354,39 @@ else
     </div>
 }
 
+<div id="MemoPopup" class="popup-memochat" style="display:none">
+    <div>
+        <form asp-action="Add" asp-controller="Memo">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <input name="gameId" value="@Model.GameId" type="hidden" />
+                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                <label asp-for="Memo"></label>
+                <textarea asp-for="Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.Memo</textarea>
+                <span asp-validation-for="GamePlayerTurn.Memo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="ChatPopup" class="popup-memochat" style="display:none">
+    <div>
+        <form asp-action="Add" asp-controller="Chat">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <input name="gameId" value="@Model.GameId" type="hidden" />
+                <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
+                <label asp-for="Chat"></label>
+                <textarea class="form-control" rows="14" disabled>@Model.Chat</textarea>
+                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" />
+                <span asp-validation-for="Chat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>

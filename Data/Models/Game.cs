@@ -1,5 +1,6 @@
 ﻿using Data.Enumeration;
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,6 +20,7 @@ namespace Data.Models
         public byte Move { get; set; }
 
         [MaxLength(5000)]
+        [DisplayName("Votre discussion avec vos adversaires")]
         public string Chat { get; set; }
     }
 }

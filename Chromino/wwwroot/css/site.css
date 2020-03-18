@@ -17,21 +17,40 @@ a {
 }
 
 .btn-toolbar {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-    font-family: cursive;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 1;
     height: 50px;
-    width: 100px;
+    width: 50px;
     margin: 6px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .btn-play {
-    border-width: 3px;
-    font-size: larger;
+    background-image: url('/image/button/Play.svg');
+}
+
+.btn-skip {
+    background-image: url('/image/button/Skip.svg');
+}
+
+.btn-draw {
+    background-image: url('/image/button/Draw.svg');
+}
+
+.btn-infogame {
+    background-image: url('/image/button/Info.svg');
+}
+
+.btn-home {
+    background-image: url('/image/button/Home.svg');
+}
+
+.btn-chat {
+    background-image: url('/image/button/Chat.svg');
+}
+
+.btn-memo {
+    background-image: url('/image/button/Memo.svg');
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -76,6 +95,13 @@ a {
     .popup_content h2, .popup_content h3 {
         text-align: center;
     }
+
+.popup-memochat {
+    min-width: 300px;
+    max-width: 95%;
+    min-height: 400px;
+    max-height: 95%;
+}
 
 #about {
     text-align: justify;

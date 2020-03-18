@@ -83,6 +83,15 @@ function HideInfoPopup() {
     $('#infoPopup').hide();
 }
 
+function ShowPopup(popupId) {
+    $(popupId).show();
+    $(popupId).popup({
+        autoopen: true,
+        transition: 'all 0.4s'
+    });
+    $.fn.popup.defaults.pagecontainer = '#page'
+}
+
 
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//

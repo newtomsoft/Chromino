@@ -2,6 +2,8 @@
 using Data.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Data.ViewModel
@@ -31,7 +33,13 @@ namespace Data.ViewModel
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
         public List<string> Pseudos { get; set; }
         public byte Moves { get; set; }
+
+        [MaxLength(5000)]
+        [DisplayName("Votre discussion avec vos adversaires")]
         public string Chat { get; set; }
+
+        [MaxLength(500)]
+        [DisplayName("Votre mémo")]
         public string Memo { get; set; }
 
         public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, byte moves, string chat, string memo)
