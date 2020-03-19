@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
     $(document).click(function () {
         StopDraggable();
         StartDraggable();
@@ -96,6 +97,8 @@ let PositionLastChromino;
 let TimeoutRotate = null;
 let ToRotate = true;
 let LastChrominoMove = null;
+let OffsetLastChromino = 0;
+let OffsetGameArea = null;
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -135,8 +138,15 @@ function StartDraggable() {
             PositionLastChromino = $(LastChrominoMove).offset();
             SchedulePut();
         }).on("dragend", function () {
+            if (IsChrominoInGameArea()) {
+                $('.btn-play').show();
+            }
+            else {
+                $('.btn-play').hide();
+            }
             $(this).css('cursor', 'grab');
             LastChrominoMove = this;
+            OffsetLastChromino = $(this).offset();
             MagnetChromino();
             if (ToRotate) {
                 ToRotate = false;
@@ -152,23 +162,81 @@ function StartDraggable() {
         });
 }
 
-function Rotation(chromino) {
-    var transform = $(chromino).css("transform");
-    switch (transform) {
-        case "none":
-        case "matrix(1, 0, 0, 1, 0, 0)": // 0° => 90°
-            $(chromino).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+function Rotation(chromino, angle = 90) {
+
+    let newAngle = angle + GetRotation(chromino);
+    if (newAngle >= 360)
+        newAngle -= 360;
+    SetRotation(chromino, newAngle);
+}
+
+function SetGoodOrientation(chromino) {
+    if (Landscape)
+        SetHorizontal(chromino);
+    else
+        SetVertical(chromino);
+}
+
+function SetHorizontal(chromino) {
+    let rotation = GetRotation(chromino);
+    if (rotation == 90)
+        SetRotation(chromino, 180);
+    else if (rotation == 270)
+        SetRotation(chromino, 0);
+}
+
+function SetVertical(chromino) {
+    let rotation = GetRotation(chromino);
+    if (rotation == 0)
+        SetRotation(chromino, 90);
+    else if (rotation == 180)
+        SetRotation(chromino, 270);
+}
+
+function GetRotation(chromino) {
+    switch ($(chromino).css("flex-direction")) {
+        case "row":
+            return 0
             break;
-        case "matrix(0, 1, -1, 0, 0, 0)": // 90° => 180°
-            $(chromino).css("transform", "matrix(-1, 0, 0, -1, 0, 0)");
+        case "column":
+            return 90;
             break;
-        case "matrix(-1, 0, 0, -1, 0, 0)": // 180° => 270°
-            $(chromino).css("transform", "matrix(0, -1, 1, 0, 0, 0)");
+        case "row-reverse":
+            return 180;
             break;
-        case "matrix(0, -1, 1, 0, 0, 0)": // 270° => 0°
-            $(chromino).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
-            break;
+        case "column-reverse":
         default:
+            return 270;
+            break;
+    }
+}
+
+function GetOrientation(chromino) {
+    switch (GetRotation(chromino)) {
+        case 0:
+        case 180:
+            return "horizontal";
+            break;
+        case 90:
+        case 270:
+            return "vertical";
+            break;
+    }
+}
+
+function SetRotation(chromino, rotate) {
+    switch (rotate) {
+        case 0:
+            $(chromino).css("flex-direction", "row");
+            break;
+        case 90:
+            $(chromino).css("flex-direction", "column");
+            break;
+        case 180:
+            $(chromino).css("flex-direction", "row-reverse");
+            break;
+        case 270:
+            $(chromino).css("flex-direction", "column-reverse");
             break;
     }
 }
@@ -182,13 +250,35 @@ function StopDraggable() {
 
 function MagnetChromino() {
     if (LastChrominoMove != null) {
-        var offset = $(LastChrominoMove).offset();
-        var x = offset.left - GameAreaOffsetX;
-        var y = offset.top - GameAreaOffsetY;
-        var difX = SquareSize * Math.round(x / SquareSize) - x;
-        var difY = SquareSize * Math.round(y / SquareSize) - y;
+        let offset = $(LastChrominoMove).offset();
+        let x = offset.left - GameAreaOffsetX;
+        let y = offset.top - GameAreaOffsetY;
+        let difX = SquareSize * Math.round(x / SquareSize) - x;
+        let difY = SquareSize * Math.round(y / SquareSize) - y;
         $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
     }
+}
+
+function IsChrominoInGameArea() {
+    let offsetRight = 0.5 * SquareSize;
+    let offsetBottom = 0.5 * SquareSize;
+    let offsetLeft, offsetTop;
+    if (GetOrientation(LastChrominoMove) == "horizontal") {
+        offsetLeft = 2.5 * SquareSize;
+        offsetTop = 0.5 * SquareSize;
+    }
+    else {
+        offsetLeft = 0.5 * SquareSize;
+        offsetTop = 2.5 * SquareSize;
+    }
+
+    let heightGameArea = $('#gameArea').height();
+    let widthGameArea = $('#gameArea').width();
+
+    if (OffsetLastChromino.left + offsetLeft > OffsetGameArea.left && OffsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && OffsetLastChromino.top + offsetTop > OffsetGameArea.top && OffsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
+        return true;
+    else
+        return false;
 }
 
 function PlayChromino() {
@@ -199,30 +289,31 @@ function PlayChromino() {
         return;
     }
     if (LastChrominoMove != null) {
-        var id = LastChrominoMove.id;
-        switch ($(LastChrominoMove).css("transform")) {
-            case "none":
-            case "matrix(1, 0, 0, 1, 0, 0)":
+        let offset = $(LastChrominoMove).offset();
+        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
+        switch (GetRotation(LastChrominoMove)) {
+            case 0:
                 $("#FormOrientation").val(Horizontal);
                 break;
-            case "matrix(0, 1, -1, 0, 0, 0)":
+            case 90:
                 $("#FormOrientation").val(VerticalFlip);
+                yIndex--;
                 break;
-            case "matrix(-1, 0, 0, -1, 0, 0)":
+            case 180:
                 $("#FormOrientation").val(HorizontalFlip);
                 break;
-            case "matrix(0, -1, 1, 0, 0, 0)":
+            case 270:
                 $("#FormOrientation").val(Vertical);
+                yIndex--;
                 break;
             default:
                 break;
         }
-        var offset = $(LastChrominoMove).offset();
-        var xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
-        var yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
-        $("#FormChrominoId").val(id);
+        $("#FormChrominoId").val(LastChrominoMove.id);
+        FillInputsChrominoInHand("InputOrderPlay", "InputFlipPlay", LastChrominoMove);
         $("#FormSendMove").submit();
     }
     else {
@@ -250,7 +341,7 @@ function ResizeGameArea() {
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
             $(this).css({ top: offset });
-            $(this).css("transform", "matrix(1, 0, 0, 1, 0, 0)");
+            SetRotation(this, 0);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
@@ -260,7 +351,7 @@ function ResizeGameArea() {
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: offset });
             $(this).css({ top: documentHeight - SquareSize * 3 }); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
-            $(this).css("transform", "matrix(0, 1, -1, 0, 0, 0)");
+            SetRotation(this, 90);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
@@ -275,4 +366,5 @@ function ResizeGameArea() {
     var gameAreaOffset = $('#gameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
+    OffsetGameArea = $('#gameArea').offset();
 }

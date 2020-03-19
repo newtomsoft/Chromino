@@ -44,7 +44,7 @@
             
             element.bind("touchstart", function(e) {
                 var orig = e.originalEvent;
-                var pos = $(this).position();
+                var pos = $(this).offset();
                 offset = {
                     x: orig.changedTouches[0].pageX - pos.left,
                     y: orig.changedTouches[0].pageY - pos.top
@@ -100,7 +100,7 @@
                 });
             };
             element.bind("mousedown", function(e) {
-                var pos = element.position();
+                var pos = element.offset();
                 offset = {
                     x: e.pageX - pos.left,
                     y: e.pageY - pos.top

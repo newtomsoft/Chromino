@@ -62,7 +62,7 @@
         @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerIdTurn == ViewBag.PlayerId &&
        (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon))
         {
-            <button class="btn btn-toolbar btn-play" onclick="PlayChromino();"></button>
+            <button class="btn btn-toolbar btn-play" onclick="PlayChromino()" style="display:none"></button>
         }
 
         @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo)
