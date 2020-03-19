@@ -20,9 +20,11 @@ a {
     flex-shrink: 1;
     height: 50px;
     width: 50px;
-    margin: 6px;
+    margin: 4px;
+    padding: 2px;
     background-size: contain;
     background-repeat: no-repeat;
+    background-origin: content-box;
 }
 
 .btn-play {
@@ -51,6 +53,10 @@ a {
 
 .btn-memo {
     background-image: url('/image/button/Memo.svg');
+}
+
+.btn-nextgame {
+    background-image: url('/image/button/Next.svg');
 }
 
 .notification {

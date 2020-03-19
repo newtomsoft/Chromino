@@ -10,7 +10,6 @@ namespace Data.ViewModel
 {
     public class GameVM
     {
-        public int GameId { get; set; }
         public List<Square> Squares { get; set; }
         public int XMin { get; set; }
         public int XMax { get; set; }
@@ -20,43 +19,32 @@ namespace Data.ViewModel
         public int ColumnsNumber { get; set; }
         public int SquaresNumber { get; set; }
         public SquareVM[] SquaresViewModel { get; set; }
-        public int ChrominosInGame { get; set; }
         public int ChrominosInStack { get; set; }
-        public Dictionary<string, int> Pseudos_Chrominos { get; set; }
+        public Dictionary<string, int> PseudosChrominos { get; set; }
         public Dictionary<string, ChrominoVM> Pseudos_LastChrominoVM { get; set; }
-        public GameStatus GameStatus { get; set; }
         public List<ChrominoVM> IdentifiedPlayerChrominosVM { get; set; }
         public string PlayerPseudoTurn { get; set; }
         public int PlayerIdTurn { get; set; }
+        public Game Game { get; set; }
         public GamePlayer GamePlayerTurn { get; set; }
+        public GamePlayer GamePlayerIdentified { get; set; }
         public List<int> BotsId { get; set; }
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
         public List<string> Pseudos { get; set; }
-        public byte Moves { get; set; }
+        public bool OpponenentsAreBots { get; set; }
 
-        [MaxLength(5000)]
-        [DisplayName("Votre discussion avec vos adversaires")]
-        public string Chat { get; set; }
-
-        [MaxLength(500)]
-        [DisplayName("Votre mémo")]
-        public string Memo { get; set; }
-
-        public GameVM(int gameId, List<Square> squares, GameStatus gameStatus, int chrominosInGameNumber, int chrominosInStackNumber, Dictionary<string, int> pseudos_chrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, byte moves, string chat, string memo)
+        public GameVM(Game game, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayerIdentified, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots)
         {
-            Memo = memo;
-            Chat = chat;
-            Moves = moves;
+            OpponenentsAreBots = opponenentsAreBots;
+            Game = game;
             Pseudos = pseudos;
             PlayerPseudoTurn = playerTurn.UserName;
             PlayerIdTurn = playerTurn.Id;
             GamePlayerTurn = gamePlayerTurn;
-            GameId = gameId;
-            ChrominosInGame = chrominosInGameNumber;
+            GamePlayerIdentified = gamePlayerIdentified;
             ChrominosInStack = chrominosInStackNumber;
-            Pseudos_Chrominos = pseudos_chrominos;
+            PseudosChrominos = pseudosChrominos;
             Squares = squares;
-            GameStatus = gameStatus;
             BotsId = botsId;
             XMin = squares.Select(g => g.X).Min() - 1; // +- 1 pour marge permettant de poser un chromino sur un bord
             XMax = squares.Select(g => g.X).Max() + 1;

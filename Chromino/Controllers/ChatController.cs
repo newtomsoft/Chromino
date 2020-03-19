@@ -27,6 +27,7 @@ namespace ChrominoApp.Controllers
             {
                 string newChat = $"{playerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
                 GameDal.UpdateChat(gameId, newChat, PlayerId);
+                GameDal.SetChatRead(gameId, PlayerId);
                 return RedirectToAction("Show", "Game", new { id = gameId });
             }
             else

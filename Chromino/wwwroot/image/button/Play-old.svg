@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="86.364227mm"
-   height="106.53555mm"
+   width="105.83334mm"
+   height="104.56316mm"
    version="1.1"
-   viewBox="0 0 86.364208 106.53554"
+   viewBox="0 0 105.83332 104.56316"
    id="svg8"
-   sodipodi:docname="Play-new.svg"
+   sodipodi:docname="Play.svg"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <defs
      id="defs12" />
@@ -30,10 +30,10 @@
      id="namedview10"
      showgrid="false"
      inkscape:zoom="1"
-     inkscape:cx="-42.87939"
-     inkscape:cy="212.08006"
-     inkscape:window-x="286"
-     inkscape:window-y="64"
+     inkscape:cx="123.84911"
+     inkscape:cy="206.25305"
+     inkscape:window-x="18"
+     inkscape:window-y="16"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg8"
      inkscape:snap-grids="true" />
@@ -45,13 +45,18 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <path
-     style="fill:#000000;stroke-width:1.11375892"
-     inkscape:connector-curvature="0"
-     id="path51"
-     d="M 0,0 86.364215,53.267763 0,106.53553 Z" />
+  <g
+     transform="matrix(4.8189054,0,0,3.908456,-74.58419,-44.870913)"
+     id="g6"
+     style="fill:#008000;stroke:#000000;stroke-width:1.44517362;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+    <path
+       d="M 16.2,12.203 36.717,24.857 16.2,37.511 Z"
+       id="path4"
+       inkscape:connector-curvature="0"
+       style="fill:#008000;stroke:#000000;stroke-width:1.44517362;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
 </svg>

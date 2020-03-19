@@ -20,7 +20,7 @@ namespace Data.Models
         public byte Move { get; set; }
 
         [MaxLength(5000)]
-        [DisplayName("Votre discussion avec vos adversaires")]
+        [DisplayName("Discussion avec vos adversaires")]
         public string Chat { get; set; }
     }
 }

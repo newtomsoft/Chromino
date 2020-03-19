@@ -313,11 +313,35 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public bool IsAllBot(int gameId)
+        /// <summary>
+        /// indique si tous les joueurs de la partie sont des bots ou non
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <returns>true si tous les joueurs sont des bots</returns>
+        public bool IsBots(int gameId)
         {
             var ids = from gp in Ctx.GamesPlayers
                       join p in Ctx.Players on gp.PlayerId equals p.Id
                       where gp.GameId == gameId
+                      select p.Bot;
+
+            if (ids.Contains(false))
+                return false;
+            else
+                return true;
+        }
+
+        /// <summary>
+        /// indique si tous adversaire du joueur la partie sont des bots ou non
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns>true si tous les advesaires sont des bots</returns>
+        public bool IsOpponenentsAreBots(int gameId, int playerId)
+        {
+            var ids = from gp in Ctx.GamesPlayers
+                      join p in Ctx.Players on gp.PlayerId equals p.Id
+                      where gp.GameId == gameId && gp.PlayerId != playerId
                       select p.Bot;
 
             if (ids.Contains(false))

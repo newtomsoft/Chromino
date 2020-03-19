@@ -69,9 +69,8 @@ function AnimateSquare(squareId) {
 
 function ShowPopup(popupId) {
     if (popupId == '#ChatPopup') {
-        let textArea = document.getElementById('ChatPopup-textarea');
+        //let textArea = document.getElementById('ChatPopup-textarea');
         //textArea.scrollTop = textArea.scrollHeight;
-        textArea.scrollTop = 500;
         if (NotReadMessages > 0) {
             $('#ChatPopup-Read').show();
         }
@@ -147,7 +146,7 @@ function StartDraggable() {
             var position = $(LastChrominoMove).offset();
             if (ToPut && PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
                 clearTimeout(TimeoutPut);
-                PutChromino();
+                PlayChromino();
             }
             ToPut = false;
         });
@@ -192,7 +191,7 @@ function MagnetChromino() {
     }
 }
 
-function PutChromino() {
+function PlayChromino() {
     if (!ThisPlayerTurn) {
         $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
         $('#errorMessageEnd').html("Merci");

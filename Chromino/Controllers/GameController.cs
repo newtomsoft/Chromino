@@ -204,24 +204,23 @@ namespace Controllers
 
             if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || playerTurn.Bot) // identified player in the game or bot play
             {
-                int chrominosInGameNumber = GameChrominoDal.InGame(id);
                 int chrominosInStackNumber = GameChrominoDal.InStack(id);
 
-                Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
                 {
-                    pseudos_chrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
+                    pseudosChrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
                     pseudos.Add(player.UserName);
                 }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
-                foreach (var pseudo_chromino in pseudos_chrominos)
+                foreach (var pseudo_chromino in pseudosChrominos)
                 {
                     if (pseudo_chromino.Value == 1)
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
                 }
                 List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (GamePlayerDal.IsAllBot(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
+                if (GamePlayerDal.IsBots(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
                 else
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
@@ -232,14 +231,14 @@ namespace Controllers
                         GamePlayerDal.SetWon(id, PlayerId, false);
                 }
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
+                GamePlayer gamePlayerIdentified = GamePlayerDal.Details(id, PlayerId);
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
-                string chat = GameDal.Details(id).Chat; // todo peut mieux faire
-                string memo = GamePlayerDal.Details(id, PlayerId).Memo; // todo peut mieux faire
-                byte moves = GameDal.Moves(id);
-                GameVM gameViewModel = new GameVM(id, squares, GameDal.GetStatus(id), chrominosInGameNumber, chrominosInStackNumber, pseudos_chrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, moves, chat, memo);
+                Game game = GameDal.Details(id);
+                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(id, PlayerId);
+                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots);
                 return View(gameViewModel);
             }
             else
@@ -249,10 +248,10 @@ namespace Controllers
         }
 
         /// <summary>
-        /// affiche à l'écran la première partie à jouer
+        /// affiche à l'écran la prochaine partie à jouer
         /// </summary>
         /// <returns></returns>
-        public IActionResult FirstToPlay()
+        public IActionResult NextToPlay()
         {
             GetPlayerInfos();
             TempData["ShowInfos"] = true;
