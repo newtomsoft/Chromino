@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-
     $(document).click(function () {
         StopDraggable();
         StartDraggable();
@@ -112,7 +111,7 @@ function SchedulePut() {
     clearTimeout(TimeoutPut);
     PositionLastChromino = $(LastChrominoMove).offset();
     TimeoutPut = setTimeout(function () {
-        position = $(LastChrominoMove).offset();
+        let position = $(LastChrominoMove).offset();
         if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
             ToPut = true;
             ShowOkToPut();
@@ -153,8 +152,8 @@ function StartDraggable() {
                 clearTimeout(TimeoutRotate);
                 Rotation(LastChrominoMove);
             }
-            var position = $(LastChrominoMove).offset();
-            if (ToPut && PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+            let offset = $(LastChrominoMove).offset();
+            if (ToPut && PositionLastChromino.left == offset.left && PositionLastChromino.top == offset.top) {
                 clearTimeout(TimeoutPut);
                 PlayChromino();
             }
@@ -164,10 +163,24 @@ function StartDraggable() {
 
 function Rotation(chromino, angle = 90) {
 
-    let newAngle = angle + GetRotation(chromino);
+    let newAngle = angle + GetAngle(chromino);
     if (newAngle >= 360)
         newAngle -= 360;
-    SetRotation(chromino, newAngle);
+    SetAngle(chromino, newAngle);
+    let orientation = GetOrientation(chromino);
+    if (angle == 90 || angle == -90) {
+        if (orientation == "horizontal")
+            SetOffset(chromino, -SquareSize, 0);
+        else
+            SetOffset(chromino, SquareSize, 0);
+    }
+}
+
+function SetOffset(chromino, left, top) {
+    let offset = $(chromino).offset();
+    let newLeft = offset.left + left;
+    let newTop = offset.top + top;
+    $(chromino).offset({ top: newTop, left: newLeft });
 }
 
 function SetGoodOrientation(chromino) {
@@ -178,22 +191,35 @@ function SetGoodOrientation(chromino) {
 }
 
 function SetHorizontal(chromino) {
-    let rotation = GetRotation(chromino);
+    let rotation = GetAngle(chromino);
     if (rotation == 90)
-        SetRotation(chromino, 180);
+        SetAngle(chromino, 180);
     else if (rotation == 270)
-        SetRotation(chromino, 0);
+        SetAngle(chromino, 0);
 }
 
 function SetVertical(chromino) {
-    let rotation = GetRotation(chromino);
+    let rotation = GetAngle(chromino);
     if (rotation == 0)
-        SetRotation(chromino, 90);
+        SetAngle(chromino, 90);
     else if (rotation == 180)
-        SetRotation(chromino, 270);
+        SetAngle(chromino, 270);
 }
 
-function GetRotation(chromino) {
+function GetOrientation(chromino) {
+    switch (GetAngle(chromino)) {
+        case 0:
+        case 180:
+            return "horizontal";
+            break;
+        case 90:
+        case 270:
+            return "vertical";
+            break;
+    }
+}
+
+function GetAngle(chromino) {
     switch ($(chromino).css("flex-direction")) {
         case "row":
             return 0
@@ -211,20 +237,7 @@ function GetRotation(chromino) {
     }
 }
 
-function GetOrientation(chromino) {
-    switch (GetRotation(chromino)) {
-        case 0:
-        case 180:
-            return "horizontal";
-            break;
-        case 90:
-        case 270:
-            return "vertical";
-            break;
-    }
-}
-
-function SetRotation(chromino, rotate) {
+function SetAngle(chromino, rotate) {
     switch (rotate) {
         case 0:
             $(chromino).css("flex-direction", "row");
@@ -271,10 +284,8 @@ function IsChrominoInGameArea() {
         offsetLeft = 0.5 * SquareSize;
         offsetTop = 2.5 * SquareSize;
     }
-
     let heightGameArea = $('#gameArea').height();
     let widthGameArea = $('#gameArea').width();
-
     if (OffsetLastChromino.left + offsetLeft > OffsetGameArea.left && OffsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && OffsetLastChromino.top + offsetTop > OffsetGameArea.top && OffsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
         return true;
     else
@@ -292,7 +303,7 @@ function PlayChromino() {
         let offset = $(LastChrominoMove).offset();
         let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
         let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
-        switch (GetRotation(LastChrominoMove)) {
+        switch (GetAngle(LastChrominoMove)) {
             case 0:
                 $("#FormOrientation").val(Horizontal);
                 break;
@@ -340,7 +351,7 @@ function ResizeGameArea() {
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
             $(this).css({ top: offset });
-            SetRotation(this, 0);
+            SetAngle(this, 0);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
@@ -350,7 +361,7 @@ function ResizeGameArea() {
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: offset });
             $(this).css({ top: documentHeight - SquareSize * 3 }); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
-            SetRotation(this, 90);
+            SetAngle(this, 90);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
     }
