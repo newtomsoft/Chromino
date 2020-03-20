@@ -34,7 +34,7 @@
         <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');"></button>
         @if (Model.Game.Status == GameStatus.InProgress || Model.Game.Status == GameStatus.SingleInProgress)
         {
-            if (Model.PlayerPseudoTurn == ViewBag.PlayerPseudo)
+            if (Model.PlayerTurn.UserName == ViewBag.PlayerPseudo)
             {
                 playerTurn = "C'est à vous de jouer";
                 @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
@@ -56,16 +56,16 @@
             }
             else
             {
-                playerTurn = $"C'est à {@Model.PlayerPseudoTurn} de jouer";
+                playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
             }
         }
-        @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerIdTurn == ViewBag.PlayerId &&
-       (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon))
+        @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == ViewBag.PlayerId &&
+(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon))
         {
-            <button class="btn btn-toolbar btn-play" onclick="PlayChromino()" style="display:none"></button>
+            <button class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button>
         }
 
-        @if (!Model.BotsId.Contains(Model.PlayerIdTurn) && Model.PlayerPseudoTurn != ViewBag.PlayerPseudo)
+        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.UserName != ViewBag.PlayerPseudo)
         {
             <form id="FormNextGame" asp-action="NextToPlay" style="display:none">
             </form>
@@ -165,7 +165,7 @@
 
     <script>
     PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
-    @{string thisPlayerTurn = (Model.PlayerIdTurn == ViewBag.PlayerId).ToString().ToLower();}
+    @{string thisPlayerTurn = (Model.PlayerTurn.Id == ViewBag.PlayerId).ToString().ToLower();}
     ThisPlayerTurn = @thisPlayerTurn;
         Squares = new Array;
         Pseudos = new Array;
@@ -197,13 +197,13 @@
     </script>
 
 
-    @if (Model.BotsId.Contains(Model.PlayerIdTurn) && Model.Game.Status != GameStatus.Finished)
+    @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.Game.Status != GameStatus.Finished)
     {
         <script>
             window.onload = function () { playBot(); }
 
             function playBot() {
-                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.Game.Id, botId = Model.PlayerIdTurn})");
+                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.Game.Id, botId = Model.PlayerTurn.Id})");
             }
         </script>
     }
@@ -242,11 +242,11 @@
         });
     </script>
 }
-else
+else if (TempData["ShowOtherInfo"] != null)
 {
     <script>
         $(document).ready(function () {
-            HidePopup('#infoPopup');
+            ShowPopup('#otherInfoPopup');
         });
     </script>
 }
@@ -318,6 +318,23 @@ else
     {
         <p class="infoMineure">Pioche : 1 chromino</p>
     }
+</div>
+
+<div id="otherInfoPopup" style="display:none">
+    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+    @if (Model.PlayerTurn.Bot)
+    {
+        <p>L'ordinateur est en train de jouer</p>
+        <p>Merci de patienter quelques secondes...</p>
+        <img src="~/image/Wait.gif" height="65" width="65" alt="patientez" />
+    }
+</div>
+
+<div id="playingInfoPopup" style="display:none">
+    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+    <p>Vous avez posé un chromino dans le jeu sans le valider</p>
+    <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
+    <p>Ou bien en appuyant sur le chromino jusqu'au flash</p>
 </div>
 
 @if (TempData["PlayReturn"] != null)

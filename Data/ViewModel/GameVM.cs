@@ -2,8 +2,6 @@
 using Data.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Data.ViewModel
@@ -23,8 +21,7 @@ namespace Data.ViewModel
         public Dictionary<string, int> PseudosChrominos { get; set; }
         public Dictionary<string, ChrominoVM> Pseudos_LastChrominoVM { get; set; }
         public List<ChrominoVM> IdentifiedPlayerChrominosVM { get; set; }
-        public string PlayerPseudoTurn { get; set; }
-        public int PlayerIdTurn { get; set; }
+        public Player PlayerTurn { get; set; }
         public Game Game { get; set; }
         public GamePlayer GamePlayerTurn { get; set; }
         public GamePlayer GamePlayerIdentified { get; set; }
@@ -38,8 +35,7 @@ namespace Data.ViewModel
             OpponenentsAreBots = opponenentsAreBots;
             Game = game;
             Pseudos = pseudos;
-            PlayerPseudoTurn = playerTurn.UserName;
-            PlayerIdTurn = playerTurn.Id;
+            PlayerTurn = playerTurn;
             GamePlayerTurn = gamePlayerTurn;
             GamePlayerIdentified = gamePlayerIdentified;
             ChrominosInStack = chrominosInStackNumber;

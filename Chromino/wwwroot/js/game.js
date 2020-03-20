@@ -83,9 +83,22 @@ function ShowPopup(popupId) {
     $.fn.popup.defaults.pagecontainer = '#page'
 }
 
-function HidePopup(popupId) {
-    $(popupId).hide();
+//***************************************************//
+//*** information de valider position pour jouer ****//
+//***************************************************//
+
+let TimeoutInformPlaying = null;
+function ScheduleInformPlaying() {
+    clearTimeout(TimeoutInformPlaying);
+    TimeoutInformPlaying = setTimeout(function () {
+        ShowPopup('#playingInfoPopup');
+    }, 9000);
 }
+
+function StopScheduleInformPlaying() {
+    clearTimeout(TimeoutInformPlaying);
+}
+
 
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//
@@ -98,6 +111,7 @@ let ToRotate = true;
 let LastChrominoMove = null;
 let OffsetLastChromino = 0;
 let OffsetGameArea = null;
+
 
 function ScheduleRotate() {
     ToRotate = true;
@@ -136,9 +150,11 @@ function StartDraggable() {
             LastChrominoMove = this;
             PositionLastChromino = $(LastChrominoMove).offset();
             SchedulePut();
+            StopScheduleInformPlaying();
         }).on("dragend", function () {
             if (IsChrominoInGameArea(this)) {
                 $('.btn-play').show();
+                ScheduleInformPlaying();
             }
             else {
                 $('.btn-play').hide();

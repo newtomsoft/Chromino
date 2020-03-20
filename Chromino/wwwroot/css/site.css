@@ -59,6 +59,13 @@ a {
     background-image: url('/image/button/Next.svg');
 }
 
+#buttonInfoForPlaying {
+    display: inline;
+    width: 40px;
+    margin: 0px;
+    padding: 0px;
+}
+
 .notification {
     background-color: red;
     color: white;
