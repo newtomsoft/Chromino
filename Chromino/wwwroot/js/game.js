@@ -137,7 +137,7 @@ function StartDraggable() {
             PositionLastChromino = $(LastChrominoMove).offset();
             SchedulePut();
         }).on("dragend", function () {
-            if (IsChrominoInGameArea()) {
+            if (IsChrominoInGameArea(this)) {
                 $('.btn-play').show();
             }
             else {
@@ -272,11 +272,11 @@ function MagnetChromino() {
     }
 }
 
-function IsChrominoInGameArea() {
+function IsChrominoInGameArea(chromino) {
     let offsetRight = 0.5 * SquareSize;
     let offsetBottom = 0.5 * SquareSize;
     let offsetLeft, offsetTop;
-    if (GetOrientation(LastChrominoMove) == "horizontal") {
+    if (GetOrientation(chromino) == "horizontal") {
         offsetLeft = 2.5 * SquareSize;
         offsetTop = 0.5 * SquareSize;
     }
@@ -286,7 +286,8 @@ function IsChrominoInGameArea() {
     }
     let heightGameArea = $('#gameArea').height();
     let widthGameArea = $('#gameArea').width();
-    if (OffsetLastChromino.left + offsetLeft > OffsetGameArea.left && OffsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && OffsetLastChromino.top + offsetTop > OffsetGameArea.top && OffsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
+    let offsetLastChromino = $(chromino).offset();
+    if (offsetLastChromino.left + offsetLeft > OffsetGameArea.left && offsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && offsetLastChromino.top + offsetTop > OffsetGameArea.top && offsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
         return true;
     else
         return false;

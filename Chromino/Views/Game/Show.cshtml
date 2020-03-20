@@ -390,7 +390,7 @@ else
                 <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
                 <label asp-for="Game.Chat"></label>
                 <textarea id="ChatPopup-textarea" class="form-control" rows="14" disabled>@Model.Game.Chat</textarea>
-                <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Messages lus</button>
+                <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Marquer comme lu</button>
             </div>
             <div class="form-group">
                 <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
