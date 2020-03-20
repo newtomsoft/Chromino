@@ -313,7 +313,6 @@ function PlayChromino() {
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
         $("#FormChrominoId").val(LastChrominoMove.id);
-        FillInputsChrominoInHand("InputOrderPlay", "InputFlipPlay", LastChrominoMove);
         $("#FormSendMove").submit();
     }
     else {
