@@ -106,13 +106,16 @@ a {
     font-size: large;
 }
 
-    .popup_content img:first-child {
-        width: 80px;
+    .popup_content img {
         margin: auto;
-        padding: 2%;
-        display: grid;
         align-content: center;
+        display: grid;
     }
+
+        .popup_content img:first-child {
+            width: 80px;
+            padding: 2%;
+        }
 
     .popup_content p {
         text-align: left;

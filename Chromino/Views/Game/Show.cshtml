@@ -66,7 +66,7 @@
             <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
         }
 
-        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.UserName != ViewBag.PlayerPseudo)
+        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != ViewBag.PlayerId || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished)
         {
             <form id="FormNextGame" asp-action="NextToPlay" style="display:none">
             </form>
@@ -214,24 +214,10 @@
         int verticalFlip = (int)Orientation.VerticalFlip;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
-        if (TempData["ShowInfos"] != null || (!Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
-        {
+        if (TempData["ShowInfos"] != null || (Model.PlayerTurn.Id == ViewBag.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
             showInfoPopup = true;
-            @*<script>
-                $(document).ready(function () {
-                    ShowPopup('#infoPopup');
-                });
-            </script>*@
-        }
         else if (TempData["ShowBotPlayingInfoPopup"] != null)
-        {
             showBotPlayingInfoPopup = true;
-            @*<script>
-                $(document).ready(function () {
-                    ShowPopup('#botPlayingInfoPopup');
-                });
-            </script>*@
-        }
     }
     <script>
         var GameAreaLinesNumber = @Model.LinesNumber;
@@ -396,13 +382,13 @@
 </div>
 <div id="botPlayingInfoPopup" style="display:none">
     <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    <p>L'ordinateur est en train de jouer</p>
+    <p>L'ordinateur est en train de jouer.</p>
     <p>Merci de patienter quelques secondes...</p>
     <img src="~/image/Wait.gif" height="65" alt="patientez" />
 </div>
 <div id="playingInfoPopup" style="display:none">
     <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    <p>Vous avez posé un chromino dans le jeu sans le valider</p>
+    <p>Vous avez posé un chromino dans le jeu sans le valider.</p>
     <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
-    <p>Ou bien en appuyant sur le chromino jusqu'au flash</p>
+    <p>Ou en appuyant sur le chromino jusqu'au flash.</p>
 </div>
