@@ -202,7 +202,7 @@ namespace Controllers
             int playersNumber = players.Count;
             Player playerTurn = GamePlayerDal.PlayerTurn(id);
             if (playerTurn.Bot)
-                TempData["ShowOtherInfo"] = true;
+                TempData["ShowBotPlayingInfoPopup"] = true;
 
             if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || playerTurn.Bot) // identified player in the game or bot play
             {

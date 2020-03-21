@@ -41,6 +41,13 @@
         event.preventDefault();
         event.stopPropagation();
     };
+
+    if (PlayReturn != "Ok") 
+        ShowPopup('#errorPopup');
+    else if (ShowInfoPopup)
+        ShowPopup('#infoPopup');
+    else if (ShowBotPlayingInfoPopup)
+        ShowPopup('#botPlayingInfoPopup');
 });
 
 //***************************************************//
@@ -313,7 +320,7 @@ function PlayChromino() {
     if (!ThisPlayerTurn) {
         $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
         $('#errorMessageEnd').html("Merci");
-        ShowErrorPopup();
+        ShowPopup('#errorPopup');
         return;
     }
     if (LastChrominoMove != null) {
@@ -345,7 +352,7 @@ function PlayChromino() {
     }
     else {
         $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
-        ShowErrorPopup();
+        ShowPopup('#errorPopup');
     }
 }
 

@@ -8,6 +8,7 @@
     string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove(ViewBag.PlayerPseudo);
+    PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
 }
 
 <!DOCTYPE html>
@@ -62,7 +63,7 @@
         @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == ViewBag.PlayerId &&
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != Color.Cameleon))
         {
-            <button class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button>
+            <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
         }
 
         @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.UserName != ViewBag.PlayerPseudo)
@@ -107,21 +108,13 @@
                     {
                         string classCloseEdge = "Square ";
                         if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].Color != Color.None)
-                        {
                             classCloseEdge += " CloseRight";
-                        }
                         if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].Color != Color.None)
-                        {
                             classCloseEdge += " CloseBottom";
-                        }
                         if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].Color != Color.None)
-                        {
                             classCloseEdge += " CloseLeft";
-                        }
                         if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].Color != Color.None)
-                        {
                             classCloseEdge += " CloseTop";
-                        }
                         <div class="@classCloseEdge"></div>
                     }
                 }
@@ -219,6 +212,26 @@
         int horizontalFlip = (int)Orientation.HorizontalFlip;
         int vertical = (int)Orientation.Vertical;
         int verticalFlip = (int)Orientation.VerticalFlip;
+        bool showInfoPopup = false;
+        bool showBotPlayingInfoPopup = false;
+        if (TempData["ShowInfos"] != null || (!Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+        {
+            showInfoPopup = true;
+            @*<script>
+                $(document).ready(function () {
+                    ShowPopup('#infoPopup');
+                });
+            </script>*@
+        }
+        else if (TempData["ShowBotPlayingInfoPopup"] != null)
+        {
+            showBotPlayingInfoPopup = true;
+            @*<script>
+                $(document).ready(function () {
+                    ShowPopup('#botPlayingInfoPopup');
+                });
+            </script>*@
+        }
     }
     <script>
         var GameAreaLinesNumber = @Model.LinesNumber;
@@ -230,26 +243,12 @@
         var Vertical = @vertical;
         var VerticalFlip = @verticalFlip;
         var NotReadMessages = @Model.GamePlayerIdentified.NotReadMessages;
+        var PlayReturn = "@playReturn.ToString()";
+        var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
+        var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
     </script>
 </body>
 </html>
-
-@if (TempData["ShowInfos"] != null || (!Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
-{
-    <script>
-        $(document).ready(function () {
-            ShowPopup('#infoPopup');
-        });
-    </script>
-}
-else if (TempData["ShowOtherInfo"] != null)
-{
-    <script>
-        $(document).ready(function () {
-            ShowPopup('#otherInfoPopup');
-        });
-    </script>
-}
 
 <div id="infoPopup" style="display:none">
     <img src="~/image/Info.svg" height="65" width="65" alt="info" />
@@ -319,63 +318,36 @@ else if (TempData["ShowOtherInfo"] != null)
         <p class="infoMineure">Pioche : 1 chromino</p>
     }
 </div>
-
-<div id="otherInfoPopup" style="display:none">
-    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    @if (Model.PlayerTurn.Bot)
+<div id="errorPopup" style="display:none">
+    <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
+    @switch (playReturn)
     {
-        <p>L'ordinateur est en train de jouer</p>
-        <p>Merci de patienter quelques secondes...</p>
-        <img src="~/image/Wait.gif" height="65" width="65" alt="patientez" />
+        case PlayReturn.NotFree:
+            <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre.</p>
+            <p style="text-align:center">Merci de rejouer.</p>
+            break;
+        case PlayReturn.DifferentColorsAround:
+            <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes.</p>
+            <p style="text-align:center">Merci de rejouer.</p>
+            break;
+        case PlayReturn.NotTwoOrMoreSameColors:
+            <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu.</p>
+            <p style="text-align:center">Merci de rejouer.</p>
+            break;
+        case PlayReturn.LastChrominoIsCameleon:
+            <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier.</p>
+            <p style="text-align:center">Merci de piocher un chromino.</p>
+            break;
+        case PlayReturn.NotPlayerTurn:
+            <p id="errorMessage">Vous avez déjà joué.</p>
+            <p style="text-align:center">Merci d'attendre votre tour.</p>
+            break;
+        default:
+            <p id="errorMessage"></p>
+            <p id="errorMessageEnd" style="text-align:center"></p>
+            break;
     }
 </div>
-
-<div id="playingInfoPopup" style="display:none">
-    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    <p>Vous avez posé un chromino dans le jeu sans le valider</p>
-    <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
-    <p>Ou bien en appuyant sur le chromino jusqu'au flash</p>
-</div>
-
-@if (TempData["PlayReturn"] != null)
-{
-    <div id="errorPopup" style="display:none">
-        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
-        @switch ((PlayReturn)TempData["PlayReturn"])
-        {
-            case PlayReturn.NotFree:
-                <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre</p>
-                break;
-            case PlayReturn.DifferentColorsAround:
-                <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes</p>
-                break;
-            case PlayReturn.NotTwoOrMoreSameColors:
-                <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu</p>
-                break;
-            case PlayReturn.LastChrominoIsCameleon:
-                <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher</p>
-                break;
-            case PlayReturn.NotPlayerTurn:
-                <p id="errorMessage">Vous avez déjà joué. Attendez votre tour</p>
-                break;
-        }
-        <p style="text-align:center">Merci de rejouer</p>
-    </div>
-    <script>
-        $(document).ready(function () {
-            ShowPopup('#errorPopup');
-        });
-    </script>
-}
-else
-{
-    <div id="errorPopup" style="display:none">
-        <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
-        <p id="errorMessage"></p>
-        <p id="errorMessageEnd" style="text-align:center">Merci de rejouer</p>
-    </div>
-}
-
 <div id="MemoPopup" class="popup-memochat" style="display:none">
     <div>
         <form asp-action="Add" asp-controller="Memo">
@@ -393,7 +365,6 @@ else
         </form>
     </div>
 </div>
-
 <div id="ChatPopup" class="popup-memochat" style="display:none">
     <form id="form-SetReadChat" asp-action="SetRead" asp-controller="Chat" hidden>
         <input name="gameId" value="@Model.Game.Id" type="hidden" />
@@ -416,4 +387,16 @@ else
             </div>
         </form>
     </div>
+</div>
+<div id="botPlayingInfoPopup" style="display:none">
+    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+    <p>L'ordinateur est en train de jouer</p>
+    <p>Merci de patienter quelques secondes...</p>
+    <img src="~/image/Wait.gif" height="65" alt="patientez" />
+</div>
+<div id="playingInfoPopup" style="display:none">
+    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+    <p>Vous avez posé un chromino dans le jeu sans le valider</p>
+    <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
+    <p>Ou bien en appuyant sur le chromino jusqu'au flash</p>
 </div>
