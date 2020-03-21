@@ -14,12 +14,8 @@
 
     ResizeGameArea();
     StartDraggable();
-    if (NotReadMessages != 0) {
-        $('#NotifChat').show();
-        $('#NotifChat').text(NotReadMessages);
-    }
 
-    //animate lasts chrominos played
+    //animatation des derniers chromino joués
     if (!PreviouslyDraw && ThisPlayerTurn) {
         AnimateChrominosPlayed(0);
     }
@@ -36,18 +32,26 @@
         AnimateChrominosPlayed();
     });
 
-    // désactivation du menu contextuel
+    // désactivation du menu contextuel clic droit
     window.oncontextmenu = function (event) {
         event.preventDefault();
         event.stopPropagation();
     };
 
+    // affichage notif nombre de messages non lus
+    if (NotReadMessages != 0) {
+        $('#NotifChat').text(NotReadMessages);
+        $('#NotifChat').show();
+    }
+
+    // affichage popup
     if (PlayReturn != "Ok") 
         ShowPopup('#errorPopup');
     else if (ShowInfoPopup)
         ShowPopup('#infoPopup');
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
+
 });
 
 //***************************************************//
@@ -93,7 +97,6 @@ function ShowPopup(popupId) {
 //***************************************************//
 //*** information de valider position pour jouer ****//
 //***************************************************//
-
 let TimeoutInformPlaying = null;
 function ScheduleInformPlaying() {
     clearTimeout(TimeoutInformPlaying);
@@ -101,7 +104,6 @@ function ScheduleInformPlaying() {
         ShowPopup('#playingInfoPopup');
     }, 9000);
 }
-
 function StopScheduleInformPlaying() {
     clearTimeout(TimeoutInformPlaying);
 }
@@ -118,36 +120,6 @@ let ToRotate = true;
 let LastChrominoMove = null;
 let OffsetLastChromino = 0;
 let OffsetGameArea = null;
-
-
-function ScheduleRotate() {
-    ToRotate = true;
-    clearTimeout(TimeoutRotate);
-    TimeoutRotate = setTimeout(function () {
-        ToRotate = false;
-    }, 120);
-}
-
-function SchedulePut() {
-    clearTimeout(TimeoutPut);
-    PositionLastChromino = $(LastChrominoMove).offset();
-    TimeoutPut = setTimeout(function () {
-        let position = $(LastChrominoMove).offset();
-        if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
-            ToPut = true;
-            ShowOkToPut();
-        }
-    }, 600);
-}
-
-function ShowOkToPut() {
-    $('#gameArea').fadeToggle(25, function () {
-        $(this).fadeToggle(25);
-    });
-    $(LastChrominoMove).fadeToggle(25, function () {
-        $(this).fadeToggle(25);
-    });
-}
 
 function StartDraggable() {
     $(".handPlayerChromino").draggableTouch()
@@ -184,8 +156,54 @@ function StartDraggable() {
         });
 }
 
-function Rotation(chromino, angle = 90) {
+function StopDraggable() {
+    $(this).off("mouseup");
+    $(this).off("mousedown");
+    $(document).off("mousemove");
+    $('.handPlayerChromino').draggableTouch("disable");
+}
 
+function ScheduleRotate() {
+    ToRotate = true;
+    clearTimeout(TimeoutRotate);
+    TimeoutRotate = setTimeout(function () {
+        ToRotate = false;
+    }, 120);
+}
+
+function SchedulePut() {
+    clearTimeout(TimeoutPut);
+    PositionLastChromino = $(LastChrominoMove).offset();
+    TimeoutPut = setTimeout(function () {
+        let position = $(LastChrominoMove).offset();
+        if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+            ToPut = true;
+            ShowOkToPut();
+        }
+    }, 600);
+}
+
+function ShowOkToPut() {
+    $('#gameArea').fadeToggle(25, function () {
+        $(this).fadeToggle(25);
+    });
+    $(LastChrominoMove).fadeToggle(25, function () {
+        $(this).fadeToggle(25);
+    });
+}
+
+function MagnetChromino() {
+    if (LastChrominoMove != null) {
+        let offset = $(LastChrominoMove).offset();
+        let x = offset.left - GameAreaOffsetX;
+        let y = offset.top - GameAreaOffsetY;
+        let difX = SquareSize * Math.round(x / SquareSize) - x;
+        let difY = SquareSize * Math.round(y / SquareSize) - y;
+        $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
+    }
+}
+
+function Rotation(chromino, angle = 90) {
     let newAngle = angle + GetAngle(chromino);
     if (newAngle >= 360)
         newAngle -= 360;
@@ -277,85 +295,6 @@ function SetAngle(chromino, rotate) {
     }
 }
 
-function StopDraggable() {
-    $(this).off("mouseup");
-    $(this).off("mousedown");
-    $(document).off("mousemove");
-    $('.handPlayerChromino').draggableTouch("disable");
-}
-
-function MagnetChromino() {
-    if (LastChrominoMove != null) {
-        let offset = $(LastChrominoMove).offset();
-        let x = offset.left - GameAreaOffsetX;
-        let y = offset.top - GameAreaOffsetY;
-        let difX = SquareSize * Math.round(x / SquareSize) - x;
-        let difY = SquareSize * Math.round(y / SquareSize) - y;
-        $(LastChrominoMove).css({ "left": "+=" + difX + "px", "top": "+=" + difY + "px" });
-    }
-}
-
-function IsChrominoInGameArea(chromino) {
-    let offsetRight = 0.5 * SquareSize;
-    let offsetBottom = 0.5 * SquareSize;
-    let offsetLeft, offsetTop;
-    if (GetOrientation(chromino) == "horizontal") {
-        offsetLeft = 2.5 * SquareSize;
-        offsetTop = 0.5 * SquareSize;
-    }
-    else {
-        offsetLeft = 0.5 * SquareSize;
-        offsetTop = 2.5 * SquareSize;
-    }
-    let heightGameArea = $('#gameArea').height();
-    let widthGameArea = $('#gameArea').width();
-    let offsetLastChromino = $(chromino).offset();
-    if (offsetLastChromino.left + offsetLeft > OffsetGameArea.left && offsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && offsetLastChromino.top + offsetTop > OffsetGameArea.top && offsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
-        return true;
-    else
-        return false;
-}
-
-function PlayChromino() {
-    if (!ThisPlayerTurn) {
-        $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
-        $('#errorMessageEnd').html("Merci");
-        ShowPopup('#errorPopup');
-        return;
-    }
-    if (LastChrominoMove != null) {
-        let offset = $(LastChrominoMove).offset();
-        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
-        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
-        switch (GetAngle(LastChrominoMove)) {
-            case 0:
-                $("#FormOrientation").val(Horizontal);
-                break;
-            case 90:
-                $("#FormOrientation").val(VerticalFlip);
-                yIndex--;
-                break;
-            case 180:
-                $("#FormOrientation").val(HorizontalFlip);
-                break;
-            case 270:
-                $("#FormOrientation").val(Vertical);
-                yIndex--;
-                break;
-            default:
-                break;
-        }
-        $("#FormX").val(xIndex + XMin);
-        $("#FormY").val(yIndex + YMin);
-        $("#FormChrominoId").val(LastChrominoMove.id);
-        $("#FormSendMove").submit();
-    }
-    else {
-        $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
-        ShowPopup('#errorPopup');
-    }
-}
-
 //***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
@@ -401,4 +340,68 @@ function ResizeGameArea() {
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
     OffsetGameArea = $('#gameArea').offset();
+}
+
+function IsChrominoInGameArea(chromino) {
+    let offsetRight = 0.5 * SquareSize;
+    let offsetBottom = 0.5 * SquareSize;
+    let offsetLeft, offsetTop;
+    if (GetOrientation(chromino) == "horizontal") {
+        offsetLeft = 2.5 * SquareSize;
+        offsetTop = 0.5 * SquareSize;
+    }
+    else {
+        offsetLeft = 0.5 * SquareSize;
+        offsetTop = 2.5 * SquareSize;
+    }
+    let heightGameArea = $('#gameArea').height();
+    let widthGameArea = $('#gameArea').width();
+    let offsetLastChromino = $(chromino).offset();
+    if (offsetLastChromino.left + offsetLeft > OffsetGameArea.left && offsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && offsetLastChromino.top + offsetTop > OffsetGameArea.top && offsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
+        return true;
+    else
+        return false;
+}
+
+//***************************************//
+//******* fonction PlayChromino *********//
+//***************************************//
+function PlayChromino() {
+    if (!ThisPlayerTurn) {
+        $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
+        $('#errorMessageEnd').html("Merci");
+        ShowPopup('#errorPopup');
+        return;
+    }
+    if (LastChrominoMove != null) {
+        let offset = $(LastChrominoMove).offset();
+        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
+        switch (GetAngle(LastChrominoMove)) {
+            case 0:
+                $("#FormOrientation").val(Horizontal);
+                break;
+            case 90:
+                $("#FormOrientation").val(VerticalFlip);
+                yIndex--;
+                break;
+            case 180:
+                $("#FormOrientation").val(HorizontalFlip);
+                break;
+            case 270:
+                $("#FormOrientation").val(Vertical);
+                yIndex--;
+                break;
+            default:
+                break;
+        }
+        $("#FormX").val(xIndex + XMin);
+        $("#FormY").val(yIndex + YMin);
+        $("#FormChrominoId").val(LastChrominoMove.id);
+        $("#FormSendMove").submit();
+    }
+    else {
+        $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
+        ShowPopup('#errorPopup');
+    }
 }

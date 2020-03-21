@@ -329,14 +329,20 @@
         case PlayReturn.DifferentColorsAround:
             <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes.</p>
             <p style="text-align:center">Merci de rejouer.</p>
+            <img class="example" src="~/image/example/DiffSides.svg" alt="example" />
+            <p style="text-align:center; font-size:small">exemple invalide et exemple valide</p>
             break;
         case PlayReturn.NotTwoOrMoreSameColors:
             <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu.</p>
             <p style="text-align:center">Merci de rejouer.</p>
+            <img class="example" src="~/image/example/2Sides.svg" alt="example" />
+            <p style="text-align:center; font-size:small">exemples valides</p>
             break;
         case PlayReturn.LastChrominoIsCameleon:
             <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier.</p>
             <p style="text-align:center">Merci de piocher un chromino.</p>
+            <img class="example" src="~/image/example/LastTurnCameleon.svg" alt="example" />
+            <p style="text-align:center; font-size:small">exemple de chromino Caméléon</p>
             break;
         case PlayReturn.NotPlayerTurn:
             <p id="errorMessage">Vous avez déjà joué.</p>
