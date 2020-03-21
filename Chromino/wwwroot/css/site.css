@@ -139,6 +139,11 @@ a {
     max-height: 95%;
 }
 
+#ChatPopup-textarea {
+    width: 400px;
+    max-width: 100%;
+}
+
 #about {
     text-align: justify;
 }

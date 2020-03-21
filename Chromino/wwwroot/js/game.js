@@ -45,7 +45,7 @@
     }
 
     // affichage popup
-    if (PlayReturn != "Ok") 
+    if (PlayReturn != "Ok")
         ShowPopup('#errorPopup');
     else if (ShowInfoPopup)
         ShowPopup('#infoPopup');
@@ -79,19 +79,24 @@ function AnimateSquare(squareId) {
 //***************************************************//
 
 function ShowPopup(popupId) {
-    if (popupId == '#ChatPopup') {
-        //let textArea = document.getElementById('ChatPopup-textarea');
-        //textArea.scrollTop = textArea.scrollHeight;
-        if (NotReadMessages > 0) {
-            $('#ChatPopup-Read').show();
-        }
-    }
     $(popupId).show();
     $(popupId).popup({
         autoopen: true,
         transition: 'all 0.4s'
     });
-    $.fn.popup.defaults.pagecontainer = '#page'
+    $.fn.popup.defaults.pagecontainer = '#page';
+    if (popupId == '#ChatPopup') {
+
+        $('#ChatPopup-textarea').scrollTop(300);
+        let TimeoutScroll;
+        clearTimeout(TimeoutScroll);
+        TimeoutScroll = setTimeout(function () {
+            $('#ChatPopup-textarea').scrollTop($('#ChatPopup-textarea')[0].scrollHeight);
+        }, 50);
+        if (NotReadMessages > 0) {
+            $('#ChatPopup-Read').show();
+        }
+    }
 }
 
 //***************************************************//
