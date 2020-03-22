@@ -1,5 +1,6 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -76,6 +77,16 @@ namespace Data.DAL
                                 select p.Id).ToList();
 
             return botsId;
+        }
+
+        public void DisableTips(int playerId)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            player.NoTips = true;
+            Ctx.SaveChanges();
         }
     }
 }

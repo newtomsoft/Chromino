@@ -236,11 +236,12 @@ namespace Controllers
                 GamePlayer gamePlayerIdentified = GamePlayerDal.Details(id, PlayerId);
                 List<Square> squares = SquareDal.List(id);
                 List<int> botsId = PlayerDal.BotsId();
+                bool noTips = PlayerDal.Details(PlayerId).NoTips;
                 List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
                 List<string> pseudoChrominosInGamePlayed = new List<string>();
                 Game game = GameDal.Details(id);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(id, PlayerId);
-                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots);
+                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
                 return View(gameViewModel);
             }
             else

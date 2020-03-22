@@ -18,50 +18,15 @@ namespace Controllers
         {
         }
 
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Login([Bind("Pseudo,Password")] Player player)
-        //{
-        //    Contract.Requires(player != null);
-        //    if (ModelState.IsValid)
-        //    {
-        //        player.Password = player.Password.GetHash();
-        //        Player found;
-        //        if ((found = PlayerDal.GetPlayer(player)) != null)
-        //        {
-        //            HttpContext.Session.SetInt32(SessionKeyPlayerId, found.Id);
-        //            HttpContext.Session.SetString(SessionKeyPlayerPseudo, found.Pseudo);
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
-        //        {
-        //            ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
-        //            return View();
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        ViewBag.error = "Votre pseudo ou mot de passe est incorrect. Merci de réessayer";
-        //        return View();
-        //    }
-        //}
-
         [HttpPost]
-        public IActionResult LoginGuest()
+        public IActionResult DisableTips(int gameId, int playerId, string dontShowTips)
         {
-            Player found = PlayerDal.Details("Invité");
-            if (found != null)
+            GetPlayerInfos();
+            if (playerId == PlayerId && dontShowTips == "on")
             {
-                // todo se loguer avec ce compte
+                PlayerDal.DisableTips(playerId);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }
 }

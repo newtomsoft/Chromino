@@ -78,25 +78,30 @@ function AnimateSquare(squareId) {
 //********** gestion popups de la partie ************//
 //***************************************************//
 
-function ShowPopup(popupId) {
-    $(popupId).show();
-    $(popupId).popup({
+function ShowPopup(popup) {
+    $(popup).show();
+    $(popup).popup({
         autoopen: true,
         transition: 'all 0.4s'
     });
+
     $.fn.popup.defaults.pagecontainer = '#page';
-    if (popupId == '#ChatPopup') {
+    if (popup == '#ChatPopup') {
 
         $('#ChatPopup-textarea').scrollTop(300);
-        let TimeoutScroll;
-        clearTimeout(TimeoutScroll);
-        TimeoutScroll = setTimeout(function () {
+        let timeoutScroll;
+        clearTimeout(timeoutScroll);
+        timeoutScroll = setTimeout(function () {
             $('#ChatPopup-textarea').scrollTop($('#ChatPopup-textarea')[0].scrollHeight);
         }, 50);
         if (NotReadMessages > 0) {
             $('#ChatPopup-Read').show();
         }
     }
+}
+
+function ClosePopup(popup) {
+    $(popup).popup('hide');
 }
 
 //***************************************************//
@@ -107,7 +112,7 @@ function ScheduleInformPlaying() {
     clearTimeout(TimeoutInformPlaying);
     TimeoutInformPlaying = setTimeout(function () {
         ShowPopup('#playingInfoPopup');
-    }, 9000);
+    }, 8000);
 }
 function StopScheduleInformPlaying() {
     clearTimeout(TimeoutInformPlaying);
@@ -408,5 +413,17 @@ function PlayChromino() {
     else {
         $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
         ShowPopup('#errorPopup');
+    }
+}
+
+//***************************************//
+//****** fonction ClosePopupTips ********//
+//***************************************//
+function ClosePopupTips(popup, checkBox) {
+    if ($(checkBox).is(":checked")) {
+        $("#FormDisableTips").submit();
+    }
+    else {
+        ClosePopup(popup);
     }
 }
