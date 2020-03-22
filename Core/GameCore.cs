@@ -259,7 +259,7 @@ namespace Data.Core
                 }
                 else
                 {
-                    PassTurn(botId);
+                    SkipTurn(botId);
                     return PlayReturn.Ok;
                 }
             }
@@ -281,7 +281,7 @@ namespace Data.Core
         /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
         /// </summary>
         /// <param name="playerId"></param>
-        public void PassTurn(int playerId)
+        public void SkipTurn(int playerId)
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
             if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId)))
@@ -297,7 +297,7 @@ namespace Data.Core
         public void DrawChromino(int playerId)
         {
             if (GameChrominoDal.StackToHand(GameId, playerId) == 0)
-                PassTurn(playerId);
+                SkipTurn(playerId);
             else
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
         }

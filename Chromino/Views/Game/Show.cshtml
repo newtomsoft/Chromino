@@ -47,11 +47,11 @@
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
-        <form id="FormPassTurn" asp-action="PassTurn" style="display:none">
+        <form id="FormSkip" asp-action="Skip" style="display:none">
             <input name="playerId" value="@ViewBag.PlayerId" />
             <input name="gameId" value="@Model.Game.Id" />
         </form>
-        <button type="submit" form="FormPassTurn" class="btn btn-toolbar btn-skip"></button>
+        <button type="submit" form="FormSkip" class="btn btn-toolbar btn-skip"></button>
                 }
             }
             else

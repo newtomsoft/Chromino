@@ -174,13 +174,13 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult PassTurn(int playerId, int gameId)
+        public IActionResult Skip(int playerId, int gameId)
         {
             GetPlayerInfos();
             if (playerId == PlayerId)
             {
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
-                gameCore.PassTurn(playerId);
+                gameCore.SkipTurn(playerId);
                 //NextPlayerPlayIfBot(gameId, gameCore); todo voir si on doit appeler NextPlayerPlayIfBot
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
