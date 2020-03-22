@@ -29,6 +29,7 @@ namespace ChrominoApp.Controllers
         public IActionResult ToPlay()
         {
             GetPlayerInfos();
+            TempData["GamesWithNotReadMessages"] = MakePicturesGameVM(GamePlayerDal.GamesWithNotReadMessages(PlayerId));
             return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));
         }
 

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Games to play";
     int gamesNumber = Model.Count;
+    int gamesWithNotReadMessages = (TempData["GamesWithNotReadMessages"] as List<PictureGameVM>).Count;
 }
 
 <div class="text-center">
@@ -23,7 +24,21 @@
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
-<br />
+
+@switch (gamesWithNotReadMessages)
+{
+    case 0:
+        break;
+    case 1:
+        <h3>Vous avez 1 partie avec messages non lus</h3>
+        <partial name="_ThumbnailPartial" model='TempData["GamesWithNotReadMessages"]' />
+        break;
+    default:
+        <h3>Vous avez @gamesNumber parties avec messages non lus</h3>
+        <partial name="_ThumbnailPartial" model='TempData["GamesWithNotReadMessages"]' />
+        break;
+}
+
 <p>
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
 </p>

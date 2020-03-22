@@ -169,6 +169,17 @@ namespace Data.DAL
             return games;
         }
 
+        public List<Game> GamesWithNotReadMessages(int playerId)
+        {
+            List<Game> games = (from gp in Ctx.GamesPlayers
+                                join g in Ctx.Games on gp.GameId equals g.Id
+                                where gp.PlayerId == playerId && gp.NotReadMessages > 0
+                                orderby g.PlayedDate
+                                select g).AsNoTracking().ToList();
+
+            return games;
+        }
+
         public int FirstIdMultiGameToPlay(int playerId)
         {
             Game game = MultiGamesAgainstAtLeast1HumanToPlay(playerId).FirstOrDefault();

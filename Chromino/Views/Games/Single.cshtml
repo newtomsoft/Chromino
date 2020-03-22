@@ -19,22 +19,9 @@
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
-
 <br />
 <p>
     <a asp-controller="Game" asp-action="NewSingle"><input type="button" class="btn btn-primary" value="Nouvelle partie solo" /></a>
-</p>
-<p>
-    Voir vos <a asp-controller="Games" asp-action="Won">parties gagnées</a>
-</p>
-<p>
-    Voir vos <a asp-controller="Games" asp-action="Lost">parties perdues</a>
-</p>
-<p>
-    Voir vos <a asp-controller="Games" asp-action="SingleFinished">parties solo terminées</a>
-</p>
-<p>
-    Voir vos <a asp-controller="Games" asp-action="InProgress">parties en attente (tour d'un adversaire)</a>
 </p>
 <a asp-controller="Games" asp-action="ToPlay">Retour</a>
 </p>
