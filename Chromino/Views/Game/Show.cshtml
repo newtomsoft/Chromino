@@ -213,7 +213,7 @@
         int verticalFlip = (int)Orientation.VerticalFlip;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
-        if (TempData["ShowInfos"] != null || (Model.PlayerTurn.Id == ViewBag.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+        if (TempData["ShowInfos"] != null || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished || (Model.PlayerTurn.Id == ViewBag.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
             showInfoPopup = true;
         else if (TempData["ShowBotPlayingInfoPopup"] != null)
             showBotPlayingInfoPopup = true;
