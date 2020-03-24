@@ -158,13 +158,13 @@ namespace Data.DAL
                                join g in Ctx.Games on gp.GameId equals g.Id
                                join p in Ctx.Players on gp.PlayerId equals p.Id
                                where !p.Bot && p.Id != playerId
-                               select g).AsNoTracking();
+                               select g).Distinct().AsNoTracking();
 
             var games = (from gp in Ctx.GamesPlayers
                          join g in firstFilter on gp.GameId equals g.Id
                          where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
                          orderby g.PlayedDate
-                         select g).AsNoTracking().ToList();
+                         select g).AsNoTracking().ToHashSet().ToList();
 
             return games;
         }
