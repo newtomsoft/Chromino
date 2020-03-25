@@ -61,6 +61,11 @@ namespace Data.Core
         /// </summary>
         public List<GamePlayer> GamePlayers { get; set; }
 
+        /// <summary>
+        /// List des PossiblesPositions du jeu
+        /// </summary>
+        private List<PossiblesPositions> PossiblesPositions { get; set; }
+
         public GameCore(Context ctx, IWebHostEnvironment env, int gameId)
         {
             Env = env;
@@ -147,112 +152,44 @@ namespace Data.Core
         /// <param name="gameId"></param>
         public PlayReturn PlayBot(int botId)
         {
-            bool isPreviouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
+            bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
             int playersNumber = GamePlayerDal.PlayersNumber(GameId);
-            if (GamePlayerDal.IsAllPass(GameId) && (!isPreviouslyDraw || playersNumber == 1))
+            if (GamePlayerDal.IsAllPass(GameId) && (!previouslyDraw || playersNumber == 1))
             {
                 DrawChromino(botId);
                 return PlayReturn.DrawChromino;
             }
 
-            HashSet<Coordinate> coordinates = FreeAroundChrominos();
-            // prendre ceux avec un seul coté en commun avec un chrominos
-            // calculer orientation avec les couleurs imposées ou pas
-            List<PossiblesPositions> possiblesPositions = new List<PossiblesPositions>();
-            foreach (Coordinate coordinate in coordinates)
-            {
-                Enumeration.Color? firstColor = OkColorFor(coordinate, out int commonSidesFirstColor);
-                if (firstColor != null)
-                {
-                    //cherche placement possible d'un square
-                    foreach (Orientation orientation in (Orientation[])Enum.GetValues(typeof(Orientation)))
-                    {
-                        Coordinate secondCoordinate = coordinate.GetNextCoordinate(orientation);
-                        Coordinate thirdCoordinate = secondCoordinate.GetNextCoordinate(orientation);
-                        if (SquareDal.IsFree(GameId, secondCoordinate) && SquareDal.IsFree(GameId, thirdCoordinate))
-                        {
-                            //calcul si chromino posable et dans quelle position
-                            Enumeration.Color? secondColor = OkColorFor(secondCoordinate, out int adjacentChrominoSecondColor);
-                            Enumeration.Color? thirdColor = OkColorFor(thirdCoordinate, out int adjacentChrominosThirdColor);
+            ComputePossiblesPositions();
 
-                            if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
-                            {
-                                PossiblesPositions possibleSpace = new PossiblesPositions
-                                {
-                                    Coordinate = coordinate,
-                                    Orientation = orientation,
-                                    FirstColor = firstColor,
-                                    SecondColor = secondColor,
-                                    ThirdColor = thirdColor,
-                                };
-                                possiblesPositions.Add(possibleSpace);
-                            }
-                        }
-                    }
+            bool oneOpponentWithOneChromino = false;
+            List<int> playerIdWithLastChrominoIdInHand = GameChrominoDal.PlayersIdWithOneChrominoKnown(GameId, botId);
+            if (playerIdWithLastChrominoIdInHand != null && playerIdWithLastChrominoIdInHand.Count == 1 && GameChrominoDal.InHand(GameId, playerIdWithLastChrominoIdInHand[0]) == 1)
+            {
+                // 1 seul adversaire n'a plus qu'un chromino
+                oneOpponentWithOneChromino = true;
+                if (IsOpponentCanFinish(playerIdWithLastChrominoIdInHand[0]))
+                {
+                    // tenter de jouer pour le bloquer sauf si le bot peut finir ce tour ou le coup d'après
+                }
+                else
+                {
+                    // Ne pas jouer de sorte à faire gagner le joueur sauf si le bot peut finir ce tour ou le coup d'après
                 }
             }
 
             // cherche un chromino dans la main du bot correspondant à un possiblePosition
             List<ChrominoInHand> hand;
-            bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
             if (previouslyDraw)
                 hand = new List<ChrominoInHand> { GameChrominoDal.GetNewAddedChrominoInHand(GameId, botId) };
             else
                 hand = GameChrominoDal.ChrominosByPriority(GameId, botId);
 
-            ChrominoInGame goodChrominoInGame = null;
-            Coordinate firstCoordinate = null;
-            ChrominoInHand goodChrominoInHand;
-            if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de la main
-            {
-                goodChrominoInGame = null;
-            }
-            else
-            {
-                SortHandToFinishedWithoutCameleon(ref hand);
-                foreach (ChrominoInHand chrominoInHand in hand)
-                {
-                    foreach (PossiblesPositions possiblePosition in possiblesPositions)
-                    {
-                        Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
-                        if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon))
-                        {
-                            goodChrominoInHand = chrominoInHand;
-                            firstCoordinate = possiblePosition.Coordinate;
-                            goodChrominoInGame = new ChrominoInGame()
-                            {
-                                Orientation = possiblePosition.Orientation,
-                                ChrominoId = chromino.Id,
-                                GameId = GameId,
-                            };
-                            break;
-                        }
-                        else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon))
-                        {
-                            goodChrominoInHand = chrominoInHand;
-                            firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
-                            goodChrominoInGame = new ChrominoInGame()
-                            {
-                                Orientation = possiblePosition.Orientation switch
-                                {
-                                    Orientation.Horizontal => Orientation.HorizontalFlip,
-                                    Orientation.HorizontalFlip => Orientation.Horizontal,
-                                    Orientation.Vertical => Orientation.VerticalFlip,
-                                    _ => Orientation.Vertical,
-                                },
-                                ChrominoId = chromino.Id,
-                                GameId = GameId,
-                            };
-                            break;
-                        }
-                    }
-                    if (goodChrominoInGame != null)
-                        break;
-                }
-            }
+            ChrominoInGame goodChrominoInGame = ComputeGoodChrominoToPlay(hand, previouslyDraw);
+
             if (goodChrominoInGame == null) // pas de chromino à jouer
             {
-                if (!isPreviouslyDraw || playersNumber == 1)
+                if (!previouslyDraw || playersNumber == 1)
                 {
                     DrawChromino(botId);
                     return PlayReturn.DrawChromino;
@@ -265,8 +202,6 @@ namespace Data.Core
             }
             else // chromino à jouer trouvé
             {
-                goodChrominoInGame.XPosition = firstCoordinate.X;
-                goodChrominoInGame.YPosition = firstCoordinate.Y;
                 PlayReturn playReturn = Play(goodChrominoInGame, botId);
                 MakeThumbnail();
                 if (IsRoundLastPlayer(botId) && GamePlayerDal.IsSomePlayerWon(GameId))
@@ -717,6 +652,112 @@ namespace Data.Core
                     return true;
             }
             return false;
+        }
+
+        private bool IsOpponentCanFinish(int playerId)
+        {
+            List<ChrominoInHand> hand = GameChrominoDal.Hand(GameId, playerId);
+            ChrominoInGame chrominoFound = ComputeGoodChrominoToPlay(hand, false);
+            return chrominoFound == null ? false : true;
+        }
+
+        private void ComputePossiblesPositions()
+        {
+            HashSet<Coordinate> coordinates = FreeAroundChrominos();
+            PossiblesPositions = new List<PossiblesPositions>();
+            // prendre ceux avec un seul coté en commun avec un chrominos
+            // calculer orientation avec les couleurs imposées ou pas
+            foreach (Coordinate coordinate in coordinates)
+            {
+                Enumeration.Color? firstColor = OkColorFor(coordinate, out int commonSidesFirstColor);
+                if (firstColor != null)
+                {
+                    //cherche placement possible d'un square
+                    foreach (Orientation orientation in (Orientation[])Enum.GetValues(typeof(Orientation)))
+                    {
+                        Coordinate secondCoordinate = coordinate.GetNextCoordinate(orientation);
+                        Coordinate thirdCoordinate = secondCoordinate.GetNextCoordinate(orientation);
+                        if (SquareDal.IsFree(GameId, secondCoordinate) && SquareDal.IsFree(GameId, thirdCoordinate))
+                        {
+                            //calcul si chromino posable et dans quelle position
+                            Enumeration.Color? secondColor = OkColorFor(secondCoordinate, out int adjacentChrominoSecondColor);
+                            Enumeration.Color? thirdColor = OkColorFor(thirdCoordinate, out int adjacentChrominosThirdColor);
+
+                            if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
+                            {
+                                PossiblesPositions possibleSpace = new PossiblesPositions
+                                {
+                                    Coordinate = coordinate,
+                                    Orientation = orientation,
+                                    FirstColor = firstColor,
+                                    SecondColor = secondColor,
+                                    ThirdColor = thirdColor,
+                                };
+                                PossiblesPositions.Add(possibleSpace);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private ChrominoInGame ComputeGoodChrominoToPlay(List<ChrominoInHand> hand, bool previouslyDraw)
+        {
+            ChrominoInGame goodChrominoInGame = null;
+            Coordinate firstCoordinate;
+            ChrominoInHand goodChrominoInHand;
+            if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de la main
+            {
+                goodChrominoInGame = null;
+            }
+            else
+            {
+                SortHandToFinishedWithoutCameleon(ref hand);
+                foreach (ChrominoInHand chrominoInHand in hand)
+                {
+                    foreach (PossiblesPositions possiblePosition in PossiblesPositions)
+                    {
+                        Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
+                        if ((chromino.FirstColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon))
+                        {
+                            goodChrominoInHand = chrominoInHand;
+                            firstCoordinate = possiblePosition.Coordinate;
+                            goodChrominoInGame = new ChrominoInGame()
+                            {
+                                Orientation = possiblePosition.Orientation,
+                                ChrominoId = chromino.Id,
+                                GameId = GameId,
+                                XPosition = firstCoordinate.X,
+                                YPosition = firstCoordinate.Y,
+                            };
+                            break;
+                        }
+                        else if ((chromino.FirstColor == possiblePosition.ThirdColor || possiblePosition.ThirdColor == Enumeration.Color.Cameleon) && (chromino.SecondColor == possiblePosition.SecondColor || chromino.SecondColor == Enumeration.Color.Cameleon || possiblePosition.SecondColor == Enumeration.Color.Cameleon) && (chromino.ThirdColor == possiblePosition.FirstColor || possiblePosition.FirstColor == Enumeration.Color.Cameleon))
+                        {
+                            goodChrominoInHand = chrominoInHand;
+                            firstCoordinate = possiblePosition.Coordinate.GetNextCoordinate(possiblePosition.Orientation).GetNextCoordinate(possiblePosition.Orientation);
+                            goodChrominoInGame = new ChrominoInGame()
+                            {
+                                Orientation = possiblePosition.Orientation switch
+                                {
+                                    Orientation.Horizontal => Orientation.HorizontalFlip,
+                                    Orientation.HorizontalFlip => Orientation.Horizontal,
+                                    Orientation.Vertical => Orientation.VerticalFlip,
+                                    _ => Orientation.Vertical,
+                                },
+                                ChrominoId = chromino.Id,
+                                GameId = GameId,
+                                XPosition = firstCoordinate.X,
+                                YPosition = firstCoordinate.Y,
+                            };
+                            break;
+                        }
+                    }
+                    if (goodChrominoInGame != null)
+                        break;
+                }
+            }
+            return goodChrominoInGame;
         }
     }
 }

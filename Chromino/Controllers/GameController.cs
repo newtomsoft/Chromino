@@ -280,7 +280,10 @@ namespace Controllers
         public IActionResult PlayBot(int id, int botId)
         {
             GameCore gamecore = new GameCore(Ctx, Env, id);
-            gamecore.PlayBot(botId);
+            PlayReturn playreturn = PlayReturn.DrawChromino;
+            while (playreturn == PlayReturn.DrawChromino)
+                playreturn = gamecore.PlayBot(botId);
+
             return RedirectToAction("Show", "Game", new { id });
         }
 

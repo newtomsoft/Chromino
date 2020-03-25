@@ -77,6 +77,21 @@ namespace Data.DAL
         }
 
         /// <summary>
+        /// Chrominos (ChrominoInHand) dans la main du joueur
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns></returns>
+        public List<ChrominoInHand> Hand(int gameId, int playerId)
+        {
+            List<ChrominoInHand> chrominos = (from ch in Ctx.ChrominosInHand
+                                              where ch.GameId == gameId && ch.PlayerId == playerId
+                                              select ch).AsNoTracking().ToList();
+
+            return chrominos;
+        }
+
+        /// <summary>
         /// Nombre de chrominos dans la pioche
         /// </summary>
         /// <param name="gameId">id du jeu</param>
@@ -235,6 +250,25 @@ namespace Data.DAL
 
             Ctx.ChrominosInHandLast.Remove(chromino);
             Ctx.SaveChanges();
+        }
+
+        public List<int> PlayersIdWithOneChrominoKnown(int gameId, int playerIdToExclude)
+        {
+            List<int> playersId = (from chl in Ctx.ChrominosInHandLast
+                                   where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
+                                   select chl.PlayerId).ToList();
+
+            return playersId;
+        }
+
+        public List<Chromino> ListLastChrominoIdInHand(int gameId, int playerIdToExclude)
+        {
+            List<Chromino> chrominos = (from chl in Ctx.ChrominosInHandLast
+                                        join c in Ctx.Chrominos on chl.ChrominoId equals c.Id
+                                        where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
+                                        select c).AsNoTracking().ToList();
+
+            return chrominos;
         }
     }
 }
