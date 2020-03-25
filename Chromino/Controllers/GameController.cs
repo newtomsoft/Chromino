@@ -212,7 +212,7 @@ namespace Controllers
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
                 {
-                    pseudosChrominos.Add(player.UserName, GameChrominoDal.PlayerNumberChrominos(id, player.Id));
+                    pseudosChrominos.Add(player.UserName, GameChrominoDal.InHand(id, player.Id));
                     pseudos.Add(player.UserName);
                 }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();

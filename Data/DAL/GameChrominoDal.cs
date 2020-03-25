@@ -153,12 +153,9 @@ namespace Data.DAL
 
         public Chromino FirstChromino(int gameId, int playerId)
         {
-            int chrominoId = (from ch in Ctx.ChrominosInHand
-                              where ch.GameId == gameId && ch.PlayerId == playerId
-                              select ch.ChrominoId).FirstOrDefault();
-
-            Chromino chromino = (from c in Ctx.Chrominos
-                                 where c.Id == chrominoId
+            Chromino chromino = (from ch in Ctx.ChrominosInHand
+                                 join c in Ctx.Chrominos on ch.ChrominoId equals c.Id
+                                 where ch.GameId == gameId && ch.PlayerId == playerId
                                  select c).FirstOrDefault();
 
             return chromino;
@@ -175,16 +172,6 @@ namespace Data.DAL
             return chrominos;
         }
 
-
-        public int PlayerNumberChrominos(int gameId, int playerId)
-        {
-            int chrominos = (from ch in Ctx.ChrominosInHand
-                             where ch.GameId == gameId && ch.PlayerId == playerId
-                             select ch).Count();
-
-            return chrominos;
-        }
-
         /// <summary>
         /// tous les chrominosInGame joués du jeu
         /// le 1er placé aléatoirement n'est pas inclus
@@ -194,7 +181,7 @@ namespace Data.DAL
         public List<ChrominoInGame> ChrominosInGamePlayed(int gameId)
         {
             List<ChrominoInGame> chrominosInGame = (from cg in Ctx.ChrominosInGame
-                                                    where cg.GameId == gameId && cg.Move !=0
+                                                    where cg.GameId == gameId && cg.Move != 0
                                                     orderby cg.Move descending
                                                     select cg).AsNoTracking().ToList();
 
@@ -210,6 +197,44 @@ namespace Data.DAL
                                        select ch).FirstOrDefault();
 
             return chromino;
+        }
+
+        public int LastChrominoIdInHand(int gameId, int playerId)
+        {
+            int chrominoId = (from chl in Ctx.ChrominosInHandLast
+                              where chl.GameId == gameId && chl.PlayerId == playerId
+                              select chl.ChrominoId).FirstOrDefault();
+
+            return chrominoId;
+        }
+
+        public void UpdateLastChrominoInHand(int gameId, int playerId, int chrominoId)
+        {
+            ChrominoInHandLast chrominohl = (from chl in Ctx.ChrominosInHandLast
+                                             where chl.GameId == gameId && chl.PlayerId == playerId
+                                             select chl).FirstOrDefault();
+
+            if (chrominohl == null)
+            {
+                chrominohl = new ChrominoInHandLast { GameId = gameId, PlayerId = playerId, ChrominoId = chrominoId };
+                Ctx.Add(chrominohl);
+                Ctx.SaveChanges();
+            }
+            else if (chrominohl.ChrominoId != chrominoId)
+            {
+                chrominohl.ChrominoId = chrominoId;
+                Ctx.SaveChanges();
+            }
+        }
+
+        public void DeleteLastChrominoInHand(int gameId, int playerId)
+        {
+            ChrominoInHandLast chromino = (from chl in Ctx.ChrominosInHandLast
+                                           where chl.GameId == gameId && chl.PlayerId == playerId
+                                           select chl).FirstOrDefault();
+
+            Ctx.ChrominosInHandLast.Remove(chromino);
+            Ctx.SaveChanges();
         }
     }
 }

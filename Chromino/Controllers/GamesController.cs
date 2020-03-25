@@ -108,7 +108,7 @@ namespace ChrominoApp.Controllers
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
                 {
-                    int chrominosNumber = GameChrominoDal.PlayerNumberChrominos(game.Id, player.Id);
+                    int chrominosNumber = GameChrominoDal.InHand(game.Id, player.Id);
                     if (keepSuspens && chrominosNumber == 0)
                         chrominosNumber = 1;
                     pseudos_chrominos.Add(player.UserName, chrominosNumber);

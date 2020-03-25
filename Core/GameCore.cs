@@ -321,24 +321,31 @@ namespace Data.Core
                 chrominoInGame.XPosition = coordinate.X;
                 chrominoInGame.YPosition = coordinate.Y;
             }
+            int numberInHand = GameChrominoDal.InHand(GameId, playerId);
             PlayReturn playReturn;
             if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
                 playReturn = PlayReturn.NotPlayerTurn;
-            else if (GameChrominoDal.PlayerNumberChrominos(GameId, playerId) == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
+            else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
                 playReturn = PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
             else
                 playReturn = SquareDal.PlayChromino(chrominoInGame, playerId);
             if (playReturn == PlayReturn.Ok)
             {
+                numberInHand--;
                 GamePlayerDal.SetPass(GameId, playerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
                 GamePlayerDal.AddPoints(GameId, playerId, points);
                 if (Players.Count > 1)
                     PlayerDal.AddPoints(playerId, points);
 
-                int numberInHand = GameChrominoDal.InHand(GameId, playerId);
-                if (numberInHand == 0)
+                if (numberInHand == 1)
                 {
+                    int chrominoId = GameChrominoDal.FirstChromino(GameId, playerId).Id;
+                    GameChrominoDal.UpdateLastChrominoInHand(GameId, playerId, chrominoId);
+                }
+                else if (numberInHand == 0)
+                {
+                    GameChrominoDal.DeleteLastChrominoInHand(GameId, playerId);
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
                         PlayerDal.IncreaseWin(playerId);
@@ -367,6 +374,13 @@ namespace Data.Core
 
                     }
                 }
+                else
+                {
+                    int chrominoId = GameChrominoDal.LastChrominoIdInHand(GameId, playerId);
+                    if (chrominoInGame.ChrominoId == chrominoId)
+                        GameChrominoDal.DeleteLastChrominoInHand(GameId, playerId);
+                }
+
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
 
