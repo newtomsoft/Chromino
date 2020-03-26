@@ -145,7 +145,7 @@ namespace Data.DAL
             }
         }
 
-        public void FirstRandomToGame(int gameId)
+        public ChrominoInGame FirstRandomToGame(int gameId)
         {
             List<Chromino> chrominosCameleon = (from c in Ctx.Chrominos
                                                 where c.SecondColor == Color.Cameleon
@@ -163,7 +163,8 @@ namespace Data.DAL
                 Orientation = orientation,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
-            new SquareDal(Ctx).PlayChromino(chrominoInGame, null);
+            Ctx.SaveChanges();
+            return chrominoInGame;
         }
 
         public Chromino FirstChromino(int gameId, int playerId)
@@ -269,6 +270,13 @@ namespace Data.DAL
                                         select c).AsNoTracking().ToList();
 
             return chrominos;
+        }
+
+        public void Add(ChrominoInGame chrominoInGame)
+        {
+            chrominoInGame.Id = 0;
+            Ctx.ChrominosInGame.Add(chrominoInGame);
+            Ctx.SaveChanges();
         }
     }
 }

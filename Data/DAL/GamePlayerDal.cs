@@ -225,7 +225,13 @@ namespace Data.DAL
                              join p in Ctx.Players on gp.PlayerId equals p.Id
                              where gp.GameId == gameId && gp.Turn
                              select p).FirstOrDefault();
-
+            if (player == null)
+            {
+                player = (from gp in Ctx.GamesPlayers
+                          join p in Ctx.Players on gp.PlayerId equals p.Id
+                          where gp.GameId == gameId
+                          select p).FirstOrDefault();
+            }
             return player;
         }
 

@@ -131,14 +131,21 @@ namespace Controllers
         {
             GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
+            Coordinate coordinate = orientation switch
+            {
+                Orientation.HorizontalFlip => new Coordinate(x + 2, y),
+                Orientation.Vertical => new Coordinate(x, y + 2),
+                _ => new Coordinate(x, y),
+            };
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
                 ChrominoId = chrominoId,
-                XPosition = x,
-                YPosition = y,
+                XPosition = coordinate.X,
+                YPosition = coordinate.Y,
                 Orientation = orientation,
             };
+
             PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
 
             if (playReturn != PlayReturn.Ok)

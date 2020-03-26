@@ -70,25 +70,25 @@ namespace Data.Core
                 return square.Color;
         }
 
-        public Color? GetRightColor(List<Square> grid)
+        public Color? RightColor(List<Square> grid)
         {
             Coordinate coordinate = GetRightCoordinate();
             return GetColor(grid, coordinate);
         }
 
-        public Color? GetBottomColor(List<Square> grid)
+        public Color? BottomColor(List<Square> grid)
         {
             Coordinate coordinate = GetBottomCoordinate();
             return GetColor(grid, coordinate);
         }
 
-        public Color? GetLeftColor(List<Square> grid)
+        public Color? LeftColor(List<Square> grid)
         {
             Coordinate coordinate = GetLeftCoordinate();
             return GetColor(grid, coordinate);
         }
 
-        public Color? GetTopColor(List<Square> grid)
+        public Color? TopColor(List<Square> grid)
         {
             Coordinate coordinate = GetTopCoordinate();
             return GetColor(grid, coordinate);

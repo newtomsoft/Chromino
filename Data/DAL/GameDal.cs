@@ -144,5 +144,15 @@ namespace Data.DAL
             gamePlayer.NotReadMessages = 0;
             Ctx.SaveChanges();
         }
+
+        public void IncreaseMove(int gameId)
+        {
+            Game game = (from games in Ctx.Games
+                         where games.Id == gameId
+                         select games).FirstOrDefault();
+
+            game.Move++;
+            Ctx.SaveChanges();
+        }
     }
 }

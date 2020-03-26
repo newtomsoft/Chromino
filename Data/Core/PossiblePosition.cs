@@ -2,7 +2,7 @@
 
 namespace Data.Core
 {
-    public class PossiblesPositions
+    public class Position
     {
         public Coordinate Coordinate { get; set; }
         public Orientation Orientation { get; set; }

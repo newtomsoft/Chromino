@@ -105,6 +105,8 @@ namespace ChrominoApp.Controllers
             {
                 List<Player> players = GamePlayerDal.Players(game.Id);
                 string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).UserName;
+
+
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
                 {

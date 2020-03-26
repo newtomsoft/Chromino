@@ -1,5 +1,4 @@
 ﻿using Data.Core;
-using Data.Enumeration;
 using Data.ViewModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,11 +11,6 @@ namespace Data.Models
 
         [NotMapped]
         public Coordinate Coordinate { get => new Coordinate(X, Y); }
-
-        public Coordinate[] GetAround()
-        {
-            return new Coordinate[] { GetRight(), GetBottom(), GetLeft(), GetTop() };
-        }
 
         public Coordinate GetRight()
         {
