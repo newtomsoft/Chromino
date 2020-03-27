@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\Tool\Tool.csproj" />
   </ItemGroup>
 
 </Project>

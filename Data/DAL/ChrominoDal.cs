@@ -33,21 +33,21 @@ namespace Data.DAL
             {
                 List<Chromino> chrominos = new List<Chromino>
                 {
-                    new Chromino { FirstColor = Color.Purple, SecondColor = Color.Cameleon, ThirdColor = Color.Red, Points = 3},
-                    new Chromino { FirstColor = Color.Purple, SecondColor = Color.Cameleon, ThirdColor = Color.Yellow, Points = 3 },
-                    new Chromino { FirstColor = Color.Green, SecondColor = Color.Cameleon, ThirdColor = Color.Red, Points = 3 },
-                    new Chromino { FirstColor = Color.Green, SecondColor = Color.Cameleon, ThirdColor = Color.Blue, Points = 3 },
-                    new Chromino { FirstColor = Color.Yellow, SecondColor = Color.Cameleon, ThirdColor = Color.Blue, Points = 3 }
+                    new Chromino { FirstColor = ColorCh.Purple, SecondColor = ColorCh.Cameleon, ThirdColor = ColorCh.Red, Points = 3},
+                    new Chromino { FirstColor = ColorCh.Purple, SecondColor = ColorCh.Cameleon, ThirdColor = ColorCh.Yellow, Points = 3 },
+                    new Chromino { FirstColor = ColorCh.Green, SecondColor = ColorCh.Cameleon, ThirdColor = ColorCh.Red, Points = 3 },
+                    new Chromino { FirstColor = ColorCh.Green, SecondColor = ColorCh.Cameleon, ThirdColor = ColorCh.Blue, Points = 3 },
+                    new Chromino { FirstColor = ColorCh.Yellow, SecondColor = ColorCh.Cameleon, ThirdColor = ColorCh.Blue, Points = 3 }
                 };
-                foreach (Color firstSquare in (Color[])Enum.GetValues(typeof(Color)))
+                foreach (ColorCh firstSquare in (ColorCh[])Enum.GetValues(typeof(ColorCh)))
                 {
                     if (IsNotGoodColor(firstSquare))
                         continue;
-                    foreach (Color secondSquare in (Color[])Enum.GetValues(typeof(Color)))
+                    foreach (ColorCh secondSquare in (ColorCh[])Enum.GetValues(typeof(ColorCh)))
                     {
                         if (IsNotGoodColor(secondSquare))
                             continue;
-                        foreach (Color thirdSquare in (Color[])Enum.GetValues(typeof(Color)))
+                        foreach (ColorCh thirdSquare in (ColorCh[])Enum.GetValues(typeof(ColorCh)))
                         {
                             if (IsNotGoodColor(thirdSquare))
                                 continue;
@@ -95,7 +95,7 @@ namespace Data.DAL
         public bool IsCameleon(int id)
         {
             int idC = (from c in Ctx.Chrominos
-                       where c.Id == id && c.SecondColor == Color.Cameleon
+                       where c.Id == id && c.SecondColor == ColorCh.Cameleon
                        select c.Id).FirstOrDefault();
 
             return idC != 0 ? true : false;
@@ -106,9 +106,9 @@ namespace Data.DAL
         /// </summary>
         /// <param name="color"></param>
         /// <returns>true si color est Camelelon ou None</returns>
-        private bool IsNotGoodColor(Color color)
+        private bool IsNotGoodColor(ColorCh color)
         {
-            return color == Color.Cameleon || color == Color.None;
+            return color == ColorCh.Cameleon || color == ColorCh.None;
         }
     }
 }

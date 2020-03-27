@@ -4,13 +4,13 @@ namespace Data.ViewModel
 {
     public class SquareVM
     {
-        public Color Color { get; set; }
+        public ColorCh Color { get; set; }
         public bool OpenRight { get; set; }
         public bool OpenBottom { get; set; }
         public bool OpenLeft { get; set; }
         public bool OpenTop { get; set; }
 
-        public SquareVM(Color color, bool openRight, bool openBottom, bool openLeft, bool openTop)
+        public SquareVM(ColorCh color, bool openRight, bool openBottom, bool openLeft, bool openTop)
         {
             Color = color;
             OpenRight = openRight;

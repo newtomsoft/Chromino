@@ -303,5 +303,44 @@ namespace Controllers
             GameCore gamecore = new GameCore(Ctx, Env, gameId);
             gamecore.BeginGame(randomPlayers.Count);
         }
+
+
+
+
+        [HttpGet]
+        public IActionResult NewTest()
+        {
+            GetPlayerInfos();
+            if(PlayerPseudo != "Thomas")
+                return RedirectToAction("Index", "Home");
+
+            Player player1 = PlayerDal.Details(PlayerDal.BotsId()[0]);
+            Player player2 = PlayerDal.Details(PlayerId);
+
+            List<Player> players = new List<Player>(2);
+            players.Add(player1);
+            players.Add(player2);
+            CreateGameTest(ref players, out int gameId);
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
+        private void CreateGameTest(ref List<Player> players, out int gameId)
+        {
+            int gameToCopy = 5080;
+            ChrominoDal.CreateChrominos();
+            gameId = GameDal.AddTest().Id;
+
+            SquareDal squareDal = new SquareDal(Ctx);
+            var squares = squareDal.List(gameToCopy);
+            squareDal.AddTest(squares, gameId);
+
+            GamePlayerDal.Add(gameId, players);
+            GameCore gamecore = new GameCore(Ctx, Env, gameId);
+            gamecore.BeginGameTest();
+        }
+
+
+
+
     }
 }

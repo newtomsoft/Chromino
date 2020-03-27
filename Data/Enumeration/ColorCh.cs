@@ -1,6 +1,6 @@
 ﻿namespace Data.Enumeration
 {
-    public enum Color
+    public enum ColorCh
     {
         Blue = 1,
         Green,

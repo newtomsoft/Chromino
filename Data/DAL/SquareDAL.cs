@@ -30,12 +30,12 @@ namespace Data.DAL
         /// <param name="coordinate"></param>
         /// <param name="color"></param>
         /// <returns>-1 if a square around have a color and is not the same color. Else the number </returns>
-        public int GetNumberSameColorsAround(int gameId, Coordinate coordinate, Color color)
+        public int GetNumberSameColorsAround(int gameId, Coordinate coordinate, ColorCh color)
         {
             int sameColors = 0;
             for (int i = 0; i < 4; i++)
             {
-                Color? colorToCompare = i switch
+                ColorCh? colorToCompare = i switch
                 {
                     0 => GetColor(gameId, coordinate.GetRightCoordinate()),
                     1 => GetColor(gameId, coordinate.GetBottomCoordinate()),
@@ -45,7 +45,7 @@ namespace Data.DAL
                 };
                 if (colorToCompare != null)
                 {
-                    if (color == colorToCompare || color == Color.Cameleon || colorToCompare == Color.Cameleon)
+                    if (color == colorToCompare || color == ColorCh.Cameleon || colorToCompare == ColorCh.Cameleon)
                         sameColors++;
                     else
                         return -1;
@@ -54,7 +54,7 @@ namespace Data.DAL
             return sameColors;
         }
 
-        public Color? GetColor(int gameId, Coordinate coordinate)
+        public ColorCh? GetColor(int gameId, Coordinate coordinate)
         {
             var result = (from s in Ctx.Squares
                           where s.GameId == gameId && s.X == coordinate.X && s.Y == coordinate.Y
@@ -103,6 +103,19 @@ namespace Data.DAL
                     offsetX = -1;
                     break;
             }
+        }
+
+
+
+        public void AddTest(List<Square> squares, int gameId)
+        {
+            foreach (var square in squares)
+            {
+                square.Id = 0;
+                square.GameId = gameId;
+            }
+            Ctx.Squares.AddRange(squares);
+            Ctx.SaveChanges();
         }
     }
 }

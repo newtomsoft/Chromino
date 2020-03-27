@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Controllers;
+using Tool;
 using Data;
 using Data.Core;
 using Data.Models;
@@ -117,7 +118,8 @@ namespace ChrominoApp.Controllers
                 }
                 string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
                 if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image/game", pictureName)))
-                    new GameCore(Ctx, Env, game.Id).MakeThumbnail();
+                    new PictureFactory(game.Id, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+
                 listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
             }
             return listPictureGameVM;

@@ -154,5 +154,16 @@ namespace Data.DAL
             game.Move++;
             Ctx.SaveChanges();
         }
+
+
+
+        public Game AddTest()
+        {
+            string guid = Guid.NewGuid().ToString("N");
+            Game game = new Game { CreateDate = DateTime.Now, Guid = guid, Move = 0, Status = GameStatus.InProgress };
+            Ctx.Games.Add(game);
+            Ctx.SaveChanges();
+            return Details(guid);
+        }
     }
 }

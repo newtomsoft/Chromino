@@ -12,7 +12,7 @@ namespace Data.Models
         public int GameId { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public Color Color { get; set; }
+        public ColorCh Color { get; set; }
         public bool OpenRight { get; set; }
         public bool OpenBottom { get; set; }
         public bool OpenLeft { get; set; }

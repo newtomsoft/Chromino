@@ -6,8 +6,8 @@ namespace Data.Core
     {
         public Coordinate Coordinate { get; set; }
         public Orientation Orientation { get; set; }
-        public Color? FirstColor { get; set; }
-        public Color? SecondColor { get; set; }
-        public Color? ThirdColor { get; set; }
+        public ColorCh? FirstColor { get; set; }
+        public ColorCh? SecondColor { get; set; }
+        public ColorCh? ThirdColor { get; set; }
     }
 }

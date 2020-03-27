@@ -53,7 +53,7 @@ namespace Data.ViewModel
             SquaresNumber = ColumnsNumber * LinesNumber;
             SquaresViewModel = new SquareVM[SquaresNumber];
             for (int i = 0; i < SquaresViewModel.Length; i++)
-                SquaresViewModel[i] = new SquareVM(Color.None, true, true, true, true);
+                SquaresViewModel[i] = new SquareVM(ColorCh.None, true, true, true, true);
             foreach (Square square in Squares)
             {
                 int index = IndexGridState(square.X, square.Y);

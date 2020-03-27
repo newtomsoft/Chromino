@@ -9,9 +9,9 @@ namespace Data.Models
     {
         [Key]
         public int Id { get; set; }
-        public Color FirstColor { get; set; }
-        public Color SecondColor { get; set; }
-        public Color ThirdColor { get; set; }
+        public ColorCh FirstColor { get; set; }
+        public ColorCh SecondColor { get; set; }
+        public ColorCh ThirdColor { get; set; }
         public int Points { get; set; }
     }
 }
