@@ -13,8 +13,8 @@ namespace Data
         public DbSet<GamePlayer> GamesPlayers { get; set; }
         public DbSet<ChrominoInHand> ChrominosInHand { get; set; }
         public DbSet<ChrominoInHandLast> ChrominosInHandLast { get; set; }
-
         public DbSet<ChrominoInGame> ChrominosInGame { get; set; }
+        public DbSet<ComputedChromino> ComputedChrominos { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
