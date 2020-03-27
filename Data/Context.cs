@@ -15,6 +15,8 @@ namespace Data
         public DbSet<ChrominoInHandLast> ChrominosInHandLast { get; set; }
         public DbSet<ChrominoInGame> ChrominosInGame { get; set; }
         public DbSet<ComputedChromino> ComputedChrominos { get; set; }
+        public DbSet<ComputedChrominoOk> ComputedChrominosOk { get; set; }
+        
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

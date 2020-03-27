@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Data.DAL
 {
-    public class SquareDal
+    public partial class SquareDal
     {
         private readonly Context Ctx;
 
@@ -103,19 +103,6 @@ namespace Data.DAL
                     offsetX = -1;
                     break;
             }
-        }
-
-
-
-        public void AddTest(List<Square> squares, int gameId)
-        {
-            foreach (var square in squares)
-            {
-                square.Id = 0;
-                square.GameId = gameId;
-            }
-            Ctx.Squares.AddRange(squares);
-            Ctx.SaveChanges();
         }
     }
 }
