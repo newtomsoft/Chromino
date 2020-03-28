@@ -1,5 +1,6 @@
 ﻿using Data.Enumeration;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,7 @@ namespace Data.Core
 {
     public class Coordinate
     {
+        public static readonly List<Coordinate> OffsetsAround = new List<Coordinate> { new Coordinate(0, 1), new Coordinate(0, -1), new Coordinate(1, 0), new Coordinate(-1, 0) };
         public int X { get; set; }
         public int Y { get; set; }
 
@@ -16,27 +18,32 @@ namespace Data.Core
             Y = y;
         }
 
-        public Coordinate GetNextCoordinate(Orientation orientation)
+        /// <summary>
+        /// New coordinate for offset use
+        /// </summary>
+        /// <param name="orientation"></param>
+        public Coordinate(Orientation orientation)
         {
-            return orientation switch
+            switch (orientation)
             {
-                Orientation.Horizontal => GetRightCoordinate(),
-                Orientation.HorizontalFlip => GetLeftCoordinate(),
-                Orientation.Vertical => GetTopCoordinate(),
-                _ => GetBottomCoordinate(),
-            };
+                case Orientation.Horizontal:
+                    X = 1;
+                    break;
+                case Orientation.HorizontalFlip:
+                    X = -1;
+                    break;
+                case Orientation.Vertical:
+                    Y = -1;
+                    break;
+                case Orientation.VerticalFlip:
+                    Y = 1;
+                    break;
+            }
         }
 
-        public Coordinate GetPreviousCoordinate(Orientation orientation)
-        {
-            return orientation switch
-            {
-                Orientation.Horizontal => GetLeftCoordinate(),
-                Orientation.HorizontalFlip => GetRightCoordinate(),
-                Orientation.Vertical => GetBottomCoordinate(),
-                _ => GetTopCoordinate(),
-            };
-        }
+        public static Coordinate operator *(int a, Coordinate c) => new Coordinate(a * c.X, a * c.Y);
+        public static Coordinate operator +(Coordinate c1, Coordinate c2) => new Coordinate(c1.X + c2.X, c1.Y + c2.Y);
+        public static Coordinate operator -(Coordinate c, Coordinate offset) => new Coordinate(c.X - offset.X, c.Y - offset.Y);
 
         public Coordinate GetRightCoordinate()
         {
@@ -92,6 +99,47 @@ namespace Data.Core
         {
             Coordinate coordinate = GetTopCoordinate();
             return GetColor(grid, coordinate);
+        }
+
+
+        /// <summary>
+        /// indique si l'emplacement est libre parmis les squares renseignés
+        /// </summary>
+        /// <param name="squares">ensemble de squares dans lequel porter la recherche</param>
+        /// <returns></returns>
+        public bool IsFree(ref List<Square> squares)
+        {
+            Square result = (from s in squares
+                             where s.X == X && s.Y == Y
+                             select s).FirstOrDefault();
+
+            return result == null ? true : false;
+        }
+
+        /// <summary>
+        /// retourne la couleur possible à cet endroit
+        /// </summary>
+        /// <param name="adjacentChrominos">nombre de coté adjacents à un chromino </param>
+        /// <returns>Cameleon si toute les couleurs peuvent se poser ; null si aucune ne peut</returns>
+        public ColorCh? OkColorFor(List<Square> squares, out int adjacentChrominos)
+        {
+            HashSet<ColorCh> colors = new HashSet<ColorCh>();
+            adjacentChrominos = 0;
+            foreach (var offset in OffsetsAround)
+            {
+                ColorCh? color = GetColor(squares, this + offset);
+                if (color != null)
+                {
+                    adjacentChrominos++;
+                    colors.Add((ColorCh)color);
+                }
+            }
+            if (colors.Count == 0)
+                return ColorCh.Cameleon;
+            else if (colors.Count == 1)
+                return colors.First();
+            else
+                return null;
         }
     }
 }

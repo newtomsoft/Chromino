@@ -1,6 +1,7 @@
 ﻿using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
+using Data.ViewModel;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,7 @@ namespace Data.Core
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
             ChrominoInGame chrominoInGame = GameChrominoDal.FirstRandomToGame(GameId);
-            PlayChromino(chrominoInGame, null);
+            PlayChromino(chrominoInGame);
 
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayers();
@@ -161,60 +162,6 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// retourne la couleur possible à cet endroit
-        /// </summary>
-        /// <param name="coordinate"></param>
-        /// <param name="adjacentChrominos"></param>
-        /// <returns>Cameleon si toute couleur peut se poser ; null si aucune possible</returns>
-        public ColorCh? OkColorFor(Coordinate coordinate, List<Square> squares, out int adjacentChrominos)
-        {
-            HashSet<ColorCh> colors = new HashSet<ColorCh>();
-            ColorCh? rightColor = coordinate.RightColor(squares);
-            ColorCh? bottomColor = coordinate.BottomColor(squares);
-            ColorCh? leftColor = coordinate.LeftColor(squares);
-            ColorCh? topColor = coordinate.TopColor(squares);
-            adjacentChrominos = 0;
-            if (rightColor != null)
-            {
-                adjacentChrominos++;
-                colors.Add((ColorCh)rightColor);
-            }
-            if (bottomColor != null)
-            {
-                adjacentChrominos++;
-                colors.Add((ColorCh)bottomColor);
-            }
-            if (leftColor != null)
-            {
-                adjacentChrominos++;
-                colors.Add((ColorCh)leftColor);
-            }
-            if (topColor != null)
-            {
-                adjacentChrominos++;
-                colors.Add((ColorCh)topColor);
-            }
-
-            if (colors.Count == 0)
-            {
-                return ColorCh.Cameleon;
-            }
-            else if (colors.Count == 1)
-            {
-                ColorCh theColor = new ColorCh();
-                foreach (ColorCh color in colors)
-                {
-                    theColor = color;
-                }
-                return theColor;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// liste (sans doublons) des coordonées libres ajdacentes aux squares occupés.
         /// les coordonées des derniers squares occupés sont remontées en premiers.
         /// </summary>
@@ -229,19 +176,17 @@ namespace Data.Core
                 Coordinate bottomCoordinate = square.GetBottom();
                 Coordinate leftCoordinate = square.GetLeft();
                 Coordinate topCoordinate = square.GetTop();
-                if (IsFree(ref squares, rightCoordinate))
+                if (rightCoordinate.IsFree(ref squares))
                     coordinates.Add(rightCoordinate);
-                if (IsFree(ref squares, bottomCoordinate))
+                if (bottomCoordinate.IsFree(ref squares))
                     coordinates.Add(bottomCoordinate);
-                if (IsFree(ref squares, leftCoordinate))
+                if (leftCoordinate.IsFree(ref squares))
                     coordinates.Add(leftCoordinate);
-                if (IsFree(ref squares, topCoordinate))
+                if (topCoordinate.IsFree(ref squares))
                     coordinates.Add(topCoordinate);
             }
             return coordinates;
         }
-
-        
 
         /// <summary>
         /// rempli la main de tous les joueurs
@@ -305,7 +250,7 @@ namespace Data.Core
                 }
             }
         }
-       
+
         /// <summary>
         /// return true si l'id du joueur est l'id du dernier joueur dans le tour
         /// </summary>
@@ -346,7 +291,7 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// retourne les positions possibles où peuvent être jouer des chrominos
+        /// retourne les positions possibles où peuvent être joués des chrominos
         /// </summary>
         /// <param name="coordinates">ensemble des coordonnées potentielles</param>
         /// <param name="squares">liste des squares occupés</param>
@@ -356,27 +301,29 @@ namespace Data.Core
             List<Position> positions = new List<Position>();
             // prendre ceux avec un seul coté en commun avec un chromino
             // calculer orientation avec les couleurs imposées ou pas
-            foreach (Coordinate coordinate in coordinates)
+            foreach (Coordinate firstCoordinate in coordinates)
             {
-                ColorCh? firstColor = OkColorFor(coordinate, squares, out int commonSidesFirstColor);
+                ColorCh? firstColor = firstCoordinate.OkColorFor(squares, out int commonSidesFirstColor);
                 if (firstColor != null)
                 {
                     //cherche placement possible d'un square
                     foreach (Orientation orientation in (Orientation[])Enum.GetValues(typeof(Orientation)))
                     {
-                        Coordinate secondCoordinate = coordinate.GetNextCoordinate(orientation);
-                        Coordinate thirdCoordinate = secondCoordinate.GetNextCoordinate(orientation);
-                        if (IsFree(ref squares, secondCoordinate) && IsFree(ref squares, thirdCoordinate))
+                        Coordinate offset = new Coordinate(orientation);
+                        Coordinate secondCoordinate = firstCoordinate + offset;
+                        Coordinate thirdCoordinate = secondCoordinate + offset;
+
+                        if (secondCoordinate.IsFree(ref squares) && thirdCoordinate.IsFree(ref squares))
                         {
                             //calcul si chromino posable et dans quelle position
-                            ColorCh? secondColor = OkColorFor(secondCoordinate, squares, out int adjacentChrominoSecondColor);
-                            ColorCh? thirdColor = OkColorFor(thirdCoordinate, squares, out int adjacentChrominosThirdColor);
+                            ColorCh? secondColor = secondCoordinate.OkColorFor(squares, out int adjacentChrominoSecondColor);
+                            ColorCh? thirdColor = thirdCoordinate.OkColorFor(squares, out int adjacentChrominosThirdColor);
 
                             if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
                             {
                                 Position possibleSpace = new Position
                                 {
-                                    Coordinate = coordinate,
+                                    Coordinate = firstCoordinate,
                                     Orientation = orientation,
                                     FirstColor = firstColor,
                                     SecondColor = secondColor,
@@ -438,7 +385,9 @@ namespace Data.Core
                         else if ((chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
                         {
                             goodChrominoInHand = chrominoInHand;
-                            firstCoordinate = currentPosition.Coordinate.GetNextCoordinate(currentPosition.Orientation).GetNextCoordinate(currentPosition.Orientation);
+                            Coordinate offset = new Coordinate(currentPosition.Orientation);
+                            firstCoordinate = currentPosition.Coordinate + 2 * offset;
+
                             goodChromino = new ChrominoInGame()
                             {
                                 Orientation = currentPosition.Orientation switch
@@ -470,7 +419,7 @@ namespace Data.Core
             int xOrigin = chrominoIG.XPosition;
             int yOrigin = chrominoIG.YPosition;
             Chromino chromino = ChrominoDal.Details(chrominoIG.ChrominoId);
-            List<Square> squares = new List<Square>() { new Square {GameId = gameId, X = xOrigin, Y = yOrigin, Color=chromino.FirstColor } };
+            List<Square> squares = new List<Square>() { new Square { GameId = gameId, X = xOrigin, Y = yOrigin, Color = chromino.FirstColor } };
             switch (chrominoIG.Orientation)
             {
                 case Orientation.Horizontal:
@@ -493,19 +442,51 @@ namespace Data.Core
             return squares;
         }
 
-        /// <summary>
-        /// indique si à la coordonnée donnée, l'emplacement est libre
-        /// </summary>
-        /// <param name="squares">ensemble de squares dans lequel porter la recherche</param>
-        /// <param name="coordinate"></param>
-        /// <returns></returns>
-        public bool IsFree(ref List<Square> squares, Coordinate coordinate)
+        public GameVM GameViewModel(int gameId, int playerId)
         {
-            Square result = (from s in squares
-                             where s.X == coordinate.X && s.Y == coordinate.Y
-                             select s).FirstOrDefault();
+            Player playerTurn = GamePlayerDal.PlayerTurn(gameId);
+            List<Player> players = GamePlayerDal.Players(gameId);
+            if (players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(gameId))
+            {
+                // je joueur est bien dans la partie ou c'est une partie entre bots
+                int chrominosInStackNumber = GameChrominoDal.InStack(gameId);
 
-            return result == null ? true : false;
+                Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
+                List<string> pseudos = new List<string>();
+                foreach (Player player in players)
+                {
+                    pseudosChrominos.Add(player.UserName, GameChrominoDal.InHand(gameId, player.Id));
+                    pseudos.Add(player.UserName);
+                }
+                Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
+                foreach (var pseudo_chromino in pseudosChrominos)
+                {
+                    if (pseudo_chromino.Value == 1)
+                        pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(gameId, GamePlayerDal.PlayerId(gameId, pseudo_chromino.Key)));
+                }
+                List<Chromino> identifiedPlayerChrominos;
+                if (GamePlayerDal.IsBots(gameId)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(gameId, playerTurn.Id);
+                else
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(gameId, playerId);
+                if (GameDal.IsFinished(gameId) && !GamePlayerDal.GetViewFinished(gameId, playerId))
+                {
+                    GamePlayerDal.SetViewFinished(gameId, playerId);
+                    if (GamePlayerDal.GetWon(gameId, playerId) == null)
+                        GamePlayerDal.SetWon(gameId, playerId, false);
+                }
+                GamePlayer gamePlayerTurn = GamePlayerDal.Details(gameId, playerTurn.Id);
+                GamePlayer gamePlayerIdentified = GamePlayerDal.Details(gameId, playerId);
+                List<Square> squares = SquareDal.List(gameId);
+                List<int> botsId = PlayerDal.BotsId();
+                bool noTips = PlayerDal.Details(playerId).NoTips;
+                List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(gameId);
+                Game game = GameDal.Details(gameId);
+                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(gameId, playerId);
+                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
+                return gameViewModel;
+            }
+            else return null;
         }
     }
 }

@@ -74,14 +74,14 @@ namespace Data.DAL
             return playersNumber;
         }
 
-        public List<int> PlayersId(int gameId)
+        public List<int> BotsId(int gameId)
         {
-            List<int> playersId = (from gp in Ctx.GamesPlayers
-                                   join p in Ctx.Players on gp.PlayerId equals p.Id
-                                   where gp.GameId == gameId
-                                   select p.Id).ToList();
+            List<int> botsId = (from gp in Ctx.GamesPlayers
+                                join p in Ctx.Players on gp.PlayerId equals p.Id
+                                where gp.GameId == gameId && p.Bot
+                                select p.Id).ToList();
 
-            return playersId;
+            return botsId;
         }
 
         public void AddPoints(int gameId, int playerId, int points)

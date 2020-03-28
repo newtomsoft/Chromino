@@ -33,19 +33,12 @@ namespace Data.DAL
         public int GetNumberSameColorsAround(int gameId, Coordinate coordinate, ColorCh color)
         {
             int sameColors = 0;
-            for (int i = 0; i < 4; i++)
+            foreach (var offset in Coordinate.OffsetsAround)
             {
-                ColorCh? colorToCompare = i switch
+                ColorCh? currentColor = GetColor(gameId, coordinate + offset);
+                if (currentColor != null)
                 {
-                    0 => GetColor(gameId, coordinate.GetRightCoordinate()),
-                    1 => GetColor(gameId, coordinate.GetBottomCoordinate()),
-                    2 => GetColor(gameId, coordinate.GetLeftCoordinate()),
-                    3 => GetColor(gameId, coordinate.GetTopCoordinate()),
-                    _ => GetColor(gameId, coordinate.GetRightCoordinate()),
-                };
-                if (colorToCompare != null)
-                {
-                    if (color == colorToCompare || color == ColorCh.Cameleon || colorToCompare == ColorCh.Cameleon)
+                    if (color == currentColor || color == ColorCh.Cameleon || currentColor == ColorCh.Cameleon)
                         sameColors++;
                     else
                         return -1;
@@ -79,30 +72,6 @@ namespace Data.DAL
                           select s).ToList();
 
             return result;
-        }
-
-        public void ComputeOffset(Orientation orientation, out int offsetX, out int offsetY)
-        {
-            offsetX = 0;
-            offsetY = 0;
-            switch (orientation)
-            {
-                case Orientation.Horizontal:
-                    offsetX = 1;
-                    break;
-                case Orientation.HorizontalFlip:
-                    offsetX = -1;
-                    break;
-                case Orientation.Vertical:
-                    offsetY = -1;
-                    break;
-                case Orientation.VerticalFlip:
-                    offsetY = 1;
-                    break;
-                default:
-                    offsetX = -1;
-                    break;
-            }
         }
     }
 }

@@ -3,10 +3,10 @@
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
+using Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Tool;
 
@@ -66,9 +66,6 @@ namespace Data.Core
                 squareDal.AddTestDebug(squares, gameId);
                 await Task.Delay(200);
             }
-
-
-
         }
     }
 }

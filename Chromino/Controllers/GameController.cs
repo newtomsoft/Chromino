@@ -201,53 +201,15 @@ namespace Controllers
         {
             if (id == 0)
                 return RedirectToAction("NotFound");
-
             GetPlayerInfos();
-            //TODO passer l'essentiel de l'algo dans GameCore
-            List<Player> players = GamePlayerDal.Players(id);
-            int playersNumber = players.Count;
-            Player playerTurn = GamePlayerDal.PlayerTurn(id);
-            if (playerTurn.Bot)
-                TempData["ShowBotPlayingInfoPopup"] = true;
 
-            if (players.Where(x => x.Id == PlayerId).FirstOrDefault() != null || playerTurn.Bot) // identified player in the game or bot play
+            GameCore gameCore = new GameCore(Ctx, Env, id);
+            GameVM gameViewModel = gameCore.GameViewModel(id, PlayerId);
+
+            if (gameViewModel != null)
             {
-                int chrominosInStackNumber = GameChrominoDal.InStack(id);
-
-                Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
-                List<string> pseudos = new List<string>();
-                foreach (Player player in players)
-                {
-                    pseudosChrominos.Add(player.UserName, GameChrominoDal.InHand(id, player.Id));
-                    pseudos.Add(player.UserName);
-                }
-                Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
-                foreach (var pseudo_chromino in pseudosChrominos)
-                {
-                    if (pseudo_chromino.Value == 1)
-                        pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(id, GamePlayerDal.PlayerId(id, pseudo_chromino.Key)));
-                }
-                List<Chromino> identifiedPlayerChrominos = new List<Chromino>();
-                if (GamePlayerDal.IsBots(id)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, playerTurn.Id);
-                else
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(id, PlayerId);
-                if (GameDal.IsFinished(id) && !GamePlayerDal.GetViewFinished(id, PlayerId))
-                {
-                    GamePlayerDal.SetViewFinished(id, PlayerId);
-                    if (GamePlayerDal.GetWon(id, PlayerId) == null)
-                        GamePlayerDal.SetWon(id, PlayerId, false);
-                }
-                GamePlayer gamePlayerTurn = GamePlayerDal.Details(id, playerTurn.Id);
-                GamePlayer gamePlayerIdentified = GamePlayerDal.Details(id, PlayerId);
-                List<Square> squares = SquareDal.List(id);
-                List<int> botsId = PlayerDal.BotsId();
-                bool noTips = PlayerDal.Details(PlayerId).NoTips;
-                List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(id);
-                List<string> pseudoChrominosInGamePlayed = new List<string>();
-                Game game = GameDal.Details(id);
-                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(id, PlayerId);
-                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
+                if (GamePlayerDal.PlayerTurn(id).Bot)
+                    TempData["ShowBotPlayingInfoPopup"] = true;
                 return View(gameViewModel);
             }
             else
