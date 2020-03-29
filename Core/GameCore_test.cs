@@ -16,10 +16,13 @@ namespace Data.Core
     {
         private static readonly Random Random = new Random();
 
-        public void BeginGameTestDebug()
+        public void BeginGameTestDebug(bool playFirstChromino = false)
         {
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayersTestDebug();
+            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
+            if(playFirstChromino)
+                PlayChromino(chrominoInGame);
             ChangePlayerTurn();
         }
 
@@ -27,15 +30,15 @@ namespace Data.Core
         {
             if (bot)
             {
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
             }
             else
             {
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 7);
-                GameChrominoDal.StackTestToHand(GameId, gamePlayer.PlayerId, 67);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 7);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 65);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 66);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 67);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 68);
             }
 
         }

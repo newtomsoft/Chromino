@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Data.DAL
 {
-    public partial class GameChrominoDal
+    public partial class ChrominoInGameDal
     {
         public ChrominoInGame FirstTestToGame(int gameId)
         {

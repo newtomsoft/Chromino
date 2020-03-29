@@ -8,16 +8,16 @@ using System.Linq;
 
 namespace Data.DAL
 {
-    public partial class GameChrominoDal
+    public partial class ChrominoInHandDal
     {
         private readonly Context Ctx;
         private static readonly Random Random = new Random();
-        public GameChrominoDal(Context context)
+        public ChrominoInHandDal(Context context)
         {
             Ctx = context;
         }
 
-        public ChrominoInHand Details(int gameId, int chrominoId)
+        public ChrominoInHand InHandDetails(int gameId, int chrominoId)
         {
             ChrominoInHand chrominoInHand = (from ch in Ctx.ChrominosInHand
                                              where ch.GameId == gameId && ch.ChrominoId == chrominoId
@@ -38,11 +38,29 @@ namespace Data.DAL
             }
         }
 
-        public int InGame(int gameId)
+
+
+        public Chromino FirstChromino(int gameId, int playerId)
         {
-            int nbChrominos = (from cg in Ctx.ChrominosInGame
-                               where cg.GameId == gameId
-                               select cg).Count();
+            Chromino chromino = (from ch in Ctx.ChrominosInHand
+                                 join c in Ctx.Chrominos on ch.ChrominoId equals c.Id
+                                 where ch.GameId == gameId && ch.PlayerId == playerId
+                                 select c).FirstOrDefault();
+
+            return chromino;
+        }
+
+        /// <summary>
+        /// Nombre de chrominos dans la main du joueur
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns></returns>
+        public int ChrominosNumber(int gameId, int playerId)
+        {
+            int nbChrominos = (from ch in Ctx.ChrominosInHand
+                               where ch.GameId == gameId && ch.PlayerId == playerId
+                               select ch).Count();
 
             return nbChrominos;
         }
@@ -52,25 +70,10 @@ namespace Data.DAL
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
-        public int InHands(int gameId)
+        public int ChrominosNumber(int gameId)
         {
             int nbChrominos = (from ch in Ctx.ChrominosInHand
                                where ch.GameId == gameId
-                               select ch).Count();
-
-            return nbChrominos;
-        }
-
-        /// <summary>
-        /// Nombre de chrominos dans la main du joueur
-        /// </summary>
-        /// <param name="gameId">Id du jeu</param>
-        /// <param name="playerId">Id du joueur</param>
-        /// <returns></returns>
-        public int InHand(int gameId, int playerId)
-        {
-            int nbChrominos = (from ch in Ctx.ChrominosInHand
-                               where ch.GameId == gameId && ch.PlayerId == playerId
                                select ch).Count();
 
             return nbChrominos;
@@ -82,7 +85,7 @@ namespace Data.DAL
         /// <param name="gameId">Id du jeu</param>
         /// <param name="playerId">Id du joueur</param>
         /// <returns></returns>
-        public List<ChrominoInHand> Hand(int gameId, int playerId)
+        public List<ChrominoInHand> List(int gameId, int playerId)
         {
             List<ChrominoInHand> chrominos = (from ch in Ctx.ChrominosInHand
                                               where ch.GameId == gameId && ch.PlayerId == playerId
@@ -92,25 +95,12 @@ namespace Data.DAL
         }
 
         /// <summary>
-        /// Nombre de chrominos dans la pioche
-        /// </summary>
-        /// <param name="gameId">id du jeu</param>
-        /// <returns></returns>
-        public int InStack(int gameId)
-        {
-            int nbChrominos = (from c in Ctx.Chrominos
-                               select c).Count();
-
-            return nbChrominos - InHands(gameId) - InGame(gameId);
-        }
-
-        /// <summary>
         /// Pioche un chromino
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <param name="playerId">id du joueur</param>
         /// <returns>id du chromino pioché. 0 si plus de chromino dans la pioche</returns>
-        public int StackToHand(int gameId, int playerId)
+        public int FromStack(int gameId, int playerId)
         {
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
             var chrominosInGameId = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
@@ -145,39 +135,6 @@ namespace Data.DAL
             }
         }
 
-        public ChrominoInGame FirstRandomToGame(int gameId)
-        {
-            List<Chromino> chrominosCameleon = (from c in Ctx.Chrominos
-                                                where c.SecondColor == ColorCh.Cameleon
-                                                select c).AsNoTracking().ToList();
-
-            Chromino chromino = chrominosCameleon[Random.Next(chrominosCameleon.Count)];
-            Orientation orientation = (Orientation)Random.Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
-            Coordinate offset = new Coordinate(orientation);
-            Coordinate coordinate = new Coordinate(0, 0) - offset;
-            ChrominoInGame chrominoInGame = new ChrominoInGame()
-            {
-                GameId = gameId,
-                ChrominoId = chromino.Id,
-                XPosition = coordinate.X,
-                YPosition = coordinate.Y,
-                Orientation = orientation,
-            };
-            Ctx.ChrominosInGame.Add(chrominoInGame);
-            Ctx.SaveChanges();
-            return chrominoInGame;
-        }
-
-        public Chromino FirstChromino(int gameId, int playerId)
-        {
-            Chromino chromino = (from ch in Ctx.ChrominosInHand
-                                 join c in Ctx.Chrominos on ch.ChrominoId equals c.Id
-                                 where ch.GameId == gameId && ch.PlayerId == playerId
-                                 select c).FirstOrDefault();
-
-            return chromino;
-        }
-
         public List<ChrominoInHand> ChrominosByPriority(int gameId, int playerId)
         {
             List<ChrominoInHand> chrominos = (from ch in Ctx.ChrominosInHand
@@ -187,22 +144,6 @@ namespace Data.DAL
                                               select ch).ToList();
 
             return chrominos;
-        }
-
-        /// <summary>
-        /// tous les chrominosInGame joués du jeu
-        /// le 1er placé aléatoirement n'est pas inclus
-        /// </summary>
-        /// <param name="gameId"></param>
-        /// <returns></returns>
-        public List<ChrominoInGame> ChrominosInGamePlayed(int gameId)
-        {
-            List<ChrominoInGame> chrominosInGame = (from cg in Ctx.ChrominosInGame
-                                                    where cg.GameId == gameId && cg.Move != 0
-                                                    orderby cg.Move descending
-                                                    select cg).AsNoTracking().ToList();
-
-            return chrominosInGame;
         }
 
         public ChrominoInHand GetNewAddedChrominoInHand(int gameId, int playerId)
@@ -250,7 +191,8 @@ namespace Data.DAL
                                            where chl.GameId == gameId && chl.PlayerId == playerId
                                            select chl).FirstOrDefault();
 
-            Ctx.ChrominosInHandLast.Remove(chromino);
+            if(chromino != null)
+                Ctx.ChrominosInHandLast.Remove(chromino);
             Ctx.SaveChanges();
         }
 
@@ -271,13 +213,6 @@ namespace Data.DAL
                                         select c).AsNoTracking().ToList();
 
             return chrominos;
-        }
-
-        public void Add(ChrominoInGame chrominoInGame)
-        {
-            chrominoInGame.Id = 0;
-            Ctx.ChrominosInGame.Add(chrominoInGame);
-            Ctx.SaveChanges();
         }
     }
 }

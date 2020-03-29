@@ -31,7 +31,9 @@ namespace Data.Core
         /// <summary>
         /// les différentes Dal utilisées du context 
         /// </summary>
-        private readonly GameChrominoDal GameChrominoDal;
+        //private readonly GameChrominoDal GameChrominoDal;
+        private readonly ChrominoInGameDal ChrominoInGameDal;
+        private readonly ChrominoInHandDal ChrominoInHandDal;
         private readonly ChrominoDal ChrominoDal;
         private readonly SquareDal SquareDal;
         private readonly PlayerDal PlayerDal;
@@ -60,7 +62,10 @@ namespace Data.Core
             Ctx = ctx;
             GameId = gameId;
             GameDal = new GameDal(ctx);
-            GameChrominoDal = new GameChrominoDal(ctx);
+
+            ChrominoInGameDal = new ChrominoInGameDal(ctx);
+            ChrominoInHandDal = new ChrominoInHandDal(ctx);
+
             ChrominoDal = new ChrominoDal(ctx);
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
@@ -84,7 +89,7 @@ namespace Data.Core
                 GameDal.SetStatus(GameId, GameStatus.SingleInProgress);
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
-            ChrominoInGame chrominoInGame = GameChrominoDal.FirstRandomToGame(GameId);
+            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
             FillHandPlayers();
             PlayChromino(chrominoInGame);
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
@@ -144,22 +149,9 @@ namespace Data.Core
         public void SkipTurn(int playerId)
         {
             GamePlayerDal.SetPass(GameId, playerId, true);
-            if (GameChrominoDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId)))
+            if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId)))
                 SetGameFinished();
             ChangePlayerTurn();
-        }
-
-        /// <summary>
-        /// pioche un chromino et indique que le joueur à pioché au coup d'avant
-        /// s'il n'y a plus de chrimino dans la pioche, passe le tour
-        /// </summary>
-        /// <param name="playerId">Id du joueur</param>
-        public void DrawChromino(int playerId)
-        {
-            if (GameChrominoDal.StackToHand(GameId, playerId) == 0)
-                SkipTurn(playerId);
-            else
-                GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
         }
 
         /// <summary>
@@ -210,7 +202,7 @@ namespace Data.Core
         {
             for (int i = 0; i < BeginGameChrominoInHand; i++)
             {
-                GameChrominoDal.StackToHand(GameId, gamePlayer.PlayerId);
+                ChrominoInHandDal.FromStack(GameId, gamePlayer.PlayerId);
             }
         }
 
@@ -272,7 +264,7 @@ namespace Data.Core
         {
             foreach (int currentPlayerId in GamePlayerDal.NextPlayersId(GameId, playerId))
             {
-                if (GameChrominoDal.InHand(GameId, currentPlayerId) == 1)
+                if (ChrominoInHandDal.ChrominosNumber(GameId, currentPlayerId) == 1)
                     return true;
             }
             return false;
@@ -286,7 +278,7 @@ namespace Data.Core
         /// <returns>Position retenue. null si aucune</returns>
         private Position PositionWherePlayerCanPlay(int playerId, HashSet<Position> positions)
         {
-            List<ChrominoInHand> hand = GameChrominoDal.Hand(GameId, playerId);
+            List<ChrominoInHand> hand = ChrominoInHandDal.List(GameId, playerId);
             ComputeChrominoToPlay(hand, false, positions, out _, out Position position);
             return position;
         }
@@ -470,20 +462,20 @@ namespace Data.Core
             if (players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(gameId))
             {
                 // je joueur est bien dans la partie ou c'est une partie entre bots
-                int chrominosInStackNumber = GameChrominoDal.InStack(gameId);
+                int chrominosInStackNumber = ChrominoInGameDal.InStack(gameId);
 
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
                 {
-                    pseudosChrominos.Add(player.UserName, GameChrominoDal.InHand(gameId, player.Id));
+                    pseudosChrominos.Add(player.UserName, ChrominoInHandDal.ChrominosNumber(gameId, player.Id));
                     pseudos.Add(player.UserName);
                 }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudosChrominos)
                 {
                     if (pseudo_chromino.Value == 1)
-                        pseudos_lastChrominos.Add(pseudo_chromino.Key, GameChrominoDal.FirstChromino(gameId, GamePlayerDal.PlayerId(gameId, pseudo_chromino.Key)));
+                        pseudos_lastChrominos.Add(pseudo_chromino.Key, ChrominoInHandDal.FirstChromino(gameId, GamePlayerDal.PlayerId(gameId, pseudo_chromino.Key)));
                 }
                 List<Chromino> identifiedPlayerChrominos;
                 if (GamePlayerDal.IsBots(gameId)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
@@ -501,7 +493,7 @@ namespace Data.Core
                 List<Square> squares = SquareDal.List(gameId);
                 List<int> botsId = PlayerDal.BotsId();
                 bool noTips = PlayerDal.Details(playerId).NoTips;
-                List<ChrominoInGame> chrominosInGamePlayed = GameChrominoDal.ChrominosInGamePlayed(gameId);
+                List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.ChrominosInGamePlayed(gameId);
                 Game game = GameDal.Details(gameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(gameId, playerId);
                 GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);

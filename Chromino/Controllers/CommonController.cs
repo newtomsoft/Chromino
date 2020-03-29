@@ -11,9 +11,12 @@ namespace Controllers
     public class CommonController : Controller
     {
         protected readonly IWebHostEnvironment Env;
+        private Context context;
+
         protected Context Ctx { get; }
         protected GameDal GameDal { get; }
-        protected GameChrominoDal GameChrominoDal { get; }
+        protected ChrominoInGameDal ChrominoInGameDal { get; }
+        protected ChrominoInHandDal ChrominoInHandDal { get; }
         protected ChrominoDal ChrominoDal { get; }
         protected PlayerDal PlayerDal { get; }
         protected GamePlayerDal GamePlayerDal { get; }
@@ -27,7 +30,8 @@ namespace Controllers
             Env = env;
             Ctx = context;
             GameDal = new GameDal(Ctx);
-            GameChrominoDal = new GameChrominoDal(Ctx);
+            ChrominoInGameDal = new ChrominoInGameDal(Ctx);
+            ChrominoInHandDal = new ChrominoInHandDal(Ctx);
             ChrominoDal = new ChrominoDal(Ctx);
             PlayerDal = new PlayerDal(Ctx);
             GamePlayerDal = new GamePlayerDal(Ctx);

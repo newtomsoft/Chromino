@@ -14,7 +14,7 @@ namespace Controllers
     public partial class GameController : CommonController
     {
         [HttpGet]
-        public IActionResult NewTestDebug()
+        public IActionResult NewTest()
         {
             GetPlayerInfos();
             if(PlayerPseudo != "Thomas")
@@ -53,14 +53,33 @@ namespace Controllers
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
-        private void CreateGameTestDebug(ref List<Player> players, out int gameId, bool copyGame = true)
+        [HttpGet]
+        public async Task<IActionResult> NewTestCompute()
         {
-            int gameToCopy = 5080;
-            ChrominoDal.CreateChrominos();
+            GetPlayerInfos();
+            if (PlayerPseudo != "Thomas")
+                return RedirectToAction("Index", "Home");
+
+            Player player1 = PlayerDal.Details(PlayerId);
+            Player player2 = PlayerDal.Details(PlayerDal.BotsId()[0]);
+
+            List<Player> players = new List<Player>(2);
+            players.Add(player1);
+            players.Add(player2);
+            CreateGameTestDebug(ref players, out int gameId, false, true);
+
+            GameCore gamecore = new GameCore(Ctx, Env, gameId);
+
+            return RedirectToAction("Show", "Game", new { id = gameId });
+        }
+
+        private void CreateGameTestDebug(ref List<Player> players, out int gameId, bool copyGame = true, bool firstChrominoPlay = false)
+        {
             gameId = GameDal.AddTestDebug().Id;
 
             if (copyGame)
             {
+                int gameToCopy = 5080;
                 SquareDal squareDal = new SquareDal(Ctx);
                 var squares = squareDal.List(gameToCopy);
                 squareDal.AddTestDebug(squares, gameId);
@@ -68,7 +87,7 @@ namespace Controllers
 
             GamePlayerDal.Add(gameId, players);
             GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            gamecore.BeginGameTestDebug();
+            gamecore.BeginGameTestDebug(firstChrominoPlay);
         }
     }
 }
