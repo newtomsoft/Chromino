@@ -62,10 +62,8 @@ namespace Data.Core
             Ctx = ctx;
             GameId = gameId;
             GameDal = new GameDal(ctx);
-
             ChrominoInGameDal = new ChrominoInGameDal(ctx);
             ChrominoInHandDal = new ChrominoInHandDal(ctx);
-
             ChrominoDal = new ChrominoDal(ctx);
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
@@ -411,8 +409,6 @@ namespace Data.Core
 
         private HashSet<Position> ComputeChrominoToPlay(ChrominoInHand chrominoInHand, HashSet<Position> positions)
         {
-            //List<ChrominoInHand> chrominosInHand = new List<ChrominoInHand> { chrominoInGame };
-            //return ComputeChrominoToPlay(chrominosInHand, false, positions, out _, out _);
             Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
             HashSet<Position> goodPositions = new HashSet<Position>();
             foreach (Position currentPosition in positions)
@@ -421,7 +417,33 @@ namespace Data.Core
                     goodPositions.Add(currentPosition);
 
                 if (chromino.FirstColor != chromino.ThirdColor && (chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
-                    goodPositions.Add(currentPosition);
+                {
+                    Orientation orientation;
+                    Coordinate newCoordinate = currentPosition.Coordinate;
+
+                    switch (currentPosition.Orientation)
+                    {
+                        case Orientation.Horizontal:
+                            orientation = Orientation.HorizontalFlip;
+                            newCoordinate += 2 * Coordinate.StepX;
+                            break;
+                        case Orientation.HorizontalFlip:
+                            orientation = Orientation.Horizontal;
+                            newCoordinate -= 2 * Coordinate.StepX;
+                            break;
+                        case Orientation.Vertical:
+                            orientation = Orientation.VerticalFlip;
+                            newCoordinate -= 2 * Coordinate.StepY;
+                            break;
+                        case Orientation.VerticalFlip:
+                        default:
+                            orientation = Orientation.Vertical;
+                            newCoordinate += 2 * Coordinate.StepY;
+                            break;
+                    }
+                    Position newPosition = new Position { Orientation = orientation, Coordinate = newCoordinate };
+                    goodPositions.Add(newPosition);
+                }
             }
             return goodPositions;
         }

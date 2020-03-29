@@ -17,7 +17,7 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public ChrominoInHand InHandDetails(int gameId, int chrominoId)
+        public ChrominoInHand Details(int gameId, int chrominoId)
         {
             ChrominoInHand chrominoInHand = (from ch in Ctx.ChrominosInHand
                                              where ch.GameId == gameId && ch.ChrominoId == chrominoId

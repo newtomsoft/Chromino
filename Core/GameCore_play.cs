@@ -22,7 +22,7 @@ namespace Data.Core
             if (chrominoId != 0)
             {
                 if (PlayerDal.IsBot(playerId))
-                    UpdateComputedChrominos(playerId, chrominoId);
+                    UpdateFullAreaOnComputedChromino(playerId, chrominoId);
 
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
             }
@@ -324,7 +324,9 @@ namespace Data.Core
             ChrominoInGameDal.Add(chrominoInGame);
             ChrominoInHandDal.DeleteInHand(gameId, chromino.Id);
             GameDal.IncreaseMove(gameId);
-            UpdateComputedChrominos(0, 0, chromino.Id);
+            if (playerId != null)
+                RemoveChrominoOnComputedChromino((int)playerId, chrominoInGame.ChrominoId);
+            RemoveAndUpdateChrominoAreaOnComputedChromino();
             return PlayReturn.Ok;
         }
     }
