@@ -1,4 +1,5 @@
-﻿using Data.DAL;
+﻿using Core;
+using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
 using System;
@@ -24,8 +25,7 @@ namespace Data.Core
                 return PlayReturn.DrawChromino;
             }
             List<Square> squares = SquareDal.List(GameId);
-            HashSet<Coordinate> coordinates = FreeAroundSquares(squares);
-            List<Position> positions = ComputePossiblesPositions(coordinates, squares);
+            HashSet<Position> positions = ComputePossiblesPositions(squares);
 
             // cherche un chromino dans la main du bot correspondant à un possiblePosition
             List<ChrominoInHand> hand;
@@ -64,8 +64,7 @@ namespace Data.Core
                         // 1 seul adversaire n'a plus qu'un chromino
                         List<Square> squaresAfterTry = ComputeSquares(currentChrominoToPlay);
                         squaresAfterTry.AddRange(squares);
-                        HashSet<Coordinate> coordinatesAfterTry = FreeAroundSquares(squaresAfterTry);
-                        List<Position> positionsAfterTry = ComputePossiblesPositions(coordinatesAfterTry, squaresAfterTry);
+                        HashSet<Position> positionsAfterTry = ComputePossiblesPositions(squaresAfterTry);
                         Position positionWhereOpponentCanPlayAfterTry = PositionWherePlayerCanPlay(playerIdWithLastChrominoIdInHand[0], positionsAfterTry);
 
                         int numberChrominosInHand = GameChrominoDal.InHand(GameId, botId);
@@ -166,8 +165,6 @@ namespace Data.Core
                 playReturn = PlayChromino(chrominoInGame, playerId);
             if (playReturn == PlayReturn.Ok)
             {
-                UpdateComputedChrominos(); // todo passer chromino joué
-
                 numberInHand--;
                 GamePlayerDal.SetPass(GameId, playerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
@@ -306,23 +303,56 @@ namespace Data.Core
             GameChrominoDal.Add(chrominoInGame);
             GameChrominoDal.DeleteInHand(gameId, chromino.Id);
             GameDal.IncreaseMove(gameId);
+            UpdateComputedChrominos(chromino.Id);
             return PlayReturn.Ok;
         }
 
-
-        private void UpdateComputedChrominos(int botId = 0)
+        private void UpdateComputedChrominos(int chrominoId, int botId = 0)
         {
             if (botId == 0)
             {
                 foreach (var currentbotId in GamePlayerDal.BotsId(GameId))
-                    UpdateComputedChrominos(currentbotId);
+                    UpdateComputedChrominos(chrominoId, currentbotId);
             }
             else
             {
+                ComputedChrominosDal.Remove(GameId, botId, chrominoId);
 
+                List<Square> squares = SquareDal.List(GameId);
+                List<Square> lastSquares = new List<Square> { squares[0], squares[1], squares[2] };
 
+                HashSet<ComputedChromino> ComputedChrominosToRemove = new HashSet<ComputedChromino>();
+                List<ComputedChromino> ListComputedChrominosToRemove = new List<ComputedChromino>();
 
+                foreach (var square in lastSquares)
+                    ListComputedChrominosToRemove.AddRange(ComputedChrominoCore.ToDelete(square));
 
+                foreach (var currentChrominoToRemove in ListComputedChrominosToRemove)
+                    ComputedChrominosToRemove.Add(currentChrominoToRemove);
+
+                ComputedChrominosDal.Remove(GameId, botId, ComputedChrominosToRemove);
+                HashSet<Position> positions = ComputePossiblesPositions(squares, lastSquares);
+                List<ChrominoInHand> hand = GameChrominoDal.ChrominosByPriority(GameId, botId);
+                
+                List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
+                foreach (ChrominoInHand chrominoInHand in hand)
+                {
+                    HashSet<Position> goodPositions = ComputeChrominoToPlay(chrominoInHand, positions);
+                    foreach (Position position in goodPositions)
+                    {
+                        ComputedChromino computedChromino = new ComputedChromino
+                        {
+                            BotId = botId,
+                            GameId = GameId,
+                            ChrominoId = chrominoInHand.ChrominoId,
+                            Orientation = position.Orientation,
+                            X = position.Coordinate.X,
+                            Y = position.Coordinate.Y,
+                        };
+                        chrominosFound.Add(computedChromino);
+                    }
+                }
+                ComputedChrominosDal.Add(chrominosFound);
             }
         }
     }

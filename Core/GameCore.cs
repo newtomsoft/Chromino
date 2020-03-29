@@ -37,6 +37,7 @@ namespace Data.Core
         private readonly PlayerDal PlayerDal;
         private readonly GamePlayerDal GamePlayerDal;
         private readonly GameDal GameDal;
+        private readonly ComputedChrominosDal ComputedChrominosDal;
 
         /// <summary>
         /// Id du jeu
@@ -64,6 +65,7 @@ namespace Data.Core
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
+            ComputedChrominosDal = new ComputedChrominosDal(ctx);
             Players = GamePlayerDal.Players(gameId);
             GamePlayers = new List<GamePlayer>();
             foreach (Player player in Players)
@@ -83,10 +85,9 @@ namespace Data.Core
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
             ChrominoInGame chrominoInGame = GameChrominoDal.FirstRandomToGame(GameId);
-            PlayChromino(chrominoInGame);
-
-            new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayers();
+            PlayChromino(chrominoInGame);
+            new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             ChangePlayerTurn();
         }
 
@@ -283,7 +284,7 @@ namespace Data.Core
         /// <param name="playerId">Id du joueur</param>
         /// <param name="positions">liste des positions candidates</param>
         /// <returns>Position retenue. null si aucune</returns>
-        private Position PositionWherePlayerCanPlay(int playerId, List<Position> positions)
+        private Position PositionWherePlayerCanPlay(int playerId, HashSet<Position> positions)
         {
             List<ChrominoInHand> hand = GameChrominoDal.Hand(GameId, playerId);
             ComputeChrominoToPlay(hand, false, positions, out _, out Position position);
@@ -293,17 +294,20 @@ namespace Data.Core
         /// <summary>
         /// retourne les positions possibles où peuvent être joués des chrominos
         /// </summary>
-        /// <param name="coordinates">ensemble des coordonnées potentielles</param>
-        /// <param name="squares">liste des squares occupés</param>
+        /// <param name="occupiedSquares">liste complète des squares occupés</param>
+        /// <param name="squaresForArea">liste des squares définissant la zone à rechercher</param>
         /// <returns></returns>
-        private List<Position> ComputePossiblesPositions(HashSet<Coordinate> coordinates, List<Square> squares)
+        private HashSet<Position> ComputePossiblesPositions(List<Square> occupiedSquares, List<Square> squaresForArea = null)
         {
-            List<Position> positions = new List<Position>();
+            if (squaresForArea == null)
+                squaresForArea = occupiedSquares;
+            HashSet<Coordinate> coordinates = FreeAroundSquares(squaresForArea);
+            HashSet<Position> positions = new HashSet<Position>();
             // prendre ceux avec un seul coté en commun avec un chromino
             // calculer orientation avec les couleurs imposées ou pas
             foreach (Coordinate firstCoordinate in coordinates)
             {
-                ColorCh? firstColor = firstCoordinate.OkColorFor(squares, out int commonSidesFirstColor);
+                ColorCh? firstColor = firstCoordinate.OkColorFor(occupiedSquares, out int commonSidesFirstColor);
                 if (firstColor != null)
                 {
                     //cherche placement possible d'un square
@@ -313,11 +317,11 @@ namespace Data.Core
                         Coordinate secondCoordinate = firstCoordinate + offset;
                         Coordinate thirdCoordinate = secondCoordinate + offset;
 
-                        if (secondCoordinate.IsFree(ref squares) && thirdCoordinate.IsFree(ref squares))
+                        if (secondCoordinate.IsFree(ref occupiedSquares) && thirdCoordinate.IsFree(ref occupiedSquares))
                         {
                             //calcul si chromino posable et dans quelle position
-                            ColorCh? secondColor = secondCoordinate.OkColorFor(squares, out int adjacentChrominoSecondColor);
-                            ColorCh? thirdColor = thirdCoordinate.OkColorFor(squares, out int adjacentChrominosThirdColor);
+                            ColorCh? secondColor = secondCoordinate.OkColorFor(occupiedSquares, out int adjacentChrominoSecondColor);
+                            ColorCh? thirdColor = thirdCoordinate.OkColorFor(occupiedSquares, out int adjacentChrominosThirdColor);
 
                             if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
                             {
@@ -347,7 +351,7 @@ namespace Data.Core
         /// <param name="indexInHand">index du chromino convenant</param>
         /// <param name="position">position si convenant, null sinon</param>
         /// <returns>null si aucun chromino ne couvient</returns>
-        private ChrominoInGame ComputeChrominoToPlay(List<ChrominoInHand> hand, bool previouslyDraw, List<Position> positions, out int indexInHand, out Position position)
+        private ChrominoInGame ComputeChrominoToPlay(List<ChrominoInHand> hand, bool previouslyDraw, HashSet<Position> positions, out int indexInHand, out Position position)
         {
             ChrominoInGame goodChromino = null;
             Coordinate firstCoordinate;
@@ -411,6 +415,23 @@ namespace Data.Core
                 }
             }
             return goodChromino;
+        }
+
+        private HashSet<Position> ComputeChrominoToPlay(ChrominoInHand chrominoInHand, HashSet<Position> positions)
+        {
+            //List<ChrominoInHand> chrominosInHand = new List<ChrominoInHand> { chrominoInGame };
+            //return ComputeChrominoToPlay(chrominosInHand, false, positions, out _, out _);
+            Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
+            HashSet<Position> goodPositions = new HashSet<Position>();
+            foreach (Position currentPosition in positions)
+            {
+                if ((chromino.FirstColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon))
+                    goodPositions.Add(currentPosition);
+
+                if (chromino.FirstColor != chromino.ThirdColor && (chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
+                    goodPositions.Add(currentPosition);
+            }
+            return goodPositions;
         }
 
         private List<Square> ComputeSquares(ChrominoInGame chrominoIG)

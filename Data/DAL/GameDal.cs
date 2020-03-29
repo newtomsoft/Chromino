@@ -17,7 +17,6 @@ namespace Data.DAL
 
         public Game Details(string guid)
         {
-
             Game game = (from games in Ctx.Games
                          where games.Guid == guid
                          select games).FirstOrDefault();
@@ -27,7 +26,6 @@ namespace Data.DAL
 
         public Game Details(int id)
         {
-
             Game game = (from games in Ctx.Games
                          where games.Id == id
                          select games).FirstOrDefault();
