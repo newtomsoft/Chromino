@@ -7,7 +7,26 @@
         NotFree,
         NotTwoOrMoreSameColors,
         DifferentColorsAround,
-        DrawChromino,
         NotPlayerTurn,
+        DrawChromino,
+        SkipTurn,
+    }
+
+    public static class PlayReturnMethods
+    {
+        public static bool IsError(this PlayReturn playReturn)
+        {
+            switch (playReturn)
+            {
+                case PlayReturn.LastChrominoIsCameleon:
+                case PlayReturn.NotFree:
+                case PlayReturn.NotTwoOrMoreSameColors:
+                case PlayReturn.DifferentColorsAround:
+                case PlayReturn.NotPlayerTurn:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

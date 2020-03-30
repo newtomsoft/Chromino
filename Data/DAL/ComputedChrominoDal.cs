@@ -1,5 +1,6 @@
 ﻿using Data.Enumeration;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,9 @@ namespace Data.DAL
         {
             foreach (var toRemove in computedChrominosToRemove)
             {
-                var ccToRemove = (from cc in Ctx.ComputedChrominos
-                                  where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X && cc.Y == toRemove.Y && cc.Orientation == toRemove.Orientation
-                                  select cc).FirstOrDefault();
+                ComputedChromino ccToRemove = (from cc in Ctx.ComputedChrominos
+                                               where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X && cc.Y == toRemove.Y && cc.Orientation == toRemove.Orientation
+                                               select cc).FirstOrDefault();
 
                 if (ccToRemove != null)
                     Ctx.ComputedChrominos.Remove(ccToRemove);
@@ -58,9 +59,21 @@ namespace Data.DAL
 
         public void Remove(int gameId, int botId, int chrominoId)
         {
-            var ccToRemove = (from cc in Ctx.ComputedChrominos
-                              where cc.GameId == gameId && cc.BotId == botId && cc.ChrominoId == chrominoId
-                              select cc).ToList();
+            List<ComputedChromino> ccToRemove = (from cc in Ctx.ComputedChrominos
+                                                 where cc.GameId == gameId && cc.BotId == botId && cc.ChrominoId == chrominoId
+                                                 select cc).ToList();
+
+            if (ccToRemove != null)
+                Ctx.ComputedChrominos.RemoveRange(ccToRemove);
+
+            Ctx.SaveChanges();
+        }
+
+        public void Remove(int gameId, int botId)
+        {
+            List<ComputedChromino> ccToRemove = (from cc in Ctx.ComputedChrominos
+                                                 where cc.GameId == gameId && cc.BotId == botId
+                                                 select cc).ToList();
 
             if (ccToRemove != null)
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
@@ -74,6 +87,24 @@ namespace Data.DAL
                 Ctx.ComputedChrominos.Add(toAdd);
 
             Ctx.SaveChanges();
+        }
+
+        /// <summary>
+        /// renvoie la liste des chrominos pouvant être joué au tour actuel classé par priorité
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="botId">Id du bot joueur</param>
+        /// <param name="chominoIdNotToPlay">Id du chromino ne devant pas être joué</param>
+        /// <returns></returns>
+        public List<ComputedChromino> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay)
+        {
+            List<ComputedChromino> ComputedChrominos = (from cc in Ctx.ComputedChrominos
+                                                        join c in Ctx.Chrominos on cc.ChrominoId equals c.Id
+                                                        where cc.GameId == gameId && cc.BotId == botId && cc.ParentId == null && cc.ChrominoId != chominoIdNotToPlay
+                                                        orderby c.Points, c.SecondColor == ColorCh.Cameleon, c.Id
+                                                        select cc).AsNoTracking().ToList();
+
+            return ComputedChrominos;
         }
     }
 }

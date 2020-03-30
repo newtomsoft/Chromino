@@ -24,6 +24,15 @@ namespace Data.DAL
             return result;
         }
 
+        public int Points(int id)
+        {
+            int points = (from c in Ctx.Chrominos
+                          where c.Id == id
+                          select c.Points).FirstOrDefault();
+
+            return points;
+        }
+
         /// <summary>
         /// Création des chrominos. Utilisé qu'une seule fois après création de la base de données et servira ensuite pour chaque partie
         /// </summary>

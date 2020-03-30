@@ -1,4 +1,5 @@
 ﻿using Data.Enumeration;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
@@ -18,5 +19,18 @@ namespace Data.Models
         public Chromino Chromino { get; set; }
         public Game Game { get; set; }
         public Player Player { get; set; }
+
+        public static ChrominoInGame From(ComputedChromino computedChromino)
+        {
+            return new ChrominoInGame
+            {
+                GameId = computedChromino.GameId,
+                PlayerId = computedChromino.BotId,
+                ChrominoId = computedChromino.ChrominoId,
+                Orientation = computedChromino.Orientation,
+                XPosition = computedChromino.X,
+                YPosition = computedChromino.Y
+            };
+        }
     }
 }

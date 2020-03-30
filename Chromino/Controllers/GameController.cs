@@ -146,8 +146,7 @@ namespace Controllers
             };
 
             PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
-
-            if (playReturn != PlayReturn.Ok)
+            if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
 
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -248,10 +247,9 @@ namespace Controllers
         public IActionResult PlayBot(int id, int botId)
         {
             GameCore gamecore = new GameCore(Ctx, Env, id);
-            PlayReturn playreturn = PlayReturn.DrawChromino;
-            while (playreturn == PlayReturn.DrawChromino)
-                playreturn = gamecore.PlayBot(botId);
-
+            PlayReturn playreturn;
+            do playreturn = gamecore.PlayBot(botId);
+            while (playreturn.IsError());
             return RedirectToAction("Show", "Game", new { id });
         }
 

@@ -1,8 +1,5 @@
 ﻿using Data.Enumeration;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Data.Models
 {
@@ -17,7 +14,6 @@ namespace Data.Models
         public int X { get; set; }
         public int Y { get; set; }
         public int? ParentId { get; set; }
-
 
         public Chromino Chromino { get; set; }
         public Game Game { get; set; }
@@ -34,7 +30,7 @@ namespace Data.Models
 
         public override int GetHashCode()
         {
-            return (X * 1000000 + Y * 10 + Orientation).GetHashCode();
+            return (X * 10000 + Y * 10 + Orientation).GetHashCode();
         }
     }
 }

@@ -61,11 +61,12 @@ namespace Data.DAL
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
             var chrominosInGameId = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
             var chrominosInHandId = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
-            var possibleChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId).ToList();
-            int possibleChrominosIdCount = possibleChrominosId.Count;
+            var possiblesChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId).ToList();
+            int possibleChrominosIdCount = possiblesChrominosId.Count;
+
             if (possibleChrominosIdCount != 0)
             {
-                int chrominoId = possibleChrominosId[Random.Next(possibleChrominosIdCount)];
+                int chrominoId = possiblesChrominosId[Random.Next(possibleChrominosIdCount)];
                 var positions = from ch in Ctx.ChrominosInHand
                                 where ch.GameId == gameId && ch.PlayerId == playerId
                                 select ch.Position;
