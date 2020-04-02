@@ -126,26 +126,22 @@ namespace Controllers
         /// <param name="orientation">vertical, horizontal, etc</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation)
+        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
             GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
-            Coordinate coordinate = orientation switch
-            {
-                Orientation.HorizontalFlip => new Coordinate(x + 2, y),
-                Orientation.Vertical => new Coordinate(x, y + 2),
-                _ => new Coordinate(x, y),
-            };
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
+                PlayerId = playerId,
                 ChrominoId = chrominoId,
-                XPosition = coordinate.X,
-                YPosition = coordinate.Y,
+                XPosition = x,
+                YPosition = y,
                 Orientation = orientation,
+                Flip = flip,
             };
 
-            PlayReturn playReturn = gameCore.Play(chrominoInGame, playerId);
+            PlayReturn playReturn = gameCore.Play(chrominoInGame);
             if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
 
@@ -249,7 +245,7 @@ namespace Controllers
             GameCore gamecore = new GameCore(Ctx, Env, id);
             PlayReturn playreturn;
             do playreturn = gamecore.PlayBot(botId);
-            while (playreturn.IsError());
+            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
             return RedirectToAction("Show", "Game", new { id });
         }
 

@@ -22,7 +22,7 @@ namespace Data.Core
             FillHandPlayersTestDebug();
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
             if(playFirstChromino)
-                PlayChromino(chrominoInGame);
+                Play(chrominoInGame);
             ChangePlayerTurn();
         }
 

@@ -16,8 +16,9 @@ namespace Data.DAL
                                  select c).AsNoTracking().FirstOrDefault();
 
             Orientation orientation = (Orientation)Random.Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
-            Coordinate offset = new Coordinate(orientation);
-            Coordinate coordinate = new Coordinate(0, 0) - offset;
+            bool flip = Random.Next(0, 2) == 0 ? false : true;
+            Coordinate offset = new Coordinate(orientation, flip);
+            Coordinate coordinate = -offset;
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -25,6 +26,8 @@ namespace Data.DAL
                 XPosition = coordinate.X,
                 YPosition = coordinate.Y,
                 Orientation = orientation,
+                Flip = flip,
+                PlayerId = null,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
             Ctx.SaveChanges();

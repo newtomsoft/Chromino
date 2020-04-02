@@ -16,7 +16,7 @@ namespace Data.Core
         /// <summary>
         /// nombre de chromino dans la main des joueurs en début de partie
         /// </summary>
-        private const int BeginGameChrominoInHand = 8;
+        private const int BeginGameChrominoInHand = 2;
 
         /// <summary>
         /// DbContext du jeu
@@ -80,7 +80,7 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// Commence une partie seul ou à plusieurs
+        /// Commence une partie
         /// </summary>
         /// <param name="playerNumber"></param>
         public void BeginGame(int playerNumber)
@@ -91,7 +91,7 @@ namespace Data.Core
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
             FillHandPlayers();
-            PlayChromino(chrominoInGame);
+            Play(chrominoInGame);
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             ChangePlayerTurn();
         }
@@ -217,19 +217,6 @@ namespace Data.Core
             return false;
         }
 
-        /// <summary>
-        /// retourne la position où le joueur peut jouer parmis la liste passée en paramètre
-        /// </summary>
-        /// <param name="playerId">Id du joueur</param>
-        /// <param name="positions">liste des positions candidates</param>
-        /// <returns>Position retenue. null si aucune</returns>
-        private Position PositionWherePlayerCanPlay(int playerId, HashSet<Position> positions)
-        {
-            List<ChrominoInHand> hand = ChrominoInHandDal.List(GameId, playerId);
-            ComputedChrominoCore.ComputeChrominoToPlay(hand, false, positions, out _, out Position position);
-            return position;
-        }
-
         private List<Square> ComputeSquares(ChrominoInGame chrominoIG)
         {
             int gameId = chrominoIG.GameId;
@@ -243,15 +230,7 @@ namespace Data.Core
                     squares.Add(new Square { GameId = gameId, X = xOrigin + 1, Y = yOrigin, Color = chromino.SecondColor });
                     squares.Add(new Square { GameId = gameId, X = xOrigin + 2, Y = yOrigin, Color = chromino.ThirdColor });
                     break;
-                case Orientation.HorizontalFlip:
-                    squares.Add(new Square { GameId = gameId, X = xOrigin - 1, Y = yOrigin, Color = chromino.SecondColor });
-                    squares.Add(new Square { GameId = gameId, X = xOrigin - 2, Y = yOrigin, Color = chromino.ThirdColor });
-                    break;
                 case Orientation.Vertical:
-                    squares.Add(new Square { GameId = gameId, X = xOrigin, Y = yOrigin - 1, Color = chromino.SecondColor });
-                    squares.Add(new Square { GameId = gameId, X = xOrigin, Y = yOrigin - 2, Color = chromino.ThirdColor });
-                    break;
-                case Orientation.VerticalFlip:
                     squares.Add(new Square { GameId = gameId, X = xOrigin, Y = yOrigin + 1, Color = chromino.SecondColor });
                     squares.Add(new Square { GameId = gameId, X = xOrigin, Y = yOrigin + 2, Color = chromino.ThirdColor });
                     break;

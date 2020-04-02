@@ -48,6 +48,16 @@ namespace Data.DAL
             return chromino;
         }
 
+        public int FirstChrominoId(int gameId, int playerId)
+        {
+            int chrominoId = (from ch in Ctx.ChrominosInHand
+                              join c in Ctx.Chrominos on ch.ChrominoId equals c.Id
+                              where ch.GameId == gameId && ch.PlayerId == playerId
+                              select c.Id).FirstOrDefault();
+
+            return chrominoId;
+        }
+
         /// <summary>
         /// Nombre de chrominos dans la main du joueur
         /// </summary>
@@ -189,16 +199,39 @@ namespace Data.DAL
                                            where chl.GameId == gameId && chl.PlayerId == playerId
                                            select chl).FirstOrDefault();
 
-            if(chromino != null)
+            if (chromino != null)
                 Ctx.ChrominosInHandLast.Remove(chromino);
             Ctx.SaveChanges();
         }
 
-        public List<int> PlayersIdWithOneChrominoKnown(int gameId, int playerIdToExclude)
+        /// <summary>
+        /// Donne la liste des adversaire 1 chromino de leur main connu
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="playerIdToExclude">Id du joueur requétant</param>
+        /// <returns></returns>
+        public List<int> OpponentIdWithOneChrominoKnown(int gameId, int playerIdToExclude)
         {
             List<int> playersId = (from chl in Ctx.ChrominosInHandLast
                                    where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
                                    select chl.PlayerId).ToList();
+
+            return playersId;
+        }
+
+        /// <summary>
+        /// Donne la liste des adversaire avec un seul chromino dans leur main
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="playerIdToExclude">Id du joueur requétant</param>
+        /// <returns></returns>
+        public List<int> OpponentIdWithOneChromino(int gameId, int playerIdToExclude)
+        {
+            List<int> playersId = (from chl in Ctx.ChrominosInHand
+                                   where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
+                                   group chl by chl.PlayerId into g
+                                   where g.Count() == 1
+                                   select g.Key).ToList();
 
             return playersId;
         }

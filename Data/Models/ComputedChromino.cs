@@ -11,6 +11,7 @@ namespace Data.Models
         public int GameId { get; set; }
         public int BotId { get; set; }
         public Orientation Orientation { get; set; }
+        public bool Flip { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int? ParentId { get; set; }

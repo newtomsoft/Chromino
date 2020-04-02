@@ -20,7 +20,8 @@ namespace Data.Core
         public static Coordinate operator +(Coordinate c1, Coordinate c2) => new Coordinate(c1.X + c2.X, c1.Y + c2.Y);
         public static Coordinate operator -(Coordinate c, Coordinate offset) => new Coordinate(c.X - offset.X, c.Y - offset.Y);
         public static Coordinate operator -(Coordinate c) => new Coordinate(-c.X, -c.Y);
-
+        public static bool operator ==(Coordinate c1, Coordinate c2) => c1.X == c2.X && c2.Y == c2.Y;
+        public static bool operator !=(Coordinate c1, Coordinate c2) => c1.X != c2.X || c2.Y != c2.Y;
 
         public Coordinate(int x, int y)
         {
@@ -28,27 +29,31 @@ namespace Data.Core
             Y = y;
         }
 
+        public Coordinate Abs()
+        {
+            return new Coordinate(Math.Abs(X), Math.Abs(Y));
+        }
+
         /// <summary>
         /// New coordinate for offset use
         /// </summary>
         /// <param name="orientation"></param>
-        public Coordinate(Orientation orientation)
+        public Coordinate(Orientation orientation, bool flip = false)
         {
-            switch (orientation)
-            {
-                case Orientation.Horizontal:
-                    X = 1;
-                    break;
-                case Orientation.HorizontalFlip:
-                    X = -1;
-                    break;
-                case Orientation.Vertical:
-                    Y = -1;
-                    break;
-                case Orientation.VerticalFlip:
-                    Y = 1;
-                    break;
-            }
+            if (orientation == Orientation.Horizontal)
+                X = flip ? -1 : 1;
+            else if (orientation == Orientation.Vertical)
+                Y = flip ? -1 : 1;
+            else
+                throw new Exception("Exception Orientation on définit");
+        }
+
+
+        public Orientation GetOrientation()
+        {
+            if (X == 0 && Y == 0)
+                throw new Exception("Offset nul");
+            return X == 0 ? Orientation.Vertical : Orientation.Horizontal;
         }
 
         private ColorCh? GetColor(List<Square> grid, Coordinate coordinate)
@@ -68,7 +73,7 @@ namespace Data.Core
         /// </summary>
         /// <param name="squares">ensemble de squares dans lequel porter la recherche</param>
         /// <returns></returns>
-        public bool IsFree(ref List<Square> squares)
+        public bool IsFree(List<Square> squares)
         {
             Square result = (from s in squares
                              where s.X == X && s.Y == Y
@@ -101,6 +106,16 @@ namespace Data.Core
                 return colors.First();
             else
                 return null;
+        }
+
+        public bool IsFreeForChromino(Coordinate offset, List<Square> squares)
+        {
+            for (int i = 1; i < 2; i++)
+            {
+                if (!(this + i * offset).IsFree(squares))
+                    return false;
+            }
+            return true;
         }
     }
 }

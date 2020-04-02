@@ -21,24 +21,11 @@ namespace Data.ViewModel
             {
                 case Orientation.Horizontal:
                     IndexesX[1] = (short)(indexX + 1);
+                    IndexesY[1] = (short)indexY;
                     IndexesX[2] = (short)(indexX + 2);
-                    IndexesY[1] = (short)indexY;
-                    IndexesY[2] = (short)indexY;
-                    break;
-                case Orientation.HorizontalFlip:
-                    IndexesX[1] = (short)(indexX - 1);
-                    IndexesX[2] = (short)(indexX - 2);
-                    IndexesY[1] = (short)indexY;
                     IndexesY[2] = (short)indexY;
                     break;
                 case Orientation.Vertical:
-                    IndexesX[1] = (short)indexX;
-                    IndexesX[2] = (short)indexX;
-                    IndexesY[1] = (short)(indexY - 1);
-                    IndexesY[2] = (short)(indexY - 2);
-                    break;
-                case Orientation.VerticalFlip:
-                default:
                     IndexesX[1] = (short)indexX;
                     IndexesX[2] = (short)indexX;
                     IndexesY[1] = (short)(indexY + 1);

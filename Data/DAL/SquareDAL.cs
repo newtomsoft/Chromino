@@ -19,8 +19,11 @@ namespace Data.DAL
 
         public void Add(List<Square> squares)
         {
-            Ctx.Squares.AddRange(squares);
-            Ctx.SaveChanges();
+            foreach (var square in squares)
+            {
+                Ctx.Squares.Add(square);
+                Ctx.SaveChanges();
+            }            
         }
 
         /// <summary>

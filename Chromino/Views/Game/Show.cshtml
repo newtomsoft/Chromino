@@ -146,14 +146,15 @@
             }
         </div>
     }
-    <form id="FormSendMove" asp-action="Play" hidden>
-        <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
-        <input id="FormGameId" name="gameId" value="@Model.Game.Id" />
-        <input id="FormChrominoId" name="chrominoId" />
-        <input id="FormX" name="x" />
-        <input id="FormY" name="y" />
-        <input id="FormOrientation" name="orientation" />
-    </form>
+<form id="FormSendMove" asp-action="Play" hidden>
+    <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
+    <input id="FormGameId" name="gameId" value="@Model.Game.Id" />
+    <input id="FormChrominoId" name="chrominoId" />
+    <input id="FormX" name="x" />
+    <input id="FormY" name="y" />
+    <input id="FormOrientation" name="orientation" />
+    <input id="FormFlip" name="flip" />
+</form>
 
 
     @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.Game.Status != GameStatus.Finished)
@@ -173,9 +174,7 @@
 
     @{
         int horizontal = (int)Orientation.Horizontal;
-        int horizontalFlip = (int)Orientation.HorizontalFlip;
         int vertical = (int)Orientation.Vertical;
-        int verticalFlip = (int)Orientation.VerticalFlip;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
         if (TempData["ShowInfos"] != null || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished || (Model.PlayerTurn.Id == ViewBag.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
@@ -220,9 +219,7 @@
     var XMin = @Model.XMin;
     var YMin = @Model.YMin;
     var Horizontal = @horizontal;
-    var HorizontalFlip = @horizontalFlip;
     var Vertical = @vertical;
-    var VerticalFlip = @verticalFlip;
     var NotReadMessages = @Model.GamePlayerIdentified.NotReadMessages;
     var PlayReturn = "@playReturn.ToString()";
     var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
@@ -317,7 +314,7 @@
             <img class="example" src="~/image/example/DiffSides.svg" alt="example" />
             <p style="text-align:center; font-size:small">exemple invalide et exemple valide</p>
             break;
-        case PlayReturn.NotTwoOrMoreSameColors:
+        case PlayReturn.NotMinTwoSameColors:
             <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu.</p>
             <p style="text-align:center">Merci de rejouer.</p>
             <img class="example" src="~/image/example/2Sides.svg" alt="example" />

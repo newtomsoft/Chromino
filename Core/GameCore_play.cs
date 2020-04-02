@@ -22,7 +22,7 @@ namespace Data.Core
             if (chrominoId != 0)
             {
                 if (PlayerDal.IsBot(playerId))
-                    ComputedChrominoCore.UpdateCandidatesFromAllChrominosPlayed(playerId, chrominoId);
+                    ComputedChrominoCore.RemoveAndUpdateCandidatesFromChrominosPlayed(false, playerId, true, chrominoId);
 
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
                 return PlayReturn.DrawChromino;
@@ -39,19 +39,22 @@ namespace Data.Core
         /// s'il n'y a plus de chrimino dans la pioche, ne fait rien
         /// </summary>
         /// <param name="playerId">Id du joueur</param>
-        public bool TryDrawChromino(int playerId)
+        /// <param name="playReturn">PlayReturn.DrawChromino si pioche ok</param>
+        public bool TryDrawChromino(int playerId, out PlayReturn playReturn)
         {
             int chrominoId = ChrominoInGameDal.StackToHand(GameId, playerId);
             if (chrominoId != 0)
             {
                 if (PlayerDal.IsBot(playerId))
-                    ComputedChrominoCore.UpdateCandidatesFromAllChrominosPlayed(playerId, chrominoId);
+                    ComputedChrominoCore.UpdateCandidatesFromAllGame(playerId, chrominoId);
 
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
+                playReturn = PlayReturn.DrawChromino;
                 return true;
             }
             else
             {
+                playReturn = PlayReturn.Ok; // valeur inexacte mais non exploitée en sortie
                 return false;
             }
         }
@@ -63,33 +66,21 @@ namespace Data.Core
         public PlayReturn PlayBot(int botId)
         {
             List<ChrominoInHand> chrominosInHand = ChrominoInHandDal.ChrominosByPriority(GameId, botId);
-            int chrominoIdNotToPlay = PlayCameleonToFinishWithoutCameleon(ref chrominosInHand);
-
+            int chrominoIdNotToPlay = ChrominoIdIfSingleWithCameleons(ref chrominosInHand);
             List<ComputedChromino> ComputedChrominos = ComputedChrominosDal.RootListByPriority(GameId, botId, chrominoIdNotToPlay);
             bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
             int playersNumber = GamePlayerDal.PlayersNumber(GameId);
 
-
-
-
             if (ComputedChrominos.Count == 0)
             {
-                ComputedChrominoCore.ResetAndUpdateCandidatesFromAllChrominosPlayed(botId); // todo 3 lignes de patch à supprimer
-                ComputedChrominos = ComputedChrominosDal.RootListByPriority(GameId, botId, chrominoIdNotToPlay);
-                if (ComputedChrominos.Count == 0)
-                {
-                    if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(botId))
-                        return PlayReturn.DrawChromino;
-                    else
-                        return SkipTurn(botId);
-                }
+                if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(botId, out PlayReturn playreturn))
+                    return playreturn;
+                else
+                    return SkipTurn(botId);
             }
-
             // le bot a un ou des chriminos pouvant être posés
-
             List<Square> squares = SquareDal.List(GameId);
-            HashSet<Position> positions = ComputedChrominoCore.ComputePossiblesPositions(squares);
-
+            HashSet<Position> positions = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squares);
             List<ChrominoInGame> goodChrominos = new List<ChrominoInGame>();
             List<ChrominoInGame> badChrominos = new List<ChrominoInGame>();
             List<ChrominoInGame> notGoodNotBadchrominos = new List<ChrominoInGame>();
@@ -97,24 +88,25 @@ namespace Data.Core
             {
                 ChrominoInGame currentChrominoToPlay = ChrominoInGame.From(ComputedChromino);
 
-                List<int> playerIdWithLastChrominoIdInHand = ChrominoInHandDal.PlayersIdWithOneChrominoKnown(GameId, botId);
-                if (playerIdWithLastChrominoIdInHand != null && playerIdWithLastChrominoIdInHand.Count == 1 && ChrominoInHandDal.ChrominosNumber(GameId, playerIdWithLastChrominoIdInHand[0]) == 1)
+                List<int> opponentIdWithOneChrominoInHand = ChrominoInHandDal.OpponentIdWithOneChromino(GameId, botId);
+                if (opponentIdWithOneChrominoInHand != null && opponentIdWithOneChrominoInHand.Count == 1)
                 {
                     // 1 seul adversaire n'a plus qu'un chromino
+                    int opponentId = opponentIdWithOneChrominoInHand[0];
                     List<Square> squaresAfterTry = ComputeSquares(currentChrominoToPlay);
                     squaresAfterTry.AddRange(squares);
-                    HashSet<Position> positionsAfterTry = ComputedChrominoCore.ComputePossiblesPositions(squaresAfterTry);
-                    Position positionWhereOpponentCanPlayAfterTry = PositionWherePlayerCanPlay(playerIdWithLastChrominoIdInHand[0], positionsAfterTry);
-
+                    HashSet<Position> positionsAfterTry = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squaresAfterTry);
+                    int opponentChrominoId = ChrominoInHandDal.FirstChrominoId(GameId, opponentId);
+                    HashSet<Position> positionWhereOpponentCanPlayAfterTry = ComputedChrominoCore.PositionsOkForOpponentChromino(opponentChrominoId, positionsAfterTry);
                     int numberChrominosInHand = ChrominoInHandDal.ChrominosNumber(GameId, botId);
-                    if (PositionWherePlayerCanPlay(playerIdWithLastChrominoIdInHand[0], positions) != null)
+                    if (ComputedChrominoCore.PositionsOkForOpponentChromino(opponentChrominoId, positions).Count != 0)
                     {
-                        // l'adversaire peut finir après le tour du bot
+                        // l'adversaire peut finir après le tour du bot s'il ne joue pas
                         if (currentChrominoToPlay != null && numberChrominosInHand == 1) // le bot peut finir ce tour => il peut jouer
                             goodChrominos.Add(currentChrominoToPlay);
                         else if (false) // todo le bot joue après l'adversaire et il peut finir le coup d'après => il joue
                             goodChrominos.Add(currentChrominoToPlay);
-                        else if (positionWhereOpponentCanPlayAfterTry == null) // le bot joue pour le bloquer
+                        else if (positionWhereOpponentCanPlayAfterTry.Count > 0) // le bot joue pour le bloquer
                             goodChrominos.Add(currentChrominoToPlay);
                         else
                             notGoodNotBadchrominos.Add(currentChrominoToPlay);
@@ -126,9 +118,9 @@ namespace Data.Core
                             goodChrominos.Add(currentChrominoToPlay);
                         else if (false) // todo le bot peut finir le coup d'après : il joue
                             goodChrominos.Add(currentChrominoToPlay);
-                        else if (positionWhereOpponentCanPlayAfterTry == null) // l'adversaire ne finira pas après le coup du bot : le bot joue
+                        else if (positionWhereOpponentCanPlayAfterTry.Count == 0) // l'adversaire ne finira pas après le coup du bot : le bot joue
                             goodChrominos.Add(currentChrominoToPlay);
-                        else if (positionWhereOpponentCanPlayAfterTry != null) // l'adversaire peut finir si le bot joue ce soup : il ne doit pas le jouer
+                        else if (positionWhereOpponentCanPlayAfterTry.Count > 0) // l'adversaire peut finir si le bot joue ce soup : il ne doit pas le jouer !
                             badChrominos.Add(currentChrominoToPlay);
                         else
                             notGoodNotBadchrominos.Add(currentChrominoToPlay);
@@ -142,18 +134,19 @@ namespace Data.Core
                     goodChrominos.Add(currentChrominoToPlay);
                 }
             }
-            PlayReturn playReturn;
-            if (goodChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(botId))
-                playReturn = PlayReturn.DrawChromino;
+
+            if (goodChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(botId, out PlayReturn playReturn)) { }
             else if (goodChrominos.Count == 0 && notGoodNotBadchrominos.Count > 0)
-                playReturn = Play(notGoodNotBadchrominos[0], botId);
+                playReturn = Play(notGoodNotBadchrominos[0]);
             else if (goodChrominos.Count != 0)
-                playReturn = Play(goodChrominos[0], botId);
-            else // le bot doit passer son tour
-                playReturn = PlayReturn.SkipTurn;
+                playReturn = Play(goodChrominos[0]);
+            else
+                playReturn = SkipTurn(botId);
 
             if (playReturn.IsError())
-                ComputedChrominoCore.ResetAndUpdateCandidatesFromAllChrominosPlayed(botId);
+            {
+                ComputedChrominoCore.RemoveCandidate(botId, goodChrominos[0].ChrominoId); // todo goodChrominos[0] à changer par le bon en dynamique
+            }
             else if (playReturn == PlayReturn.Ok)
                 new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
@@ -167,20 +160,81 @@ namespace Data.Core
         /// Tente de jouer chrominoInGame
         /// </summary>
         /// <param name="chrominoInGame">Chromino à jouer avec positions et orientation</param>
-        /// <param name="playerId">Id du joueur</param>
         /// <returns>PlayReturn.Ok si valide</returns>
-        public PlayReturn Play(ChrominoInGame chrominoInGame, int playerId)
+        public PlayReturn Play(ChrominoInGame chrominoInGame)
         {
-            int numberInHand = ChrominoInHandDal.ChrominosNumber(GameId, playerId);
-            PlayReturn playReturn;
-            if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
-                playReturn = PlayReturn.NotPlayerTurn;
-            else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
-                playReturn = PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
-            else
-                playReturn = PlayChromino(chrominoInGame, playerId);
-            if (playReturn == PlayReturn.Ok)
+            int? nullablePlayerId = chrominoInGame.PlayerId;
+            int numberInHand = 0;
+            if (nullablePlayerId != null)
             {
+                int playerId = (int)nullablePlayerId;
+                numberInHand = ChrominoInHandDal.ChrominosNumber(GameId, playerId);
+                if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
+                    return PlayReturn.NotPlayerTurn;
+                else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
+                    return PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
+            }
+
+            List<Square> squaresInGame = SquareDal.List(GameId);
+            Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
+            List<Coordinate> chrominoCoordinates = ChrominoCoordinates(chrominoInGame);
+            if (!IsValidChriminoInGame(ref chrominoInGame, ref squaresInGame, out PlayReturn errorPlayReturn))
+                return errorPlayReturn;
+
+            bool firstSquareOpenRight = false, firstSquareOpenBottom = false, firstSquareOpenLeft = false, firstSquareOpenTop = false;
+            bool secondSquareOpenRight = false, secondSquareOpenBottom = false, secondSquareOpenLeft = false, secondSquareOpenTop = false;
+            bool thirdSquareOpenRight = false, thirdSquareOpenBottom = false, thirdSquareOpenLeft = false, thirdSquareOpenTop = false;
+
+            if (chrominoInGame.Orientation == Orientation.Horizontal)
+            {
+                secondSquareOpenRight = true;
+                secondSquareOpenLeft = true;
+                if (chrominoInGame.Flip)
+                {
+                    firstSquareOpenRight = true;
+                    thirdSquareOpenLeft = true;
+                }
+                else
+                {
+                    firstSquareOpenLeft = true;
+                    thirdSquareOpenRight = true;
+                }
+            }
+            else
+            {
+                secondSquareOpenTop = true;
+                secondSquareOpenBottom = true;
+                if (chrominoInGame.Flip)
+                {
+                    firstSquareOpenTop = true;
+                    thirdSquareOpenBottom = true;
+                }
+                else
+                {
+                    firstSquareOpenBottom = true;
+                    thirdSquareOpenTop = true;
+                }
+            }
+
+            List<Square> squares = new List<Square>
+            {
+                new Square { GameId = GameId, X = chrominoCoordinates[0].X, Y = chrominoCoordinates[0].Y, Color = chrominoInGame.Flip ? chromino.ThirdColor : chromino.FirstColor, OpenRight = firstSquareOpenRight, OpenBottom = firstSquareOpenBottom, OpenLeft = firstSquareOpenLeft, OpenTop = firstSquareOpenTop },
+                new Square { GameId = GameId, X = chrominoCoordinates[1].X, Y = chrominoCoordinates[1].Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop },
+                new Square { GameId = GameId, X = chrominoCoordinates[2].X, Y = chrominoCoordinates[2].Y, Color = chrominoInGame.Flip ? chromino.FirstColor : chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop }
+            };
+
+            SquareDal.Add(squares);
+            byte move = GameDal.Details(GameId).Move;
+            chrominoInGame.Move = move;
+            ChrominoInGameDal.Add(chrominoInGame);
+            ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
+            GameDal.IncreaseMove(GameId);
+            ComputedChrominoCore.RemoveCandidate(nullablePlayerId, chrominoInGame.ChrominoId);
+            ComputedChrominoCore.RemoveAndUpdateCandidatesFromChrominosPlayed();
+
+            if (nullablePlayerId != null)
+            {
+                int playerId = (int)nullablePlayerId;
                 numberInHand--;
                 GamePlayerDal.SetPass(GameId, playerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
@@ -236,98 +290,35 @@ namespace Data.Core
                 new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
                 ChangePlayerTurn();
             }
-            return playReturn;
-        }
-
-        /// <summary>
-        /// joue un chromino dans le jeu
-        /// </summary>
-        /// <param name="chrominoInGame"></param>
-        /// <param name="playerId">Id du joueur</param>
-        /// <returns></returns>
-        public PlayReturn PlayChromino(ChrominoInGame chrominoInGame, int? playerId = null)
-        {
-            List<Square> squaresInGame = SquareDal.List(GameId);
-            Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
-            Coordinate offset = new Coordinate(chrominoInGame.Orientation);
-            Coordinate firstCoordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition);
-            Coordinate secondCoordinate = firstCoordinate + offset;
-            Coordinate thirdCoordinate = secondCoordinate + offset;
-
-            if (!IsValidPosition(ref chromino, ref firstCoordinate, ref secondCoordinate, ref thirdCoordinate, ref squaresInGame, playerId, out PlayReturn playReturn))
-                return playReturn;           
-
-            bool firstSquareOpenRight = false, firstSquareOpenBottom = false, firstSquareOpenLeft = false, firstSquareOpenTop = false;
-            bool secondSquareOpenRight = false, secondSquareOpenBottom = false, secondSquareOpenLeft = false, secondSquareOpenTop = false;
-            bool thirdSquareOpenRight = false, thirdSquareOpenBottom = false, thirdSquareOpenLeft = false, thirdSquareOpenTop = false;
-
-            if (chrominoInGame.Orientation == Orientation.Horizontal || chrominoInGame.Orientation == Orientation.HorizontalFlip)
-            {
-                secondSquareOpenRight = true;
-                secondSquareOpenLeft = true;
-            }
-            else
-            {
-                secondSquareOpenTop = true;
-                secondSquareOpenBottom = true;
-            }
-            if (chrominoInGame.Orientation == Orientation.Horizontal)
-            {
-                firstSquareOpenRight = true;
-                thirdSquareOpenLeft = true;
-            }
-            else if (chrominoInGame.Orientation == Orientation.HorizontalFlip)
-            {
-                firstSquareOpenLeft = true;
-                thirdSquareOpenRight = true;
-            }
-            else if (chrominoInGame.Orientation == Orientation.Vertical)
-            {
-                firstSquareOpenTop = true;
-                thirdSquareOpenBottom = true;
-            }
-            else if (chrominoInGame.Orientation == Orientation.VerticalFlip)
-            {
-                firstSquareOpenBottom = true;
-                thirdSquareOpenTop = true;
-            }
-
-            List<Square> squares = new List<Square>
-            {
-                new Square { GameId = GameId, X = firstCoordinate.X, Y = firstCoordinate.Y, Color = chromino.FirstColor, OpenRight = firstSquareOpenRight, OpenBottom = firstSquareOpenBottom, OpenLeft = firstSquareOpenLeft, OpenTop = firstSquareOpenTop },
-                new Square { GameId = GameId, X = secondCoordinate.X, Y = secondCoordinate.Y, Color = chromino.SecondColor, OpenRight = secondSquareOpenRight, OpenBottom = secondSquareOpenBottom, OpenLeft = secondSquareOpenLeft, OpenTop = secondSquareOpenTop },
-                new Square { GameId = GameId, X = thirdCoordinate.X, Y = thirdCoordinate.Y, Color = chromino.ThirdColor, OpenRight = thirdSquareOpenRight, OpenBottom = thirdSquareOpenBottom, OpenLeft = thirdSquareOpenLeft, OpenTop = thirdSquareOpenTop }
-            };
-
-            SquareDal.Add(squares);
-            byte move = GameDal.Details(GameId).Move;
-            chrominoInGame.Move = move;
-            chrominoInGame.PlayerId = playerId;
-            ChrominoInGameDal.Add(chrominoInGame);
-            ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
-            GameDal.IncreaseMove(GameId);
-            if (playerId != null)
-                ComputedChrominoCore.RemoveCandidate((int)playerId, chrominoInGame.ChrominoId);
-            ComputedChrominoCore.RemoveAndUpdateCandidatesFromLastChrominoPlayed();
             return PlayReturn.Ok;
         }
 
-        private bool IsValidPosition(ref Chromino chromino, ref Coordinate firstCoordinate, ref Coordinate secondCoordinate, ref Coordinate thirdCoordinate, ref List<Square> squaresInGame, int? playerId, out PlayReturn playReturn)
+        /// <summary>
+        /// indique si le chromino est à une position valide
+        /// </summary>
+        /// <param name="chrominoInGame">Chromino à jouer</param>
+        /// <param name="squaresInGame">squares occupés</param>
+        /// <param name="playReturn">code PlayReturn d'erreur si retour false</param>
+        /// <returns>true si le chromino est à une position valide</returns>
+        private bool IsValidChriminoInGame(ref ChrominoInGame chrominoInGame, ref List<Square> squaresInGame, out PlayReturn playReturn)
         {
+            Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
             playReturn = PlayReturn.Ok;
-            if (playerId == null)
+            if (chrominoInGame.PlayerId == null)
                 return true;
             else
             {
-                if (!firstCoordinate.IsFree(ref squaresInGame) || !secondCoordinate.IsFree(ref squaresInGame) || !thirdCoordinate.IsFree(ref squaresInGame))
+                List<Coordinate> chrominoCoordinates = ChrominoCoordinates(chrominoInGame);
+                if (!chrominoCoordinates[0].IsFree(squaresInGame) || !chrominoCoordinates[1].IsFree(squaresInGame) || !chrominoCoordinates[2].IsFree(squaresInGame))
                     playReturn = PlayReturn.NotFree;
-                int n1 = SquareDal.GetNumberSameColorsAround(GameId, firstCoordinate, chromino.FirstColor);
-                int n2 = SquareDal.GetNumberSameColorsAround(GameId, secondCoordinate, chromino.SecondColor);
-                int n3 = SquareDal.GetNumberSameColorsAround(GameId, thirdCoordinate, chromino.ThirdColor);
-                if (n1 == -1 || n2 == -1 || n3 == -1)
+
+                int n0 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[0], chrominoInGame.Flip ? chromino.ThirdColor : chromino.FirstColor);
+                int n1 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[1], chromino.SecondColor);
+                int n2 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[2], chrominoInGame.Flip ? chromino.FirstColor : chromino.ThirdColor);
+                if (n0 == -1 || n1 == -1 || n2 == -1)
                     playReturn = PlayReturn.DifferentColorsAround;
-                if (n1 + n2 + n3 < 2)
-                    playReturn = PlayReturn.NotTwoOrMoreSameColors;
+                if (n0 + n1 + n2 < 2)
+                    playReturn = PlayReturn.NotMinTwoSameColors;
 
                 if (playReturn.IsError())
                     return false;
@@ -336,12 +327,21 @@ namespace Data.Core
             }
         }
 
+        private List<Coordinate> ChrominoCoordinates(ChrominoInGame chrominoInGame)
+        {
+            Coordinate offset = new Coordinate(chrominoInGame.Orientation);
+            Coordinate first = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition);
+            Coordinate second = first + offset;
+            Coordinate third = second + offset;
+            return new List<Coordinate> { first, second, third };
+        }
+
         /// <summary>
         /// indique le chromino non cameleon de la main s'il est seul avec que des cameleons
         /// </summary>
         /// <param name="hand">référence de la liste des chrominos de la main du joueur</param>
         /// <returns>id du chromino non caméléon, 0 sinon</returns>
-        private int PlayCameleonToFinishWithoutCameleon(ref List<ChrominoInHand> hand)
+        private int ChrominoIdIfSingleWithCameleons(ref List<ChrominoInHand> hand)
         {
             int notCameleonNumber = 0;
             int indexFound = -1;

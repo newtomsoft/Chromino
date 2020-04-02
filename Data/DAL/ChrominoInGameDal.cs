@@ -100,8 +100,7 @@ namespace Data.DAL
 
             Chromino chromino = chrominosCameleon[Random.Next(chrominosCameleon.Count)];
             Orientation orientation = (Orientation)Random.Next(1, Enum.GetValues(typeof(Orientation)).Length + 1);
-            Coordinate offset = new Coordinate(orientation);
-            Coordinate coordinate = new Coordinate(0, 0) - offset;
+            Coordinate coordinate = -new Coordinate(orientation);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -109,13 +108,13 @@ namespace Data.DAL
                 XPosition = coordinate.X,
                 YPosition = coordinate.Y,
                 Orientation = orientation,
+                Flip = Random.Next(0, 2) == 0 ? false : true,
+                PlayerId = null,
             };
             Ctx.ChrominosInGame.Add(chrominoInGame);
             Ctx.SaveChanges();
             return chrominoInGame;
         }
-
-
 
         /// <summary>
         /// tous les chrominosInGame joués du jeu

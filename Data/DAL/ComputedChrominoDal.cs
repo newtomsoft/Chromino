@@ -1,4 +1,5 @@
-﻿using Data.Enumeration;
+﻿using Data.Core;
+using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,57 +17,39 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public void Remove(int gameId, int botId, HashSet<ComputedChromino> computedChrominosToRemove)
+        /// <summary>
+        /// Supprime les ComputedChrominos qui ne sont potentiellement plus valables
+        /// </summary>
+        /// <param name="gameId">id du jeu concerné</param>
+        /// <param name="botId">id du bot concerné</param>
+        /// <param name="positions">liste des positions concernées</param>
+        /// <param name="chrominoId">id du chromino concerné sinon tous les id</param>
+        public void Remove(int gameId, int botId, List<Position> positions, int chrominoId = 0)
         {
-            foreach (var toRemove in computedChrominosToRemove)
+            foreach (var position in positions)
             {
                 ComputedChromino ccToRemove = (from cc in Ctx.ComputedChrominos
-                                               where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X && cc.Y == toRemove.Y && cc.Orientation == toRemove.Orientation
+                                               where cc.GameId == gameId && cc.BotId == botId && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
                                                select cc).FirstOrDefault();
 
-                if (ccToRemove != null)
-                    Ctx.ComputedChrominos.Remove(ccToRemove);
-
-                switch (toRemove.Orientation)
-                {
-                    case Orientation.Horizontal:
-                        ccToRemove = (from cc in Ctx.ComputedChrominos
-                                      where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X + 2 && cc.Y == toRemove.Y && cc.Orientation == Orientation.HorizontalFlip
-                                      select cc).FirstOrDefault();
-                        break;
-                    case Orientation.HorizontalFlip:
-                        ccToRemove = (from cc in Ctx.ComputedChrominos
-                                      where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X - 2 && cc.Y == toRemove.Y && cc.Orientation == Orientation.Horizontal
-                                      select cc).FirstOrDefault();
-                        break;
-                    case Orientation.Vertical:
-                        ccToRemove = (from cc in Ctx.ComputedChrominos
-                                      where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X && cc.Y == toRemove.Y - 2 && cc.Orientation == Orientation.VerticalFlip
-                                      select cc).FirstOrDefault();
-                        break;
-                    case Orientation.VerticalFlip:
-                        ccToRemove = (from cc in Ctx.ComputedChrominos
-                                      where cc.GameId == gameId && cc.BotId == botId && cc.X == toRemove.X && cc.Y == toRemove.Y + 2 && cc.Orientation == Orientation.Vertical
-                                      select cc).FirstOrDefault();
-                        break;
-
-                }
                 if (ccToRemove != null)
                     Ctx.ComputedChrominos.Remove(ccToRemove);
             }
             Ctx.SaveChanges();
         }
 
-        public void Remove(int gameId, int botId, int chrominoId)
+        public void Remove(int gameId, int? botId, int chrominoId)
         {
             List<ComputedChromino> ccToRemove = (from cc in Ctx.ComputedChrominos
                                                  where cc.GameId == gameId && cc.BotId == botId && cc.ChrominoId == chrominoId
                                                  select cc).ToList();
 
-            if (ccToRemove != null)
+            if (ccToRemove.Count > 0)
+            {
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
-
-            Ctx.SaveChanges();
+                Ctx.SaveChanges();
+            }
+            
         }
 
         public void Remove(int gameId, int botId)

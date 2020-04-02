@@ -1,5 +1,6 @@
 ﻿using Data.Enumeration;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
@@ -11,6 +12,7 @@ namespace Data.Models
         public int ChrominoId { get; set; }
         public int GameId { get; set; }
         public Orientation Orientation { get; set; }
+        public bool Flip { get; set; }
         public int XPosition { get; set; }
         public int YPosition { get; set; }
         public byte Move { get; set; }
@@ -29,7 +31,8 @@ namespace Data.Models
                 ChrominoId = computedChromino.ChrominoId,
                 Orientation = computedChromino.Orientation,
                 XPosition = computedChromino.X,
-                YPosition = computedChromino.Y
+                YPosition = computedChromino.Y,
+                Flip = computedChromino.Flip,
             };
         }
     }

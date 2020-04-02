@@ -5,7 +5,7 @@
         Ok = 1,
         LastChrominoIsCameleon,
         NotFree,
-        NotTwoOrMoreSameColors,
+        NotMinTwoSameColors,
         DifferentColorsAround,
         NotPlayerTurn,
         DrawChromino,
@@ -20,7 +20,7 @@
             {
                 case PlayReturn.LastChrominoIsCameleon:
                 case PlayReturn.NotFree:
-                case PlayReturn.NotTwoOrMoreSameColors:
+                case PlayReturn.NotMinTwoSameColors:
                 case PlayReturn.DifferentColorsAround:
                 case PlayReturn.NotPlayerTurn:
                     return true;

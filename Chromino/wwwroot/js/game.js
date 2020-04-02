@@ -390,16 +390,20 @@ function PlayChromino() {
         switch (GetAngle(LastChrominoMove)) {
             case 0:
                 $("#FormOrientation").val(Horizontal);
+                $("#FormFlip").val(false);
                 break;
             case 90:
-                $("#FormOrientation").val(VerticalFlip);
+                $("#FormOrientation").val(Vertical);
+                $("#FormFlip").val(false);
                 yIndex--;
                 break;
             case 180:
-                $("#FormOrientation").val(HorizontalFlip);
+                $("#FormOrientation").val(Horizontal);
+                $("#FormFlip").val(true);
                 break;
             case 270:
                 $("#FormOrientation").val(Vertical);
+                $("#FormFlip").val(true);
                 yIndex--;
                 break;
             default:
