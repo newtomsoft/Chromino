@@ -27,7 +27,7 @@ namespace Data.Models
             return new ChrominoInGame
             {
                 GameId = computedChromino.GameId,
-                PlayerId = computedChromino.BotId,
+                PlayerId = computedChromino.PlayerId,
                 ChrominoId = computedChromino.ChrominoId,
                 Orientation = computedChromino.Orientation,
                 XPosition = computedChromino.X,

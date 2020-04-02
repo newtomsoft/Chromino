@@ -85,7 +85,7 @@ namespace Core
                             ComputedChromino computedChromino = new ComputedChromino
                             {
                                 GameId = GameId,
-                                BotId = currentBotId,
+                                PlayerId = currentBotId,
                                 X = position.Coordinate.X,
                                 Y = position.Coordinate.Y,
                                 ChrominoId = currentChrominoId,
@@ -111,7 +111,7 @@ namespace Core
                 ComputedChromino computedChromino = new ComputedChromino
                 {
                     GameId = GameId,
-                    BotId = botId,
+                    PlayerId = botId,
                     X = position.Coordinate.X,
                     Y = position.Coordinate.Y,
                     ChrominoId = chrominoId,

@@ -9,7 +9,7 @@ namespace Data.Models
         public int Id { get; set; }
         public int ChrominoId { get; set; }
         public int GameId { get; set; }
-        public int BotId { get; set; }
+        public int PlayerId { get; set; }
         public Orientation Orientation { get; set; }
         public bool Flip { get; set; }
         public int X { get; set; }
