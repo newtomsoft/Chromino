@@ -23,6 +23,7 @@ namespace Core
         private readonly SquareDal SquareDal;
         private readonly GamePlayerDal GamePlayerDal;
         private readonly ComputedChrominosDal ComputedChrominosDal;
+        private readonly PlayerDal PlayerDal;
 
         public ComputedChrominoCore(Context ctx, int gameId)
         {
@@ -32,14 +33,15 @@ namespace Core
             SquareDal = new SquareDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
             ComputedChrominosDal = new ComputedChrominosDal(ctx);
+            PlayerDal = new PlayerDal(ctx);
         }
 
-        public void RemoveCandidate(int? botId, int chrominoId)
+        public void RemovePlayedChromino(int? playerId, int chrominoId)
         {
-            ComputedChrominosDal.Remove(GameId, botId, chrominoId);
+            ComputedChrominosDal.Remove(GameId, playerId, chrominoId);
         }
 
-        public void RemoveAndUpdateCandidatesFromChrominosPlayed(bool remove = true, int botId = 0, bool allChrominos = false, int chrominoId = 0)
+        public void RemoveAndUpdate(bool remove = true, int playerId = 0, bool allChrominos = false, int chrominoId = 0)
         {
             List<Square> squares = SquareDal.List(GameId);
             int chrominoNumber;
@@ -58,24 +60,26 @@ namespace Core
 
                 List<Position> candidatesPositions = CandidatesPositionsAroundSquares(squares, iSquare);
 
-                List<int> botsId;
-                if (botId == 0)
-                    botsId = GamePlayerDal.BotsId(GameId);
+                List<int> playersId;
+                if (playerId == 0)
+                    playersId = GamePlayerDal.PlayersId(GameId);
                 else
-                    botsId = new List<int> { botId };
+                    playersId = new List<int> { playerId };
 
-                foreach (var currentBotId in botsId)
+                List<int> botsId = GamePlayerDal.BotsId(GameId);
+
+                foreach (int currentPlayerId in playersId)
                 {
+                    if (remove)
+                        ComputedChrominosDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
+
                     List<int> chrominosId = new List<int>();
-                    if (chrominoId == 0)
-                        foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, currentBotId))
+                    if (chrominoId == 0 && botsId.Contains(currentPlayerId))
+                        foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, currentPlayerId))
                             chrominosId.Add(chrominoInHand.ChrominoId);
                     else
                         chrominosId.Add(chrominoId);
                     
-                    if (remove)
-                        ComputedChrominosDal.Remove(GameId, currentBotId, positionsToDelete, chrominoId);
-
                     List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
                     foreach (int currentChrominoId in chrominosId)
                     {
@@ -85,7 +89,7 @@ namespace Core
                             ComputedChromino computedChromino = new ComputedChromino
                             {
                                 GameId = GameId,
-                                PlayerId = currentBotId,
+                                PlayerId = currentPlayerId,
                                 X = position.Coordinate.X,
                                 Y = position.Coordinate.Y,
                                 ChrominoId = currentChrominoId,
@@ -128,7 +132,7 @@ namespace Core
         public void ResetAndUpdateCandidatesFromAllChrominosPlayed(int botId)
         {
             foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, botId))
-                RemoveAndUpdateCandidatesFromChrominosPlayed(true, botId, true, chrominoInHand.ChrominoId);
+                RemoveAndUpdate(true, botId, true, chrominoInHand.ChrominoId);
         }
 
         //public void UpdateCandidatesFromAllChrominosPlayed(int botId, int chrominoId)

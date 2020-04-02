@@ -48,8 +48,7 @@ namespace Data.DAL
             {
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
                 Ctx.SaveChanges();
-            }
-            
+            }           
         }
 
         public void Remove(int gameId, int botId)

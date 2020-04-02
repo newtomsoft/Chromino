@@ -22,7 +22,7 @@ namespace Data.Core
             if (chrominoId != 0)
             {
                 if (PlayerDal.IsBot(playerId))
-                    ComputedChrominoCore.RemoveAndUpdateCandidatesFromChrominosPlayed(false, playerId, true, chrominoId);
+                    ComputedChrominoCore.RemoveAndUpdate(false, playerId, true, chrominoId);
 
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
                 return PlayReturn.DrawChromino;
@@ -88,7 +88,7 @@ namespace Data.Core
             {
                 ChrominoInGame currentChrominoToPlay = ChrominoInGame.From(ComputedChromino);
 
-                List<int> opponentIdWithOneChrominoInHand = ChrominoInHandDal.OpponentIdWithOneChromino(GameId, botId);
+                List<int> opponentIdWithOneChrominoInHand = ChrominoInHandDal.OpponentsIdWithOneChromino(GameId, botId);
                 if (opponentIdWithOneChrominoInHand != null && opponentIdWithOneChrominoInHand.Count == 1)
                 {
                     // 1 seul adversaire n'a plus qu'un chromino
@@ -145,7 +145,7 @@ namespace Data.Core
 
             if (playReturn.IsError())
             {
-                ComputedChrominoCore.RemoveCandidate(botId, goodChrominos[0].ChrominoId); // todo goodChrominos[0] à changer par le bon en dynamique
+                ComputedChrominoCore.RemovePlayedChromino(botId, goodChrominos[0].ChrominoId); // todo goodChrominos[0] à changer par le bon en dynamique
             }
             else if (playReturn == PlayReturn.Ok)
                 new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
@@ -229,8 +229,8 @@ namespace Data.Core
             ChrominoInGameDal.Add(chrominoInGame);
             ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
             GameDal.IncreaseMove(GameId);
-            ComputedChrominoCore.RemoveCandidate(nullablePlayerId, chrominoInGame.ChrominoId);
-            ComputedChrominoCore.RemoveAndUpdateCandidatesFromChrominosPlayed();
+            ComputedChrominoCore.RemovePlayedChromino(nullablePlayerId, chrominoInGame.ChrominoId);
+            ComputedChrominoCore.RemoveAndUpdate();
 
             if (nullablePlayerId != null)
             {

@@ -13,7 +13,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GameId = table.Column<int>(nullable: false),
-                    BotId = table.Column<int>(nullable: false),
+                    PlayerId = table.Column<int>(nullable: false),
                     ChrominoId = table.Column<int>(nullable: false),
                     Level = table.Column<int>(nullable: false)
                 },
@@ -21,8 +21,8 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_ComputedChrominoOk", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ComputedChrominoOk_AspNetUsers_BotId",
-                        column: x => x.BotId,
+                        name: "FK_ComputedChrominoOk_AspNetUsers_PlayerId",
+                        column: x => x.PlayerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -41,9 +41,9 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComputedChrominoOk_BotId",
+                name: "IX_ComputedChrominoOk_PlayerId",
                 table: "ComputedChrominoOk",
-                column: "BotId");
+                column: "PlayerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ComputedChrominoOk_ChrominoId",
