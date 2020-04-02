@@ -41,11 +41,11 @@ namespace Core
             ComputedChrominosDal.Remove(GameId, playerId, chrominoId);
         }
 
-        public void RemoveAndUpdate(bool remove = true, int playerId = 0, bool allChrominos = false, int chrominoId = 0)
+        public void RemoveAndUpdate(bool remove = true, int playerId = 0, bool wholeGame = false, int chrominoId = 0)
         {
             List<Square> squares = SquareDal.List(GameId);
             int chrominoNumber;
-            if (allChrominos)
+            if (wholeGame)
                 chrominoNumber = squares.Count / 3;
             else
                 chrominoNumber = 1;
@@ -66,15 +66,13 @@ namespace Core
                 else
                     playersId = new List<int> { playerId };
 
-                List<int> botsId = GamePlayerDal.BotsId(GameId);
-
                 foreach (int currentPlayerId in playersId)
                 {
                     if (remove)
                         ComputedChrominosDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
 
                     List<int> chrominosId = new List<int>();
-                    if (chrominoId == 0 && botsId.Contains(currentPlayerId))
+                    if (chrominoId == 0)
                         foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, currentPlayerId))
                             chrominosId.Add(chrominoInHand.ChrominoId);
                     else

@@ -21,16 +21,13 @@ namespace Data.Core
             int chrominoId = ChrominoInGameDal.StackToHand(GameId, playerId);
             if (chrominoId != 0)
             {
-                if (PlayerDal.IsBot(playerId))
-                    ComputedChrominoCore.RemoveAndUpdate(false, playerId, true, chrominoId);
-
+                ComputedChrominoCore.RemoveAndUpdate(false, playerId, true, chrominoId);
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
                 return PlayReturn.DrawChromino;
             }
             else
             {
-                SkipTurn(playerId);
-                return PlayReturn.SkipTurn;
+                return SkipTurn(playerId);
             }
         }
 
@@ -310,16 +307,19 @@ namespace Data.Core
             {
                 List<Coordinate> chrominoCoordinates = ChrominoCoordinates(chrominoInGame);
                 if (!chrominoCoordinates[0].IsFree(squaresInGame) || !chrominoCoordinates[1].IsFree(squaresInGame) || !chrominoCoordinates[2].IsFree(squaresInGame))
+                {
                     playReturn = PlayReturn.NotFree;
-
-                int n0 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[0], chrominoInGame.Flip ? chromino.ThirdColor : chromino.FirstColor);
-                int n1 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[1], chromino.SecondColor);
-                int n2 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[2], chrominoInGame.Flip ? chromino.FirstColor : chromino.ThirdColor);
-                if (n0 == -1 || n1 == -1 || n2 == -1)
-                    playReturn = PlayReturn.DifferentColorsAround;
-                if (n0 + n1 + n2 < 2)
-                    playReturn = PlayReturn.NotMinTwoSameColors;
-
+                }
+                else
+                {
+                    int n0 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[0], chrominoInGame.Flip ? chromino.ThirdColor : chromino.FirstColor);
+                    int n1 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[1], chromino.SecondColor);
+                    int n2 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[2], chrominoInGame.Flip ? chromino.FirstColor : chromino.ThirdColor);
+                    if (n0 == -1 || n1 == -1 || n2 == -1)
+                        playReturn = PlayReturn.DifferentColorsAround;
+                    if (n0 + n1 + n2 < 2)
+                        playReturn = PlayReturn.NotMinTwoSameColors;
+                }
                 if (playReturn.IsError())
                     return false;
                 else

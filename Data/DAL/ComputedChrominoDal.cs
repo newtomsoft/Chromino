@@ -28,12 +28,12 @@ namespace Data.DAL
         {
             foreach (var position in positions)
             {
-                ComputedChromino ccToRemove = (from cc in Ctx.ComputedChrominos
-                                               where cc.GameId == gameId && cc.PlayerId == botId && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
-                                               select cc).FirstOrDefault();
+                List<ComputedChromino> toRemove = (from cc in Ctx.ComputedChrominos
+                                                   where cc.GameId == gameId && cc.PlayerId == botId && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
+                                                   select cc).ToList();
 
-                if (ccToRemove != null)
-                    Ctx.ComputedChrominos.Remove(ccToRemove);
+                if (toRemove != null)
+                    Ctx.ComputedChrominos.RemoveRange(toRemove);
             }
             Ctx.SaveChanges();
         }
@@ -48,7 +48,7 @@ namespace Data.DAL
             {
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
                 Ctx.SaveChanges();
-            }           
+            }
         }
 
         public void Remove(int gameId, int botId)
