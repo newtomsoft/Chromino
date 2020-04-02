@@ -16,7 +16,7 @@ namespace Data.Core
         /// <summary>
         /// nombre de chromino dans la main des joueurs en début de partie
         /// </summary>
-        private const int BeginGameChrominoInHand = 2;
+        private const int BeginGameChrominoInHand = 8;
 
         /// <summary>
         /// DbContext du jeu

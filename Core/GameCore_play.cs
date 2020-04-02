@@ -142,7 +142,14 @@ namespace Data.Core
 
             if (playReturn.IsError())
             {
-                ComputedChrominoCore.RemovePlayedChromino(botId, goodChrominos[0].ChrominoId); // todo goodChrominos[0] à changer par le bon en dynamique
+                ChrominoInGame c = goodChrominos[0];
+                int x = c.XPosition;
+                int y = c.YPosition;
+                Orientation orientation = c.Orientation;
+                int chrominoId = c.ChrominoId;
+                Position position = new Position { Coordinate = new Coordinate(x, y), Orientation = orientation };
+                List<Position> positionsToDel = new List<Position> { position };
+                ComputedChrominosDal.Remove(GameId, botId, positionsToDel, chrominoId);
             }
             else if (playReturn == PlayReturn.Ok)
                 new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
