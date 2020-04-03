@@ -158,11 +158,11 @@ namespace Controllers
         public IActionResult DrawChromino(int playerId, int gameId)
         {
             GetPlayerInfos();
-            GameCore gameCore = new GameCore(Ctx, Env, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
             if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
             {
+                GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.DrawChromino(playerId);
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
