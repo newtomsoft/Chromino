@@ -4,6 +4,7 @@ using Data.Enumeration;
 using Data.Models;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Tool;
 
 namespace Data.Core
@@ -54,7 +55,7 @@ namespace Data.Core
         public PlayReturn PlayBot(int botId)
         {
             List<ChrominoInHand> chrominosInHand = ChrominoInHandDal.ChrominosByPriority(GameId, botId);
-            int chrominoIdNotToPlay = ChrominoIdIfSingleWithCameleons(ref chrominosInHand);
+            int chrominoIdNotToPlay = ChrominoIdIfSingleWithCameleons(chrominosInHand);
             List<ComputedChromino> ComputedChrominos = ComputedChrominosDal.RootListByPriority(GameId, botId, chrominoIdNotToPlay);
             bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, botId);
             int playersNumber = GamePlayerDal.PlayersNumber(GameId);
@@ -68,7 +69,7 @@ namespace Data.Core
             }
             // le bot a un ou des chriminos pouvant être posés
             List<Square> squares = SquareDal.List(GameId);
-            HashSet<Position> positions = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squares);
+            List<Position> positions = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squares).ToList();
             List<ChrominoInGame> goodChrominos = new List<ChrominoInGame>();
             List<ChrominoInGame> badChrominos = new List<ChrominoInGame>();
             List<ChrominoInGame> notGoodNotBadchrominos = new List<ChrominoInGame>();
@@ -81,13 +82,13 @@ namespace Data.Core
                 {
                     // 1 seul adversaire n'a plus qu'un chromino
                     int opponentId = opponentIdWithOneChrominoInHand[0];
-                    List<Square> squaresAfterTry = ComputeSquares(currentChrominoToPlay);
+                    List<Square> squaresAfterTry = GetSquares(currentChrominoToPlay);
                     squaresAfterTry.AddRange(squares);
-                    HashSet<Position> positionsAfterTry = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squaresAfterTry);
+                    List<Position> positionsAfterTry = ComputedChrominoCore.ComputePossiblesPositionsForOpponent(squaresAfterTry).ToList();
                     int opponentChrominoId = ChrominoInHandDal.FirstChrominoId(GameId, opponentId);
-                    HashSet<Position> positionWhereOpponentCanPlayAfterTry = ComputedChrominoCore.PositionsOkForOpponentChromino(opponentChrominoId, positionsAfterTry);
+                    List<Position> positionWhereOpponentCanPlayAfterTry = ComputedChrominoCore.PositionsOkForChromino(opponentChrominoId, positionsAfterTry);
                     int numberChrominosInHand = ChrominoInHandDal.ChrominosNumber(GameId, botId);
-                    if (ComputedChrominoCore.PositionsOkForOpponentChromino(opponentChrominoId, positions).Count != 0)
+                    if (ComputedChrominoCore.PositionsOkForChromino(opponentChrominoId, positions).Count != 0)
                     {
                         // l'adversaire peut finir après le tour du bot s'il ne joue pas
                         if (currentChrominoToPlay != null && numberChrominosInHand == 1) // le bot peut finir ce tour => il peut jouer
@@ -324,7 +325,7 @@ namespace Data.Core
         /// </summary>
         /// <param name="hand">référence de la liste des chrominos de la main du joueur</param>
         /// <returns>id du chromino non caméléon, 0 sinon</returns>
-        private int ChrominoIdIfSingleWithCameleons(ref List<ChrominoInHand> hand)
+        private int ChrominoIdIfSingleWithCameleons(List<ChrominoInHand> hand)
         {
             int notCameleonNumber = 0;
             int indexFound = -1;

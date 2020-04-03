@@ -19,12 +19,9 @@ namespace Controllers
         }
 
         [HttpPost]
-        public IActionResult DisableTips(int gameId, int playerId, string dontShowTips)
+        public IActionResult DisableTips(int gameId, string dontShowTips)
         {
-            if (playerId == PlayerId && dontShowTips == "on")
-            {
-                PlayerDal.DisableTips(playerId);
-            }
+            PlayerDal.DisableTips(PlayerId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }

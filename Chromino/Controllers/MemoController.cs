@@ -20,17 +20,10 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int gameId, int playerId, string memo)
+        public IActionResult Add(int gameId, string memo)
         {
-            if (playerId == PlayerId)
-            {
-                GamePlayerDal.ChangeMemo(gameId, playerId, memo);
-                return RedirectToAction("Show", "Game", new { id = gameId });
-            }
-            else
-            {
-                return RedirectToAction("NotFound");
-            }
+            GamePlayerDal.ChangeMemo(gameId, PlayerId, memo);
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }
 }

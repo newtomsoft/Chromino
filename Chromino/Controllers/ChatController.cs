@@ -20,34 +20,19 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int gameId, string playerPseudo, string chat)
+        public IActionResult Add(int gameId, string chat)
         {
-            if (playerPseudo == PlayerPseudo)
-            {
-                string newChat = $"{playerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
-                GameDal.UpdateChat(gameId, newChat, PlayerId);
-                GameDal.SetChatRead(gameId, PlayerId);
-                return RedirectToAction("Show", "Game", new { id = gameId });
-            }
-            else
-            {
-                return RedirectToAction("NotFound");
-            }
+            string newChat = $"{PlayerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
+            GameDal.UpdateChat(gameId, newChat, PlayerId);
+            GameDal.SetChatRead(gameId, PlayerId);
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
         [HttpPost]
-        public IActionResult SetRead(int gameId, int playerId)
+        public IActionResult SetRead(int gameId)
         {
-            if (playerId == PlayerId)
-            {
-                GameDal.SetChatRead(gameId, playerId);
-                return RedirectToAction("Show", "Game", new { id = gameId });
-            }
-            else
-            {
-                return RedirectToAction("NotFound");
-            }
-
+            GameDal.SetChatRead(gameId, PlayerId);
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }
 }

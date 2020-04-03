@@ -123,20 +123,19 @@ namespace Controllers
         /// <param name="orientation">vertical, horizontal, etc</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
+        public IActionResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
-                PlayerId = playerId,
+                PlayerId = PlayerId,
                 ChrominoId = chrominoId,
                 XPosition = x,
                 YPosition = y,
                 Orientation = orientation,
                 Flip = flip,
             };
-
             PlayReturn playReturn = gameCore.Play(chrominoInGame);
             if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
@@ -151,14 +150,14 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult DrawChromino(int playerId, int gameId)
+        public IActionResult DrawChromino(int gameId)
         {
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
-            GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
-            if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
+            GamePlayer gamePlayer = GamePlayerDal.Details(gameId, PlayerId);
+            if (!gamePlayer.PreviouslyDraw || playersNumber == 1)
             {
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
-                gameCore.DrawChromino(playerId);
+                gameCore.DrawChromino(PlayerId);
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -170,14 +169,10 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Skip(int playerId, int gameId)
+        public IActionResult Skip(int gameId)
         {
-            if (playerId == PlayerId)
-            {
-                GameCore gameCore = new GameCore(Ctx, Env, gameId);
-                gameCore.SkipTurn(playerId);
-                //NextPlayerPlayIfBot(gameId, gameCore); todo voir si on doit appeler NextPlayerPlayIfBot
-            }
+            GameCore gameCore = new GameCore(Ctx, Env, gameId);
+            gameCore.SkipTurn(PlayerId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 

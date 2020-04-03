@@ -212,7 +212,7 @@ namespace Data.Core
             return false;
         }
 
-        private List<Square> ComputeSquares(ChrominoInGame chrominoIG)
+        private List<Square> GetSquares(ChrominoInGame chrominoIG)
         {
             int gameId = chrominoIG.GameId;
             int xOrigin = chrominoIG.XPosition;

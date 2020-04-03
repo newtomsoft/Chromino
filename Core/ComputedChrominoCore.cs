@@ -116,25 +116,7 @@ namespace Core
             return positions;
         }
 
-        public HashSet<Position> PositionsOkForOpponentChromino(int chrominoId, HashSet<Position> positions)
-        {
-            Chromino chromino = ChrominoDal.Details(chrominoId);
-            HashSet<Position> goodPositions = new HashSet<Position>();
-            foreach (Position currentPosition in positions)
-            {
-                if ((chromino.FirstColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon))
-                    goodPositions.Add(currentPosition);
-
-                if (chromino.FirstColor != chromino.ThirdColor && (chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
-                {
-                    currentPosition.Reversed = true;
-                    goodPositions.Add(currentPosition);
-                }
-            }
-            return goodPositions;
-        }
-
-        private List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
+        public List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
         {
             Chromino chromino = ChrominoDal.Details(chrominoId);
             List<Position> goodPositions = new List<Position>();
