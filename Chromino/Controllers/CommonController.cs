@@ -21,8 +21,8 @@ namespace Controllers
         protected PlayerDal PlayerDal { get; }
         protected GamePlayerDal GamePlayerDal { get; }
         protected SquareDal SquareDal { get; }
-        protected int PlayerId { get; private set; }
-        protected string PlayerPseudo { get; private set; }
+        protected int PlayerId { get => int.Parse(UserManager.GetUserId(User) ?? "0"); }
+        protected string PlayerPseudo { get => UserManager.GetUserName(User) ?? ""; }
         private UserManager<Player> UserManager {get; set; }
 
         public CommonController(Context context, UserManager<Player> userManager, IWebHostEnvironment env)
@@ -37,12 +37,6 @@ namespace Controllers
             GamePlayerDal = new GamePlayerDal(Ctx);
             SquareDal = new SquareDal(Ctx);
             UserManager = userManager;
-        }
-
-        protected void GetPlayerInfos()
-        {
-            ViewBag.PlayerId = PlayerId = int.Parse(UserManager.GetUserId(User) ?? "0");
-            ViewBag.PlayerPseudo = PlayerPseudo = UserManager.GetUserName(User) ?? "";
         }
     }
 }

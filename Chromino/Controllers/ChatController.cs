@@ -22,7 +22,6 @@ namespace ChrominoApp.Controllers
         [HttpPost]
         public IActionResult Add(int gameId, string playerPseudo, string chat)
         {
-            GetPlayerInfos();
             if (playerPseudo == PlayerPseudo)
             {
                 string newChat = $"{playerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
@@ -39,7 +38,6 @@ namespace ChrominoApp.Controllers
         [HttpPost]
         public IActionResult SetRead(int gameId, int playerId)
         {
-            GetPlayerInfos();
             if (playerId == PlayerId)
             {
                 GameDal.SetChatRead(gameId, playerId);

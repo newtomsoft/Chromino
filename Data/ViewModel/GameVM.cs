@@ -8,6 +8,8 @@ namespace Data.ViewModel
 {
     public class GameVM
     {
+        public string PlayerPseudo { get; set; }
+        public int PlayerId { get; set; }
         public List<Square> Squares { get; set; }
         public int XMin { get; set; }
         public int XMax { get; set; }
@@ -31,8 +33,10 @@ namespace Data.ViewModel
         public bool OpponenentsAreBots { get; set; }
         public bool NoTips { get; set; }
 
-        public GameVM(Game game, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayerIdentified, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, bool noTips)
+        public GameVM(Game game, string playerPseudo, int playerId, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> identifiedPlayerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayerIdentified, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, bool noTips)
         {
+            PlayerPseudo = playerPseudo;
+            PlayerId = playerId;
             OpponenentsAreBots = opponenentsAreBots;
             Game = game;
             Pseudos = pseudos;

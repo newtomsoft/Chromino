@@ -21,7 +21,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult DisableTips(int gameId, int playerId, string dontShowTips)
         {
-            GetPlayerInfos();
             if (playerId == PlayerId && dontShowTips == "on")
             {
                 PlayerDal.DisableTips(playerId);

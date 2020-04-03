@@ -16,7 +16,6 @@ namespace Controllers
         [HttpGet]
         public IActionResult NewTest()
         {
-            GetPlayerInfos();
             if(PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 
@@ -32,7 +31,6 @@ namespace Controllers
         [HttpGet]
         public async Task<IActionResult> NewTest2Async()
         {
-            GetPlayerInfos();
             if (PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 
@@ -56,7 +54,6 @@ namespace Controllers
         [HttpGet]
         public async Task<IActionResult> NewTestCompute()
         {
-            GetPlayerInfos();
             if (PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 

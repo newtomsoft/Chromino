@@ -90,8 +90,6 @@ namespace Data.DAL
             return chrominosInGame;
         }
 
-
-
         public void Add(ChrominoInGame chrominoInGame)
         {
             chrominoInGame.Id = 0;

@@ -241,7 +241,7 @@ namespace Data.Core
             {
                 // je joueur est bien dans la partie ou c'est une partie entre bots
                 int chrominosInStackNumber = ChrominoInGameDal.InStack(gameId);
-
+                string playerPseudo = PlayerDal.Pseudo(playerId);
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
@@ -274,7 +274,7 @@ namespace Data.Core
                 List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(gameId);
                 Game game = GameDal.Details(gameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(gameId, playerId);
-                GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
+                GameVM gameViewModel = new GameVM(game, playerPseudo, playerId, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
                 return gameViewModel;
             }
             else return null;

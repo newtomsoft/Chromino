@@ -9,16 +9,16 @@ namespace Data.ViewModel
         public int GameId { get; private set; }
         public string FullName { get; private set; }
         public Dictionary<string, int> Pseudos_chrominos { get; private set; }
-        public string PlayerPseudoTurn { get; private set; }
+        public string PlayerPseudo { get; private set; }
         public DateTime PlayedDate { get; private set; }
 
 
-        public PictureGameVM(int gameId, string fullName, Dictionary<string, int> pseudos_chrominos, string playerPseudoTurn, DateTime playedDate)
+        public PictureGameVM(int gameId, string fullName, Dictionary<string, int> pseudos_chrominos, string playerPseudo, DateTime playedDate)
         {
             GameId = gameId;
             FullName = fullName;
             Pseudos_chrominos = pseudos_chrominos;
-            PlayerPseudoTurn = playerPseudoTurn;
+            PlayerPseudo = playerPseudo;
             PlayedDate = playedDate;
         }
     }

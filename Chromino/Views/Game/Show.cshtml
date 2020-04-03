@@ -7,7 +7,7 @@
     ViewData["Title"] = "Chromino - Jouer !";
     string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
-    pseudosExceptCurrentPlayer_Chrominos.Remove(ViewBag.PlayerPseudo);
+    pseudosExceptCurrentPlayer_Chrominos.Remove(Model.PlayerPseudo);
     PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
 }
 
@@ -34,13 +34,13 @@
         <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');"></button>
         @if (Model.Game.Status == GameStatus.InProgress || Model.Game.Status == GameStatus.SingleInProgress)
         {
-            if (Model.PlayerTurn.UserName == ViewBag.PlayerPseudo)
+            if (Model.PlayerTurn.UserName == Model.PlayerPseudo)
             {
                 playerTurn = "C'est à vous de jouer";
                 @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
                 {
                     <form id="FormDrawChromino" asp-action="DrawChromino" style="display:none">
-                        <input name="playerId" value="@ViewBag.PlayerId" />
+                        <input name="playerId" value="@Model.PlayerId" />
                         <input name="gameId" value="@Model.Game.Id" />
                     </form>
                     <button type="submit" form="FormDrawChromino" class="btn btn-toolbar btn-draw"></button>
@@ -48,7 +48,7 @@
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
                     <form id="FormSkip" asp-action="Skip" style="display:none">
-                        <input name="playerId" value="@ViewBag.PlayerId" />
+                        <input name="playerId" value="@Model.PlayerId" />
                         <input name="gameId" value="@Model.Game.Id" />
                     </form>
                     <button type="submit" form="FormSkip" class="btn btn-toolbar btn-skip"></button>
@@ -59,13 +59,13 @@
                 playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
             }
         }
-        @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == ViewBag.PlayerId &&
+        @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == Model.PlayerId &&
 (Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != ColorCh.Cameleon))
         {
             <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
         }
 
-        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != ViewBag.PlayerId || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished)
+        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.PlayerId || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished)
         {
             <form id="FormNextGame" asp-action="NextToPlay" style="display:none">
             </form>
@@ -146,15 +146,15 @@
             }
         </div>
     }
-<form id="FormSendMove" asp-action="Play" hidden>
-    <input id="FormPlayerId" name="playerId" value="@ViewBag.PlayerId" />
-    <input id="FormGameId" name="gameId" value="@Model.Game.Id" />
-    <input id="FormChrominoId" name="chrominoId" />
-    <input id="FormX" name="x" />
-    <input id="FormY" name="y" />
-    <input id="FormOrientation" name="orientation" />
-    <input id="FormFlip" name="flip" />
-</form>
+    <form id="FormSendMove" asp-action="Play" hidden>
+        <input id="FormPlayerId" name="playerId" value="@Model.PlayerId" />
+        <input id="FormGameId" name="gameId" value="@Model.Game.Id" />
+        <input id="FormChrominoId" name="chrominoId" />
+        <input id="FormX" name="x" />
+        <input id="FormY" name="y" />
+        <input id="FormOrientation" name="orientation" />
+        <input id="FormFlip" name="flip" />
+    </form>
 
 
     @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.Game.Status != GameStatus.Finished)
@@ -177,7 +177,7 @@
         int vertical = (int)Orientation.Vertical;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
-        if (TempData["ShowInfos"] != null || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished || (Model.PlayerTurn.Id == ViewBag.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+        if (TempData["ShowInfos"] != null || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished || (Model.PlayerTurn.Id == Model.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
             showInfoPopup = true;
         else if (TempData["ShowBotPlayingInfoPopup"] != null)
             showBotPlayingInfoPopup = true;
@@ -185,7 +185,7 @@
 
     <script>
     var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
-    @{string thisPlayerTurn = (Model.PlayerTurn.Id == ViewBag.PlayerId).ToString().ToLower();}
+    @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.PlayerId).ToString().ToLower();}
     var ThisPlayerTurn = @thisPlayerTurn;
         var Squares = new Array;
         var Pseudos = new Array;
@@ -242,7 +242,7 @@
     @foreach (var pseudoChromino in Model.PseudosChrominos)
     {
         string pseudo = pseudoChromino.Key;
-        if (pseudo == ViewBag.PlayerPseudo)
+        if (pseudo == Model.PlayerPseudo)
             pseudo = "Vous";
         if (pseudoChromino.Value > 1)
         {
@@ -276,7 +276,7 @@
         }
         else
         {
-            if (pseudoChromino.Key == ViewBag.PlayerPseudo)
+            if (pseudoChromino.Key == Model.PlayerPseudo)
             {
                 <p class="winner">Vous avez gagné la partie</p>
             }
@@ -342,7 +342,7 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+                <input name="playerId" value="@Model.PlayerId" type="hidden" />
                 <label asp-for="GamePlayerIdentified.Memo"></label>
                 <textarea asp-for="GamePlayerIdentified.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayerIdentified.Memo</textarea>
                 <span asp-validation-for="GamePlayerIdentified.Memo" class="text-danger"></span>
@@ -356,14 +356,14 @@
 <div id="ChatPopup" class="popup-memochat" style="display:none">
     <form id="form-SetReadChat" asp-action="SetRead" asp-controller="Chat" hidden>
         <input name="gameId" value="@Model.Game.Id" type="hidden" />
-        <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+        <input name="playerId" value="@Model.PlayerId" type="hidden" />
     </form>
     <div>
         <form asp-action="Add" asp-controller="Chat">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <input name="playerPseudo" value="@ViewBag.PlayerPseudo" type="hidden" />
+                <input name="playerPseudo" value="@Model.PlayerPseudo" type="hidden" />
                 <label asp-for="Game.Chat"></label>
                 <textarea id="ChatPopup-textarea" class="form-control" rows="14" disabled>@Model.Game.Chat</textarea>
                 <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Marquer comme lu</button>
@@ -391,7 +391,7 @@
         <p>Ou en appuyant sur le chromino jusqu'au flash.</p>
         <form id="FormDisableTips" asp-action="DisableTips" asp-controller="Player">
             <input name="gameId" value="@Model.Game.Id" type="hidden" />
-            <input name="playerId" value="@ViewBag.PlayerId" type="hidden" />
+            <input name="playerId" value="@Model.PlayerId" type="hidden" />
             <input id="dontShowTips" name="dontShowTips" type="checkbox" />Ne plus afficher
         </form>
         <button class="btn btn-primary" onclick="ClosePopupTips('#playingInfoPopup', '#dontShowTips');">Ok</button>

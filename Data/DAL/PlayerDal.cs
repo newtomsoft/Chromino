@@ -40,6 +40,14 @@ namespace Data.DAL
 
             return player;
         }
+        public string Pseudo(int id)
+        {
+            string pseudo = (from p in Ctx.Players
+                             where p.Id == id
+                             select p.UserName).FirstOrDefault();
+
+            return pseudo;
+        }
 
         public void AddPoints(int playerId, int points)
         {

@@ -30,7 +30,6 @@ namespace Controllers
         [HttpGet]
         public IActionResult New()
         {
-            GetPlayerInfos();
             return View(null);
         }
 
@@ -42,7 +41,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult New(string[] pseudos)
         {
-            GetPlayerInfos();
             if (pseudos == null || pseudos.Length == 0)
             {
                 return View();
@@ -92,7 +90,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult NewAgainstBots(int botsNumber)
         {
-            GetPlayerInfos();
             List<Player> players = new List<Player>(botsNumber + 1);
             players.Add(PlayerDal.Details(PlayerId));
             for (int iBot = 1; iBot <= botsNumber; iBot++)
@@ -109,7 +106,6 @@ namespace Controllers
         [HttpGet]
         public IActionResult NewSingle()
         {
-            GetPlayerInfos();
             List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
             CreateGame(ref players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -128,7 +124,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult Play(int playerId, int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
-            GetPlayerInfos();
             GameCore gameCore = new GameCore(Ctx, Env, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
@@ -157,12 +152,11 @@ namespace Controllers
         [HttpPost]
         public IActionResult DrawChromino(int playerId, int gameId)
         {
-            GetPlayerInfos();
-            GameCore gameCore = new GameCore(Ctx, Env, gameId);
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, playerId);
             if (playerId == PlayerId && (!gamePlayer.PreviouslyDraw || playersNumber == 1))
             {
+                GameCore gameCore = new GameCore(Ctx, Env, gameId);
                 gameCore.DrawChromino(playerId);
             }
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -177,7 +171,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult Skip(int playerId, int gameId)
         {
-            GetPlayerInfos();
             if (playerId == PlayerId)
             {
                 GameCore gameCore = new GameCore(Ctx, Env, gameId);
@@ -196,7 +189,6 @@ namespace Controllers
         {
             if (id == 0)
                 return RedirectToAction("NotFound");
-            GetPlayerInfos();
 
             GameCore gameCore = new GameCore(Ctx, Env, id);
             GameVM gameViewModel = gameCore.GameViewModel(id, PlayerId);
@@ -219,7 +211,6 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult NextToPlay()
         {
-            GetPlayerInfos();
             TempData["ShowInfos"] = true;
             int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
             return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });

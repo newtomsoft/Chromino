@@ -22,7 +22,6 @@ namespace ChrominoApp.Controllers
         [HttpPost]
         public IActionResult Add(int gameId, int playerId, string memo)
         {
-            GetPlayerInfos();
             if (playerId == PlayerId)
             {
                 GamePlayerDal.ChangeMemo(gameId, playerId, memo);
