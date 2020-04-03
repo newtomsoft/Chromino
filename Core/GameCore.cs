@@ -89,9 +89,9 @@ namespace Data.Core
                 GameDal.SetStatus(GameId, GameStatus.SingleInProgress);
             else
                 GameDal.SetStatus(GameId, GameStatus.InProgress);
-            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
-            FillHandPlayers();
+            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
             Play(chrominoInGame);
+            FillHand();
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             ChangePlayerTurn();
         }
@@ -156,27 +156,22 @@ namespace Data.Core
         }
 
         /// <summary>
-        /// rempli la main de tous les joueurs
+        /// rempli la main du ou de tous les joueurs, de chrominos
         /// </summary>
-        /// <param name="gamePlayer"></param>
-
-        private void FillHandPlayers()
+        /// <param name="gamePlayer">le joueur concerné. Tous les joueurs si null</param>
+        private void FillHand(GamePlayer gamePlayer = null)
         {
-            foreach (GamePlayer gamePlayer in GamePlayers)
+            if (gamePlayer == null)
             {
-                FillHand(gamePlayer);
+                foreach (GamePlayer currentGamePlayer in GamePlayers)
+                    FillHand(currentGamePlayer);
+
+                ComputedChrominoCore.UpdateAllPlayersWholeGame();
             }
-        }
-
-        /// <summary>
-        /// rempli la main du joueur de chrominos
-        /// </summary>
-        /// <param name="gamePlayer"></param>
-        private void FillHand(GamePlayer gamePlayer)
-        {
-            for (int i = 0; i < BeginGameChrominoInHand; i++)
+            else
             {
-                ChrominoInHandDal.FromStack(GameId, gamePlayer.PlayerId);
+                for (int i = 0; i < BeginGameChrominoInHand; i++)
+                    ChrominoInHandDal.FromStack(GameId, gamePlayer.PlayerId);
             }
         }
 
@@ -276,7 +271,7 @@ namespace Data.Core
                 List<Square> squares = SquareDal.List(gameId);
                 List<int> botsId = PlayerDal.BotsId();
                 bool noTips = PlayerDal.Details(playerId).NoTips;
-                List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.ChrominosInGamePlayed(gameId);
+                List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(gameId);
                 Game game = GameDal.Details(gameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(gameId, playerId);
                 GameVM gameViewModel = new GameVM(game, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);

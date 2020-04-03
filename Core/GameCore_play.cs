@@ -2,7 +2,6 @@
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Tool;
@@ -18,40 +17,32 @@ namespace Data.Core
         /// <param name="playerId">Id du joueur</param>
         public PlayReturn DrawChromino(int playerId)
         {
-            int chrominoId = ChrominoInGameDal.StackToHand(GameId, playerId);
-            if (chrominoId != 0)
-            {
-                ComputedChrominoCore.RemoveAndUpdate(false, playerId, true, chrominoId);
-                GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
-                return PlayReturn.DrawChromino;
-            }
+            if (TryDrawChromino(playerId, out PlayReturn playReturn))
+                return playReturn;
             else
-            {
                 return SkipTurn(playerId);
-            }
         }
 
         /// <summary>
-        /// tente de piocher un chromino et indique que le joueur à pioché au coup d'avant
-        /// s'il n'y a plus de chrimino dans la pioche, ne fait rien
+        /// Tente de piocher un chromino et indique que le joueur à pioché au coup d'avant.
+        /// S'il n'y a plus de chrimino dans la pioche, ne fait rien
         /// </summary>
         /// <param name="playerId">Id du joueur</param>
         /// <param name="playReturn">PlayReturn.DrawChromino si pioche ok</param>
+        /// <returns>true si tentative ok</returns>
         public bool TryDrawChromino(int playerId, out PlayReturn playReturn)
         {
-            int chrominoId = ChrominoInGameDal.StackToHand(GameId, playerId);
+            int chrominoId = ChrominoInHandDal.FromStack(GameId, playerId);
             if (chrominoId != 0)
             {
-                if (PlayerDal.IsBot(playerId))
-                    ComputedChrominoCore.UpdateCandidatesFromAllGame(playerId, chrominoId);
-
+                ComputedChrominoCore.Add(playerId, chrominoId);
                 GamePlayerDal.SetPreviouslyDraw(GameId, playerId);
                 playReturn = PlayReturn.DrawChromino;
                 return true;
             }
             else
             {
-                playReturn = PlayReturn.Ok; // valeur inexacte mais non exploitée en sortie
+                playReturn = PlayReturn.Ok;
                 return false;
             }
         }
@@ -141,16 +132,7 @@ namespace Data.Core
                 playReturn = SkipTurn(botId);
 
             if (playReturn.IsError())
-            {
-                ChrominoInGame c = goodChrominos[0];
-                int x = c.XPosition;
-                int y = c.YPosition;
-                Orientation orientation = c.Orientation;
-                int chrominoId = c.ChrominoId;
-                Position position = new Position { Coordinate = new Coordinate(x, y), Orientation = orientation };
-                List<Position> positionsToDel = new List<Position> { position };
-                ComputedChrominosDal.Remove(GameId, botId, positionsToDel, chrominoId);
-            }
+                ComputedChrominoCore.RemoveBadEntrie(goodChrominos[0], botId);
             else if (playReturn == PlayReturn.Ok)
                 new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
@@ -234,7 +216,7 @@ namespace Data.Core
             ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
             GameDal.IncreaseMove(GameId);
             ComputedChrominoCore.RemovePlayedChromino(nullablePlayerId, chrominoInGame.ChrominoId);
-            ComputedChrominoCore.RemoveAndUpdate();
+            ComputedChrominoCore.RemoveAndUpdateAllPlayers();
 
             if (nullablePlayerId != null)
             {
@@ -261,7 +243,7 @@ namespace Data.Core
                     }
                     else
                     {
-                        int chrominosInGame = ChrominoInGameDal.ChrominosNumber(GameId);
+                        int chrominosInGame = ChrominoInGameDal.Count(GameId);
                         PlayerDal.Details(playerId).SinglePlayerGamesPoints += chrominosInGame switch
                         {
                             8 => 100,
@@ -274,13 +256,7 @@ namespace Data.Core
                         Ctx.SaveChanges();
                     }
                     if (IsRoundLastPlayer(playerId) || !IsNextPlayersCanWin(playerId))
-                    {
                         SetGameFinished();
-                    }
-                    else
-                    {
-
-                    }
                 }
                 else
                 {

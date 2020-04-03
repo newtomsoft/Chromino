@@ -111,13 +111,13 @@ namespace Data.DAL
         public int FromStack(int gameId, int playerId)
         {
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
-            var chrominosInGameId = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
-            var chrominosInHandId = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
-            var possibleChrominosId = chrominosId.Except(chrominosInGameId).Except(chrominosInHandId).ToList();
-            int possibleChrominosIdCount = possibleChrominosId.Count;
-            if (possibleChrominosIdCount != 0)
+            var inGameIds = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
+            var inHandIds = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
+            var candidatesId = chrominosId.Except(inGameIds).Except(inHandIds).ToList();
+            int candidatesCount = candidatesId.Count;
+            if (candidatesCount != 0)
             {
-                int chrominoId = possibleChrominosId[Random.Next(possibleChrominosIdCount)];
+                int chrominoId = candidatesId[Random.Next(candidatesCount)];
                 var positions = from ch in Ctx.ChrominosInHand
                                 where ch.GameId == gameId && ch.PlayerId == playerId
                                 select ch.Position;

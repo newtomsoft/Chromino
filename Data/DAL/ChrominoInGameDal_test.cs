@@ -1,4 +1,6 @@
-﻿using Data.Core;
+﻿#if DEBUG
+
+using Data.Core;
 using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -51,3 +53,5 @@ namespace Data.DAL
 
     }
 }
+
+#endif

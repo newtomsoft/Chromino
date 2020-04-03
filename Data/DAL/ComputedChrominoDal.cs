@@ -21,18 +21,18 @@ namespace Data.DAL
         /// Supprime les ComputedChrominos qui ne sont potentiellement plus valables
         /// </summary>
         /// <param name="gameId">id du jeu concerné</param>
-        /// <param name="botId">id du bot concerné</param>
+        /// <param name="playerId">id du joueur concerné</param>
         /// <param name="positions">liste des positions concernées</param>
         /// <param name="chrominoId">id du chromino concerné sinon tous les id</param>
-        public void Remove(int gameId, int botId, List<Position> positions, int chrominoId = 0)
+        public void Remove(int gameId, int playerId, List<Position> positions, int chrominoId = 0)
         {
             foreach (var position in positions)
             {
                 List<ComputedChromino> toRemove = (from cc in Ctx.ComputedChrominos
-                                                   where cc.GameId == gameId && cc.PlayerId == botId && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
+                                                   where cc.GameId == gameId && (cc.PlayerId == playerId || playerId == 0)  && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
                                                    select cc).ToList();
 
-                if (toRemove != null)
+                if (toRemove.Count > 0)
                     Ctx.ComputedChrominos.RemoveRange(toRemove);
             }
             Ctx.SaveChanges();
@@ -57,7 +57,7 @@ namespace Data.DAL
                                                  where cc.GameId == gameId && cc.PlayerId == botId
                                                  select cc).ToList();
 
-            if (ccToRemove != null)
+            if (ccToRemove.Count > 0)
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
 
             Ctx.SaveChanges();

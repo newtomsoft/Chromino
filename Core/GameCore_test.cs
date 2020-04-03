@@ -20,7 +20,7 @@ namespace Data.Core
         {
             new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayersTestDebug();
-            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstRandomToGame(GameId);
+            ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
             if(playFirstChromino)
                 Play(chrominoInGame);
             ChangePlayerTurn();

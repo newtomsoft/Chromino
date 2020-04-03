@@ -23,7 +23,6 @@ namespace Core
         private readonly SquareDal SquareDal;
         private readonly GamePlayerDal GamePlayerDal;
         private readonly ComputedChrominosDal ComputedChrominosDal;
-        private readonly PlayerDal PlayerDal;
 
         public ComputedChrominoCore(Context ctx, int gameId)
         {
@@ -33,7 +32,6 @@ namespace Core
             SquareDal = new SquareDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
             ComputedChrominosDal = new ComputedChrominosDal(ctx);
-            PlayerDal = new PlayerDal(ctx);
         }
 
         public void RemovePlayedChromino(int? playerId, int chrominoId)
@@ -41,119 +39,27 @@ namespace Core
             ComputedChrominosDal.Remove(GameId, playerId, chrominoId);
         }
 
-        public void RemoveAndUpdate(bool remove = true, int playerId = 0, bool wholeGame = false, int chrominoId = 0)
+        internal void RemoveBadEntrie(ChrominoInGame chrominoInGame, int playerId)
         {
-            List<Square> squares = SquareDal.List(GameId);
-            int chrominoNumber;
-            if (wholeGame)
-                chrominoNumber = squares.Count / 3;
-            else
-                chrominoNumber = 1;
-
-            for (int iSquare = (chrominoNumber - 1) * 3; iSquare >= 0; iSquare -= 3)
-            {
-                List<Position> positionsToDelete;
-                if (remove)
-                    positionsToDelete = PositionsToDeleteAroundSquares(squares, iSquare);
-                else
-                    positionsToDelete = new List<Position>();
-
-                List<Position> candidatesPositions = CandidatesPositionsAroundSquares(squares, iSquare);
-
-                List<int> playersId;
-                if (playerId == 0)
-                    playersId = GamePlayerDal.PlayersId(GameId);
-                else
-                    playersId = new List<int> { playerId };
-
-                foreach (int currentPlayerId in playersId)
-                {
-                    if (remove)
-                        ComputedChrominosDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
-
-                    List<int> chrominosId = new List<int>();
-                    if (chrominoId == 0)
-                        foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, currentPlayerId))
-                            chrominosId.Add(chrominoInHand.ChrominoId);
-                    else
-                        chrominosId.Add(chrominoId);
-                    
-                    List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
-                    foreach (int currentChrominoId in chrominosId)
-                    {
-                        List<Position> goodPositions = PositionsOkForChromino(currentChrominoId, candidatesPositions);
-                        foreach (Position position in goodPositions)
-                        {
-                            ComputedChromino computedChromino = new ComputedChromino
-                            {
-                                GameId = GameId,
-                                PlayerId = currentPlayerId,
-                                X = position.Coordinate.X,
-                                Y = position.Coordinate.Y,
-                                ChrominoId = currentChrominoId,
-                                Orientation = position.Orientation,
-                                Flip = position.Reversed,
-                            };
-                            chrominosFound.Add(computedChromino);
-                        }
-                    }
-                    ComputedChrominosDal.Add(chrominosFound);
-                }
-            }
+            Orientation orientation = chrominoInGame.Orientation;
+            Position position = new Position { Coordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition), Orientation = orientation };
+            ComputedChrominosDal.Remove(GameId, playerId, new List<Position> { position }, chrominoInGame.ChrominoId);
         }
 
-        public void UpdateCandidatesFromAllGame(int botId, int chrominoId)
+        public void Add(int playerId, int chrominoId)
         {
-            List<Square> squares = SquareDal.List(GameId);
-            List<Position> candidatesPositions = CandidatesPositionsAroundAllSquares(squares);
-            List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
-            List<Position> goodPositions = PositionsOkForChromino(chrominoId, candidatesPositions);
-            foreach (Position position in goodPositions)
-            {
-                ComputedChromino computedChromino = new ComputedChromino
-                {
-                    GameId = GameId,
-                    PlayerId = botId,
-                    X = position.Coordinate.X,
-                    Y = position.Coordinate.Y,
-                    ChrominoId = chrominoId,
-                    Orientation = position.Orientation,
-                    Flip = position.Reversed,
-                };
-                chrominosFound.Add(computedChromino);
-            }
-            ComputedChrominosDal.Add(chrominosFound);
-
+            RemoveAndUpdate(false, playerId, true, chrominoId);
         }
 
-        [Obsolete("Method to delete in future")]
-        public void ResetAndUpdateCandidatesFromAllChrominosPlayed(int botId)
+        public void RemoveAndUpdateAllPlayers()
         {
-            foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, botId))
-                RemoveAndUpdate(true, botId, true, chrominoInHand.ChrominoId);
+            RemoveAndUpdate(true, 0, false, 0);
         }
 
-        //public void UpdateCandidatesFromAllChrominosPlayed(int botId, int chrominoId)
-        //{
-        //    List<Square> squares = SquareDal.List(GameId);
-        //    HashSet<Position> positions = ComputePossiblesPositions(squares);
-        //    List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
-        //    HashSet<Position> goodPositions = PositionsOkForChromino(chrominoId, positions);
-        //    foreach (Position position in goodPositions)
-        //    {
-        //        ComputedChromino computedChromino = new ComputedChromino
-        //        {
-        //            BotId = botId,
-        //            GameId = GameId,
-        //            ChrominoId = chrominoId,
-        //            Orientation = position.Orientation,
-        //            X = position.Coordinate.X,
-        //            Y = position.Coordinate.Y,
-        //        };
-        //        chrominosFound.Add(computedChromino);
-        //    }
-        //    ComputedChrominosDal.Add(chrominosFound);
-        //}
+        public void UpdateAllPlayersWholeGame()
+        {
+            RemoveAndUpdate(false, 0, true, 0);
+        }
 
         /// <summary>
         /// retourne les positions possibles où peuvent être joués des chrominos
@@ -210,76 +116,6 @@ namespace Core
             return positions;
         }
 
-        ///// <summary>
-        ///// Indique si avec les chrominos passés en paramètre, il est possible de jouer un de ces chrominos et le renvoie
-        ///// </summary>
-        ///// <param name="hand">liste des chrominos à tester</param>
-        ///// <param name="previouslyDraw">indique si le joueur vient de piocher avant de tester</param>
-        ///// <param name="positions">liste des positions où chercher à placer le chromino</param>
-        ///// <param name="indexInHand">index du chromino convenant</param>
-        ///// <param name="position">position si convenant, null sinon</param>
-        ///// <returns>null si aucun chromino ne couvient</returns>
-        //public ChrominoInGame ComputeChrominoToPlay(List<ChrominoInHand> hand, bool previouslyDraw, HashSet<Position> positions, out int indexInHand, out Position position)
-        //{
-        //    ChrominoInGame goodChromino = null;
-        //    Coordinate firstCoordinate;
-        //    ChrominoInHand goodChrominoInHand;
-        //    indexInHand = -1;
-        //    position = null;
-        //    if (!previouslyDraw && hand.Count == 1 && ChrominoDal.IsCameleon(hand[0].ChrominoId)) // on ne peut pas poser un cameleon si c'est le dernier de la main
-        //    {
-        //        goodChromino = null;
-        //    }
-        //    else
-        //    {
-        //        SortHandToFinishedWithoutCameleon(ref hand);
-        //        foreach (ChrominoInHand chrominoInHand in hand)
-        //        {
-        //            indexInHand++;
-        //            foreach (Position currentPosition in positions)
-        //            {
-        //                Chromino chromino = ChrominoDal.Details(chrominoInHand.ChrominoId);
-        //                if ((chromino.FirstColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon))
-        //                {
-        //                    goodChrominoInHand = chrominoInHand;
-        //                    firstCoordinate = currentPosition.Coordinate;
-        //                    goodChromino = new ChrominoInGame()
-        //                    {
-        //                        ChrominoId = chromino.Id,
-        //                        GameId = GameId,
-        //                        XPosition = firstCoordinate.X,
-        //                        YPosition = firstCoordinate.Y,
-        //                        Orientation = currentPosition.Orientation,
-        //                        Flip = false,
-        //                    };
-        //                    position = currentPosition;
-        //                    break;
-        //                }
-        //                else if ((chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
-        //                {
-        //                    goodChrominoInHand = chrominoInHand;
-        //                    Coordinate offset = new Coordinate(currentPosition.Orientation);
-        //                    firstCoordinate = currentPosition.Coordinate + 2 * offset;
-
-        //                    goodChromino = new ChrominoInGame()
-        //                    {
-        //                        GameId = GameId,
-        //                        ChrominoId = chromino.Id,
-        //                        XPosition = firstCoordinate.X,
-        //                        YPosition = firstCoordinate.Y,
-        //                        Orientation = currentPosition.Orientation,
-        //                        Flip = true,
-        //                    };
-        //                    position = currentPosition;
-        //                    break;
-        //                }
-        //            }
-        //            if (goodChromino != null)
-        //                break;
-        //        }
-        //    }
-        //    return goodChromino;
-        //}
         public HashSet<Position> PositionsOkForOpponentChromino(int chrominoId, HashSet<Position> positions)
         {
             Chromino chromino = ChrominoDal.Details(chrominoId);
@@ -298,7 +134,7 @@ namespace Core
             return goodPositions;
         }
 
-        public List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
+        private List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
         {
             Chromino chromino = ChrominoDal.Details(chrominoId);
             List<Position> goodPositions = new List<Position>();
@@ -322,11 +158,8 @@ namespace Core
         /// </summary>
         /// <param name="squares">liste de squares</param>
         /// <returns></returns>
-        public HashSet<Coordinate> FreeAroundSquares(List<Square> occupiedSquares, List<Square> testedSquares = null)
+        private HashSet<Coordinate> FreeAroundSquares(List<Square> occupiedSquares, List<Square> testedSquares)
         {
-            if (testedSquares == null)
-                testedSquares = occupiedSquares;
-
             HashSet<Coordinate> coordinates = new HashSet<Coordinate>();
             foreach (Square square in testedSquares)
             {
@@ -346,32 +179,6 @@ namespace Core
             return coordinates;
         }
 
-        ///// <summary>
-        ///// change l'ordre des n chrominos de la main s'il y a n-1 cameleon
-        ///// afin de jouer les cameleon et finir avec un chromino normal
-        ///// </summary>
-        ///// <param name="hand">référence de la liste des chrominos de la main du joueur</param>
-        //private void SortHandToFinishedWithoutCameleon(ref List<ChrominoInHand> hand)
-        //{
-        //    if (hand.Count > 1)
-        //    {
-        //        bool forcePlayCameleon = true;
-        //        for (int i = 1; i < hand.Count; i++)
-        //        {
-        //            if (!ChrominoDal.IsCameleon(hand[i].ChrominoId))
-        //            {
-        //                forcePlayCameleon = false;
-        //                break;
-        //            }
-        //        }
-        //        if (forcePlayCameleon)
-        //        {
-        //            ChrominoInHand chrominoAt0 = hand[0];
-        //            hand.RemoveAt(0);
-        //            hand.Add(chrominoAt0);
-        //        }
-        //    }
-        //}
         private List<Position> PositionsToDeleteAroundSquares(List<Square> squares, int indexSquare)
         {
             List<Position> positions = new List<Position>();
@@ -480,7 +287,7 @@ namespace Core
         /// </summary>
         /// <param name="squares">liste des squares occupés du jeu</param>
         /// <returns>Flip touijours false</returns>
-        public List<Position> CandidatesPositionsAroundSquares(List<Square> squares, int indexSquare)
+        private List<Position> CandidatesPositionsAroundSquares(List<Square> squares, int indexSquare)
         {
             List<Square> lastSquares = new List<Square> { squares[indexSquare], squares[1 + indexSquare], squares[2 + indexSquare] };
             List<Position> positionsFilter1 = new List<Position>();
@@ -582,57 +389,65 @@ namespace Core
             return candidatesPositions;
         }
 
-        public List<Position> CandidatesPositionsAroundAllSquares(List<Square> squares)
+        private void RemoveAndUpdate(bool remove, int playerId, bool wholeGame, int chrominoId)
         {
-            HashSet<Position> positionsFilter1 = new HashSet<Position>();
-            HashSet<Coordinate> coordinates = FreeAroundSquares(squares);
-            foreach (Coordinate currentCoordinate in coordinates)
-            {
-                foreach (Orientation orientation in (Orientation[])Enum.GetValues(typeof(Orientation)))
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        bool inverse = i == 0 ? true : false;
-                        Coordinate offset;
-                        if (inverse)
-                            if (orientation == Orientation.Horizontal)
-                                offset = new Coordinate(-1, 0);
-                            else
-                                offset = new Coordinate(0, -1);
-                        else
-                            offset = new Coordinate(0, 0);
+            List<Square> squares = SquareDal.List(GameId);
+            int chrominoNumber;
+            if (wholeGame)
+                chrominoNumber = squares.Count / 3;
+            else
+                chrominoNumber = 1;
 
-                        if (currentCoordinate.IsFreeForChromino(offset, squares))
+            for (int iSquare = (chrominoNumber - 1) * 3; iSquare >= 0; iSquare -= 3)
+            {
+                List<Position> positionsToDelete;
+                if (remove)
+                    positionsToDelete = PositionsToDeleteAroundSquares(squares, iSquare);
+                else
+                    positionsToDelete = new List<Position>();
+
+                List<Position> candidatesPositions = CandidatesPositionsAroundSquares(squares, iSquare);
+
+                List<int> playersId;
+                if (playerId == 0)
+                    playersId = GamePlayerDal.PlayersId(GameId);
+                else
+                    playersId = new List<int> { playerId };
+
+                foreach (int currentPlayerId in playersId)
+                {
+                    if (remove)
+                        ComputedChrominosDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
+
+                    List<int> chrominosId = new List<int>();
+                    if (chrominoId == 0)
+                        foreach (ChrominoInHand chrominoInHand in ChrominoInHandDal.ChrominosByPriority(GameId, currentPlayerId))
+                            chrominosId.Add(chrominoInHand.ChrominoId);
+                    else
+                        chrominosId.Add(chrominoId);
+
+                    List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
+                    foreach (int currentChrominoId in chrominosId)
+                    {
+                        List<Position> goodPositions = PositionsOkForChromino(currentChrominoId, candidatesPositions);
+                        foreach (Position position in goodPositions)
                         {
-                            Coordinate coordinate = currentCoordinate + 2 * offset;
-                            positionsFilter1.Add(new Position { Coordinate = coordinate, Orientation = orientation, Reversed = false });
+                            ComputedChromino computedChromino = new ComputedChromino
+                            {
+                                GameId = GameId,
+                                PlayerId = currentPlayerId,
+                                X = position.Coordinate.X,
+                                Y = position.Coordinate.Y,
+                                ChrominoId = currentChrominoId,
+                                Orientation = position.Orientation,
+                                Flip = position.Reversed,
+                            };
+                            chrominosFound.Add(computedChromino);
                         }
                     }
+                    ComputedChrominosDal.Add(chrominosFound);
                 }
             }
-
-            List<Position> candidatesPositions = new List<Position>();
-            foreach (var position in positionsFilter1)
-            {
-                Coordinate firstCoordinate = position.Coordinate;
-                ColorCh? firstColor = firstCoordinate.OkColorFor(squares, out int commonSidesFirstColor);
-                if (firstColor != null)
-                {
-                    Coordinate absOffset = new Coordinate(position.Orientation);
-                    Coordinate secondCoordinate = firstCoordinate + absOffset;
-                    Coordinate thirdCoordinate = secondCoordinate + absOffset;
-                    ColorCh? secondColor = secondCoordinate.OkColorFor(squares, out int adjacentChrominoSecondColor);
-                    ColorCh? thirdColor = thirdCoordinate.OkColorFor(squares, out int adjacentChrominosThirdColor);
-                    if (secondColor != null && thirdColor != null && commonSidesFirstColor + adjacentChrominoSecondColor + adjacentChrominosThirdColor >= 2)
-                    {
-                        position.FirstColor = firstColor;
-                        position.SecondColor = secondColor;
-                        position.ThirdColor = thirdColor;
-                        candidatesPositions.Add(position);
-                    }
-                }
-            }
-            return candidatesPositions;
         }
     }
 }
