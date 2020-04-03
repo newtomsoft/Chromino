@@ -12,7 +12,7 @@ using Data;
 
 namespace Tool
 {
-    public class PictureFactory
+    public class PictureFactoryTool
     {
         private readonly GameDal GameDal;
         private readonly SquareDal SquareDal;
@@ -24,7 +24,7 @@ namespace Tool
 
         private string ImageGamePath { get; set; }
 
-        public PictureFactory(int gameId, string imagePath, Context ctx)
+        public PictureFactoryTool(int gameId, string imagePath, Context ctx)
         {
             GameDal = new GameDal(ctx);
             SquareDal = new SquareDal(ctx);

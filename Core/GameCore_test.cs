@@ -18,7 +18,7 @@ namespace Data.Core
 
         public void BeginGameTestDebug(bool playFirstChromino = false)
         {
-            new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+            new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayersTestDebug();
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
             if(playFirstChromino)

@@ -134,7 +134,7 @@ namespace Data.Core
             if (playReturn.IsError())
                 ComputedChrominoCore.RemoveBadEntrie(goodChrominos[0], botId);
             else if (playReturn == PlayReturn.Ok)
-                new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+                new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
             if (IsRoundLastPlayer(botId) && GamePlayerDal.IsSomePlayerWon(GameId))
                 SetGameFinished();
@@ -267,7 +267,7 @@ namespace Data.Core
 
                 if (IsRoundLastPlayer(playerId) && GamePlayerDal.IsSomePlayerWon(GameId))
                     SetGameFinished();
-                new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+                new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
                 ChangePlayerTurn();
             }
             return PlayReturn.Ok;

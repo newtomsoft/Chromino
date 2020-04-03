@@ -11,13 +11,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tool;
 
 namespace Controllers
 {
     [Authorize]
     public partial class GameController : CommonController
     {
-        private static readonly Random Random = new Random();
+        //private static readonly Random Random = new Random();
 
         public GameController(Context context, UserManager<Player> userManager, IWebHostEnvironment env) : base(context, userManager, env)
         {
@@ -242,7 +243,8 @@ namespace Controllers
 
         private void CreateGame(ref List<Player> players, out int gameId)
         {
-            List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
+            //List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
+            List<Player> randomPlayers = players.RandomSort();
             ChrominoDal.CreateChrominos();
             gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);

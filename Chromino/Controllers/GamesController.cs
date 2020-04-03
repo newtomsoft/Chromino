@@ -109,7 +109,7 @@ namespace ChrominoApp.Controllers
                 }
                 string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
                 if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image/game", pictureName)))
-                    new PictureFactory(game.Id, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+                    new PictureFactoryTool(game.Id, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
                 listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, PlayerPseudo, game.PlayedDate));
             }

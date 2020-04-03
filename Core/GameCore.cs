@@ -92,7 +92,7 @@ namespace Data.Core
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
             Play(chrominoInGame);
             FillHand();
-            new PictureFactory(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+            new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             ChangePlayerTurn();
         }
 

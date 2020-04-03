@@ -12,7 +12,6 @@ namespace Controllers
     {
         protected readonly IWebHostEnvironment Env;
         private Context context;
-
         protected Context Ctx { get; }
         protected GameDal GameDal { get; }
         protected ChrominoInGameDal ChrominoInGameDal { get; }
