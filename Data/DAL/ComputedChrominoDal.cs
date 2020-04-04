@@ -2,7 +2,6 @@
 using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,9 +27,9 @@ namespace Data.DAL
         {
             foreach (var position in positions)
             {
-                List<ComputedChromino> toRemove = (from cc in Ctx.ComputedChrominos
-                                                   where cc.GameId == gameId && (cc.PlayerId == playerId || playerId == 0)  && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
-                                                   select cc).ToList();
+                List<GoodPosition> toRemove = (from cc in Ctx.ComputedChrominos
+                                               where cc.GameId == gameId && (cc.PlayerId == playerId || playerId == 0) && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
+                                               select cc).ToList();
 
                 if (toRemove.Count > 0)
                     Ctx.ComputedChrominos.RemoveRange(toRemove);
@@ -40,9 +39,9 @@ namespace Data.DAL
 
         public void Remove(int gameId, int? botId, int chrominoId)
         {
-            List<ComputedChromino> ccToRemove = (from cc in Ctx.ComputedChrominos
-                                                 where cc.GameId == gameId && cc.PlayerId == botId && cc.ChrominoId == chrominoId
-                                                 select cc).ToList();
+            List<GoodPosition> ccToRemove = (from cc in Ctx.ComputedChrominos
+                                             where cc.GameId == gameId && cc.PlayerId == botId && cc.ChrominoId == chrominoId
+                                             select cc).ToList();
 
             if (ccToRemove.Count > 0)
             {
@@ -53,9 +52,9 @@ namespace Data.DAL
 
         public void Remove(int gameId, int botId)
         {
-            List<ComputedChromino> ccToRemove = (from cc in Ctx.ComputedChrominos
-                                                 where cc.GameId == gameId && cc.PlayerId == botId
-                                                 select cc).ToList();
+            List<GoodPosition> ccToRemove = (from cc in Ctx.ComputedChrominos
+                                             where cc.GameId == gameId && cc.PlayerId == botId
+                                             select cc).ToList();
 
             if (ccToRemove.Count > 0)
                 Ctx.ComputedChrominos.RemoveRange(ccToRemove);
@@ -63,7 +62,7 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void Add(List<ComputedChromino> chrominosFound)
+        public void Add(List<GoodPosition> chrominosFound)
         {
             foreach (var toAdd in chrominosFound)
                 Ctx.ComputedChrominos.Add(toAdd);
@@ -78,13 +77,13 @@ namespace Data.DAL
         /// <param name="botId">Id du bot joueur</param>
         /// <param name="chominoIdNotToPlay">Id du chromino ne devant pas être joué</param>
         /// <returns></returns>
-        public List<ComputedChromino> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay)
+        public List<GoodPosition> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay)
         {
-            List<ComputedChromino> ComputedChrominos = (from cc in Ctx.ComputedChrominos
-                                                        join c in Ctx.Chrominos on cc.ChrominoId equals c.Id
-                                                        where cc.GameId == gameId && cc.PlayerId == botId && cc.ParentId == null && cc.ChrominoId != chominoIdNotToPlay
-                                                        orderby c.Points, c.SecondColor == ColorCh.Cameleon, c.Id
-                                                        select cc).AsNoTracking().ToList();
+            List<GoodPosition> ComputedChrominos = (from cc in Ctx.ComputedChrominos
+                                                    join c in Ctx.Chrominos on cc.ChrominoId equals c.Id
+                                                    where cc.GameId == gameId && cc.PlayerId == botId && cc.ParentId == null && cc.ChrominoId != chominoIdNotToPlay
+                                                    orderby c.Points, c.SecondColor == ColorCh.Cameleon, c.Id
+                                                    select cc).AsNoTracking().ToList();
 
             return ComputedChrominos;
         }

@@ -3,42 +3,53 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chromino", "Chromino\Chromino.csproj", "{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChrominoWeb", "Chromino\ChrominoWeb.csproj", "{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{E7E9FF99-EAA7-4132-956F-568F2B9B7EDE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{601B530D-890E-41E8-9EE7-B061B4CF3804}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{022A7732-0497-4C5F-93F4-853453797C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChrominoBI", "Core\ChrominoBI.csproj", "{022A7732-0497-4C5F-93F4-853453797C9F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool", "Tool\Tool.csproj", "{6CB0F0D6-FF8D-4100-B129-C4A665777221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Batch", "Batch\Batch.csproj", "{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Batch", "Batch\Batch.csproj", "{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Prod|Any CPU = Prod|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Prod|Any CPU.Build.0 = Release|Any CPU
 		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EF1C18B-7D1F-46ED-A41E-5B5E0C22BF40}.Release|Any CPU.Build.0 = Release|Any CPU
 		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Prod|Any CPU.ActiveCfg = Prod|Any CPU
+		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{601B530D-890E-41E8-9EE7-B061B4CF3804}.Release|Any CPU.Build.0 = Release|Any CPU
 		{022A7732-0497-4C5F-93F4-853453797C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{022A7732-0497-4C5F-93F4-853453797C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{022A7732-0497-4C5F-93F4-853453797C9F}.Prod|Any CPU.ActiveCfg = Prod|Any CPU
+		{022A7732-0497-4C5F-93F4-853453797C9F}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{022A7732-0497-4C5F-93F4-853453797C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{022A7732-0497-4C5F-93F4-853453797C9F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Prod|Any CPU.ActiveCfg = Prod|Any CPU
+		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CB0F0D6-FF8D-4100-B129-C4A665777221}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Prod|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Prod|Any CPU.Build.0 = Release|Any CPU
 		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BB67BF0-22ED-442B-8BEC-B5B1BD2831AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
@@ -47,7 +58,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{601B530D-890E-41E8-9EE7-B061B4CF3804} = {E7E9FF99-EAA7-4132-956F-568F2B9B7EDE}
-		{022A7732-0497-4C5F-93F4-853453797C9F} = {E7E9FF99-EAA7-4132-956F-568F2B9B7EDE}
 		{6CB0F0D6-FF8D-4100-B129-C4A665777221} = {E7E9FF99-EAA7-4132-956F-568F2B9B7EDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

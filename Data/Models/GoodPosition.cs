@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
-    [Table("ComputedChromino")]
-    public class ComputedChromino
+    [Table("GoodPosition")]
+    public class GoodPosition
     {
         public int Id { get; set; }
         public int ChrominoId { get; set; }
@@ -19,14 +19,14 @@ namespace Data.Models
         public Chromino Chromino { get; set; }
         public Game Game { get; set; }
         public Player Bot { get; set; }
-        public ComputedChromino Parent { get; set; }
+        public GoodPosition Parent { get; set; }
 
         public override bool Equals(object c)
         {
-            if (c == null || !(c is ComputedChromino))
+            if (c == null || !(c is GoodPosition))
                 return false;
             else
-                return X == ((ComputedChromino)c).X && Y == ((ComputedChromino)c).Y && Orientation == ((ComputedChromino)c).Orientation;
+                return X == ((GoodPosition)c).X && Y == ((GoodPosition)c).Y && Orientation == ((GoodPosition)c).Orientation;
         }
 
         public override int GetHashCode()

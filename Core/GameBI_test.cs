@@ -1,9 +1,9 @@
 ﻿#if DEBUG
 
+using ChrominoBI;
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
-using Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,7 @@ using Tool;
 
 namespace Data.Core
 {
-    public partial class GameCore
+    public partial class GameBI
     {
         private static readonly Random Random = new Random();
 
@@ -21,9 +21,10 @@ namespace Data.Core
             new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
             FillHandPlayersTestDebug();
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
-            if(playFirstChromino)
-                Play(chrominoInGame);
-            ChangePlayerTurn();
+            PlayerBI playerBI = new PlayerBI(Ctx, Env, GameId, 0);
+            if (playFirstChromino)
+                playerBI.Play(chrominoInGame);
+            playerBI.ChangePlayerTurn();
         }
 
         private void FillHandTestDebug(GamePlayer gamePlayer, bool bot = false)
@@ -40,7 +41,6 @@ namespace Data.Core
                 ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 67);
                 ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 68);
             }
-
         }
 
         private void FillHandPlayersTestDebug()
@@ -48,7 +48,6 @@ namespace Data.Core
             FillHandTestDebug(GamePlayers[0]);
             FillHandTestDebug(GamePlayers[1], true);
         }
-
 
         public async Task TestAsync(int gameId)
         {

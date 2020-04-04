@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class ComputedChrominoCore
+    public class GoodPositionBI
     {
         /// <summary>
         /// Id du jeu
@@ -24,7 +24,7 @@ namespace Core
         private readonly GamePlayerDal GamePlayerDal;
         private readonly ComputedChrominosDal ComputedChrominosDal;
 
-        public ComputedChrominoCore(Context ctx, int gameId)
+        public GoodPositionBI(Context ctx, int gameId)
         {
             GameId = gameId;
             ChrominoInHandDal = new ChrominoInHandDal(ctx);
@@ -39,7 +39,7 @@ namespace Core
             ComputedChrominosDal.Remove(GameId, playerId, chrominoId);
         }
 
-        internal void RemoveBadEntrie(ChrominoInGame chrominoInGame, int playerId)
+        public void RemoveBadEntrie(ChrominoInGame chrominoInGame, int playerId)
         {
             Orientation orientation = chrominoInGame.Orientation;
             Position position = new Position { Coordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition), Orientation = orientation };
@@ -62,12 +62,12 @@ namespace Core
         }
 
         /// <summary>
-        /// retourne les positions possibles où peuvent être joués des chrominos
+        /// retourne les positions potentielles où peuvent être joués des chrominos
         /// </summary>
         /// <param name="occupiedSquares">liste complète des squares occupés</param>
         /// <param name="testedSquares">liste des squares définissant la zone à rechercher</param>
         /// <returns>Flip toujours à false</returns>
-        public HashSet<Position> ComputePossiblesPositionsForOpponent(List<Square> occupiedSquares, List<Square> testedSquares = null)
+        public HashSet<Position> PotentialPositions(List<Square> occupiedSquares, List<Square> testedSquares = null)
         {
             if (testedSquares == null)
                 testedSquares = occupiedSquares;
@@ -408,13 +408,13 @@ namespace Core
                     else
                         chrominosId.Add(chrominoId);
 
-                    List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
+                    List<GoodPosition> chrominosFound = new List<GoodPosition>();
                     foreach (int currentChrominoId in chrominosId)
                     {
                         List<Position> goodPositions = PositionsOkForChromino(currentChrominoId, candidatesPositions);
                         foreach (Position position in goodPositions)
                         {
-                            ComputedChromino computedChromino = new ComputedChromino
+                            GoodPosition computedChromino = new GoodPosition
                             {
                                 GameId = GameId,
                                 PlayerId = currentPlayerId,

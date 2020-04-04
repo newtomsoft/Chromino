@@ -11,7 +11,6 @@ namespace Data.Core
         public ColorCh? SecondColor { get; set; }
         public ColorCh? ThirdColor { get; set; }
 
-
         public Position() { }
         public Position(Position p)
         {

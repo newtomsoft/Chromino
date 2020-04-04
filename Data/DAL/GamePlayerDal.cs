@@ -381,7 +381,7 @@ namespace Data.DAL
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
-        public int RoundLastPlayerId(int gameId)
+        public int LastPlayerIdInRound(int gameId)
         {
             int playerId = (from gp in Ctx.GamesPlayers
                             where gp.GameId == gameId

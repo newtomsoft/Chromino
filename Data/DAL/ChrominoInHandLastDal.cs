@@ -1,6 +1,5 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +8,14 @@ namespace Data.DAL
     public partial class ChrominoInHandLastDal
     {
         private readonly Context Ctx;
+
         public ChrominoInHandLastDal(Context context)
         {
             Ctx = context;
         }
 
-        
+
+
         public int LastChrominoIdInHand(int gameId, int playerId)
         {
             int chrominoId = (from chl in Ctx.ChrominosInHandLast
@@ -43,13 +44,13 @@ namespace Data.DAL
             }
         }
 
-        public void DeleteLastChrominoInHand(int gameId, int playerId)
+        public void Delete(int gameId, int playerId)
         {
             ChrominoInHandLast chromino = (from chl in Ctx.ChrominosInHandLast
                                            where chl.GameId == gameId && chl.PlayerId == playerId
                                            select chl).FirstOrDefault();
 
-            if(chromino != null)
+            if (chromino != null)
                 Ctx.ChrominosInHandLast.Remove(chromino);
             Ctx.SaveChanges();
         }

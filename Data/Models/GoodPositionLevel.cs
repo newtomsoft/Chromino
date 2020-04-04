@@ -2,12 +2,12 @@
 
 namespace Data.Models
 {
-    [Table("ComputedChrominoOk")]
-    public class ComputedChrominoOk
+    [Table("GoodPositionLevel")]
+    public class GoodPositionLevel
     {
         public int Id { get; set; }
         public int GameId { get; set; }
-        public int BotId { get; set; }
+        public int PlayerId { get; set; }
         public int ChrominoId { get; set; }
         public int Level { get; set; }
 

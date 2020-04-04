@@ -50,7 +50,7 @@ namespace Data.DAL
             return nbChrominos - chrominoInHandDal.ChrominosNumber(gameId) - Count(gameId);
         }
 
-        
+
 
         public ChrominoInGame FirstToGame(int gameId)
         {

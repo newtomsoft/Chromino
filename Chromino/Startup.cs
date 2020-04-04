@@ -43,7 +43,7 @@ namespace ChrominoGame
                     options.ConsumerSecret = twitterConsumerSecret;
                 });
             }
-            string facebookAppId= Configuration["apis:facebook:AppId"];
+            string facebookAppId = Configuration["apis:facebook:AppId"];
             string facebookAppSecret = Configuration["apis:facebook:AppSecret"];
             if (facebookAppId != null && facebookAppSecret != null)
             {

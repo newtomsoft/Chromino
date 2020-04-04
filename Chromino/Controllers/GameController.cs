@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using ChrominoBI;
+using Data;
 using Data.Core;
 using Data.DAL;
 using Data.Enumeration;
@@ -18,8 +19,6 @@ namespace Controllers
     [Authorize]
     public partial class GameController : CommonController
     {
-        //private static readonly Random Random = new Random();
-
         public GameController(Context context, UserManager<Player> userManager, IWebHostEnvironment env) : base(context, userManager, env)
         {
         }
@@ -69,7 +68,7 @@ namespace Controllers
                 return View(pseudos);
             }
 
-            CreateGame(ref players, out int gameId);
+            CreateGame(players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -96,7 +95,7 @@ namespace Controllers
             for (int iBot = 1; iBot <= botsNumber; iBot++)
                 players.Add(PlayerDal.Details("Bot" + iBot));
 
-            CreateGame(ref players, out int gameId);
+            CreateGame(players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -108,7 +107,7 @@ namespace Controllers
         public IActionResult NewSingle()
         {
             List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
-            CreateGame(ref players, out int gameId);
+            CreateGame(players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -125,7 +124,6 @@ namespace Controllers
         [HttpPost]
         public IActionResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
-            GameCore gameCore = new GameCore(Ctx, Env, gameId);
             ChrominoInGame chrominoInGame = new ChrominoInGame()
             {
                 GameId = gameId,
@@ -136,10 +134,11 @@ namespace Controllers
                 Orientation = orientation,
                 Flip = flip,
             };
-            PlayReturn playReturn = gameCore.Play(chrominoInGame);
+            PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
-
+            else if (playReturn == PlayReturn.GameFinish)
+                new GameBI(Ctx, Env, gameId).SetGameFinished();
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -154,11 +153,9 @@ namespace Controllers
         {
             int playersNumber = GamePlayerDal.PlayersNumber(gameId);
             GamePlayer gamePlayer = GamePlayerDal.Details(gameId, PlayerId);
-            if (!gamePlayer.PreviouslyDraw || playersNumber == 1)
-            {
-                GameCore gameCore = new GameCore(Ctx, Env, gameId);
-                gameCore.DrawChromino(PlayerId);
-            }
+            if ((!gamePlayer.PreviouslyDraw || playersNumber == 1) && ChrominoInGameDal.InStack(gameId) > 0)
+                new PlayerBI(Ctx, Env, gameId, PlayerId).TryDrawChromino(out _);
+
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -171,8 +168,7 @@ namespace Controllers
         [HttpPost]
         public IActionResult Skip(int gameId)
         {
-            GameCore gameCore = new GameCore(Ctx, Env, gameId);
-            gameCore.SkipTurn(PlayerId);
+            new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
 
@@ -186,9 +182,7 @@ namespace Controllers
             if (id == 0)
                 return RedirectToAction("NotFound");
 
-            GameCore gameCore = new GameCore(Ctx, Env, id);
-            GameVM gameViewModel = gameCore.GameViewModel(id, PlayerId);
-
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(id, PlayerId);
             if (gameViewModel != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)
@@ -229,22 +223,23 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult PlayBot(int id, int botId)
         {
-            GameCore gamecore = new GameCore(Ctx, Env, id);
+            PlayerBI playerBI = new PlayerBI(Ctx, Env, id, botId);
+            GameBI gameBI = new GameBI(Ctx, Env, id);
             PlayReturn playreturn;
-            do playreturn = gamecore.PlayBot(botId);
+            do playreturn = playerBI.PlayBot();
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
+            if (playreturn == PlayReturn.GameFinish)
+                gameBI.SetGameFinished();
             return RedirectToAction("Show", "Game", new { id });
         }
 
-        private void CreateGame(ref List<Player> players, out int gameId)
+        private void CreateGame(List<Player> players, out int gameId)
         {
-            //List<Player> randomPlayers = players.OrderBy(_ => Random.Next()).ToList();
             List<Player> randomPlayers = players.RandomSort();
             ChrominoDal.CreateChrominos();
             gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            gamecore.BeginGame(randomPlayers.Count);
+            new GameBI(Ctx, Env, gameId).BeginGame(randomPlayers.Count);
         }
     }
 }

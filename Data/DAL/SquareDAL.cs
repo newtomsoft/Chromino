@@ -1,8 +1,6 @@
 ﻿using Data.Core;
 using Data.Enumeration;
 using Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +21,7 @@ namespace Data.DAL
             {
                 Ctx.Squares.Add(square);
                 Ctx.SaveChanges();
-            }            
+            }
         }
 
         /// <summary>

@@ -1,6 +1,4 @@
 ﻿using Data.Enumeration;
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
@@ -22,18 +20,5 @@ namespace Data.Models
         public Game Game { get; set; }
         public Player Player { get; set; }
 
-        public static ChrominoInGame From(ComputedChromino computedChromino)
-        {
-            return new ChrominoInGame
-            {
-                GameId = computedChromino.GameId,
-                PlayerId = computedChromino.PlayerId,
-                ChrominoId = computedChromino.ChrominoId,
-                Orientation = computedChromino.Orientation,
-                XPosition = computedChromino.X,
-                YPosition = computedChromino.Y,
-                Flip = computedChromino.Flip,
-            };
-        }
     }
 }

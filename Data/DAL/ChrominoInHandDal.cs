@@ -193,17 +193,6 @@ namespace Data.DAL
             }
         }
 
-        public void DeleteLastChrominoInHand(int gameId, int playerId)
-        {
-            ChrominoInHandLast chromino = (from chl in Ctx.ChrominosInHandLast
-                                           where chl.GameId == gameId && chl.PlayerId == playerId
-                                           select chl).FirstOrDefault();
-
-            if (chromino != null)
-                Ctx.ChrominosInHandLast.Remove(chromino);
-            Ctx.SaveChanges();
-        }
-
         /// <summary>
         /// Donne la liste des joueurs où 1 chromino de leur main connu
         /// </summary>
