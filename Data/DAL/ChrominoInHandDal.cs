@@ -165,60 +165,6 @@ namespace Data.DAL
             return chromino;
         }
 
-        public int LastChrominoIdInHand(int gameId, int playerId)
-        {
-            int chrominoId = (from chl in Ctx.ChrominosInHandLast
-                              where chl.GameId == gameId && chl.PlayerId == playerId
-                              select chl.ChrominoId).FirstOrDefault();
-
-            return chrominoId;
-        }
-
-        public void UpdateLastChrominoInHand(int gameId, int playerId, int chrominoId)
-        {
-            ChrominoInHandLast chrominohl = (from chl in Ctx.ChrominosInHandLast
-                                             where chl.GameId == gameId && chl.PlayerId == playerId
-                                             select chl).FirstOrDefault();
-
-            if (chrominohl == null)
-            {
-                chrominohl = new ChrominoInHandLast { GameId = gameId, PlayerId = playerId, ChrominoId = chrominoId };
-                Ctx.Add(chrominohl);
-                Ctx.SaveChanges();
-            }
-            else if (chrominohl.ChrominoId != chrominoId)
-            {
-                chrominohl.ChrominoId = chrominoId;
-                Ctx.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Donne la liste des joueurs où 1 chromino de leur main connu
-        /// </summary>
-        /// <param name="gameId">Id de la partie</param>
-        /// <returns></returns>
-        public List<int> PlayersIdWithOneChrominoKnown(int gameId)
-        {
-            List<int> playersId = (from chl in Ctx.ChrominosInHandLast
-                                   where chl.GameId == gameId
-                                   select chl.PlayerId).ToList();
-
-            return playersId;
-        }
-
-        /// <summary>
-        /// Donne la liste des adversaire où 1 chromino de leur main connu
-        /// </summary>
-        /// <param name="gameId">Id de la partie</param>
-        /// <param name="playerId">Id du joueur à ne pas prendre en compte</param>
-        /// <returns></returns>
-        public List<int> OpponentsIdWithOneChrominoKnown(int gameId, int playerId)
-        {
-            var result = PlayersIdWithOneChrominoKnown(gameId);
-            result.Remove(playerId);
-            return result;
-        }
 
         /// <summary>
         /// Donne la liste des adversaire avec un seul chromino dans leur main
@@ -226,7 +172,7 @@ namespace Data.DAL
         /// <param name="gameId">Id de la partie</param>
         /// <param name="playerIdToExclude">Id du joueur à ne pas prendre en compte</param>
         /// <returns></returns>
-        public List<int> PlayersIdWithOneChromino(int gameId)
+        public List<int> PlayersIdWithOneChromino(int gameId, int playerId = 0)
         {
             List<int> playersId = (from chl in Ctx.ChrominosInHand
                                    where chl.GameId == gameId
@@ -234,30 +180,10 @@ namespace Data.DAL
                                    where g.Count() == 1
                                    select g.Key).ToList();
 
+            if (playerId != 0)
+                playersId.Remove(playerId);
+
             return playersId;
-        }
-
-        /// <summary>
-        /// Donne la liste des adversaires avec un seul chromino dans leur main
-        /// </summary>
-        /// <param name="gameId">Id de la partie</param>
-        /// <param name="playerId">Id du joueur à ne pas prendre en compte</param>
-        /// <returns></returns>
-        public List<int> OpponentsIdWithOneChromino(int gameId, int playerId)
-        {
-            List<int> result = PlayersIdWithOneChromino(gameId);
-            result.Remove(playerId);
-            return result;
-        }
-
-        public List<Chromino> ListLastChrominoIdInHand(int gameId, int playerIdToExclude)
-        {
-            List<Chromino> chrominos = (from chl in Ctx.ChrominosInHandLast
-                                        join c in Ctx.Chrominos on chl.ChrominoId equals c.Id
-                                        where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
-                                        select c).AsNoTracking().ToList();
-
-            return chrominos;
         }
     }
 }

@@ -223,10 +223,10 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult PlayBot(int id, int botId)
         {
-            PlayerBI playerBI = new PlayerBI(Ctx, Env, id, botId);
+            BotBI BotBI = new BotBI(Ctx, Env, id, botId);
             GameBI gameBI = new GameBI(Ctx, Env, id);
             PlayReturn playreturn;
-            do playreturn = playerBI.PlayBot();
+            do playreturn = BotBI.PlayBot();
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
             if (playreturn == PlayReturn.GameFinish)
                 gameBI.SetGameFinished();

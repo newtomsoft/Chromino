@@ -17,38 +17,37 @@ namespace ChrominoBI
         /// <summary>
         /// DbContext du jeu
         /// </summary>
-        private readonly Context Ctx;
+        protected readonly Context Ctx;
 
         /// <summary>
         /// variables d'environnement
         /// </summary>
-        private readonly IWebHostEnvironment Env;
+        protected readonly IWebHostEnvironment Env;
 
         /// <summary>
         /// les différentes Dal utilisées du context 
         /// </summary>
-        private readonly ChrominoInGameDal ChrominoInGameDal;
-        private readonly ChrominoInHandDal ChrominoInHandDal;
-        private readonly ChrominoDal ChrominoDal;
-        private readonly SquareDal SquareDal;
-        private readonly PlayerDal PlayerDal;
-        private readonly GamePlayerDal GamePlayerDal;
-        private readonly GameDal GameDal;
-        private readonly ComputedChrominosDal ComputedChrominosDal;
-        private readonly ChrominoInHandLastDal ChrominoInHandLastDal;
-        
+        protected readonly ChrominoInGameDal ChrominoInGameDal;
+        protected readonly ChrominoInHandDal ChrominoInHandDal;
+        protected readonly ChrominoDal ChrominoDal;
+        protected readonly SquareDal SquareDal;
+        protected readonly PlayerDal PlayerDal;
+        protected readonly GamePlayerDal GamePlayerDal;
+        protected readonly GameDal GameDal;
+        protected readonly ComputedChrominosDal ComputedChrominosDal;
+        protected readonly ChrominoInHandLastDal ChrominoInHandLastDal;
 
-        private GoodPositionBI GoodPositionBI { get; set; }
+        protected GoodPositionBI GoodPositionBI { get; set; }
 
         /// <summary>
         /// Id du jeu
         /// </summary>
-        private int GameId { get; set; }
+        protected int GameId { get; set; }
 
         /// <summary>
         /// Id du joueur
         /// </summary>
-        private int PlayerId { get; set; }
+        protected int PlayerId { get; set; }
 
 
         public PlayerBI(Context ctx, IWebHostEnvironment env, int gameId, int playerId)
@@ -68,17 +67,6 @@ namespace ChrominoBI
             ChrominoInHandLastDal = new ChrominoInHandLastDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
             
-        }
-
-        /// <summary>
-        /// return true si l'id du joueur est l'id du dernier joueur dans le tour
-        /// </summary>
-        /// <param name="playerId">id du joueur courant</param>
-        /// <returns></returns>
-        private bool IsRoundLastPlayer()
-        {
-            int roundLastPlayerId = GamePlayerDal.LastPlayerIdInRound(GameId);
-            return PlayerId == roundLastPlayerId ? true : false;
         }
 
         /// <summary>
@@ -117,103 +105,6 @@ namespace ChrominoBI
                 playReturn = PlayReturn.Ok;
                 return false;
             }
-        }
-
-        /// <summary>
-        /// fait jouer le bot
-        /// </summary>
-        /// <returns></returns>
-        public PlayReturn PlayBot()
-        {
-            List<ChrominoInHand> chrominosInHand = ChrominoInHandDal.ChrominosByPriority(GameId, PlayerId);
-            HandBI handBI = new HandBI(Ctx, chrominosInHand);
-            int chrominoIdNotToPlay = handBI.ChrominoIdIfSingleWithCameleons();
-            List<GoodPosition> goodPositions = ComputedChrominosDal.RootListByPriority(GameId, PlayerId, chrominoIdNotToPlay);
-            bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, PlayerId);
-            int playersNumber = GamePlayerDal.PlayersNumber(GameId);
-
-            if (goodPositions.Count == 0)
-            {
-                if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playreturn))
-                    return playreturn;
-                else
-                    return SkipTurn();
-            }
-            // le bot a un ou des chriminos pouvant être posés
-            List<Square> squares = SquareDal.List(GameId);
-            List<Position> opponentPotentialPositions = GoodPositionBI.PotentialPositions(squares).ToList();
-            List<ChrominoInGame> goodChrominos = new List<ChrominoInGame>();
-            List<ChrominoInGame> badChrominos = new List<ChrominoInGame>();
-            List<ChrominoInGame> neitherGoodNorBadchrominos = new List<ChrominoInGame>();
-            foreach (GoodPosition goodPosition in goodPositions)
-            {
-                ChrominoInGame currentPotentialChromino = ChrominoInGameBI.ChrominoInGameFrom(goodPosition);
-                List<int> opponentIdWithOneChromino = ChrominoInHandDal.OpponentsIdWithOneChromino(GameId, PlayerId);
-                if (opponentIdWithOneChromino.Count == 0)
-                {
-                    // aucun adversaire a 1 chromino.
-                    goodChrominos.Add(currentPotentialChromino);
-                }
-                else if (opponentIdWithOneChromino.Count == 1)
-                {
-                    // 1 seul adversaire n'a plus qu'un chromino
-                    int opponentId = opponentIdWithOneChromino[0];
-                    List<Square> squaresAfterTry = new ChrominoInGameBI(Ctx, GameId, currentPotentialChromino).GetSquares();
-                    squaresAfterTry.AddRange(squares);
-                    List<Position> positionsAfterTry = GoodPositionBI.PotentialPositions(squaresAfterTry).ToList();
-                    int opponentChrominoId = ChrominoInHandDal.FirstChrominoId(GameId, opponentId); // todo : utiliser ChrominoHandLast
-                    List<Position> positionWhereOpponentCanPlayAfterTry = GoodPositionBI.PositionsOkForChromino(opponentChrominoId, positionsAfterTry);
-                    int numberChrominosInHand = ChrominoInHandDal.ChrominosNumber(GameId, PlayerId);
-                    if (GoodPositionBI.PositionsOkForChromino(opponentChrominoId, opponentPotentialPositions).Count != 0)
-                    {
-                        // l'adversaire peut finir après le tour du bot s'il ne joue pas
-                        if (currentPotentialChromino != null && numberChrominosInHand == 1) // le bot peut finir ce tour => il peut jouer
-                            goodChrominos.Add(currentPotentialChromino);
-                        else if (false) // todo le bot joue après l'adversaire et il peut finir le coup d'après => il joue
-                            goodChrominos.Add(currentPotentialChromino);
-                        else if (positionWhereOpponentCanPlayAfterTry.Count > 0) // le bot joue pour le bloquer
-                            goodChrominos.Add(currentPotentialChromino);
-                        else
-                            neitherGoodNorBadchrominos.Add(currentPotentialChromino);
-                    }
-                    else // l'adversaire ne peut pas jouer en l'état
-                    {
-                        if (currentPotentialChromino != null && numberChrominosInHand == 1) // le bot peut finir ce tour => il joue
-                            goodChrominos.Add(currentPotentialChromino);
-                        else if (false) // todo le bot peut finir le coup d'après : il joue
-                            goodChrominos.Add(currentPotentialChromino);
-                        else if (positionWhereOpponentCanPlayAfterTry.Count == 0) // l'adversaire ne finira pas après le coup du bot : le bot joue
-                            goodChrominos.Add(currentPotentialChromino);
-                        else if (positionWhereOpponentCanPlayAfterTry.Count > 0) // l'adversaire peut finir si le bot joue ce soup : il ne doit pas le jouer !
-                            badChrominos.Add(currentPotentialChromino);
-                        else
-                            neitherGoodNorBadchrominos.Add(currentPotentialChromino);
-                    }
-                }
-                else // plus d'un adversaire a 1 chromino.
-                {
-                    // v1 : le bot joue
-                    //todo : prévoir stratégie de jeu
-                    goodChrominos.Add(currentPotentialChromino);
-                }
-            }
-            if (goodChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playReturn)) { }
-            else if (goodChrominos.Count == 0 && neitherGoodNorBadchrominos.Count > 0)
-                playReturn = Play(neitherGoodNorBadchrominos[0]);
-            else if (goodChrominos.Count != 0)
-                playReturn = Play(goodChrominos[0]);
-            else
-                playReturn = SkipTurn();
-
-            if (playReturn.IsError())
-                GoodPositionBI.RemoveBadEntrie(goodChrominos[0], PlayerId);
-            else if (playReturn == PlayReturn.Ok)
-                new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
-
-            if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))
-                playReturn = PlayReturn.GameFinish;
-
-            return playReturn;
         }
 
         /// <summary>
@@ -306,8 +197,7 @@ namespace ChrominoBI
 
                 if (numberInHand == 1)
                 {
-                    int chrominoId = ChrominoInHandDal.FirstChromino(GameId, playerId).Id;
-                    ChrominoInHandDal.UpdateLastChrominoInHand(GameId, playerId, chrominoId);
+                    ChrominoInHandLastDal.Update(GameId, playerId, ChrominoInHandDal.FirstChromino(GameId, playerId).Id);
                 }
                 else if (numberInHand == 0)
                 {
@@ -336,7 +226,7 @@ namespace ChrominoBI
                 }
                 else
                 {
-                    int chrominoId = ChrominoInHandDal.LastChrominoIdInHand(GameId, playerId);
+                    int chrominoId = ChrominoInHandLastDal.IdOf(GameId, playerId);
                     if (chrominoInGame.ChrominoId == chrominoId)
                         ChrominoInHandLastDal.Delete(GameId, playerId);
                 }
@@ -412,6 +302,17 @@ namespace ChrominoBI
                     return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// return true si l'id du joueur est l'id du dernier joueur dans le tour
+        /// </summary>
+        /// <param name="playerId">id du joueur courant</param>
+        /// <returns></returns>
+        protected bool IsRoundLastPlayer()
+        {
+            int roundLastPlayerId = GamePlayerDal.LastPlayerIdInRound(GameId);
+            return PlayerId == roundLastPlayerId ? true : false;
         }
     }
 }
