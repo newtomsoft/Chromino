@@ -3,9 +3,11 @@
     // Action New events
     $('#addPlayer').click(function () {
         AddPlayer();
+        ActionBotsNumber("decrease");
     });
     $('#removePlayer').click(function () {
         RemovePlayer();
+        ActionBotsNumber("increase");
     });
     ShowPlayers();
 });
@@ -77,4 +79,20 @@ function ShowPlayers() {
         if ($(element).val() != '')
             $(element).parent().show(600);
     });
+}
+
+function ActionBotsNumber(action) {
+    let maxBots = 6
+    if (action == "increase")
+        step = 1;
+    else
+        step = -1;
+
+    botsNumber = parseInt($("#botsNumber").attr("max"));
+    newNumber = botsNumber + step;
+    if (newNumber < 0)
+        newNumber = 0;
+    else if (newNumber > maxBots)
+        newNumber = maxBots;
+    $("#botsNumber").attr("max", newNumber);
 }

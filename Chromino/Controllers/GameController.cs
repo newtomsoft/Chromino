@@ -39,12 +39,12 @@ namespace Controllers
         /// <param name="pseudos">pseudos des joueurs de la partie à créer</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult New(string[] pseudos)
+        public IActionResult New(string[] pseudos, int botsNumber)
         {
+            const int MaxPlayers = 8;
             if (pseudos == null || pseudos.Length == 0)
-            {
                 return View();
-            }
+
             List<string> listPseudos = pseudos.ToList();
             listPseudos.Add(PlayerPseudo);
             listPseudos.Reverse();
@@ -57,16 +57,28 @@ namespace Controllers
                 Player player = PlayerDal.Details(pseudosNotNull[i]);
                 if (player == null)
                     errors.Add($"Le joueur {pseudosNotNull[i]} n'existe pas");
+                else if (pseudosNotNull[i].Contains("bot"))
+                    errors.Add($"Le joueur {pseudosNotNull[i]} est un bot et ne peut pas être ajouté ici");
                 else if (players.Contains(player))
                     errors.Add($"Le joueur {pseudosNotNull[i]} est ajouté plusieurs fois dans la partie");
                 else
                     players.Add(player);
             }
+
+            if (botsNumber + players.Count > MaxPlayers)
+                errors.Add($"Le nombre de joueurs est supérieur à {MaxPlayers}. Il ne faut pas chercher à dépasser les bornes des limites ! ;-)");
+            else if (botsNumber < 0)
+                errors.Add($"Le nombre de bots est inférieur à 0. Bien tenté mais ça ne passe pas ici ! ;-)");
+
             if (errors.Count != 0)
             {
                 ViewBag.errors = errors;
+                ViewBag.PlayersNumber = pseudosNotNull.Count();
                 return View(pseudos);
             }
+
+            for (int i = 1; i < botsNumber + 1; i++)
+                players.Add(PlayerDal.Details("bot" + i));
 
             CreateGame(players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });

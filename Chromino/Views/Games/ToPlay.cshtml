@@ -13,7 +13,6 @@
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie multijoueurs à jouer</b></p>
         break;
     case 1:
         <h3>Vous avez 1 partie multijoueurs à jouer</h3>
@@ -39,10 +38,11 @@
         break;
 }
 
+<h3>Commencer une partie</h3>
 <p>
-    <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
-    <a asp-controller="Game" asp-action="NewAgainstBots"><input type="button" class="btn btn-primary" value="Nouvelle partie seul contre ordinateur" /></a>
-    <a asp-controller="Game" asp-action="NewSingle"><input type="button" class="btn btn-primary" value="Nouvelle partie d'entrainement" /></a>
+    <a class="btn btn-homepage btn-humanvshuman" asp-area="" asp-controller="Game" asp-action="New"></a>
+    <a class="btn btn-homepage btn-humanvsbot" asp-area="" asp-controller="Game" asp-action="NewAgainstBots"></a>
+    <a class="btn btn-homepage btn-humansingle" asp-area="" asp-controller="Game" asp-action="NewSingle"></a>
 </p>
 <p>
     Voir vos <a asp-controller="Games" asp-action="AgainstBots">parties contre l'ordinateur</a>

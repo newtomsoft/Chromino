@@ -16,6 +16,33 @@ a {
     margin: 2px;
 }
 
+.btn-homepage {
+    flex-shrink: 1;
+    height: 200px;
+    width: 300px;
+    margin: 6px;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+}
+
+    .btn-homepage:hover {
+        background-color: azure;
+    }
+
+.btn-humanvshuman {
+    background-image: url('/image/button/HumanVsHuman.svg');
+}
+
+.btn-humanvsbot {
+    background-image: url('/image/button/HumanVsBot.svg');
+}
+
+.btn-humansingle {
+    background-image: url('/image/button/HumanSingle.svg');
+}
+
+
 .btn-toolbar {
     flex-shrink: 1;
     height: 50px;
