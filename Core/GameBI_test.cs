@@ -16,10 +16,10 @@ namespace Data.Core
     {
         private static readonly Random Random = new Random();
 
-        public void BeginGameTestDebug(bool playFirstChromino = false)
+        public void BeginGameTest(bool playFirstChromino = false)
         {
             new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
-            FillHandPlayersTestDebug();
+            FillHandPlayersTest();
             ChrominoInGame chrominoInGame = ChrominoInGameDal.FirstToGame(GameId);
             PlayerBI playerBI = new PlayerBI(Ctx, Env, GameId, 0);
             if (playFirstChromino)
@@ -27,26 +27,29 @@ namespace Data.Core
             playerBI.ChangePlayerTurn();
         }
 
-        private void FillHandTestDebug(GamePlayer gamePlayer, bool bot = false)
+        private void FillHandTest(GamePlayer gamePlayer, bool bot = false)
         {
             if (bot)
             {
                 ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 75);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 66);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 55);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 56);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 57);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 58);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 59);
+                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 60);
             }
             else
             {
-                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 7);
-                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 65);
                 ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 66);
-                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 67);
-                ChrominoInGameDal.StackTestToHand(GameId, gamePlayer.PlayerId, 68);
             }
         }
 
-        private void FillHandPlayersTestDebug()
+        private void FillHandPlayersTest()
         {
-            FillHandTestDebug(GamePlayers[0]);
-            FillHandTestDebug(GamePlayers[1], true);
+            FillHandTest(GamePlayers[0]);
+            FillHandTest(GamePlayers[1], true);
         }
 
         public async Task TestAsync(int gameId)

@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Data.DAL
 {
-    public class ComputedChrominosDal
+    public class GoodPositionDal
     {
         private readonly Context Ctx;
 
-        public ComputedChrominosDal(Context context)
+        public GoodPositionDal(Context context)
         {
             Ctx = context;
         }
@@ -27,46 +27,44 @@ namespace Data.DAL
         {
             foreach (var position in positions)
             {
-                List<GoodPosition> toRemove = (from cc in Ctx.ComputedChrominos
+                List<GoodPosition> toRemove = (from cc in Ctx.GoodPositions
                                                where cc.GameId == gameId && (cc.PlayerId == playerId || playerId == 0) && cc.X == position.Coordinate.X && cc.Y == position.Coordinate.Y && (cc.Orientation == position.Orientation) && (chrominoId == 0 || cc.ChrominoId == chrominoId)
                                                select cc).ToList();
 
                 if (toRemove.Count > 0)
-                    Ctx.ComputedChrominos.RemoveRange(toRemove);
+                    Ctx.GoodPositions.RemoveRange(toRemove);
             }
             Ctx.SaveChanges();
         }
 
         public void Remove(int gameId, int? botId, int chrominoId)
         {
-            List<GoodPosition> ccToRemove = (from cc in Ctx.ComputedChrominos
+            List<GoodPosition> gpToRemove = (from cc in Ctx.GoodPositions
                                              where cc.GameId == gameId && cc.PlayerId == botId && cc.ChrominoId == chrominoId
                                              select cc).ToList();
 
-            if (ccToRemove.Count > 0)
+            if (gpToRemove.Count > 0)
             {
-                Ctx.ComputedChrominos.RemoveRange(ccToRemove);
+                Ctx.GoodPositions.RemoveRange(gpToRemove);
                 Ctx.SaveChanges();
             }
         }
 
         public void Remove(int gameId, int botId)
         {
-            List<GoodPosition> ccToRemove = (from cc in Ctx.ComputedChrominos
+            List<GoodPosition> gpToRemove = (from cc in Ctx.GoodPositions
                                              where cc.GameId == gameId && cc.PlayerId == botId
                                              select cc).ToList();
 
-            if (ccToRemove.Count > 0)
-                Ctx.ComputedChrominos.RemoveRange(ccToRemove);
+            if (gpToRemove.Count > 0)
+                Ctx.GoodPositions.RemoveRange(gpToRemove);
 
             Ctx.SaveChanges();
         }
 
-        public void Add(List<GoodPosition> chrominosFound)
+        public void Add(List<GoodPosition> goodPositions)
         {
-            foreach (var toAdd in chrominosFound)
-                Ctx.ComputedChrominos.Add(toAdd);
-
+            Ctx.GoodPositions.AddRange(goodPositions);
             Ctx.SaveChanges();
         }
 
@@ -79,7 +77,7 @@ namespace Data.DAL
         /// <returns></returns>
         public List<GoodPosition> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay)
         {
-            List<GoodPosition> ComputedChrominos = (from cc in Ctx.ComputedChrominos
+            List<GoodPosition> ComputedChrominos = (from cc in Ctx.GoodPositions
                                                     join c in Ctx.Chrominos on cc.ChrominoId equals c.Id
                                                     where cc.GameId == gameId && cc.PlayerId == botId && cc.ParentId == null && cc.ChrominoId != chominoIdNotToPlay
                                                     orderby c.Points, c.SecondColor == ColorCh.Cameleon, c.Id

@@ -28,10 +28,9 @@ namespace ChrominoBI
             List<ChrominoInHand> chrominosInHand = ChrominoInHandDal.ChrominosByPriority(GameId, PlayerId);
             HandBI handBI = new HandBI(Ctx, chrominosInHand);
             int chrominoIdNotToPlay = handBI.ChrominoIdIfSingleWithCameleons();
-            List<GoodPosition> goodPositions = ComputedChrominosDal.RootListByPriority(GameId, PlayerId, chrominoIdNotToPlay);
+            List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, PlayerId, chrominoIdNotToPlay);
             bool previouslyDraw = GamePlayerDal.IsPreviouslyDraw(GameId, PlayerId);
             int playersNumber = GamePlayerDal.PlayersNumber(GameId);
-
             if (goodPositions.Count == 0)
             {
                 if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playreturn))

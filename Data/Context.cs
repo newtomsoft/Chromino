@@ -14,7 +14,7 @@ namespace Data
         public DbSet<ChrominoInHand> ChrominosInHand { get; set; }
         public DbSet<ChrominoInHandLast> ChrominosInHandLast { get; set; }
         public DbSet<ChrominoInGame> ChrominosInGame { get; set; }
-        public DbSet<GoodPosition> ComputedChrominos { get; set; }
+        public DbSet<GoodPosition> GoodPositions { get; set; }
         public DbSet<GoodPositionLevel> ComputedChrominosOk { get; set; }
 
 

@@ -84,7 +84,7 @@ namespace Controllers
 
             GamePlayerDal.Add(gameId, players);
             GameBI gamecore = new GameBI(Ctx, Env, gameId);
-            gamecore.BeginGameTestDebug(firstChrominoPlay);
+            gamecore.BeginGameTest(firstChrominoPlay);
         }
     }
 }

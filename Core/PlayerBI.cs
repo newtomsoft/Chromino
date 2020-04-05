@@ -34,7 +34,7 @@ namespace ChrominoBI
         protected readonly PlayerDal PlayerDal;
         protected readonly GamePlayerDal GamePlayerDal;
         protected readonly GameDal GameDal;
-        protected readonly ComputedChrominosDal ComputedChrominosDal;
+        protected readonly GoodPositionDal GoodPositionDal;
         protected readonly ChrominoInHandLastDal ChrominoInHandLastDal;
 
         protected GoodPositionBI GoodPositionBI { get; set; }
@@ -63,7 +63,7 @@ namespace ChrominoBI
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
-            ComputedChrominosDal = new ComputedChrominosDal(ctx);
+            GoodPositionDal = new GoodPositionDal(ctx);
             ChrominoInHandLastDal = new ChrominoInHandLastDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
 

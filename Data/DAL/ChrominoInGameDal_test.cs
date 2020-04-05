@@ -49,8 +49,6 @@ namespace Data.DAL
             Ctx.SaveChanges();
             return chromonoId;
         }
-
-
     }
 }
 
