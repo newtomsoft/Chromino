@@ -20,18 +20,5 @@ namespace Data.Models
         public Game Game { get; set; }
         public Player Bot { get; set; }
         public GoodPosition Parent { get; set; }
-
-        public override bool Equals(object c)
-        {
-            if (c == null || !(c is GoodPosition))
-                return false;
-            else
-                return X == ((GoodPosition)c).X && Y == ((GoodPosition)c).Y && Orientation == ((GoodPosition)c).Orientation;
-        }
-
-        public override int GetHashCode()
-        {
-            return (X * 10000 + Y * 10 + Orientation).GetHashCode();
-        }
     }
 }

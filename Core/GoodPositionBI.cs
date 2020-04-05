@@ -6,6 +6,7 @@ using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tool;
 
 namespace Core
 {
@@ -394,6 +395,7 @@ namespace Core
                 else
                     playersId = new List<int> { playerId };
 
+                GoodPositionComparer goodPositionComparer = new GoodPositionComparer();
                 foreach (int currentPlayerId in playersId)
                 {
                     if (remove)
@@ -406,7 +408,7 @@ namespace Core
                     else
                         chrominosId.Add(chrominoId);
 
-                    HashSet<GoodPosition> goodPositions = new HashSet<GoodPosition>();
+                    HashSet<GoodPosition> goodPositions = new HashSet<GoodPosition>(goodPositionComparer);
                     foreach (int currentChrominoId in chrominosId)
                     {
                         List<Position> positionsOk = PositionsOkForChromino(currentChrominoId, candidatesPositions);
@@ -416,16 +418,16 @@ namespace Core
                             {
                                 GameId = GameId,
                                 PlayerId = currentPlayerId,
+                                ChrominoId = currentChrominoId,
                                 X = position.Coordinate.X,
                                 Y = position.Coordinate.Y,
-                                ChrominoId = currentChrominoId,
                                 Orientation = position.Orientation,
                                 Flip = position.Reversed,
                             };
                             goodPositions.Add(goodPosition);
                         }
                     }
-                    GoodPositionDal.Add(goodPositions.ToList());
+                    GoodPositionDal.Add(goodPositions);
                 }
             }
         }

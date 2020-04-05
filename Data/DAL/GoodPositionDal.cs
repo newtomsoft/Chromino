@@ -62,7 +62,7 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void Add(List<GoodPosition> goodPositions)
+        public void Add(HashSet<GoodPosition> goodPositions)
         {
             Ctx.GoodPositions.AddRange(goodPositions);
             Ctx.SaveChanges();

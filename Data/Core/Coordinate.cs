@@ -23,6 +23,20 @@ namespace Data.Core
         public static bool operator ==(Coordinate c1, Coordinate c2) => c1.X == c2.X && c2.Y == c2.Y;
         public static bool operator !=(Coordinate c1, Coordinate c2) => c1.X != c2.X || c2.Y != c2.Y;
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !GetType().Equals(obj.GetType()))
+                return false;
+            else
+            {
+                Coordinate c = (Coordinate)obj;
+                return (X == c.X) && (Y == c.Y);
+            }
+        }
+
+        public override int GetHashCode() => (X * 1000 + Y).GetHashCode();
+
+
         public Coordinate(int x, int y)
         {
             X = x;
