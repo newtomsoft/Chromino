@@ -43,7 +43,7 @@ namespace ChrominoGame
                     options.ConsumerSecret = twitterConsumerSecret;
                 });
             }
-            string facebookAppId= Configuration["apis:facebook:AppId"];
+            string facebookAppId = Configuration["apis:facebook:AppId"];
             string facebookAppSecret = Configuration["apis:facebook:AppSecret"];
             if (facebookAppId != null && facebookAppSecret != null)
             {
@@ -91,8 +91,8 @@ namespace ChrominoGame
             else
                 app.UseExceptionHandler("/Home/Error");
             app.UseStaticFiles();
-            app.UseRouting();
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();

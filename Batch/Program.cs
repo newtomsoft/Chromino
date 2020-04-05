@@ -16,7 +16,7 @@ namespace Batch
             Console.WriteLine("**********************");
             Console.WriteLine("*** Batch Chromino ***");
             Console.WriteLine("**********************\n");
-          
+
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (env == null)
                 env = "Development";

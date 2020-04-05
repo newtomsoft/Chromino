@@ -16,8 +16,7 @@ namespace Controllers
         [HttpGet]
         public IActionResult NewTest()
         {
-            GetPlayerInfos();
-            if(PlayerPseudo != "Thomas")
+            if (PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 
             Player player1 = PlayerDal.Details(PlayerDal.BotsId()[0]);
@@ -32,7 +31,6 @@ namespace Controllers
         [HttpGet]
         public async Task<IActionResult> NewTest2Async()
         {
-            GetPlayerInfos();
             if (PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 
@@ -44,8 +42,8 @@ namespace Controllers
             players.Add(player2);
             CreateGameTestDebug(ref players, out int gameId, false);
 
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            
+            GameBI gamecore = new GameBI(Ctx, Env, gameId);
+
             gamecore.TestAsync(gameId);
 
             await Task.Delay(5000);
@@ -56,7 +54,6 @@ namespace Controllers
         [HttpGet]
         public async Task<IActionResult> NewTestCompute()
         {
-            GetPlayerInfos();
             if (PlayerPseudo != "Thomas")
                 return RedirectToAction("Index", "Home");
 
@@ -68,7 +65,7 @@ namespace Controllers
             players.Add(player2);
             CreateGameTestDebug(ref players, out int gameId, false, true);
 
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
+            GameBI gamecore = new GameBI(Ctx, Env, gameId);
 
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
@@ -86,8 +83,8 @@ namespace Controllers
             }
 
             GamePlayerDal.Add(gameId, players);
-            GameCore gamecore = new GameCore(Ctx, Env, gameId);
-            gamecore.BeginGameTestDebug(firstChrominoPlay);
+            GameBI gamecore = new GameBI(Ctx, Env, gameId);
+            gamecore.BeginGameTest(firstChrominoPlay);
         }
     }
 }

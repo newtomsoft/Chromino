@@ -10,6 +10,7 @@
         NotPlayerTurn,
         DrawChromino,
         SkipTurn,
+        GameFinish,
     }
 
     public static class PlayReturnMethods

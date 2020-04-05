@@ -15,7 +15,7 @@
                     @foreach (var pseudo_chromino in game.Pseudos_chrominos)
                     {
                         string pseudo = pseudo_chromino.Key;
-                        if (pseudo == ViewBag.PlayerPseudo)
+                        if (pseudo == game.PlayerPseudo)
                             pseudo = "Vous";
                         <p>@pseudo : @pseudo_chromino.Value chrominos en main</p>
                     }

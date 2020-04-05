@@ -1,11 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Data.Models;
+﻿using Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
 {
@@ -72,7 +72,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
             try
             {
                 var result = await _userManager.DeleteAsync(user);
-                
+
                 if (!result.Succeeded)
                 {
                     throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");

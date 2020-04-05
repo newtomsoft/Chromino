@@ -1,6 +1,4 @@
 ﻿using Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,13 +7,13 @@ namespace Data.DAL
     public partial class ChrominoInHandLastDal
     {
         private readonly Context Ctx;
+
         public ChrominoInHandLastDal(Context context)
         {
             Ctx = context;
         }
 
-        
-        public int LastChrominoIdInHand(int gameId, int playerId)
+        public int IdOf(int gameId, int playerId)
         {
             int chrominoId = (from chl in Ctx.ChrominosInHandLast
                               where chl.GameId == gameId && chl.PlayerId == playerId
@@ -24,7 +22,7 @@ namespace Data.DAL
             return chrominoId;
         }
 
-        public void UpdateLastChrominoInHand(int gameId, int playerId, int chrominoId)
+        public void Update(int gameId, int playerId, int chrominoId)
         {
             ChrominoInHandLast chrominohl = (from chl in Ctx.ChrominosInHandLast
                                              where chl.GameId == gameId && chl.PlayerId == playerId
@@ -43,18 +41,24 @@ namespace Data.DAL
             }
         }
 
-        public void DeleteLastChrominoInHand(int gameId, int playerId)
+        public void Delete(int gameId, int playerId)
         {
             ChrominoInHandLast chromino = (from chl in Ctx.ChrominosInHandLast
                                            where chl.GameId == gameId && chl.PlayerId == playerId
                                            select chl).FirstOrDefault();
 
-            if(chromino != null)
+            if (chromino != null)
                 Ctx.ChrominosInHandLast.Remove(chromino);
             Ctx.SaveChanges();
         }
 
-        public List<int> PlayersIdWithOneChrominoKnown(int gameId, int playerIdToExclude)
+        /// <summary>
+        /// Donne la liste des joueurs où 1 chromino de leur main est connu
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="playerId">Id du joueur à ne pas prendre en compte</param>
+        /// <returns></returns>
+        public List<int> PlayersIdWithOneChrominoKnown(int gameId, int playerIdToExclude = 0)
         {
             List<int> playersId = (from chl in Ctx.ChrominosInHandLast
                                    where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
@@ -63,14 +67,14 @@ namespace Data.DAL
             return playersId;
         }
 
-        public List<Chromino> ListLastChrominoIdInHand(int gameId, int playerIdToExclude)
+        public List<int> ListIdOf(int gameId, int playerIdToExclude)
         {
-            List<Chromino> chrominos = (from chl in Ctx.ChrominosInHandLast
-                                        join c in Ctx.Chrominos on chl.ChrominoId equals c.Id
-                                        where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
-                                        select c).AsNoTracking().ToList();
+            List<int> ids = (from chl in Ctx.ChrominosInHandLast
+                             join c in Ctx.Chrominos on chl.ChrominoId equals c.Id
+                             where chl.GameId == gameId && chl.PlayerId != playerIdToExclude
+                             select c.Id).ToList();
 
-            return chrominos;
+            return ids;
         }
 
         public void Add(ChrominoInGame chrominoInGame)
@@ -79,5 +83,7 @@ namespace Data.DAL
             Ctx.ChrominosInGame.Add(chrominoInGame);
             Ctx.SaveChanges();
         }
+
+
     }
 }

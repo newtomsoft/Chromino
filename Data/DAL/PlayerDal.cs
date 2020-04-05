@@ -1,6 +1,4 @@
 ﻿using Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,6 +37,14 @@ namespace Data.DAL
                              select p).FirstOrDefault();
 
             return player;
+        }
+        public string Pseudo(int id)
+        {
+            string pseudo = (from p in Ctx.Players
+                             where p.Id == id
+                             select p.UserName).FirstOrDefault();
+
+            return pseudo;
         }
 
         public void AddPoints(int playerId, int points)

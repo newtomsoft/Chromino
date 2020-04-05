@@ -5,10 +5,12 @@ using Data.Enumeration;
 using Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Tool;
 
 namespace Core
 {
-    public class ComputedChrominoCore
+    public class GoodPositionBI
     {
         /// <summary>
         /// Id du jeu
@@ -22,28 +24,28 @@ namespace Core
         private readonly ChrominoDal ChrominoDal;
         private readonly SquareDal SquareDal;
         private readonly GamePlayerDal GamePlayerDal;
-        private readonly ComputedChrominosDal ComputedChrominosDal;
+        private readonly GoodPositionDal GoodPositionDal;
 
-        public ComputedChrominoCore(Context ctx, int gameId)
+        public GoodPositionBI(Context ctx, int gameId)
         {
             GameId = gameId;
             ChrominoInHandDal = new ChrominoInHandDal(ctx);
             ChrominoDal = new ChrominoDal(ctx);
             SquareDal = new SquareDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
-            ComputedChrominosDal = new ComputedChrominosDal(ctx);
+            GoodPositionDal = new GoodPositionDal(ctx);
         }
 
         public void RemovePlayedChromino(int? playerId, int chrominoId)
         {
-            ComputedChrominosDal.Remove(GameId, playerId, chrominoId);
+            GoodPositionDal.Remove(GameId, playerId, chrominoId);
         }
 
-        internal void RemoveBadEntrie(ChrominoInGame chrominoInGame, int playerId)
+        public void RemoveBadEntrie(ChrominoInGame chrominoInGame, int playerId)
         {
             Orientation orientation = chrominoInGame.Orientation;
             Position position = new Position { Coordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition), Orientation = orientation };
-            ComputedChrominosDal.Remove(GameId, playerId, new List<Position> { position }, chrominoInGame.ChrominoId);
+            GoodPositionDal.Remove(GameId, playerId, new List<Position> { position }, chrominoInGame.ChrominoId);
         }
 
         public void Add(int playerId, int chrominoId)
@@ -62,12 +64,12 @@ namespace Core
         }
 
         /// <summary>
-        /// retourne les positions possibles où peuvent être joués des chrominos
+        /// retourne les positions potentielles où peuvent être joués des chrominos
         /// </summary>
         /// <param name="occupiedSquares">liste complète des squares occupés</param>
         /// <param name="testedSquares">liste des squares définissant la zone à rechercher</param>
         /// <returns>Flip toujours à false</returns>
-        public HashSet<Position> ComputePossiblesPositionsForOpponent(List<Square> occupiedSquares, List<Square> testedSquares = null)
+        public HashSet<Position> PotentialPositions(List<Square> occupiedSquares, List<Square> testedSquares = null)
         {
             if (testedSquares == null)
                 testedSquares = occupiedSquares;
@@ -116,40 +118,19 @@ namespace Core
             return positions;
         }
 
-        public HashSet<Position> PositionsOkForOpponentChromino(int chrominoId, HashSet<Position> positions)
+        public List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
         {
             Chromino chromino = ChrominoDal.Details(chrominoId);
-            HashSet<Position> goodPositions = new HashSet<Position>();
+            List<Position> positionsOk = new List<Position>();
             foreach (Position currentPosition in positions)
             {
                 if ((chromino.FirstColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon))
-                    goodPositions.Add(currentPosition);
+                    positionsOk.Add(currentPosition);
 
                 if (chromino.FirstColor != chromino.ThirdColor && (chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
-                {
-                    currentPosition.Reversed = true;
-                    goodPositions.Add(currentPosition);
-                }
+                    positionsOk.Add(new Position(currentPosition) { Reversed = true });
             }
-            return goodPositions;
-        }
-
-        private List<Position> PositionsOkForChromino(int chrominoId, List<Position> positions)
-        {
-            Chromino chromino = ChrominoDal.Details(chrominoId);
-            List<Position> goodPositions = new List<Position>();
-            foreach (Position currentPosition in positions)
-            {
-                if ((chromino.FirstColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon))
-                    goodPositions.Add(currentPosition);
-
-                if (chromino.FirstColor != chromino.ThirdColor && (chromino.FirstColor == currentPosition.ThirdColor || currentPosition.ThirdColor == ColorCh.Cameleon) && (chromino.SecondColor == currentPosition.SecondColor || chromino.SecondColor == ColorCh.Cameleon || currentPosition.SecondColor == ColorCh.Cameleon) && (chromino.ThirdColor == currentPosition.FirstColor || currentPosition.FirstColor == ColorCh.Cameleon))
-                {
-                    Position position = new Position(currentPosition) { Reversed = true };
-                    goodPositions.Add(position);
-                }
-            }
-            return goodPositions;
+            return positionsOk;
         }
 
         /// <summary>
@@ -414,10 +395,11 @@ namespace Core
                 else
                     playersId = new List<int> { playerId };
 
+                GoodPositionComparer goodPositionComparer = new GoodPositionComparer();
                 foreach (int currentPlayerId in playersId)
                 {
                     if (remove)
-                        ComputedChrominosDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
+                        GoodPositionDal.Remove(GameId, currentPlayerId, positionsToDelete, chrominoId);
 
                     List<int> chrominosId = new List<int>();
                     if (chrominoId == 0)
@@ -426,26 +408,26 @@ namespace Core
                     else
                         chrominosId.Add(chrominoId);
 
-                    List<ComputedChromino> chrominosFound = new List<ComputedChromino>();
+                    HashSet<GoodPosition> goodPositions = new HashSet<GoodPosition>(goodPositionComparer);
                     foreach (int currentChrominoId in chrominosId)
                     {
-                        List<Position> goodPositions = PositionsOkForChromino(currentChrominoId, candidatesPositions);
-                        foreach (Position position in goodPositions)
+                        List<Position> positionsOk = PositionsOkForChromino(currentChrominoId, candidatesPositions);
+                        foreach (Position position in positionsOk)
                         {
-                            ComputedChromino computedChromino = new ComputedChromino
+                            GoodPosition goodPosition = new GoodPosition
                             {
                                 GameId = GameId,
                                 PlayerId = currentPlayerId,
+                                ChrominoId = currentChrominoId,
                                 X = position.Coordinate.X,
                                 Y = position.Coordinate.Y,
-                                ChrominoId = currentChrominoId,
                                 Orientation = position.Orientation,
                                 Flip = position.Reversed,
                             };
-                            chrominosFound.Add(computedChromino);
+                            goodPositions.Add(goodPosition);
                         }
                     }
-                    ComputedChrominosDal.Add(chrominosFound);
+                    GoodPositionDal.Add(goodPositions);
                 }
             }
         }

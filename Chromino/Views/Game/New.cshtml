@@ -1,4 +1,8 @@
-﻿@model String[];
+﻿@using Microsoft.AspNetCore.Identity
+@using Data.Models
+
+@model String[];
+@inject UserManager<Player> UserManager
 
 @{
     ViewData["Title"] = "Créer une nouvelle partie";
@@ -26,7 +30,7 @@
         <form asp-action="New">
             <div class="form-group">
                 <label class="control-label">Pseudo du joueur 1</label>
-                <input name="pseudos[]" class="form-control playerName" type="text" value="@ViewBag.PlayerPseudo" disabled />
+                <input name="pseudos[]" class="form-control playerName" type="text" value="@UserManager.GetUserName(User)" disabled />
             </div>
             <div id="groupPlayer2" class="form-group">
                 <label class="control-label">Pseudo du joueur 2 (bot2 pour l'ordinateur)</label>

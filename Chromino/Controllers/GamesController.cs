@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Controllers;
-using Tool;
+﻿using Controllers;
 using Data;
 using Data.Core;
+using Data.DAL;
 using Data.Models;
 using Data.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Data.DAL;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Tool;
 
 namespace ChrominoApp.Controllers
 {
@@ -30,7 +30,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult ToPlay()
         {
-            GetPlayerInfos();
             TempData["GamesWithNotReadMessages"] = MakePicturesGameVM(GamePlayerDal.GamesWithNotReadMessages(PlayerId));
             return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));
         }
@@ -41,7 +40,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult AgainstBots()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.GamesAgainstBotsOnly(PlayerId), true));
         }
 
@@ -51,7 +49,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult Single()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId)));
         }
 
@@ -61,7 +58,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult InProgress()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true));
         }
 
@@ -71,7 +67,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult SingleFinished()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId)));
         }
 
@@ -81,7 +76,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult Won()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.GamesWon(PlayerId)));
         }
 
@@ -91,7 +85,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult Lost()
         {
-            GetPlayerInfos();
             return View(MakePicturesGameVM(GamePlayerDal.GamesLost(PlayerId)));
         }
 
@@ -106,9 +99,6 @@ namespace ChrominoApp.Controllers
             foreach (Game game in games)
             {
                 List<Player> players = GamePlayerDal.Players(game.Id);
-                string playerPseudoTurn = GamePlayerDal.PlayerTurn(game.Id).UserName;
-
-
                 Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
                 foreach (Player player in players)
                 {
@@ -119,9 +109,9 @@ namespace ChrominoApp.Controllers
                 }
                 string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
                 if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, @"image/game", pictureName)))
-                    new PictureFactory(game.Id, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+                    new PictureFactoryTool(game.Id, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
-                listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, playerPseudoTurn, game.PlayedDate));
+                listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, PlayerPseudo, game.PlayedDate));
             }
             return listPictureGameVM;
         }

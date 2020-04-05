@@ -2,7 +2,7 @@
 
 namespace Data.Models
 {
-    public class Player : IdentityUser <int>
+    public class Player : IdentityUser<int>
     {
         override public string UserName { get; set; }
         public int Points { get; set; }

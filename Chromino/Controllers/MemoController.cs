@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Controllers;
+﻿using Controllers;
 using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChrominoApp.Controllers
 {
@@ -20,18 +20,10 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int gameId, int playerId, string memo)
+        public IActionResult Add(int gameId, string memo)
         {
-            GetPlayerInfos();
-            if (playerId == PlayerId)
-            {
-                GamePlayerDal.ChangeMemo(gameId, playerId, memo);
-                return RedirectToAction("Show", "Game", new { id = gameId });
-            }
-            else
-            {
-                return RedirectToAction("NotFound");
-            }
+            GamePlayerDal.ChangeMemo(gameId, PlayerId, memo);
+            return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }
 }
