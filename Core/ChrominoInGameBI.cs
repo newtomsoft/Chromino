@@ -3,7 +3,6 @@ using Data.Core;
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
-using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 
 namespace ChrominoBI

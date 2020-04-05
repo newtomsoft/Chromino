@@ -5,7 +5,6 @@ using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
 using Microsoft.AspNetCore.Hosting;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,7 +59,7 @@ namespace ChrominoBI
                     }
                     else if (opponentIdWithOneChrominoKnown.Count == 1)// 1 adversaire a 1 chromino connu.
                     {
-                        int opponentId = opponentIdWithOneChromino[0];
+                        int opponentId = opponentIdWithOneChrominoKnown[0];
                         ClassifyChrominos(opponentId, currentPotentialChromino, opponentPotentialPositions, squares, ref goodChrominos, ref badChrominos, ref neitherGoodNorBadChrominos, ref openToOpponentChrominos);
                     }
                     else // plusieurs adversaire a 1 chromino connu.
@@ -84,10 +83,10 @@ namespace ChrominoBI
                 }
             }
             if (goodChrominos.Count == 0 && openToOpponentChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playReturn))
-                { }
+            { }
             else if (goodChrominos.Count == 0 && neitherGoodNorBadChrominos.Count > 0)
                 playReturn = Play(neitherGoodNorBadChrominos[0]);
-            else if (goodChrominos.Count == 0 && openToOpponentChrominos.Count > 0 &&  !IsRisky(openToOpponentChrominos, out int index) )
+            else if (goodChrominos.Count == 0 && openToOpponentChrominos.Count > 0 && !IsRisky(openToOpponentChrominos, out int index))
                 playReturn = Play(openToOpponentChrominos[index]);
             else if (goodChrominos.Count != 0)
                 playReturn = Play(goodChrominos[0]);

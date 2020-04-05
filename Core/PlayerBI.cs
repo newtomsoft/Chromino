@@ -66,7 +66,7 @@ namespace ChrominoBI
             ComputedChrominosDal = new ComputedChrominosDal(ctx);
             ChrominoInHandLastDal = new ChrominoInHandLastDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
-            
+
         }
 
         /// <summary>
