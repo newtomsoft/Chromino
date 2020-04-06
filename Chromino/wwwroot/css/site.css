@@ -31,7 +31,7 @@ a {
     background-size: cover;
     background-repeat: no-repeat;
     background-origin: content-box;
-    margin-bottom: 2px;
+    margin-bottom: -6px;
 }
 
     .btn-homepage:hover {
@@ -60,6 +60,14 @@ a {
 
 .btn-inprogress {
     background-image: url('/image/button/InProgress.svg');
+}
+
+.btn-won {
+    background-image: url('/image/button/Won.svg');
+}
+
+.btn-lost {
+    background-image: url('/image/button/Lost.svg');
 }
 
 

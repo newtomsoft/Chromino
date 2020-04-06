@@ -4,6 +4,7 @@
     ViewData["Title"] = "Games won";
     int gamesNumber = Model.Count;
 }
+<p><a asp-controller="Statistics" asp-action="Index">Retour</a></p>
 
 @switch (gamesNumber)
 {
@@ -20,6 +21,4 @@
         break;
 }
 <br />
-<p>
-    <a asp-controller="Games" asp-action="Home">Retour</a>
-</p>
+<p><a asp-controller="Games" asp-action="Index">Retour</a></p>

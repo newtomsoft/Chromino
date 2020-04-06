@@ -27,7 +27,7 @@ namespace Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return RedirectToAction("Home", "Games");
+            return RedirectToAction("Index", "Games");
         }
 
         [AllowAnonymous]

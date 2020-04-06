@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "Statistiques";
+}
+
+<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+
+<div class="icones-link">
+    <a class="icone-link" asp-action="Won">
+        <div class="btn btn-homepage btn-won"></div>
+        <div>Parties gagnées</div>
+    </a>
+    <a class="icone-link" asp-action="Lost">
+        <div class="btn btn-homepage btn-lost"></div>
+        <div>Parties perdues</div>
+    </a>
+</div>

@@ -1,10 +1,14 @@
 ﻿using Data;
 using Data.DAL;
 using Data.Models;
+using Data.ViewModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.IO;
+using Tool;
 
 namespace Controllers
 {
@@ -36,6 +40,36 @@ namespace Controllers
             GamePlayerDal = new GamePlayerDal(Ctx);
             SquareDal = new SquareDal(Ctx);
             UserManager = userManager;
+        }
+
+        /// <summary>
+        /// fabrique la liste de PictureGameVM pour la vue
+        /// </summary>
+        /// <param name="games">liste des jeux</param>
+        /// <returns></returns>
+        protected List<PictureGameVM> MakePicturesGameVM(List<Game> games, bool keepSuspens = false)
+        {
+            List<PictureGameVM> listPictureGameVM = new List<PictureGameVM>();
+            string picturePath = Path.Combine(Env.WebRootPath, "image/game");
+            foreach (Game game in games)
+            {
+                PictureFactoryTool pictureFactoryTool = new PictureFactoryTool(game.Id, picturePath, Ctx);
+                List<Player> players = GamePlayerDal.Players(game.Id);
+                Dictionary<string, int> pseudos_chrominos = new Dictionary<string, int>();
+                foreach (Player player in players)
+                {
+                    int chrominosNumber = ChrominoInHandDal.ChrominosNumber(game.Id, player.Id);
+                    if (keepSuspens && chrominosNumber == 0)
+                        chrominosNumber = 1;
+                    pseudos_chrominos.Add(player.UserName, chrominosNumber);
+                }
+                string pictureName = $"{GameDal.Details(game.Id).Guid}.png";
+                if (!System.IO.File.Exists(Path.Combine(Env.WebRootPath, "image/game", pictureName)))
+                    pictureFactoryTool.MakeThumbnail();
+
+                listPictureGameVM.Add(new PictureGameVM(game.Id, pictureName, pseudos_chrominos, PlayerPseudo, game.PlayedDate));
+            }
+            return listPictureGameVM;
         }
     }
 }

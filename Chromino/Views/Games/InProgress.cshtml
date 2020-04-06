@@ -11,15 +11,15 @@
         <p><b>Vous n'avez aucune partie où c'est le tour d'un adversaire</b></p>
         break;
     case 1:
-        <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
+        <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
         <h3>Vous avez 1 partie où c'est le tour d'un adversaire</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
     default:
-        <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
+        <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
         <h3>Vous avez @gamesNumber parties où c'est le tour d'un adversaire</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
 <br />
-<p><a asp-controller="Games" asp-action="Home">Retour</a></p>
+<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
