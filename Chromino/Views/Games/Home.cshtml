@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using  Data.ViewModel
+@using Data.Models
+
+@inject UserManager<Player> UserManager
+@{
+    ViewData["Title"] = "Accueil";
+}
+
+<div class="text-center">
+    <h2>Bienvenue @UserManager.GetUserName(User)</h2>
+</div>
+
+<div class="icones-link">
+    <a class="icone-link" asp-action="AgainstFriends">
+        <div class="btn btn-homepage btn-humanvshuman"></div>
+        <div>Parties multijoueurs</div>
+    </a>
+    <a class="icone-link" asp-action="AgainstBots">
+        <div class="btn btn-homepage btn-humanvsbot"></div>
+        <div>Parties contre ordinateur</div>
+    </a>
+    <a class="icone-link" asp-action="SingleGame">
+        <div class="btn btn-homepage btn-humansingle"></div>
+        <div>Entrainement</div>
+    </a>
+    <a class="icone-link" asp-action="InProgress">
+        <div class="btn btn-homepage btn-inprogress"></div>
+        <div>Parties en attente</div>
+    </a>
+    <a class="icone-link" asp-action="Statistics">
+        <div class="btn btn-homepage btn-statistics"></div>
+        <div>Vos statistiques</div>
+    </a>
+    <a class="icone-link" asp-area="Identity" asp-page="/Account/Manage/Index">
+        @*todo*@
+        <div class="btn btn-homepage btn-settings"></div>
+        <div>Vos paramètres</div>
+    </a>
+</div>

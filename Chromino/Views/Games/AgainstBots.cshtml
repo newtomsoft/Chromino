@@ -5,14 +5,20 @@
     int gamesNumber = Model.Count;
 }
 
-<div class="text-center">
-    <h2>Bienvenue @ViewBag.PlayerPseudo</h2>
-</div>
+@if (gamesNumber > 0)
+{
+    <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
+    <div class="icones-link">
+        <a class="icone-link" href="#newgame">
+            <div class="btn btn-homepage btn-humanvsbot"></div>
+            <div>Nouvelle partie</div>
+        </a>
+    </div>
+}
 
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie contre l'ordinateur en cours</b></p>
         break;
     case 1:
         <h3>Vous avez 1 partie contre l'ordinateur en cours</h3>
@@ -24,9 +30,19 @@
         break;
 }
 <br />
-<p>
-    <a asp-controller="Game" asp-action="NewAgainstBots"><input type="button" class="btn btn-primary" value="Nouvelle partie contre l'ordinateur" /></a>
-</p>
-<p>
-    <a asp-controller="Games" asp-action="ToPlay">Retour</a>
-</p>
+
+<h3 id="newgame">Commencer une nouvelle partie</h3>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="NewAgainstBots" asp-controller="Game">
+            <div class="form-group">
+                <label class="control-label">Selectionnez le nombre de bots (de 1 à 7)</label>
+                <input id="botsNumber" name="botsNumber" class="form-control" type="number" min="1" max="7" value="1" required />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Commencer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<p><a asp-controller="Games" asp-action="Home">Retour</a></p>

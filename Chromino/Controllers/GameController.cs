@@ -57,7 +57,7 @@ namespace Controllers
                 Player player = PlayerDal.Details(pseudosNotNull[i]);
                 if (player == null)
                     errors.Add($"Le joueur {pseudosNotNull[i]} n'existe pas");
-                else if (pseudosNotNull[i].Contains("bot"))
+                else if (pseudosNotNull[i].Contains("bot", new StringComparison()))
                     errors.Add($"Le joueur {pseudosNotNull[i]} est un bot et ne peut pas être ajouté ici");
                 else if (players.Contains(player))
                     errors.Add($"Le joueur {pseudosNotNull[i]} est ajouté plusieurs fois dans la partie");
@@ -72,9 +72,10 @@ namespace Controllers
 
             if (errors.Count != 0)
             {
-                ViewBag.errors = errors;
-                ViewBag.PlayersNumber = pseudosNotNull.Count();
-                return View(pseudos);
+                TempData["Errors"] = errors;
+                TempData["PlayersNumber"] = pseudosNotNull.Length;
+                TempData["Players"] = pseudos;
+                return RedirectToAction("AgainstFriends", "Games", "newgame");
             }
 
             for (int i = 1; i < botsNumber + 1; i++)
@@ -85,16 +86,6 @@ namespace Controllers
         }
 
         /// <summary>
-        /// page de création de partie contre bots
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult NewAgainstBots()
-        {
-            return View();
-        }
-
-        /// <summary>
         /// retour du formulaire de création de partie contre bots
         /// </summary>
         /// <param name="botsNumber">nombre d'adversaires bots</param>
@@ -102,10 +93,9 @@ namespace Controllers
         [HttpPost]
         public IActionResult NewAgainstBots(int botsNumber)
         {
-            List<Player> players = new List<Player>(botsNumber + 1);
-            players.Add(PlayerDal.Details(PlayerId));
+            List<Player> players = new List<Player>(botsNumber + 1) { PlayerDal.Details(PlayerId) };
             for (int iBot = 1; iBot <= botsNumber; iBot++)
-                players.Add(PlayerDal.Details("Bot" + iBot));
+                players.Add(PlayerDal.Details("bot" + iBot));
 
             CreateGame(players, out int gameId);
             return RedirectToAction("Show", "Game", new { id = gameId });
@@ -192,7 +182,7 @@ namespace Controllers
         public IActionResult Show(int id)
         {
             if (id == 0)
-                return RedirectToAction("NotFound");
+                return RedirectToAction("GameNotFound");
 
             GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(id, PlayerId);
             if (gameViewModel != null)
@@ -203,7 +193,7 @@ namespace Controllers
             }
             else
             {
-                return RedirectToAction("NotFound");
+                return RedirectToAction("GameNotFound");
             }
         }
 
@@ -222,7 +212,7 @@ namespace Controllers
         /// Page de partie non trouvée ou non autorisée
         /// </summary>
         /// <returns></returns>
-        public IActionResult NotFound()
+        public IActionResult GameNotFound()
         {
             return View();
         }

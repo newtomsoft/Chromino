@@ -5,24 +5,30 @@
     int gamesNumber = Model.Count;
 }
 
+@if (gamesNumber > 0)
+{
+    <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
+    <div class="icones-link">
+        <a class="icone-link" asp-controller="Game" asp-action="NewSingle">
+            <div class="btn btn-homepage btn-humansingle"></div>
+            <div>Nouvelle partie</div>
+        </a>
+    </div>
+}
+
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie solo en cours</b></p>
         break;
     case 1:
         <h3>Vous avez 1 partie solo en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
+        <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
         break;
     default:
         <h3>Vous avez @gamesNumber parties solo en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
+        <p><a asp-controller="Games" asp-action="Home">Retour</a></p>
         break;
 }
 <br />
-<p>
-    <a asp-controller="Game" asp-action="NewSingle"><input type="button" class="btn btn-primary" value="Nouvelle partie solo" /></a>
-</p>
-<p>
-<a asp-controller="Games" asp-action="ToPlay">Retour</a>
-</p>

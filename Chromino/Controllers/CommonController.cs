@@ -10,8 +10,8 @@ namespace Controllers
 {
     public class CommonController : Controller
     {
-        protected readonly IWebHostEnvironment Env;
-        private Context context;
+        protected IWebHostEnvironment Env { get; }
+
         protected Context Ctx { get; }
         protected GameDal GameDal { get; }
         protected ChrominoInGameDal ChrominoInGameDal { get; }

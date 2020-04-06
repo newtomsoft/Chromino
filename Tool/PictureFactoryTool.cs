@@ -14,15 +14,15 @@ namespace Tool
 {
     public class PictureFactoryTool
     {
-        private readonly GameDal GameDal;
-        private readonly SquareDal SquareDal;
+        const string DefaultFile = "DefaultPicture.png";
+        private string ImageGamePath { get; }
 
         /// <summary>
         /// Id du jeu
         /// </summary>
         private int GameId { get; set; }
-
-        private string ImageGamePath { get; set; }
+        private GameDal GameDal { get; }
+        private SquareDal SquareDal { get; }
 
         public PictureFactoryTool(int gameId, string imagePath, Context ctx)
         {
@@ -31,7 +31,6 @@ namespace Tool
             GameId = gameId;
             ImageGamePath = imagePath;
         }
-
 
         /// <summary>
         /// créer le visuel du jeu
@@ -155,12 +154,20 @@ namespace Tool
             {
                 thumbnail = new Bitmap(thumbnail, width / 2, height / 2);
             }
-            thumbnail.Save(thumbnailFullName, ImageFormat.Png);
+
+            try
+            {
+                thumbnail.Save(thumbnailFullName, ImageFormat.Png);
+            }
+            catch
+            {
+                if (!File.Exists(thumbnailFullName))
+                    File.Copy(Path.Combine(ImageGamePath, DefaultFile), thumbnailFullName);
+            }
         }
 
-
         /// <summary>
-        /// converti le Data.Enumeration.Color en Color
+        /// convertit le Data.Enumeration.Color en Color
         /// </summary>
         /// <param name="color">couleur en Data.Enumeration.Color</param>
         /// <returns>couleur en Color</returns>
@@ -188,12 +195,8 @@ namespace Tool
         private void CopyPasteCameleonBitmap(ref Bitmap thumbnail, ref Bitmap bitmapCameleon, int x, int y)
         {
             for (int j = 0; j < bitmapCameleon.Height; j++)
-            {
                 for (int i = 0; i < bitmapCameleon.Width; i++)
-                {
                     thumbnail.SetPixel(x + i, y + j, bitmapCameleon.GetPixel(i, j));
-                }
-            }
         }
     }
 }
