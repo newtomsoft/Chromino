@@ -44,6 +44,13 @@
         $('#NotifChat').show();
     }
 
+    // affichage notif nombres de mémos
+    if (MemosNumber != 0) {
+        $('#NotifMemo').text(MemosNumber);
+        $('#NotifMemo').show();
+    }
+
+
     // affichage popup
     if (PlayReturn != "Ok")
         ShowPopup('#errorPopup');

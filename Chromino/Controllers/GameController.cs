@@ -24,6 +24,40 @@ namespace Controllers
         }
 
         /// <summary>
+        /// affiche une partie 
+        /// </summary>
+        /// <param name="id">Id de la partie</param>
+        /// <returns></returns>
+        public IActionResult Show(int id)
+        {
+            if (id == 0)
+                return RedirectToAction("GameNotFound");
+
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(id, PlayerId);
+            if (gameViewModel != null)
+            {
+                if (GamePlayerDal.PlayerTurn(id).Bot)
+                    TempData["ShowBotPlayingInfoPopup"] = true;
+                return View(gameViewModel);
+            }
+            else
+            {
+                return RedirectToAction("GameNotFound");
+            }
+        }
+
+        /// <summary>
+        /// affiche à l'écran la prochaine partie à jouer
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult ShowNextToPlay()
+        {
+            TempData["ShowInfos"] = true;
+            int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
+            return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
+        }
+
+        /// <summary>
         /// page de création de partie
         /// </summary>
         /// <returns></returns>
@@ -145,6 +179,24 @@ namespace Controllers
         }
 
         /// <summary>
+        /// fait jouer un bot
+        /// </summary>
+        /// <param name="id">Id de la partie</param>
+        /// <param name="botId">Id du bot</param>
+        /// <returns></returns>
+        public IActionResult PlayBot(int id, int botId)
+        {
+            BotBI BotBI = new BotBI(Ctx, Env, id, botId);
+            GameBI gameBI = new GameBI(Ctx, Env, id);
+            PlayReturn playreturn;
+            do playreturn = BotBI.PlayBot();
+            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
+            if (playreturn == PlayReturn.GameFinish)
+                gameBI.SetGameFinished();
+            return RedirectToAction("Show", "Game", new { id });
+        }
+
+        /// <summary>
         /// Pioche un chromino
         /// </summary>
         /// <param name="playerId">id du joueur</param>
@@ -175,64 +227,12 @@ namespace Controllers
         }
 
         /// <summary>
-        /// affiche une partie 
-        /// </summary>
-        /// <param name="id">Id de la partie</param>
-        /// <returns></returns>
-        public IActionResult Show(int id)
-        {
-            if (id == 0)
-                return RedirectToAction("GameNotFound");
-
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(id, PlayerId);
-            if (gameViewModel != null)
-            {
-                if (GamePlayerDal.PlayerTurn(id).Bot)
-                    TempData["ShowBotPlayingInfoPopup"] = true;
-                return View(gameViewModel);
-            }
-            else
-            {
-                return RedirectToAction("GameNotFound");
-            }
-        }
-
-        /// <summary>
-        /// affiche à l'écran la prochaine partie à jouer
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult NextToPlay()
-        {
-            TempData["ShowInfos"] = true;
-            int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
-            return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
-        }
-
-        /// <summary>
         /// Page de partie non trouvée ou non autorisée
         /// </summary>
         /// <returns></returns>
         public IActionResult GameNotFound()
         {
             return View();
-        }
-
-        /// <summary>
-        /// fait jouer un bot
-        /// </summary>
-        /// <param name="id">Id de la partie</param>
-        /// <param name="botId">Id du bot</param>
-        /// <returns></returns>
-        public IActionResult PlayBot(int id, int botId)
-        {
-            BotBI BotBI = new BotBI(Ctx, Env, id, botId);
-            GameBI gameBI = new GameBI(Ctx, Env, id);
-            PlayReturn playreturn;
-            do playreturn = BotBI.PlayBot();
-            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
-            if (playreturn == PlayReturn.GameFinish)
-                gameBI.SetGameFinished();
-            return RedirectToAction("Show", "Game", new { id });
         }
 
         private void CreateGame(List<Player> players, out int gameId)
