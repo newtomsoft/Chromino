@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+
 namespace ChrominoApp.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
@@ -25,17 +26,20 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         private readonly UserManager<Player> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<Role> _roleManager;
 
         public RegisterModel(
             UserManager<Player> userManager,
             SignInManager<Player> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -95,6 +99,16 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    //Add role
+                    bool roleExist = await _roleManager.RoleExistsAsync("Player");
+                    if (!roleExist)
+                    {
+                        var role = new Role();
+                        role.Name = "Player";
+                        await _roleManager.CreateAsync(role);
+                    }
+                    await _userManager.AddToRoleAsync(user, "Player");
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

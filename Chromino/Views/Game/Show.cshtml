@@ -7,7 +7,7 @@
     ViewData["Title"] = "Chromino - Jouer !";
     string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
-    pseudosExceptCurrentPlayer_Chrominos.Remove(Model.PlayerPseudo);
+    pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
     PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
     int memosNumbers = Model.GamePlayerIdentified.Memo == null ? 0 : Model.GamePlayerIdentified.Memo.Count(x => x == '\n') + 1;
 }
@@ -187,8 +187,8 @@
     var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
     @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.PlayerId).ToString().ToLower();}
     var ThisPlayerTurn = @thisPlayerTurn;
-        var Squares = new Array;
-        var Pseudos = new Array;
+    var Squares = new Array;
+    var Pseudos = new Array;
     @{
         byte move = (byte)(Model.Game.Move - 1);
         for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
@@ -243,8 +243,6 @@
     @foreach (var pseudoChromino in Model.PseudosChrominos)
     {
         string pseudo = pseudoChromino.Key;
-        if (pseudo == Model.PlayerPseudo)
-            pseudo = "Vous";
         if (pseudoChromino.Value > 1)
         {
             <p>@pseudo : @pseudoChromino.Value chrominos en main</p>

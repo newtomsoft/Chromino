@@ -26,7 +26,7 @@ namespace Controllers
         protected SquareDal SquareDal { get; }
         protected int PlayerId { get => int.Parse(UserManager.GetUserId(User) ?? "0"); }
         protected string PlayerPseudo { get => UserManager.GetUserName(User) ?? ""; }
-        private UserManager<Player> UserManager { get; set; }
+        protected UserManager<Player> UserManager { get; set; }
 
         public CommonController(Context context, UserManager<Player> userManager, IWebHostEnvironment env)
         {

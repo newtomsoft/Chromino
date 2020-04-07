@@ -38,6 +38,7 @@ namespace ChrominoApp.Controllers
         /// Page des parties entre amis
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Player")]
         public IActionResult AgainstFriends()
         {
             return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));
@@ -53,7 +54,7 @@ namespace ChrominoApp.Controllers
         }
 
         /// <summary>
-        /// Page des parties solo en cours
+        /// Page des parties d'entrainement en cours
         /// </summary>
         /// <returns></returns>
         public IActionResult SingleGame()
@@ -69,6 +70,7 @@ namespace ChrominoApp.Controllers
         /// Page des parties en cours (tour d'un adversaire)
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Player")]
         public IActionResult InProgress()
         {
             return View(MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true));

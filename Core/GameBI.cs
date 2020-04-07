@@ -93,47 +93,48 @@ namespace Data.Core
             playerBI.ChangePlayerTurn();
         }
 
-        public GameVM GameViewModel(int gameId, int playerId)
+        public GameVM GameViewModel(int playerId)
         {
-            Player playerTurn = GamePlayerDal.PlayerTurn(gameId);
-            List<Player> players = GamePlayerDal.Players(gameId);
-            if (players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(gameId))
+            Player playerTurn = GamePlayerDal.PlayerTurn(GameId);
+            List<Player> players = GamePlayerDal.Players(GameId);
+            if (players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(GameId))
             {
                 // je joueur est bien dans la partie ou c'est une partie entre bots
-                int chrominosInStackNumber = ChrominoInGameDal.InStack(gameId);
+                int chrominosInStackNumber = ChrominoInGameDal.InStack(GameId);
                 string playerPseudo = PlayerDal.Pseudo(playerId);
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
                 {
-                    pseudosChrominos.Add(player.UserName, ChrominoInHandDal.ChrominosNumber(gameId, player.Id));
-                    pseudos.Add(player.UserName);
+                    string playerName = player.Id != playerId ? player.UserName : "Vous";
+                    pseudosChrominos.Add(playerName, ChrominoInHandDal.ChrominosNumber(GameId, player.Id));
+                    pseudos.Add(playerName);
                 }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudosChrominos)
                 {
                     if (pseudo_chromino.Value == 1)
-                        pseudos_lastChrominos.Add(pseudo_chromino.Key, ChrominoInHandDal.FirstChromino(gameId, GamePlayerDal.PlayerId(gameId, pseudo_chromino.Key)));
+                        pseudos_lastChrominos.Add(pseudo_chromino.Key, ChrominoInHandDal.FirstChromino(GameId, GamePlayerDal.PlayerId(GameId, pseudo_chromino.Key)));
                 }
                 List<Chromino> identifiedPlayerChrominos;
-                if (GamePlayerDal.IsBots(gameId)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(gameId, playerTurn.Id);
+                if (GamePlayerDal.IsBots(GameId)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(GameId, playerTurn.Id);
                 else
-                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(gameId, playerId);
-                if (GameDal.IsFinished(gameId) && !GamePlayerDal.GetViewFinished(gameId, playerId))
+                    identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
+                if (GameDal.IsFinished(GameId) && !GamePlayerDal.GetViewFinished(GameId, playerId))
                 {
-                    GamePlayerDal.SetViewFinished(gameId, playerId);
-                    if (GamePlayerDal.GetWon(gameId, playerId) == null)
-                        GamePlayerDal.SetWon(gameId, playerId, false);
+                    GamePlayerDal.SetViewFinished(GameId, playerId);
+                    if (GamePlayerDal.GetWon(GameId, playerId) == null)
+                        GamePlayerDal.SetWon(GameId, playerId, false);
                 }
-                GamePlayer gamePlayerTurn = GamePlayerDal.Details(gameId, playerTurn.Id);
-                GamePlayer gamePlayerIdentified = GamePlayerDal.Details(gameId, playerId);
-                List<Square> squares = SquareDal.List(gameId);
+                GamePlayer gamePlayerTurn = GamePlayerDal.Details(GameId, playerTurn.Id);
+                GamePlayer gamePlayerIdentified = GamePlayerDal.Details(GameId, playerId);
+                List<Square> squares = SquareDal.List(GameId);
                 List<int> botsId = PlayerDal.BotsId();
                 bool noTips = PlayerDal.Details(playerId).NoTips;
-                List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(gameId);
-                Game game = GameDal.Details(gameId);
-                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(gameId, playerId);
+                List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(GameId);
+                Game game = GameDal.Details(GameId);
+                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
                 GameVM gameViewModel = new GameVM(game, playerPseudo, playerId, squares, chrominosInStackNumber, pseudosChrominos, identifiedPlayerChrominos, playerTurn, gamePlayerTurn, gamePlayerIdentified, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips);
                 return gameViewModel;
             }

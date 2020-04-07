@@ -33,7 +33,7 @@ namespace Controllers
             if (id == 0)
                 return RedirectToAction("GameNotFound");
 
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(id, PlayerId);
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId);
             if (gameViewModel != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)

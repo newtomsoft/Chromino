@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize(Roles = "Player")]
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<Player> _userManager;

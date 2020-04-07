@@ -70,6 +70,7 @@ namespace ChrominoGame
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 2;
             })
+            .AddRoleManager<RoleManager<Role>>()
             .AddEntityFrameworkStores<Context>()
             .AddDefaultTokenProviders()
             .AddDefaultUI()
