@@ -1,5 +1,6 @@
 using Data;
 using Data.Models;
+using Tool;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -71,7 +72,8 @@ namespace ChrominoGame
             })
             .AddEntityFrameworkStores<Context>()
             .AddDefaultTokenProviders()
-            .AddDefaultUI();
+            .AddDefaultUI()
+            .AddErrorDescriber<ChrominoIdentityErrorDescriber>();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
             //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));

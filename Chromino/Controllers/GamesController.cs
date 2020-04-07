@@ -58,7 +58,11 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult SingleGame()
         {
-            return View(MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId)));
+            List<PictureGameVM> picturesGameVM = MakePicturesGameVM(GamePlayerDal.SingleGamesInProgress(PlayerId));
+            if (picturesGameVM.Count == 0)
+                return RedirectToAction("NewSingle", "Game");
+            else
+                return View(picturesGameVM);
         }
 
         /// <summary>

@@ -19,14 +19,15 @@
 @switch (gamesNumber)
 {
     case 0:
+        <p>Vous n'avez pas de parties d'entrainement en cours</p>
         break;
     case 1:
-        <h3>Vous avez 1 partie solo en cours</h3>
+        <h3>Vous avez 1 partie d'entrainement en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
         break;
     default:
-        <h3>Vous avez @gamesNumber parties solo en cours</h3>
+        <h3>Vous avez @gamesNumber parties d'entrainement en cours</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
         break;

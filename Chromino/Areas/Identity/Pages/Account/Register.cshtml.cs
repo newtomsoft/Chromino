@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.DAL;
+using Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -62,7 +63,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Les 2 mots de passe ne sont pas identiques.")]
             public string ConfirmPassword { get; set; }
 
-            [EmailAddress(ErrorMessage = "Merci de rentrer une adresse Email valide ou laisser vide")]
+            [EmailAddress(ErrorMessage = "Merci de rentrer une adresse email valide ou laisser le champ vide")]
             [StringLength(50, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 2)]
             [Display(Name = "Email (optionnel)")]
             public string Email { get; set; }
@@ -119,7 +120,15 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    int i = 1;
+                    string addDescription = "";
+                    if (error.Code == "DuplicateUserName")
+                    {
+                        while (_userManager.FindByNameAsync(user.UserName + i).Result != null)
+                            i++;
+                        addDescription = $"\nSuggestion : {user.UserName + i}";
+                    }
+                    ModelState.AddModelError(string.Empty, error.Description + addDescription);
                 }
             }
 
