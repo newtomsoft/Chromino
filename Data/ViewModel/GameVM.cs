@@ -39,13 +39,11 @@ namespace Data.ViewModel
             PlayerId = playerId;
             OpponenentsAreBots = opponenentsAreBots;
             Game = game;
-            Pseudos = pseudos;
             PlayerTurn = playerTurn;
             GamePlayerTurn = gamePlayerTurn;
             GamePlayerIdentified = gamePlayerIdentified;
             NoTips = noTips;
             ChrominosInStack = chrominosInStackNumber;
-            PseudosChrominos = pseudosChrominos;
             Squares = squares;
             BotsId = botsId;
             XMin = squares.Select(g => g.X).Min() - 1; // +- 1 pour marge permettant de poser un chromino sur un bord
@@ -89,7 +87,7 @@ namespace Data.ViewModel
                 chrominoViewModel.SquaresViewModel[1] = square2;
                 chrominoViewModel.SquaresViewModel[2] = square3;
                 chrominoViewModel.ChrominoId = pseudo_chromino.Value.Id;
-                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key, chrominoViewModel);
+                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key != playerPseudo ? pseudo_chromino.Key : "Vous", chrominoViewModel);
             }
 
             ChrominosPlayedVM = new List<ChrominoPlayedVM>();
@@ -98,6 +96,15 @@ namespace Data.ViewModel
                 ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM(chrominoInGame, XMin, YMin);
                 ChrominosPlayedVM.Add(chrominoPlayedVM);
             }
+
+            Pseudos = pseudos;
+            int indexPlayerPseudo = Pseudos.IndexOf(playerPseudo);
+            Pseudos[indexPlayerPseudo] = "Vous";
+
+            PseudosChrominos = pseudosChrominos;
+            int value = PseudosChrominos[playerPseudo];
+            PseudosChrominos.Remove(playerPseudo);
+            PseudosChrominos["Vous"] = value;
         }
 
         private int IndexGridState(int x, int y)

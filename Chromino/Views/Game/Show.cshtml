@@ -197,7 +197,8 @@
                 break;
             while (move > Model.ChrominosPlayedVM[iChromino].Move)
             {
-                string playerPass = Model.Pseudos[(move - 1) % Model.Pseudos.Count] + " a passé";
+                string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
+                string playerPass = currentPseudo == "Vous" ? "Vous avez passé" :  $"{currentPseudo} a passé";
                 @:Pseudos.push("@playerPass");
                 for (int i = 0; i < 3; i++)
                 {
@@ -275,7 +276,7 @@
         }
         else
         {
-            if (pseudoChromino.Key == Model.PlayerPseudo)
+            if (pseudoChromino.Key == "Vous")
             {
                 <p class="winner">Vous avez gagné la partie</p>
             }

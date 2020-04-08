@@ -106,9 +106,8 @@ namespace Data.Core
                 List<string> pseudos = new List<string>();
                 foreach (Player player in players)
                 {
-                    string playerName = player.Id != playerId ? player.UserName : "Vous";
-                    pseudosChrominos.Add(playerName, ChrominoInHandDal.ChrominosNumber(GameId, player.Id));
-                    pseudos.Add(playerName);
+                    pseudosChrominos.Add(player.UserName, ChrominoInHandDal.ChrominosNumber(GameId, player.Id));
+                    pseudos.Add(player.UserName);
                 }
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudosChrominos)
