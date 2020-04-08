@@ -26,14 +26,14 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         private readonly UserManager<Player> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly RoleManager<Role> _roleManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
         public RegisterModel(
             UserManager<Player> userManager,
             SignInManager<Player> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<Role> roleManager)
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -103,7 +103,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                     bool roleExist = await _roleManager.RoleExistsAsync("Player");
                     if (!roleExist)
                     {
-                        var role = new Role();
+                        var role = new IdentityRole<int>();
                         role.Name = "Player";
                         await _roleManager.CreateAsync(role);
                     }

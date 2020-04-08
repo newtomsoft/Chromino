@@ -61,7 +61,7 @@ namespace ChrominoGame
 #endif
             services.AddControllersWithViews();
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
-            services.AddIdentity<Player, Role>(options =>
+            services.AddIdentity<Player, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -70,7 +70,7 @@ namespace ChrominoGame
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 2;
             })
-            .AddRoleManager<RoleManager<Role>>()
+            .AddRoleManager<RoleManager<IdentityRole<int>>>()
             .AddEntityFrameworkStores<Context>()
             .AddDefaultTokenProviders()
             .AddDefaultUI()
