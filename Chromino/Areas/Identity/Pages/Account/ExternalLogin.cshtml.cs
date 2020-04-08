@@ -24,17 +24,20 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         private readonly UserManager<Player> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
-
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private const string PlayerRole = "Player";
         public ExternalLoginModel(
             SignInManager<Player> signInManager,
             UserManager<Player> userManager,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -129,6 +132,11 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        bool roleExist = await _roleManager.RoleExistsAsync(PlayerRole);
+                        if (!roleExist)
+                            await _roleManager.CreateAsync(new IdentityRole<int>(PlayerRole));
+                        await _userManager.AddToRoleAsync(user, PlayerRole);
+
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender

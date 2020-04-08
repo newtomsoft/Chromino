@@ -11,7 +11,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
     {
         public IActionResult OnGet()
         {
-            TempData["errorMessage"] = "Vous devez créer un compte pour accéder à cette page";
+            TempData["errorMessage"] = "Veuillez créer un compte pour accéder à cette fonctionnalité";
             return LocalRedirect("/Identity/Account/Register");
         }
     }
