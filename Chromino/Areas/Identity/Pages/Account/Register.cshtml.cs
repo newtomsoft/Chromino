@@ -27,6 +27,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private const string PlayerRole = "Player";
 
         public RegisterModel(
             UserManager<Player> userManager,
@@ -99,16 +100,10 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    //Add role
-                    bool roleExist = await _roleManager.RoleExistsAsync("Player");
+                    bool roleExist = await _roleManager.RoleExistsAsync(PlayerRole);
                     if (!roleExist)
-                    {
-                        var role = new IdentityRole<int>();
-                        role.Name = "Player";
-                        await _roleManager.CreateAsync(role);
-                    }
-                    await _userManager.AddToRoleAsync(user, "Player");
-
+                        await _roleManager.CreateAsync(new IdentityRole<int>(PlayerRole));
+                    await _userManager.AddToRoleAsync(user, PlayerRole);
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

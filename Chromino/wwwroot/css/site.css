@@ -15,6 +15,9 @@ a {
         text-decoration: none;
     }
 
+.not-available {
+    opacity: 0.33;
+}
 
 .btn-primary {
     color: #fff;
@@ -122,7 +125,6 @@ a {
 }
 
 .notification {
-
     color: white;
     position: relative;
     top: 25px;

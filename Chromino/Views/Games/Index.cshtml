@@ -5,15 +5,19 @@
 @inject UserManager<Player> UserManager
 @{
     ViewData["Title"] = "Accueil";
+    var roles = await UserManager.GetRolesAsync(await UserManager.GetUserAsync(User));
+    bool guest = !roles.Contains("Player");
+    string playerName = guest ? "à toi joueur sans compte" : UserManager.GetUserName(User);
+    string available = guest ? "not-available" : "";
 }
 
 <div class="text-center">
-    <h2>Bienvenue @UserManager.GetUserName(User)</h2>
+    <h2>Bienvenue @playerName</h2>
 </div>
 
 <div class="icones-link">
-    <a class="icone-link" asp-action="AgainstFriends">
-        <div class="btn btn-homepage btn-humanvshuman"></div>
+    <a class="icone-link @available" asp-action="AgainstFriends">
+        <div class="btn btn-homepage btn-humanvshuman "></div>
         <div>Parties multijoueurs</div>
     </a>
     <a class="icone-link" asp-action="AgainstBots">
@@ -24,15 +28,15 @@
         <div class="btn btn-homepage btn-humansingle"></div>
         <div>Entrainement</div>
     </a>
-    <a class="icone-link" asp-action="InProgress">
+    <a class="icone-link @available" asp-action="InProgress">
         <div class="btn btn-homepage btn-inprogress"></div>
         <div>Parties en attente</div>
     </a>
-    <a class="icone-link" asp-action="Index" asp-controller="Statistics">
+    <a class="icone-link @available" asp-action="Index" asp-controller="Statistics">
         <div class="btn btn-homepage btn-statistics"></div>
         <div>Vos statistiques</div>
     </a>
-    <a class="icone-link" asp-area="Identity" asp-page="/Account/Manage/Index">
+    <a class="icone-link @available" asp-area="Identity" asp-page="/Account/Manage/Index">
         <div class="btn btn-homepage btn-settings"></div>
         <div>Vos paramètres</div>
     </a>

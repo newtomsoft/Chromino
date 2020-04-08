@@ -15,7 +15,7 @@ namespace Controllers
     public class CommonController : Controller
     {
         protected IWebHostEnvironment Env { get; }
-
+        protected UserManager<Player> UserManager { get; set; }
         protected Context Ctx { get; }
         protected GameDal GameDal { get; }
         protected ChrominoInGameDal ChrominoInGameDal { get; }
@@ -26,12 +26,12 @@ namespace Controllers
         protected SquareDal SquareDal { get; }
         protected int PlayerId { get => int.Parse(UserManager.GetUserId(User) ?? "0"); }
         protected string PlayerPseudo { get => UserManager.GetUserName(User) ?? ""; }
-        protected UserManager<Player> UserManager { get; set; }
 
         public CommonController(Context context, UserManager<Player> userManager, IWebHostEnvironment env)
         {
             Env = env;
             Ctx = context;
+            UserManager = userManager;
             GameDal = new GameDal(Ctx);
             ChrominoInGameDal = new ChrominoInGameDal(Ctx);
             ChrominoInHandDal = new ChrominoInHandDal(Ctx);
@@ -39,7 +39,7 @@ namespace Controllers
             PlayerDal = new PlayerDal(Ctx);
             GamePlayerDal = new GamePlayerDal(Ctx);
             SquareDal = new SquareDal(Ctx);
-            UserManager = userManager;
+
         }
 
         /// <summary>
