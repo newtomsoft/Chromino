@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
 {
-    [Authorize(Roles = "Player")]
+    [Authorize(Roles = nameof(Player))]
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<Player> _userManager;

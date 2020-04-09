@@ -9,7 +9,7 @@ using System;
 
 namespace ChrominoApp.Controllers
 {
-    [Authorize(Roles = "Player")]
+    [Authorize(Roles = nameof(Player))]
     public class StatisticsController : CommonController
     {
         public StatisticsController(Context context, UserManager<Player> userManager, IWebHostEnvironment env) : base(context, userManager, env)

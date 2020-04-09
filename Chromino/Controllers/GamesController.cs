@@ -38,7 +38,7 @@ namespace ChrominoApp.Controllers
         /// Page des parties entre amis
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Player")]
+        [Authorize(Roles = nameof(Player))]
         public IActionResult AgainstFriends()
         {
             return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));

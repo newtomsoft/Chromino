@@ -9,7 +9,8 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var roles = await UserManager.GetRolesAsync(await UserManager.GetUserAsync(User));
-        string playerName = roles.Contains("Player") ? UserManager.GetUserName(User) : "invité";
+        //string playerName = roles.Contains("Player") ? UserManager.GetUserName(User) : "invité";
+        string playerName = roles.Contains(nameof(Player)) ? UserManager.GetUserName(User) : "invité";
         <li class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@playerName</a>
         </li>
