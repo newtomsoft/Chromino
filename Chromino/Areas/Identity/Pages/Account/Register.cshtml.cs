@@ -54,6 +54,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
         {
             [Required(ErrorMessage = "Le nom de joueur est obligatoire")]
             [StringLength(50, ErrorMessage = "Le {0} doit avoir au moins {2} et au maximum {1} caractères.", MinimumLength = 2)]
+            [RegularExpression("^(?!vous$|bot|invit).*", ErrorMessage = "Ce nom de joueur n'est pas autorisé.")]
             [Display(Name = "Nom de joueur")]
             public string PlayerName { get; set; }
 
