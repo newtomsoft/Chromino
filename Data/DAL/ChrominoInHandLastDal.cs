@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -84,6 +85,14 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public int Delete(IQueryable<int> gamesIdToDelete)
+        {
+            var result = from chl in Ctx.ChrominosInHandLast
+                         where gamesIdToDelete.Contains(chl.GameId)
+                         select chl;
 
+            Ctx.ChrominosInHandLast.RemoveRange(result);
+            return Ctx.SaveChanges();
+        }
     }
 }

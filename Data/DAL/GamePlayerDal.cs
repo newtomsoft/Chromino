@@ -426,5 +426,15 @@ namespace Data.DAL
             gamePlayer.Memo = memo;
             Ctx.SaveChanges();
         }
+
+        public int Delete(IQueryable<int> gamesIdToDelete)
+        {
+            var result = from gp in Ctx.GamesPlayers
+                         where gamesIdToDelete.Contains(gp.GameId)
+                         select gp;
+
+            Ctx.GamesPlayers.RemoveRange(result);
+            return Ctx.SaveChanges();
+        }
     }
 }

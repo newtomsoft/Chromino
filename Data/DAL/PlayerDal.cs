@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,6 +20,38 @@ namespace Data.DAL
                           select players).ToList();
 
             return result;
+        }
+
+        public IQueryable<Player> ListGuestWithOldGames(TimeSpan lifeTime, out IQueryable<int> gamesId)
+        {
+            DateTime ToCompare = DateTime.Now - lifeTime;
+            var guestsAndGames = from g in Ctx.Games
+                                 join gp in Ctx.GamesPlayers on g.Id equals gp.GameId
+                                 join p in Ctx.Players on gp.PlayerId equals p.Id
+                                 where p.UserName.StartsWith("invit") && g.PlayedDate < ToCompare
+                                 select new { guests = p, gamesId = g.Id };
+
+            var allGuests =      from p in Ctx.Players
+                                 where p.UserName.StartsWith("invit")
+                                 select p;
+
+            var guestsWithGame = from p in Ctx.Players
+                                 join gp in Ctx.GamesPlayers on p.Id equals gp.PlayerId
+                                 join g in Ctx.Games on gp.GameId equals g.Id
+                                 where p.UserName.StartsWith("invit")
+                                 select p;
+
+            var addguests = allGuests.Except(guestsWithGame);
+
+            var guests = (from gg in guestsAndGames
+                          select gg.guests).Distinct();
+
+            guests = guests.Concat(addguests);
+
+            gamesId = from gg in guestsAndGames
+                      select gg.gamesId;
+
+            return guests;
         }
 
         public Player Details(int id)
@@ -93,6 +126,12 @@ namespace Data.DAL
 
             player.NoTips = true;
             Ctx.SaveChanges();
+        }
+
+        public int Delete(IQueryable<Player> guests)
+        {
+            Ctx.Players.RemoveRange(guests);
+            return Ctx.SaveChanges();
         }
     }
 }

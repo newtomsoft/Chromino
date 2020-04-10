@@ -13,15 +13,17 @@ namespace Batch
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("**********************");
-            Console.WriteLine("*** Batch Chromino ***");
-            Console.WriteLine("**********************\n");
-
+            Console.WriteLine("**************************");
+            Console.WriteLine("***** Batch Chromino *****");
+            Console.WriteLine($"* le {DateTime.Now.ToString("dd/MM/yyyy à HH:mm").Replace(':', 'h')}  *");
+            Console.WriteLine("**************************");
+            Console.WriteLine();
+            #region setting
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (env == null)
                 env = "Development";
             Console.WriteLine($"ASPNETCORE_ENVIRONMENT : {env}\n");
-            string path = Directory.GetCurrentDirectory();
+            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             IConfigurationBuilder builder = new ConfigurationBuilder()
                                .SetBasePath(path)
                                .AddJsonFile($"appsettings.{env}.json");
@@ -32,8 +34,29 @@ namespace Batch
             Context context = new Context(optionBuilder.Options);
             GamePlayerDal gamePlayerDal = new GamePlayerDal(context);
             GameDal gameDal = new GameDal(context);
+            PlayerDal playerDal = new PlayerDal(context);
+            ChrominoInGameDal chrominoInGameDal = new ChrominoInGameDal(context);
+            ChrominoInHandDal chrominoInHandDal = new ChrominoInHandDal(context);
+            ChrominoInHandLastDal chrominoInHandLastDal = new ChrominoInHandLastDal(context);
+            GoodPositionDal goodPositionDal = new GoodPositionDal(context);
+            SquareDal squareDal = new SquareDal(context);
+            TimeSpan guestLifeTime = new TimeSpan(6, 0, 0);
+            #endregion
 
-            #region jeuxEnCoursSansTourDeJoueur
+            #region suppression invités
+            Console.WriteLine("Suppression des invités et données associées");
+            var guestsToDelete = playerDal.ListGuestWithOldGames(guestLifeTime, out var gamesIdToDelete);
+            Console.WriteLine($"  Suppression de {chrominoInGameDal.Delete(gamesIdToDelete)} ChrominosInGame ok");
+            Console.WriteLine($"  Suppression de {chrominoInHandDal.Delete(gamesIdToDelete)} ChrominosInHand ok");
+            Console.WriteLine($"  Suppression de {chrominoInHandLastDal.Delete(gamesIdToDelete)} ChrominosInHandLast ok");
+            Console.WriteLine($"  Suppression de {gamePlayerDal.Delete(gamesIdToDelete)} GamePlayer ok");
+            Console.WriteLine($"  Suppression de {goodPositionDal.Delete(gamesIdToDelete)} GoodPosition et GoodPositionLevel ok");
+            Console.WriteLine($"  Suppression de {squareDal.Delete(gamesIdToDelete)} Square ok");
+            Console.WriteLine($"  Suppression de {gameDal.Delete(gamesIdToDelete)} Game ok");
+            Console.WriteLine($"  Suppression de {playerDal.Delete(guestsToDelete)} invités ok");
+            #endregion
+
+            #region suppression jeux en Cours sans tour de joueur
             Console.WriteLine("Suppression des jeux en cours sans joueur dont c'est le tour");
             var gamesInProgress = gameDal.ListInProgress();
             List<int> badGamesId = new List<int>();
@@ -52,8 +75,6 @@ namespace Batch
             context.SaveChanges();
             Console.WriteLine("\n");
             #endregion
-
-
         }
     }
 }

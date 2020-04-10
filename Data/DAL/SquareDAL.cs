@@ -1,6 +1,7 @@
 ﻿using Data.Core;
 using Data.Enumeration;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,6 +74,16 @@ namespace Data.DAL
                           select s).ToList();
 
             return result;
+        }
+
+        public object Delete(IQueryable<int> gamesIdToDelete)
+        {
+            var result = from s in Ctx.Squares
+                         where gamesIdToDelete.Contains(s.GameId)
+                         select s;
+
+            Ctx.Squares.RemoveRange(result);
+            return Ctx.SaveChanges();
         }
     }
 }

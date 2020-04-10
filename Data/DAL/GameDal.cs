@@ -152,5 +152,15 @@ namespace Data.DAL
             game.Move++;
             Ctx.SaveChanges();
         }
+
+        public int Delete(IQueryable<int> idToDelete)
+        {
+            var result = from g in Ctx.Games
+                         where idToDelete.Contains(g.Id)
+                         select g;
+
+            Ctx.Games.RemoveRange(result);
+            return Ctx.SaveChanges();
+        }
     }
 }

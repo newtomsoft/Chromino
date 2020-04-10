@@ -96,5 +96,24 @@ namespace Data.DAL
             Ctx.ChrominosInGame.Add(chrominoInGame);
             Ctx.SaveChanges();
         }
+
+        public IQueryable<ChrominoInGame> FirstInGame(IQueryable<int> gamesId)
+        {
+            var FirstInGame = from cg in Ctx.ChrominosInGame
+                              where gamesId.Contains(cg.GameId) && cg.PlayerId == null
+                              select cg;
+
+            return FirstInGame;
+        }
+
+        public int Delete(IQueryable<int> gamesIdToDelete)
+        {
+            var result = from cg in Ctx.ChrominosInGame
+                         where gamesIdToDelete.Contains(cg.GameId)
+                         select cg;
+
+            Ctx.ChrominosInGame.RemoveRange(result);
+            return Ctx.SaveChanges();
+        }
     }
 }

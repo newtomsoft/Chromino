@@ -185,5 +185,15 @@ namespace Data.DAL
 
             return playersId;
         }
+
+        public int Delete(IQueryable<int> gamesIdToDelete)
+        {
+            var result = from ch in Ctx.ChrominosInHand
+                         where gamesIdToDelete.Contains(ch.GameId)
+                         select ch;
+
+            Ctx.ChrominosInHand.RemoveRange(result);
+            return Ctx.SaveChanges();
+        }
     }
 }
