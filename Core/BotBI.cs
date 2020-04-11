@@ -94,7 +94,7 @@ namespace ChrominoBI
 
             if (playReturn.IsError())
                 GoodPositionBI.RemoveBadEntrie(goodChrominos[0], PlayerId);
-            else if (playReturn == PlayReturn.Ok)
+            else if (playReturn == PlayReturn.Ok && Env != null)
                 new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
 
             if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))

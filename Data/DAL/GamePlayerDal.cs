@@ -436,5 +436,16 @@ namespace Data.DAL
             Ctx.GamesPlayers.RemoveRange(result);
             return Ctx.SaveChanges();
         }
+
+        public List<GamePlayer> ListBotsTurn()
+        {
+            var gamePlayers = (from gp in Ctx.GamesPlayers
+                               join p in Ctx.Players on gp.PlayerId equals p.Id
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               where gp.Turn && p.Bot && g.Status != GameStatus.Finished
+                               select gp).AsNoTracking().ToList();
+
+            return gamePlayers;
+        }
     }
 }

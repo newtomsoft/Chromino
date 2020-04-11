@@ -1,5 +1,8 @@
-﻿using Data;
+﻿using ChrominoBI;
+using Data;
+using Data.Core;
 using Data.DAL;
+using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +14,8 @@ namespace Batch
 {
     class Program
     {
+        private static Context Ctx;
+
         static void Main(string[] args)
         {
             Console.WriteLine("**************************");
@@ -31,15 +36,15 @@ namespace Batch
             string connectionString = config.GetConnectionString("DefaultContext");
             DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
-            Context context = new Context(optionBuilder.Options);
-            GamePlayerDal gamePlayerDal = new GamePlayerDal(context);
-            GameDal gameDal = new GameDal(context);
-            PlayerDal playerDal = new PlayerDal(context);
-            ChrominoInGameDal chrominoInGameDal = new ChrominoInGameDal(context);
-            ChrominoInHandDal chrominoInHandDal = new ChrominoInHandDal(context);
-            ChrominoInHandLastDal chrominoInHandLastDal = new ChrominoInHandLastDal(context);
-            GoodPositionDal goodPositionDal = new GoodPositionDal(context);
-            SquareDal squareDal = new SquareDal(context);
+            Ctx = new Context(optionBuilder.Options);
+            GamePlayerDal gamePlayerDal = new GamePlayerDal(Ctx);
+            GameDal gameDal = new GameDal(Ctx);
+            PlayerDal playerDal = new PlayerDal(Ctx);
+            ChrominoInGameDal chrominoInGameDal = new ChrominoInGameDal(Ctx);
+            ChrominoInHandDal chrominoInHandDal = new ChrominoInHandDal(Ctx);
+            ChrominoInHandLastDal chrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
+            GoodPositionDal goodPositionDal = new GoodPositionDal(Ctx);
+            SquareDal squareDal = new SquareDal(Ctx);
             TimeSpan guestLifeTime = new TimeSpan(6, 0, 0);
             #endregion
 
@@ -69,12 +74,59 @@ namespace Batch
             foreach (int id in badGamesId)
             {
                 Console.WriteLine($"  Suppression du jeu {id}");
-                context.GamesPlayers.RemoveRange(gamePlayerDal.List(id));
-                context.Games.Remove(gameDal.Details(id));
+                Ctx.GamesPlayers.RemoveRange(gamePlayerDal.List(id));
+                Ctx.Games.Remove(gameDal.Details(id));
             }
-            context.SaveChanges();
+            Ctx.SaveChanges();
             Console.WriteLine("\n");
             #endregion
+
+            #region force a faire jouer les bots
+            Console.WriteLine("Force les bots à jouer");
+            List<GamePlayer> gameBots = gamePlayerDal.ListBotsTurn();
+            foreach (GamePlayer gameBot in gameBots)
+            {
+                int playerId = gameBot.PlayerId;
+                int gameId = gameBot.GameId;
+                bool isNextBot = true;
+                while (isNextBot)
+                {
+                    PlayBot(gameId, playerId);
+                    Player nextPlayer = gamePlayerDal.PlayerTurn(gameId);
+                    playerId = nextPlayer.Id;
+                    isNextBot = nextPlayer.Bot;
+                }       
+            }
+            #endregion
+
+        }
+
+        private static void PlayBot(int gameId, int botId)
+        {
+            BotBI botBI = new BotBI(Ctx, null, gameId, botId);
+            PlayReturn playreturn;
+            do
+            {
+                playreturn = botBI.PlayBot();
+                switch (playreturn)
+                {
+                    case PlayReturn.Ok:
+                        Console.WriteLine($"  le bot {botId} de la partie {gameId} a posé");
+                        break;
+                    case PlayReturn.DrawChromino:
+                        Console.WriteLine($"  le bot {botId} de la partie {gameId} a pioché");
+                        break;
+                    case PlayReturn.SkipTurn:
+                        Console.WriteLine($"  le bot {botId} de la partie {gameId} a passé");
+                        break;
+                }
+            }
+            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
+            if (playreturn == PlayReturn.GameFinish)
+            {
+                new GameBI(Ctx, null, gameId).SetGameFinished();
+                Console.WriteLine($"  le bot a gagné la partie qui est terminée");
+            }
         }
     }
 }

@@ -159,7 +159,8 @@ namespace Controllers
         /// <param name="chrominoId">id du chromino</param>
         /// <param name="x">abscisse (0 étant le Caméléon du premier chromino du jeu)</param>
         /// <param name="y">ordonnée (0 étant le Caméléon du premier chromino du jeu)</param>
-        /// <param name="orientation">vertical, horizontal, etc</param>
+        /// <param name="orientation">vertical, horizontal</param>
+        /// <param name="flip">true si le chromino est tourné de 180°</param>
         /// <returns></returns>
         [HttpPost]
         public IActionResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
@@ -190,13 +191,12 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult PlayBot(int id, int botId)
         {
-            BotBI BotBI = new BotBI(Ctx, Env, id, botId);
-            GameBI gameBI = new GameBI(Ctx, Env, id);
+            BotBI botBI = new BotBI(Ctx, Env, id, botId);
             PlayReturn playreturn;
-            do playreturn = BotBI.PlayBot();
+            do playreturn = botBI.PlayBot();
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
             if (playreturn == PlayReturn.GameFinish)
-                gameBI.SetGameFinished();
+                new GameBI(Ctx, Env, id).SetGameFinished();
             return RedirectToAction("Show", "Game", new { id });
         }
 

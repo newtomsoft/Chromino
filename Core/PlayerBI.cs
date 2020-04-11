@@ -14,6 +14,7 @@ namespace ChrominoBI
 {
     public class PlayerBI
     {
+        #region Properties
         /// <summary>
         /// DbContext du jeu
         /// </summary>
@@ -48,7 +49,7 @@ namespace ChrominoBI
         /// Id du joueur
         /// </summary>
         protected int PlayerId { get; set; }
-
+        #endregion
 
         public PlayerBI(Context ctx, IWebHostEnvironment env, int gameId, int playerId)
         {
@@ -233,7 +234,8 @@ namespace ChrominoBI
 
                 if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))
                     playreturn = PlayReturn.GameFinish;
-                new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
+                if (Env != null)
+                    new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
                 ChangePlayerTurn();
             }
             return playreturn;
@@ -296,11 +298,9 @@ namespace ChrominoBI
         /// <returns></returns>
         private bool IsNextPlayersCanWin()
         {
-            foreach (int currentPlayerId in GamePlayerDal.NextPlayersId(GameId, PlayerId))
-            {
-                if (ChrominoInHandDal.ChrominosNumber(GameId, currentPlayerId) == 1)
+            foreach (int playerId in GamePlayerDal.NextPlayersId(GameId, PlayerId))
+                if (ChrominoInHandDal.ChrominosNumber(GameId, playerId) == 1)
                     return true;
-            }
             return false;
         }
 
