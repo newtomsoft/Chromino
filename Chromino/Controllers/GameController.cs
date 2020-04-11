@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Tool;
 
 namespace Controllers
@@ -28,12 +29,15 @@ namespace Controllers
         /// </summary>
         /// <param name="id">Id de la partie</param>
         /// <returns></returns>
-        public IActionResult Show(int id)
+        public async Task<IActionResult> ShowAsync(int id)
         {
             if (id == 0)
                 return RedirectToAction("GameNotFound");
 
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId);
+            Player player = PlayerDal.Details(PlayerId);
+            var isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
+
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin);
             if (gameViewModel != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)

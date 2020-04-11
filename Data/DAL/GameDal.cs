@@ -139,8 +139,11 @@ namespace Data.DAL
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            gamePlayer.NotReadMessages = 0;
-            Ctx.SaveChanges();
+            if (gamePlayer != null)
+            {
+                gamePlayer.NotReadMessages = 0;
+                Ctx.SaveChanges();
+            }
         }
 
         public void IncreaseMove(int gameId)

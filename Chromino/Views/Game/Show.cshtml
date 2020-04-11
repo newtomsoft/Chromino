@@ -9,7 +9,13 @@
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
     PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
-    int memosNumbers = Model.GamePlayerIdentified.Memo == null ? 0 : Model.GamePlayerIdentified.Memo.Count(x => x == '\n') + 1;
+    int memosNumbers = 0;
+    int notReadMessages = 0;
+    if (Model.GamePlayerIdentified != null)
+    {
+        memosNumbers = Model.GamePlayerIdentified.Memo == null ? 0 : Model.GamePlayerIdentified.Memo.Count(x => x == '\n') + 1;
+        notReadMessages = Model.GamePlayerIdentified.NotReadMessages;
+    }
 }
 
 <!DOCTYPE html>
@@ -221,7 +227,7 @@
     var YMin = @Model.YMin;
     var Horizontal = @horizontal;
     var Vertical = @vertical;
-    var NotReadMessages = @Model.GamePlayerIdentified.NotReadMessages;
+    var NotReadMessages = @notReadMessages;
     var MemosNumber = @memosNumbers;
     var PlayReturn = "@playReturn.ToString()";
     var ShowInfoPopup = @showInfoPopup.ToString().ToLower();

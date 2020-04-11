@@ -98,13 +98,15 @@ namespace Data.ViewModel
             }
 
             Pseudos = pseudos;
-            int indexPlayerPseudo = Pseudos.IndexOf(playerPseudo);
-            Pseudos[indexPlayerPseudo] = "Vous";
-
             PseudosChrominos = pseudosChrominos;
-            int value = PseudosChrominos[playerPseudo];
-            PseudosChrominos.Remove(playerPseudo);
-            PseudosChrominos["Vous"] = value;
+            int indexPlayerPseudo = Pseudos.IndexOf(playerPseudo);
+            if (indexPlayerPseudo != -1)
+            {
+                Pseudos[indexPlayerPseudo] = "Vous";
+                int value = PseudosChrominos[playerPseudo];
+                PseudosChrominos.Remove(playerPseudo);
+                PseudosChrominos["Vous"] = value;
+            }
         }
 
         private int IndexGridState(int x, int y)

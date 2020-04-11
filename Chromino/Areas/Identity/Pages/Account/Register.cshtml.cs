@@ -100,6 +100,13 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    #region à déplacer
+                    // todo : migrer dans autre partie de code
+                    const string adminRole = "Admin";
+                    bool roleAdminExist = await _roleManager.RoleExistsAsync(adminRole);
+                    if (!roleAdminExist)
+                        await _roleManager.CreateAsync(new IdentityRole<int>(adminRole));
+                    #endregion
                     const string playerRole = nameof(Player);
                     bool roleExist = await _roleManager.RoleExistsAsync(playerRole);
                     if (!roleExist)

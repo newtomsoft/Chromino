@@ -269,7 +269,7 @@ namespace Data.DAL
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            return gamePlayer.ViewFinished;
+            return gamePlayer != null ? gamePlayer.ViewFinished : true;
         }
 
         public void SetViewFinished(int gameId, int playerId)

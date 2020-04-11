@@ -93,13 +93,13 @@ namespace Data.Core
             playerBI.ChangePlayerTurn();
         }
 
-        public GameVM GameViewModel(int playerId)
+        public GameVM GameViewModel(int playerId, bool isAdmin)
         {
             Player playerTurn = GamePlayerDal.PlayerTurn(GameId);
             List<Player> players = GamePlayerDal.Players(GameId);
-            if (players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(GameId))
+            if (isAdmin || players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(GameId))
             {
-                // je joueur est bien dans la partie ou c'est une partie entre bots
+                // je joueur est Admin, ou est bien dans la partie ou c'est une partie entre bots
                 int chrominosInStackNumber = ChrominoInGameDal.InStack(GameId);
                 string playerPseudo = PlayerDal.Pseudo(playerId);
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
