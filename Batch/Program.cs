@@ -15,15 +15,50 @@ namespace Batch
     class Program
     {
         private static Context Ctx;
+        private static GamePlayerDal GamePlayerDal;
+        private static GameDal GameDal;
+        private static PlayerDal PlayerDal;
+        private static ChrominoInGameDal ChrominoInGameDal;
+        private static ChrominoInHandDal ChrominoInHandDal;
+        private static ChrominoInHandLastDal ChrominoInHandLastDal;
+        private static GoodPositionDal GoodPositionDal;
+        private static SquareDal SquareDal;
+        private static string Option;
 
         static void Main(string[] args)
         {
+            Init(args);
+
+            if (int.TryParse(Option, out int result))
+            {
+                DeleteGame(result);
+            }
+            else
+            {
+                switch (Option)
+                {
+                    case "":
+                        DeleteGuests();
+                        DeleteGamesWithoutPlayerTurn();
+                        DeleteGamesWithOnlyBots();
+                        PlayBots();
+                        break;
+                    case "DeleteGuests":
+                        DeleteGuests();
+                        break;
+
+                }
+            }
+
+        }
+
+        private static void Init(string[] args)
+        {
+            Option = args.Length > 0 ? args[0] : String.Empty;
             Console.WriteLine("**************************");
             Console.WriteLine("***** Batch Chromino *****");
             Console.WriteLine($"* le {DateTime.Now.ToString("dd/MM/yyyy à HH:mm").Replace(':', 'h')}  *");
             Console.WriteLine("**************************");
-            Console.WriteLine();
-            #region setting
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (env == null)
                 env = "Development";
@@ -37,71 +72,87 @@ namespace Batch
             DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
             Ctx = new Context(optionBuilder.Options);
-            GamePlayerDal gamePlayerDal = new GamePlayerDal(Ctx);
-            GameDal gameDal = new GameDal(Ctx);
-            PlayerDal playerDal = new PlayerDal(Ctx);
-            ChrominoInGameDal chrominoInGameDal = new ChrominoInGameDal(Ctx);
-            ChrominoInHandDal chrominoInHandDal = new ChrominoInHandDal(Ctx);
-            ChrominoInHandLastDal chrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
-            GoodPositionDal goodPositionDal = new GoodPositionDal(Ctx);
-            SquareDal squareDal = new SquareDal(Ctx);
-            TimeSpan guestLifeTime = new TimeSpan(6, 0, 0);
-            #endregion
-
-            #region suppression invités
+            GamePlayerDal = new GamePlayerDal(Ctx);
+            GameDal = new GameDal(Ctx);
+            PlayerDal = new PlayerDal(Ctx);
+            ChrominoInGameDal = new ChrominoInGameDal(Ctx);
+            ChrominoInHandDal = new ChrominoInHandDal(Ctx);
+            ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
+            GoodPositionDal = new GoodPositionDal(Ctx);
+            SquareDal = new SquareDal(Ctx);
+        }
+        private static void DeleteGuests()
+        {
+            Console.WriteLine();
             Console.WriteLine("Suppression des invités et données associées");
-            var guestsToDelete = playerDal.ListGuestWithOldGames(guestLifeTime, out var gamesIdToDelete);
-            Console.WriteLine($"  Suppression de {chrominoInGameDal.Delete(gamesIdToDelete)} ChrominosInGame ok");
-            Console.WriteLine($"  Suppression de {chrominoInHandDal.Delete(gamesIdToDelete)} ChrominosInHand ok");
-            Console.WriteLine($"  Suppression de {chrominoInHandLastDal.Delete(gamesIdToDelete)} ChrominosInHandLast ok");
-            Console.WriteLine($"  Suppression de {gamePlayerDal.Delete(gamesIdToDelete)} GamePlayer ok");
-            Console.WriteLine($"  Suppression de {goodPositionDal.Delete(gamesIdToDelete)} GoodPosition et GoodPositionLevel ok");
-            Console.WriteLine($"  Suppression de {squareDal.Delete(gamesIdToDelete)} Square ok");
-            Console.WriteLine($"  Suppression de {gameDal.Delete(gamesIdToDelete)} Game ok");
-            Console.WriteLine($"  Suppression de {playerDal.Delete(guestsToDelete)} invités ok");
-            #endregion
-
-            #region suppression jeux en Cours sans tour de joueur
+            TimeSpan guestLifeTime = new TimeSpan(6, 0, 0);
+            var guestsToDelete = PlayerDal.ListGuestWithOldGames(guestLifeTime, out var gamesIdToDelete);
+            Console.WriteLine($"  Suppression de {ChrominoInGameDal.Delete(gamesIdToDelete)} ChrominosInGame ok");
+            Console.WriteLine($"  Suppression de {ChrominoInHandDal.Delete(gamesIdToDelete)} ChrominosInHand ok");
+            Console.WriteLine($"  Suppression de {ChrominoInHandLastDal.Delete(gamesIdToDelete)} ChrominosInHandLast ok");
+            Console.WriteLine($"  Suppression de {GamePlayerDal.Delete(gamesIdToDelete)} GamePlayer ok");
+            Console.WriteLine($"  Suppression de {GoodPositionDal.Delete(gamesIdToDelete)} GoodPosition et GoodPositionLevel ok");
+            Console.WriteLine($"  Suppression de {SquareDal.Delete(gamesIdToDelete)} Square ok");
+            Console.WriteLine($"  Suppression de {GameDal.Delete(gamesIdToDelete)} Game ok");
+            Console.WriteLine($"  Suppression de {PlayerDal.Delete(guestsToDelete)} invités ok");
+        }
+        private static void DeleteGamesWithoutPlayerTurn()
+        {
+            Console.WriteLine();
             Console.WriteLine("Suppression des jeux en cours sans joueur dont c'est le tour");
-            var gamesInProgress = gameDal.ListInProgress();
+            var gamesInProgress = GameDal.ListInProgress();
             List<int> badGamesId = new List<int>();
             foreach (Game game in gamesInProgress)
             {
-                Player playerTurn = gamePlayerDal.PlayerTurn(game.Id);
+                Player playerTurn = GamePlayerDal.PlayerTurn(game.Id);
                 if (playerTurn == null)
                     badGamesId.Add(game.Id);
             }
-            foreach (int id in badGamesId)
-            {
-                Console.WriteLine($"  Suppression du jeu {id}");
-                Ctx.GamesPlayers.RemoveRange(gamePlayerDal.List(id));
-                Ctx.Games.Remove(gameDal.Details(id));
-            }
+            DeleteGames(badGamesId);
+        }
+        private static void DeleteGames(List<int> gamesId)
+        {
+            foreach (int id in gamesId)
+                DeleteGame(id);
+        }
+        private static void DeleteGame(int id)
+        {
+            Console.WriteLine($"  Suppression du jeu {id}");
+            Ctx.GamesPlayers.RemoveRange(GamePlayerDal.GamePlayers(id));
+            Ctx.Games.Remove(GameDal.Details(id));
             Ctx.SaveChanges();
-            Console.WriteLine("\n");
-            #endregion
-
-            #region force a faire jouer les bots
+        }
+        private static void DeleteGamesWithOnlyBots()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Suppresion des parties terminées avec que des bots");
+            foreach (Game game in GameDal.List())
+            {
+                if (GamePlayerDal.IsAllBots(game.Id) && GameDal.IsFinished(game.Id))
+                    DeleteGame(game.Id);
+            }
+        }
+        private static void PlayBots()
+        {
+            Console.WriteLine();
             Console.WriteLine("Force les bots à jouer");
-            List<GamePlayer> gameBots = gamePlayerDal.ListBotsTurn();
+            List<GamePlayer> gameBots = GamePlayerDal.ListBotsTurn();
             foreach (GamePlayer gameBot in gameBots)
             {
                 int playerId = gameBot.PlayerId;
                 int gameId = gameBot.GameId;
                 bool isNextBot = true;
-                while (isNextBot)
+                bool gameFinish = false;
+                while (isNextBot && !gameFinish)
                 {
-                    PlayBot(gameId, playerId);
-                    Player nextPlayer = gamePlayerDal.PlayerTurn(gameId);
+                    gameFinish = PlayBot(gameId, playerId);
+                    Player nextPlayer = GamePlayerDal.PlayerTurn(gameId);
                     playerId = nextPlayer.Id;
                     isNextBot = nextPlayer.Bot;
-                }       
+                }
             }
-            #endregion
-
         }
-
-        private static void PlayBot(int gameId, int botId)
+        private static bool PlayBot(int gameId, int botId)
         {
             BotBI botBI = new BotBI(Ctx, null, gameId, botId);
             PlayReturn playreturn;
@@ -121,12 +172,18 @@ namespace Batch
                         break;
                 }
             }
-            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
+            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino || playreturn == PlayReturn.SkipTurn);
             if (playreturn == PlayReturn.GameFinish)
             {
                 new GameBI(Ctx, null, gameId).SetGameFinished();
                 Console.WriteLine($"  le bot a gagné la partie qui est terminée");
+                return true;
             }
+            else
+            {
+                return false;
+            }    
         }
+
     }
 }

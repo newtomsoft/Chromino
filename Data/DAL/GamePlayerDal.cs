@@ -24,7 +24,13 @@ namespace Data.DAL
             return gamePlayer;
         }
 
-        public List<GamePlayer> List(int gameId)
+        public bool IsPlayerIdIn(int gameId, int playerId)
+        {
+            return Details(gameId, playerId) != null ? true : false;
+        }
+
+
+        public List<GamePlayer> GamePlayers(int gameId)
         {
             List<GamePlayer> gamesPlayer = (from gp in Ctx.GamesPlayers
                                             where gp.GameId == gameId
@@ -344,7 +350,7 @@ namespace Data.DAL
         /// </summary>
         /// <param name="gameId">Id de la partie</param>
         /// <returns>true si tous les joueurs sont des bots</returns>
-        public bool IsBots(int gameId)
+        public bool IsAllBots(int gameId)
         {
             var ids = from gp in Ctx.GamesPlayers
                       join p in Ctx.Players on gp.PlayerId equals p.Id

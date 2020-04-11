@@ -97,9 +97,9 @@ namespace Data.Core
         {
             Player playerTurn = GamePlayerDal.PlayerTurn(GameId);
             List<Player> players = GamePlayerDal.Players(GameId);
-            if (isAdmin || players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsBots(GameId))
+            if (isAdmin || players.Where(x => x.Id == playerId).FirstOrDefault() != null || GamePlayerDal.IsAllBots(GameId))
             {
-                // je joueur est Admin, ou est bien dans la partie ou c'est une partie entre bots
+                // je joueur est Admin, ou est dans la partie ou c'est une partie entre bots
                 int chrominosInStackNumber = ChrominoInGameDal.InStack(GameId);
                 string playerPseudo = PlayerDal.Pseudo(playerId);
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
@@ -116,7 +116,7 @@ namespace Data.Core
                         pseudos_lastChrominos.Add(pseudo_chromino.Key, ChrominoInHandDal.FirstChromino(GameId, GamePlayerDal.PlayerId(GameId, pseudo_chromino.Key)));
                 }
                 List<Chromino> identifiedPlayerChrominos;
-                if (GamePlayerDal.IsBots(GameId)) // s'il n'y a que des bots en jeu, on regarde la partie et leur main
+                if (!GamePlayerDal.IsPlayerIdIn(GameId, playerId)) // si le joueur n'est pas dans la partie, il regarde la main du joueur dont c'est le tour de jouer
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(GameId, playerTurn.Id);
                 else
                     identifiedPlayerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
