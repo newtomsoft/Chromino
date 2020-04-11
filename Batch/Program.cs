@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Batch
 {
@@ -24,31 +25,21 @@ namespace Batch
         private static GoodPositionDal GoodPositionDal;
         private static SquareDal SquareDal;
         private static string Option;
+        private static Dictionary<string, Action> Methods;
 
         static void Main(string[] args)
         {
             Init(args);
 
-            if (int.TryParse(Option, out int result))
-            {
+            if (Option == "")
+                foreach (KeyValuePair<string, Action> key_value in Methods)
+                    key_value.Value();
+            else if (int.TryParse(Option, out int result))
                 DeleteGame(result);
-            }
+            else if (Methods.ContainsKey(Option))
+                Methods[Option]();
             else
-            {
-                switch (Option)
-                {
-                    case "":
-                        DeleteGuests();
-                        DeleteGamesWithoutPlayerTurn();
-                        DeleteGamesWithOnlyBots();
-                        PlayBots();
-                        break;
-                    case "DeleteGuests":
-                        DeleteGuests();
-                        break;
-
-                }
-            }
+                Console.WriteLine("paramètre invalide");
 
         }
 
@@ -80,6 +71,13 @@ namespace Batch
             ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
             GoodPositionDal = new GoodPositionDal(Ctx);
             SquareDal = new SquareDal(Ctx);
+            Methods = new Dictionary<string, Action>
+            {
+                { "DeleteGuests", DeleteGuests },
+                { "DeleteGamesWithoutPlayerTurn", DeleteGamesWithoutPlayerTurn },
+                { "DeleteGamesWithOnlyBots", DeleteGamesWithOnlyBots },
+                { "PlayBots", PlayBots }
+            };
         }
         private static void DeleteGuests()
         {
@@ -182,7 +180,7 @@ namespace Batch
             else
             {
                 return false;
-            }    
+            }
         }
 
     }

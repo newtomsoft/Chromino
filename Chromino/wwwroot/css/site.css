@@ -191,7 +191,8 @@ a {
     }
 
     .popup_content > img.example {
-        height: 200px;
+        width: 350px;
+        max-width: 90%;
         margin-left: auto;
         margin-right: auto;
         margin-top: 10px;
