@@ -344,10 +344,6 @@ figcaption {
     flex-shrink: 0;
 }
 
-.Free {
-    background-color: white;
-}
-
 .Blue {
     background-color: #3AC2EE;
 }
@@ -372,6 +368,11 @@ figcaption {
     background-image: url('/image/Cameleon.svg');
     background-size: contain;
 }
+
+.Free {
+    background-color: white;
+}
+
 
 .OpenRight {
     border-color: black;
@@ -459,6 +460,11 @@ figcaption {
     flex-shrink: 0;
 }
 
+.OpenAll {
+    border: none;
+    border-style: none;
+    flex-shrink: 0;
+}
 
 .CloseNone {
     border-color: black;

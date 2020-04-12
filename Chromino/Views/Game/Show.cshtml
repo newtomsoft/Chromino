@@ -16,6 +16,7 @@
         memosNumbers = Model.GamePlayerIdentified.Memo == null ? 0 : Model.GamePlayerIdentified.Memo.Count(x => x == '\n') + 1;
         notReadMessages = Model.GamePlayerIdentified.NotReadMessages;
     }
+    const string classFree = "Free";
 }
 
 <!DOCTYPE html>
@@ -67,7 +68,7 @@
             }
         }
         @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == Model.PlayerId &&
-(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresViewModel[1].Color != ColorCh.Cameleon))
+(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
         {
             <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
         }
@@ -91,37 +92,37 @@
         </div>
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
-            <div class="gameLineArea">
+            <div id="Line_@j" class="gameLineArea">
                 @for (int i = 0; i < Model.ColumnsNumber; i++)
                 {
                     int index = i + j * Model.ColumnsNumber;
-                    ColorCh color = Model.SquaresViewModel[index].Color;
+                    ColorCh color = Model.SquaresVM[index].Color;
                     if (color != ColorCh.None)
                     {
                         string classColor = color.ToString();
                         string classOpenSides = "Square Open";
-                        if (Model.SquaresViewModel[index].OpenRight)
+                        if (Model.SquaresVM[index].OpenRight)
                             classOpenSides += "Right";
-                        if (Model.SquaresViewModel[index].OpenBottom)
+                        if (Model.SquaresVM[index].OpenBottom)
                             classOpenSides += "Bottom";
-                        if (Model.SquaresViewModel[index].OpenLeft)
+                        if (Model.SquaresVM[index].OpenLeft)
                             classOpenSides += "Left";
-                        if (Model.SquaresViewModel[index].OpenTop)
+                        if (Model.SquaresVM[index].OpenTop)
                             classOpenSides += "Top";
                         <div id="Grid_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
                     {
                         string classCloseEdge = "Square ";
-                        if (i < Model.ColumnsNumber - 1 && Model.SquaresViewModel[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None)
+                        if (i < Model.ColumnsNumber - 1 && Model.SquaresVM[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseRight";
-                        if (j < Model.LinesNumber - 1 && Model.SquaresViewModel[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None)
+                        if (j < Model.LinesNumber - 1 && Model.SquaresVM[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseBottom";
-                        if (i > 0 && Model.SquaresViewModel[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None)
+                        if (i > 0 && Model.SquaresVM[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseLeft";
-                        if (j > 0 && Model.SquaresViewModel[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None)
+                        if (j > 0 && Model.SquaresVM[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseTop";
-                        <div class="@classCloseEdge"></div>
+                        <div class="@classCloseEdge @classFree"></div>
                     }
                 }
             </div>
@@ -133,23 +134,9 @@
         <div id="@id" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
-                string classOpenSides;
-                switch (i)
-                {
-                    case 0:
-                        classOpenSides = "OpenRight";
-                        break;
-                    case 1:
-                        classOpenSides = "OpenRightLeft";
-                        break;
-                    case 2:
-                    default:
-                        classOpenSides = "OpenLeft";
-                        break;
-                }
-                ColorCh color = chrominosViewModel.SquaresViewModel[i].Color;
+                ColorCh color = chrominosViewModel.SquaresVM[i].Color;
                 string classColor = color.ToString();
-                <div class="Square @classOpenSides @classColor"></div>
+                <div class="Square @classColor"></div>
             }
         </div>
     }
@@ -274,7 +261,7 @@
                             classOpenSides = "OpenLeft";
                             break;
                     }
-                    ColorCh color = Model.Pseudos_LastChrominoVM[pseudoChromino.Key].SquaresViewModel[i].Color;
+                    ColorCh color = Model.Pseudos_LastChrominoVM[pseudoChromino.Key].SquaresVM[i].Color;
                     string classColor = color.ToString();
                     <div class="Square @classOpenSides @classColor"></div>
                 }

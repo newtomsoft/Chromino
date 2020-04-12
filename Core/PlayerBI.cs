@@ -140,33 +140,17 @@ namespace ChrominoBI
 
             if (chrominoInGame.Orientation == Orientation.Horizontal)
             {
+                firstSquareOpenRight = true;
                 secondSquareOpenRight = true;
                 secondSquareOpenLeft = true;
-                if (chrominoInGame.Flip)
-                {
-                    firstSquareOpenRight = true;
-                    thirdSquareOpenLeft = true;
-                }
-                else
-                {
-                    firstSquareOpenLeft = true;
-                    thirdSquareOpenRight = true;
-                }
+                thirdSquareOpenLeft = true;
             }
             else
             {
+                firstSquareOpenBottom = true;
                 secondSquareOpenTop = true;
                 secondSquareOpenBottom = true;
-                if (chrominoInGame.Flip)
-                {
-                    firstSquareOpenTop = true;
-                    thirdSquareOpenBottom = true;
-                }
-                else
-                {
-                    firstSquareOpenBottom = true;
-                    thirdSquareOpenTop = true;
-                }
+                thirdSquareOpenTop = true;
             }
 
             List<Square> squares = new List<Square>

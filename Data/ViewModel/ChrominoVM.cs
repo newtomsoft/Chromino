@@ -2,7 +2,7 @@
 {
     public class ChrominoVM
     {
-        public SquareVM[] SquaresViewModel { get; set; } = new SquareVM[3];
+        public SquareVM[] SquaresVM { get; set; }
         public int ChrominoId { get; set; }
     }
 }

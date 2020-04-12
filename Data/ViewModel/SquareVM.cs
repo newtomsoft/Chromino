@@ -10,7 +10,7 @@ namespace Data.ViewModel
         public bool OpenLeft { get; set; }
         public bool OpenTop { get; set; }
 
-        public SquareVM(ColorCh color, bool openRight, bool openBottom, bool openLeft, bool openTop)
+        public SquareVM(ColorCh color, bool openRight = false, bool openBottom = false, bool openLeft = false, bool openTop = false)
         {
             Color = color;
             OpenRight = openRight;

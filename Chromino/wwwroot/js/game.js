@@ -24,6 +24,7 @@
             IndexMove++;
         }
         AnimateChrominosPlayed();
+        HideChrominosPlayed();
     });
     $("#nextButton").click(function () {
         if (IndexMove > 0) {
@@ -69,15 +70,84 @@ function AnimateChrominosPlayed() {
     index = IndexMove * 3;
     for (i = index; i < index + 3; i++) {
         for (iflash = 0; iflash < 3; iflash++) {
+            ShowSquare('#' + Squares[i]);
             AnimateSquare('#' + Squares[i]);
         }
     }
     $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn().delay(1000).fadeOut();
 }
+
 function AnimateSquare(squareId) {
     $(squareId).fadeToggle(150, function () {
         $(this).fadeToggle(150);
     });
+}
+
+function HideChrominosPlayed() {
+    index = (IndexMove - 1) * 3;
+    for (i = index; i < index + 3; i++) {
+        HideSquare('#' + Squares[i]);
+    }
+}
+
+function HideSquare(squareId) {
+    let parentId = '#' + $(squareId).parent().attr("id");
+    let parentTopId = '#' + $(parentId).prev().attr("id");
+    let parentBottomId = '#' + $(parentId).next().attr("id");
+    let indexSquare = $(squareId).index() + 1;
+    let nthChild = " :nth-child(" + indexSquare + ")";
+    let squareTop = $(parentTopId + nthChild);
+    let squareBottom = $(parentBottomId + nthChild);
+    let squareLeft = $(squareId).prev();
+    let squareRight = $(squareId).next();
+
+    $(squareId).addClass("OpenAll CloseNone Free");
+    if ($(squareLeft).hasClass("Free"))
+        $(squareLeft).removeClass("CloseRight");
+    else
+        $(squareId).addClass("CloseLeft");
+    if ($(squareRight).hasClass("Free"))
+        $(squareRight).removeClass("CloseLeft");
+    else
+        $(squareId).addClass("CloseRight");
+    if ($(squareTop).hasClass("Free"))
+        $(squareTop).removeClass("CloseBottom");
+    else
+        $(squareId).addClass("CloseTop");
+    if ($(squareBottom).hasClass("Free"))
+        $(squareBottom).removeClass("CloseTop");
+    else
+        $(squareId).addClass("CloseBottom");
+}
+
+function ShowSquare(squareId) {
+    let parentId = '#' + $(squareId).parent().attr("id");
+    let parentTopId = '#' + $(parentId).prev().attr("id");
+    let parentBottomId = '#' + $(parentId).next().attr("id");
+    let indexSquare = $(squareId).index() + 1;
+    let nthChild = " :nth-child(" + indexSquare + ")";
+    let squareTop = $(parentTopId + nthChild);
+    let squareBottom = $(parentBottomId + nthChild);
+    let squareLeft = $(squareId).prev();
+    let squareRight = $(squareId).next();
+
+    if ($(squareLeft).hasClass("Free"))
+        $(squareLeft).addClass("CloseRight");
+    else
+        $(squareId).removeClass("CloseLeft");
+    if ($(squareRight).hasClass("Free"))
+        $(squareRight).addClass("CloseLeft");
+    else
+        $(squareId).removeClass("CloseRight");
+    if ($(squareTop).hasClass("Free"))
+        $(squareTop).addClass("CloseBottom");
+    else
+        $(squareId).removeClass("CloseTop");
+    if ($(squareBottom).hasClass("Free"))
+        $(squareBottom).addClass("CloseTop");
+    else
+        $(squareId).removeClass("CloseBottom");
+    $(squareId).removeClass("OpenAll CloseNone Free");
 }
 
 
@@ -220,18 +290,16 @@ function MagnetChromino() {
     }
 }
 
-function Rotation(chromino, angle = 90) {
+function Rotation(chromino) {
+    let angle = 90;
     let newAngle = angle + GetAngle(chromino);
     if (newAngle >= 360)
         newAngle -= 360;
     SetAngle(chromino, newAngle);
-    let orientation = GetOrientation(chromino);
-    if (angle == 90 || angle == -90) {
-        if (orientation == "horizontal")
-            SetOffset(chromino, -SquareSize, 0);
-        else
-            SetOffset(chromino, SquareSize, 0);
-    }
+    if (GetOrientation(chromino) == "horizontal")
+        SetOffset(chromino, -SquareSize, 0);
+    else
+        SetOffset(chromino, SquareSize, 0);
 }
 
 function SetOffset(chromino, left, top) {
@@ -239,29 +307,6 @@ function SetOffset(chromino, left, top) {
     let newLeft = offset.left + left;
     let newTop = offset.top + top;
     $(chromino).offset({ top: newTop, left: newLeft });
-}
-
-function SetGoodOrientation(chromino) {
-    if (Landscape)
-        SetHorizontal(chromino);
-    else
-        SetVertical(chromino);
-}
-
-function SetHorizontal(chromino) {
-    let rotation = GetAngle(chromino);
-    if (rotation == 90)
-        SetAngle(chromino, 180);
-    else if (rotation == 270)
-        SetAngle(chromino, 0);
-}
-
-function SetVertical(chromino) {
-    let rotation = GetAngle(chromino);
-    if (rotation == 0)
-        SetAngle(chromino, 90);
-    else if (rotation == 180)
-        SetAngle(chromino, 270);
 }
 
 function GetOrientation(chromino) {
@@ -296,18 +341,35 @@ function GetAngle(chromino) {
 }
 
 function SetAngle(chromino, rotate) {
+    let classChromino = '#' + $(chromino).attr('id');
+    SetAngleByClass(classChromino, rotate);
+}
+
+function SetAngleByClass(classChromino, rotate) {
     switch (rotate) {
         case 0:
-            $(chromino).css("flex-direction", "row");
+            $(classChromino).css("flex-direction", "row");
+            $(classChromino + " div:nth-child(1)").removeClass("OpenTop").addClass("OpenRight");
+            $(classChromino + " div:nth-child(2)").removeClass("OpenBottomTop").addClass("OpenRightLeft");
+            $(classChromino + " div:nth-child(3)").removeClass("OpenBottom").addClass("OpenLeft");
             break;
         case 90:
-            $(chromino).css("flex-direction", "column");
+            $(classChromino).css("flex-direction", "column");
+            $(classChromino + " div:nth-child(1)").removeClass("OpenRight").addClass("OpenBottom");
+            $(classChromino + " div:nth-child(2)").removeClass("OpenRightLeft").addClass("OpenBottomTop");
+            $(classChromino + " div:nth-child(3)").removeClass("OpenLeft").addClass("OpenTop");
             break;
         case 180:
-            $(chromino).css("flex-direction", "row-reverse");
+            $(classChromino).css("flex-direction", "row-reverse");
+            $(classChromino + " div:nth-child(1)").removeClass("OpenBottom").addClass("OpenLeft");
+            $(classChromino + " div:nth-child(2)").removeClass("OpenBottomTop").addClass("OpenRightLeft");
+            $(classChromino + " div:nth-child(3)").removeClass("OpenTop").addClass("OpenRight");
             break;
         case 270:
-            $(chromino).css("flex-direction", "column-reverse");
+            $(classChromino).css("flex-direction", "column-reverse");
+            $(classChromino + " div:nth-child(1)").removeClass("OpenLeft").addClass("OpenTop");
+            $(classChromino + " div:nth-child(2)").removeClass("OpenRightLeft").addClass("OpenBottomTop");
+            $(classChromino + " div:nth-child(3)").removeClass("OpenRight").addClass("OpenBottom");
             break;
     }
 }
@@ -328,22 +390,24 @@ function ResizeGameArea() {
     if (width > height) {
         width -= 200; //-200 : somme de la taille des 2 bandeaux
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
+        $(".handPlayerChromino").css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
         $(".handPlayerChromino").each(function () {
-            $(this).css({ left: documentWidth - SquareSize * 4 }); //3 SquareSize pour le chromino + 1 de marge à droite
             $(this).css({ top: offset });
-            SetAngle(this, 0);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
+        SetAngleByClass(".handPlayerChromino", 0);
+
+
     }
     else {
         height -= 200;
         SquareSize = Math.min(Math.trunc(Math.min(height / GameAreaLinesNumber, width / GameAreaColumnsNumber)), 30);
+        $(".handPlayerChromino").css({ top: documentHeight - SquareSize * 3 }); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
         $(".handPlayerChromino").each(function () {
             $(this).css({ left: offset });
-            $(this).css({ top: documentHeight - SquareSize * 3 }); // marge d'1 SquareSize en bas implicite par la rotation (matrix)
-            SetAngle(this, 90);
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
+        SetAngleByClass(".handPlayerChromino", 90);
     }
     $('#gameArea').height(SquareSize * GameAreaLinesNumber);
     $('#gameArea').width(SquareSize * GameAreaColumnsNumber);

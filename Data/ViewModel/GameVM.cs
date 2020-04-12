@@ -18,7 +18,7 @@ namespace Data.ViewModel
         public int LinesNumber { get; set; }
         public int ColumnsNumber { get; set; }
         public int SquaresNumber { get; set; }
-        public SquareVM[] SquaresViewModel { get; set; }
+        public SquareVM[] SquaresVM { get; set; }
         public int ChrominosInStack { get; set; }
         public Dictionary<string, int> PseudosChrominos { get; set; }
         public Dictionary<string, ChrominoVM> Pseudos_LastChrominoVM { get; set; }
@@ -53,49 +53,23 @@ namespace Data.ViewModel
             ColumnsNumber = XMax - XMin + 1;
             LinesNumber = YMax - YMin + 1;
             SquaresNumber = ColumnsNumber * LinesNumber;
-            SquaresViewModel = new SquareVM[SquaresNumber];
-            for (int i = 0; i < SquaresViewModel.Length; i++)
-                SquaresViewModel[i] = new SquareVM(ColorCh.None, true, true, true, true);
+            SquaresVM = new SquareVM[SquaresNumber];
+            for (int i = 0; i < SquaresVM.Length; i++)
+                SquaresVM[i] = new SquareVM(ColorCh.None);
             foreach (Square square in Squares)
-            {
-                int index = IndexGridState(square.X, square.Y);
-                SquaresViewModel[index] = square.SquareViewModel;
-            }
+                SquaresVM[IndexGridState(square.X, square.Y)] = square.SquareViewModel;
 
             IdentifiedPlayerChrominosVM = new List<ChrominoVM>();
             foreach (Chromino chromino in identifiedPlayerChrominos)
-            {
-                SquareVM square1 = new SquareVM(chromino.FirstColor, true, false, false, false);
-                SquareVM square2 = new SquareVM(chromino.SecondColor, true, false, true, false);
-                SquareVM square3 = new SquareVM(chromino.ThirdColor, true, false, true, false);
-                ChrominoVM chrominoViewModel = new ChrominoVM();
-                chrominoViewModel.SquaresViewModel[0] = square1;
-                chrominoViewModel.SquaresViewModel[1] = square2;
-                chrominoViewModel.SquaresViewModel[2] = square3;
-                chrominoViewModel.ChrominoId = chromino.Id;
-                IdentifiedPlayerChrominosVM.Add(chrominoViewModel);
-            }
+                IdentifiedPlayerChrominosVM.Add(new ChrominoVM() { ChrominoId = chromino.Id, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } });
 
             Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
             foreach (var pseudo_chromino in pseudos_lastChrominos)
-            {
-                SquareVM square1 = new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false);
-                SquareVM square2 = new SquareVM(pseudo_chromino.Value.SecondColor, true, false, true, false);
-                SquareVM square3 = new SquareVM(pseudo_chromino.Value.ThirdColor, true, false, true, false);
-                ChrominoVM chrominoViewModel = new ChrominoVM();
-                chrominoViewModel.SquaresViewModel[0] = square1;
-                chrominoViewModel.SquaresViewModel[1] = square2;
-                chrominoViewModel.SquaresViewModel[2] = square3;
-                chrominoViewModel.ChrominoId = pseudo_chromino.Value.Id;
-                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key != playerPseudo ? pseudo_chromino.Key : "Vous", chrominoViewModel);
-            }
+                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key != playerPseudo ? pseudo_chromino.Key : "Vous", new ChrominoVM() { ChrominoId = pseudo_chromino.Value.Id, SquaresVM = new SquareVM[3] { new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false), new SquareVM(pseudo_chromino.Value.SecondColor, true, false, true, false), new SquareVM(pseudo_chromino.Value.ThirdColor, true, false, true, false) } });
 
             ChrominosPlayedVM = new List<ChrominoPlayedVM>();
             foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
-            {
-                ChrominoPlayedVM chrominoPlayedVM = new ChrominoPlayedVM(chrominoInGame, XMin, YMin);
-                ChrominosPlayedVM.Add(chrominoPlayedVM);
-            }
+                ChrominosPlayedVM.Add(new ChrominoPlayedVM(chrominoInGame, XMin, YMin));
 
             Pseudos = pseudos;
             PseudosChrominos = pseudosChrominos;
