@@ -19,14 +19,14 @@
     if (!PreviouslyDraw && ThisPlayerTurn) {
         AnimateChrominosPlayed(0);
     }
-    $("#previousButton").click(function () {
+    $("#buttonPrevious").click(function () {
         if (IndexMove < Squares.length / 3 - 1) {
             IndexMove++;
         }
         AnimateChrominosPlayed();
         HideChrominosPlayed();
     });
-    $("#nextButton").click(function () {
+    $("#buttonNext").click(function () {
         if (IndexMove > 0) {
             IndexMove--;
         }
@@ -51,7 +51,6 @@
         $('#NotifMemo').show();
     }
 
-
     // affichage popup
     if (PlayReturn != "Ok")
         ShowPopup('#errorPopup');
@@ -60,6 +59,15 @@
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
 
+    //emoji du chat
+    $(".emoji").click(function () {
+        let selectionStart = $("#Chat-input").prop("selectionStart");
+        let text = $("#Chat-input").val();
+        let textBefore = text.substring(0, selectionStart);
+        let textAfter = text.substring(selectionStart, text.length);
+        $('#Chat-input').val(textBefore + $(this).html() + textAfter);
+        $("#Chat-input").focus();
+    });
 });
 
 //***************************************************//

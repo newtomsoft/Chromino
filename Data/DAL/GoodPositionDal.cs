@@ -76,7 +76,7 @@ namespace Data.DAL
         /// <param name="botId">Id du bot joueur</param>
         /// <param name="chominoIdNotToPlay">Id du chromino ne devant pas être joué</param>
         /// <returns></returns>
-        public List<GoodPosition> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay)
+        public List<GoodPosition> RootListByPriority(int gameId, int botId, int chominoIdNotToPlay = 0)
         {
             List<GoodPosition> ComputedChrominos = (from cc in Ctx.GoodPositions
                                                     join c in Ctx.Chrominos on cc.ChrominoId equals c.Id

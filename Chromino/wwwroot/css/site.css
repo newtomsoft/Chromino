@@ -117,6 +117,10 @@ a {
     background-image: url('/image/button/Next.svg');
 }
 
+.btn-helpPlay {
+    background-image: url('/image/button/Help.svg');
+}
+
 #buttonInfoForPlaying {
     display: inline;
     width: 40px;
@@ -211,6 +215,17 @@ a {
 #ChatPopup-textarea {
     width: 400px;
     max-width: 100%;
+}
+
+.emojis {
+    display: flex;
+    justify-content: center;
+}
+
+.emoji {
+    cursor: copy;
+    font-size: larger;
+    flex-shrink: 1;
 }
 
 #about {
@@ -371,8 +386,12 @@ figcaption {
 
 .Free {
     background-color: white;
+    background-image: none;
 }
 
+.Possible {
+    background-color: palegreen;
+}
 
 .OpenRight {
     border-color: black;
@@ -643,7 +662,7 @@ figcaption {
     flex-direction: row;
 }
 
-#previousButton, #nextButton {
+#buttonPrevious, #buttonNext {
     cursor: pointer;
     width: 22px;
     height: 22px;
@@ -653,11 +672,11 @@ figcaption {
     margin: 8px;
 }
 
-#previousButton {
+#buttonPrevious {
     background-image: url(/image/LeftArrow.svg);
 }
 
-#nextButton {
+#buttonNext {
     background-image: url(/image/RightArrow.svg);
 }
 
@@ -723,8 +742,6 @@ button.accept-policy {
     font-size: 1rem;
     line-height: inherit;
 }
-
-
 
 
 /* Sticky footer styles

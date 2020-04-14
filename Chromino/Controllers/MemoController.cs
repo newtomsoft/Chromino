@@ -22,7 +22,8 @@ namespace ChrominoApp.Controllers
         [HttpPost]
         public IActionResult Add(int gameId, string memo)
         {
-            memo = memo.Trim();
+            if (memo != null)
+                memo = memo.Trim();
             GamePlayerDal.ChangeMemo(gameId, PlayerId, memo);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }

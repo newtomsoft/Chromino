@@ -11,5 +11,6 @@ namespace Data.Models
         public int SinglePlayerGamesPoints { get; set; }
         public bool Bot { get; set; }
         public bool NoTips { get; set; }
+        public int Help { get; set; }
     }
 }

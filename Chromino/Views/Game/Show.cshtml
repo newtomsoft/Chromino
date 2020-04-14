@@ -11,12 +11,13 @@
     PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
     int memosNumbers = 0;
     int notReadMessages = 0;
-    if (Model.GamePlayerIdentified != null)
+    if (Model.GamePlayer != null)
     {
-        memosNumbers = Model.GamePlayerIdentified.Memo == null ? 0 : Model.GamePlayerIdentified.Memo.Count(x => x == '\n') + 1;
-        notReadMessages = Model.GamePlayerIdentified.NotReadMessages;
+        memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
+        notReadMessages = Model.GamePlayer.NotReadMessages;
     }
     const string classFree = "Free";
+    const string classPossible = "Possible";
 }
 
 <!DOCTYPE html>
@@ -42,9 +43,16 @@
         <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');">
             <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
         </button>
-        @if (Model.Game.Status == GameStatus.InProgress || Model.Game.Status == GameStatus.SingleInProgress)
+        @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions)
         {
-            if (Model.PlayerTurn.UserName == Model.PlayerPseudo)
+            <form id="FormHelp" asp-action="Help" style="display:none">
+                <input name="gameId" value="@Model.Game.Id" />
+            </form>
+            <button type="submit" form="FormHelp" class="btn btn-toolbar btn-helpPlay"></button>
+        }
+        @if (!Model.Game.Status.IsFinish())
+        {
+            if (Model.PlayerTurn.Id == Model.Player.Id)
             {
                 playerTurn = "C'est à vous de jouer";
                 @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
@@ -67,13 +75,12 @@
                 playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
             }
         }
-        @if ((Model.Game.Status == GameStatus.SingleInProgress || Model.Game.Status == GameStatus.InProgress) && Model.PlayerTurn.Id == Model.PlayerId &&
-(Model.IdentifiedPlayerChrominosVM.Count != 1 || Model.IdentifiedPlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
+        @if (!Model.Game.Status.IsFinish() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
         {
             <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
         }
 
-        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.PlayerId || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished)
+        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
         {
             <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none">
             </form>
@@ -83,13 +90,26 @@
     </div>
     <br>
     <div id="gameArea">
+        @{
+            string info = "";
+            List<int> PossibleSquareIndexes = new List<int>();
+            if (Model.ShowPossiblesPositions)
+            {
+                for (int iChromino = 0; iChromino < Model.PossiblesChrominosVM.Count; iChromino++)
+                    for (int i = 0; i < 3; i++)
+                        PossibleSquareIndexes.Add(Model.PossiblesChrominosVM[iChromino].IndexesX[i] + Model.PossiblesChrominosVM[iChromino].IndexesY[i] * Model.ColumnsNumber);
+                if (Model.PossiblesChrominosVM.Count == 0)
+                    info = "Aucun emplacement sur lequel jouer";
+            }
+        }
         <div id="PlayerHistory">
             <div id="previousNextButton">
-                <div id="previousButton"></div>
-                <div id="nextButton"></div>
-                <div id="PlayerHistoryPseudo"></div>
+                <div id="buttonPrevious"></div>
+                <div id="buttonNext"></div>
+                <div id="PlayerHistoryPseudo">@info</div>
             </div>
         </div>
+
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
             <div id="Line_@j" class="gameLineArea">
@@ -109,11 +129,14 @@
                             classOpenSides += "Left";
                         if (Model.SquaresVM[index].OpenTop)
                             classOpenSides += "Top";
-                        <div id="Grid_@index" class="@classOpenSides @classColor"></div>
+                        <div id="Square_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
                     {
-                        string classCloseEdge = "Square ";
+                        string classColor = classFree;
+                        if (PossibleSquareIndexes.Contains(index))
+                            classColor = classPossible;
+                        string classCloseEdge = "Square";
                         if (i < Model.ColumnsNumber - 1 && Model.SquaresVM[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseRight";
                         if (j < Model.LinesNumber - 1 && Model.SquaresVM[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None)
@@ -122,13 +145,13 @@
                             classCloseEdge += " CloseLeft";
                         if (j > 0 && Model.SquaresVM[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None)
                             classCloseEdge += " CloseTop";
-                        <div class="@classCloseEdge @classFree"></div>
+                        <div id="Square_@index" class="@classCloseEdge @classColor"></div>
                     }
                 }
             </div>
         }
     </div>
-    @foreach (ChrominoVM chrominosViewModel in Model.IdentifiedPlayerChrominosVM)
+    @foreach (ChrominoVM chrominosViewModel in Model.PlayerChrominosVM)
     {
         string id = chrominosViewModel.ChrominoId.ToString();
         <div id="@id" class="handPlayerChromino">
@@ -150,7 +173,7 @@
     </form>
 
 
-    @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.Game.Status != GameStatus.Finished)
+    @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
     {
         <script>
             window.onload = function () {
@@ -170,15 +193,15 @@
         int vertical = (int)Orientation.Vertical;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
-        if (TempData["ShowInfos"] != null || Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished || (Model.PlayerTurn.Id == Model.PlayerId && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+        if (!Model.ShowPossiblesPositions && (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0)))))
             showInfoPopup = true;
-        else if (TempData["ShowBotPlayingInfoPopup"] != null)
+        else if (ViewData["ShowBotPlayingInfoPopup"] != null)
             showBotPlayingInfoPopup = true;
     }
 
     <script>
     var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
-    @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.PlayerId).ToString().ToLower();}
+    @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
     var ThisPlayerTurn = @thisPlayerTurn;
     var Squares = new Array;
     var Pseudos = new Array;
@@ -203,11 +226,12 @@
             for (int i = 0; i < 3; i++)
             {
                 int index = Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber;
-                @:Squares.push("Grid_" + @index);
+                @:Squares.push("Square_" + @index);
             }
             move--;
         }
     }
+
     var GameAreaLinesNumber = @Model.LinesNumber;
     var GameAreaColumnsNumber = @Model.ColumnsNumber;
     var XMin = @Model.XMin;
@@ -225,7 +249,7 @@
 
 <div id="infoPopup" style="display:none">
     <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    @if (Model.Game.Status == GameStatus.Finished || Model.Game.Status == GameStatus.SingleFinished)
+    @if (Model.Game.Status.IsFinish())
     {
         <h2>La partie est terminée</h2>
         <br />
@@ -335,9 +359,9 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <label asp-for="GamePlayerIdentified.Memo"></label>
-                <textarea asp-for="GamePlayerIdentified.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayerIdentified.Memo</textarea>
-                <span asp-validation-for="GamePlayerIdentified.Memo" class="text-danger"></span>
+                <label asp-for="GamePlayer.Memo"></label>
+                <textarea asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
+                <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -355,12 +379,39 @@
             <div class="form-group">
                 <input name="gameId" value="@Model.Game.Id" type="hidden" />
                 <label asp-for="Game.Chat"></label>
-                <textarea id="ChatPopup-textarea" class="form-control" rows="14" disabled>@Model.Game.Chat</textarea>
+                <textarea id="ChatPopup-textarea" class="form-control" rows="10" disabled>@Model.Game.Chat</textarea>
                 <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Marquer comme lu</button>
             </div>
             <div class="form-group">
-                <input name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+                <input id="Chat-input" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
                 <span asp-validation-for="Game.Chat" class="text-danger"></span>
+                <div class="emojis">
+                    @*🥳🤔*@
+                    <span class="emoji">🖐️</span>
+                    <span class="emoji">🤞</span>
+                    <span class="emoji">😀</span>
+                    <span class="emoji">😇</span>
+                    <span class="emoji">😎</span>
+                    <span class="emoji">😉</span>
+                    <span class="emoji">😁</span>
+                    <span class="emoji">😜</span>
+                    <span class="emoji">😂</span>
+                    <span class="emoji">😘</span>
+                    <span class="emoji">😍</span>
+                </div>
+                <div class="emojis">
+                    <span class="emoji">👍</span>
+                    <span class="emoji">👎</span>
+                    <span class="emoji">🧐</span>
+                    <span class="emoji">😕</span>
+                    <span class="emoji">🥺</span>
+                    <span class="emoji">😡</span>
+                    <span class="emoji">🤬</span>
+                    <span class="emoji">😱</span>
+                    <span class="emoji">😤</span>
+                    <span class="emoji">😢</span>
+                    <span class="emoji">😭</span>
+                </div>
                 <button id="ChatPopup-Submit" type="submit" class="btn btn-primary">Envoyer</button>
             </div>
         </form>

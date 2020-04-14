@@ -128,6 +128,24 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public bool DecreaseHelp(int playerId)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            if (player.Help > 0)
+            {
+                player.Help--;
+                Ctx.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public int Delete(IQueryable<Player> guests)
         {
             Ctx.Players.RemoveRange(guests);

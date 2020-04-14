@@ -37,11 +37,17 @@ namespace Controllers
             Player player = PlayerDal.Details(PlayerId);
             var isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
 
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin);
+            bool showPossiblesPositions = false;
+            if (TempData["Help"] != null)
+            {
+                showPossiblesPositions = true;
+            }
+
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin, showPossiblesPositions);
             if (gameViewModel != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)
-                    TempData["ShowBotPlayingInfoPopup"] = true;
+                    ViewData["ShowBotPlayingInfoPopup"] = true;
                 return View(gameViewModel);
             }
             else
@@ -56,7 +62,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult ShowNextToPlay()
         {
-            TempData["ShowInfos"] = true;
+            TempData["ByShowNextToPlay"] = true;
             int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
             return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
         }
@@ -120,7 +126,7 @@ namespace Controllers
                 players.Add(PlayerDal.Details("bot" + i));
 
             CreateGame(players, out int gameId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
@@ -136,7 +142,7 @@ namespace Controllers
                 players.Add(PlayerDal.Details("bot" + iBot));
 
             CreateGame(players, out int gameId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
@@ -148,13 +154,12 @@ namespace Controllers
         {
             List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
             CreateGame(players, out int gameId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
         /// tente de jouer le chromino à l'emplacement choisit par le joueur
         /// </summary>
-        /// <param name="playerId">id du joueur</param>
         /// <param name="gameId">id du jeu</param>
         /// <param name="chrominoId">id du chromino</param>
         /// <param name="x">abscisse (0 étant le Caméléon du premier chromino du jeu)</param>
@@ -180,7 +185,7 @@ namespace Controllers
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
             else if (playReturn == PlayReturn.GameFinish)
                 new GameBI(Ctx, Env, gameId).SetGameFinished();
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
@@ -197,13 +202,12 @@ namespace Controllers
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
             if (playreturn == PlayReturn.GameFinish)
                 new GameBI(Ctx, Env, id).SetGameFinished();
-            return RedirectToAction("Show", "Game", new { id });
+            return RedirectToAction("Show", new { id });
         }
 
         /// <summary>
         /// Pioche un chromino
         /// </summary>
-        /// <param name="playerId">id du joueur</param>
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
@@ -214,20 +218,32 @@ namespace Controllers
             if ((!gamePlayer.PreviouslyDraw || playersNumber == 1) && ChrominoInGameDal.InStack(gameId) > 0)
                 new PlayerBI(Ctx, Env, gameId, PlayerId).TryDrawChromino(out _);
 
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
         /// Passe le tour du joueur
         /// </summary>
-        /// <param name="playerId">Id du joueur</param>
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
         public IActionResult Skip(int gameId)
         {
             new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return RedirectToAction("Show", new { id = gameId });
+        }
+
+        /// <summary>
+        /// Affiche les positions possible pour les chrominos de la main du joueur
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Help(int gameId)
+        {
+            if (PlayerDal.DecreaseHelp(PlayerId))
+                TempData["Help"] = true;
+            return RedirectToAction("Show", new { id = gameId });
         }
 
         /// <summary>
