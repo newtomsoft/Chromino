@@ -3,8 +3,10 @@
 
 @model GameVM
 @{
+    const string classFree = "Free";
+    const string classPossible = "Possible";
     Layout = null;
-    ViewData["Title"] = "Chromino - Jouer !";
+    ViewData["Title"] = "Chromino - Jouer";
     string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
@@ -16,8 +18,6 @@
         memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
         notReadMessages = Model.GamePlayer.NotReadMessages;
     }
-    const string classFree = "Free";
-    const string classPossible = "Possible";
 }
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@
 
 <body>
     <div id="toolbar">
-        <a class="btn btn-toolbar btn-home" asp-area="" asp-controller="Home" asp-action="Index"></a>
+        <a class="btn btn-toolbar btn-home" asp-controller="Home" asp-action="Index"></a>
         <button id="buttonInfo" class="btn btn-toolbar btn-infogame" onclick="ShowPopup('#infoPopup');"></button>
         @if (!Model.OpponenentsAreBots)
         {
@@ -43,12 +43,14 @@
         <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');">
             <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
         </button>
-        @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions)
+        @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions && !Model.Game.Status.IsFinish())
         {
             <form id="FormHelp" asp-action="Help" style="display:none">
                 <input name="gameId" value="@Model.Game.Id" />
             </form>
-            <button type="submit" form="FormHelp" class="btn btn-toolbar btn-helpPlay"></button>
+            <button type="submit" form="FormHelp" class="btn btn-toolbar btn-helpPlay">
+                <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
+            </button>
         }
         @if (!Model.Game.Status.IsFinish())
         {
@@ -86,7 +88,6 @@
             </form>
             <button type="submit" form="FormNextGame" class="btn btn-toolbar btn-nextgame"></button>
         }
-
     </div>
     <br>
     <div id="gameArea">
@@ -109,7 +110,6 @@
                 <div id="PlayerHistoryPseudo">@info</div>
             </div>
         </div>
-
         @for (int j = 0; j < Model.LinesNumber; j++)
         {
             <div id="Line_@j" class="gameLineArea">
@@ -119,7 +119,6 @@
                     ColorCh color = Model.SquaresVM[index].Color;
                     if (color != ColorCh.None)
                     {
-                        string classColor = color.ToString();
                         string classOpenSides = "Square Open";
                         if (Model.SquaresVM[index].OpenRight)
                             classOpenSides += "Right";
@@ -129,6 +128,7 @@
                             classOpenSides += "Left";
                         if (Model.SquaresVM[index].OpenTop)
                             classOpenSides += "Top";
+                        string classColor = color.ToString();
                         <div id="Square_@index" class="@classOpenSides @classColor"></div>
                     }
                     else
@@ -172,7 +172,6 @@
         <input id="FormFlip" name="flip" />
     </form>
 
-
     @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
     {
         <script>
@@ -187,7 +186,6 @@
     <script src="~/js/jquery.draggableTouch.js"></script>
     <script src="~/js/jquery.popupoverlay.min.js"></script>
     <script src="~/js/game.js" asp-append-version="true"></script>
-
     @{
         int horizontal = (int)Orientation.Horizontal;
         int vertical = (int)Orientation.Vertical;
@@ -231,7 +229,6 @@
             move--;
         }
     }
-
     var GameAreaLinesNumber = @Model.LinesNumber;
     var GameAreaColumnsNumber = @Model.ColumnsNumber;
     var XMin = @Model.XMin;
@@ -248,7 +245,7 @@
 </html>
 
 <div id="infoPopup" style="display:none">
-    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+    <div class="img-head img-info" title="info"></div>
     @if (Model.Game.Status.IsFinish())
     {
         <h2>La partie est terminée</h2>
@@ -260,15 +257,15 @@
     }
     @foreach (var pseudoChromino in Model.PseudosChrominos)
     {
-        string pseudo = pseudoChromino.Key;
+        string pseudoHave = pseudoChromino.Key == "Vous" ? "Vous avez" : pseudoChromino.Key + " a";
         if (pseudoChromino.Value > 1)
         {
-            <p>@pseudo : @pseudoChromino.Value chrominos en main</p>
+            <p>@pseudoHave @pseudoChromino.Value chrominos en main</p>
         }
         else if (pseudoChromino.Value == 1)
         {
             <div class="opponentLastChromino">
-                @pseudo &nbsp;
+                @pseudoHave &nbsp;
                 @for (int i = 0; i < 3; i++)
                 {
                     string classOpenSides;
@@ -306,19 +303,19 @@
     <br />
     @if (Model.ChrominosInStack > 1)
     {
-        <p class="infoMineure">Pioche : @Model.ChrominosInStack chrominos</p>
+        <p class="minorInfo">Pioche : @Model.ChrominosInStack chrominos</p>
     }
     else if (Model.ChrominosInStack == 1)
     {
-        <p class="infoMineure">Pioche : 1 chromino</p>
+        <p class="minorInfo">Pioche : 1 chromino</p>
     }
     else
     {
-        <p class="infoMineure">Il n'y a plus de chrominos dans la pioche</p>
+        <p class="minorInfo">Il n'y a plus de chrominos dans la pioche</p>
     }
 </div>
 <div id="errorPopup" style="display:none">
-    <img src="~/image/Error.svg" height="80" width="80" alt="erreur" />
+    <div class="img-head img-error" title="erreur"></div>
     @switch (playReturn)
     {
         case PlayReturn.NotFree:
@@ -346,6 +343,10 @@
         case PlayReturn.NotPlayerTurn:
             <p id="errorMessage">Vous avez déjà joué.</p>
             <p style="text-align:center">Merci d'attendre votre tour.</p>
+            break;
+        case PlayReturn.ErrorGameFinish:
+            <p id="errorMessage">La partie est terminée.</p>
+            <p style="text-align:center">Vous ne pouvez plus y jouer.</p>
             break;
         default:
             <p id="errorMessage"></p>
@@ -386,47 +387,26 @@
                 <input id="Chat-input" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
                 <span asp-validation-for="Game.Chat" class="text-danger"></span>
                 <div class="emojis">
-                    @*🥳🤔*@
-                    <span class="emoji">🖐️</span>
-                    <span class="emoji">🤞</span>
-                    <span class="emoji">😀</span>
-                    <span class="emoji">😇</span>
-                    <span class="emoji">😎</span>
-                    <span class="emoji">😉</span>
-                    <span class="emoji">😁</span>
-                    <span class="emoji">😜</span>
-                    <span class="emoji">😂</span>
-                    <span class="emoji">😘</span>
-                    <span class="emoji">😍</span>
+                    <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😉</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span><span class="emoji">😘</span><span class="emoji">😍</span>
                 </div>
                 <div class="emojis">
-                    <span class="emoji">👍</span>
-                    <span class="emoji">👎</span>
-                    <span class="emoji">🧐</span>
-                    <span class="emoji">😕</span>
-                    <span class="emoji">🥺</span>
-                    <span class="emoji">😡</span>
-                    <span class="emoji">🤬</span>
-                    <span class="emoji">😱</span>
-                    <span class="emoji">😤</span>
-                    <span class="emoji">😢</span>
-                    <span class="emoji">😭</span>
+                    <span class="emoji">🤞</span><span class="emoji">👎</span><span class="emoji">🧐</span><span class="emoji">😕</span><span class="emoji">🥺</span><span class="emoji">😡</span><span class="emoji">🤬</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
                 </div>
                 <button id="ChatPopup-Submit" type="submit" class="btn btn-primary">Envoyer</button>
             </div>
         </form>
     </div>
 </div>
-<div id="botPlayingInfoPopup" style="display:none">
-    <img src="~/image/Info.svg" height="65" width="65" alt="info" />
-    <p>L'ordinateur est en train de jouer.</p>
+<div id="botPlayingInfoPopup" class="popup-wait" style="display:none">
+    <div class="img-head img-info" title="info"></div>
+    <p>Le bot est en train de jouer.</p>
     <p>Merci de patienter quelques secondes...</p>
-    <img src="~/image/Wait.gif" height="65" alt="patientez" />
+    <div class="wait"></div>
 </div>
 @if (!Model.NoTips)
 {
     <div id="playingInfoPopup" style="display:none">
-        <img src="~/image/Info.svg" height="65" width="65" alt="info" />
+        <div class="img-head img-info" title="info"></div>
         <p>Vous avez posé un chromino dans le jeu sans le valider.</p>
         <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
         <p>Ou en appuyant sur le chromino jusqu'au flash.</p>

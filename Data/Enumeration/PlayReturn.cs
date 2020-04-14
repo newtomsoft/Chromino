@@ -11,6 +11,7 @@
         DrawChromino,
         SkipTurn,
         GameFinish,
+        ErrorGameFinish,
     }
 
     public static class PlayReturnMethods
@@ -24,6 +25,7 @@
                 case PlayReturn.NotMinTwoSameColors:
                 case PlayReturn.DifferentColorsAround:
                 case PlayReturn.NotPlayerTurn:
+                case PlayReturn.ErrorGameFinish:
                     return true;
                 default:
                     return false;

@@ -38,7 +38,7 @@ namespace Data.DAL
         /// </summary>
         public void CreateChrominos()
         {
-            if (!Ctx.Chrominos.Any())
+            if (Ctx.Chrominos.Count() != 80)
             {
                 List<Chromino> chrominos = new List<Chromino>
                 {

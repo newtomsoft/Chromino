@@ -15,7 +15,7 @@
             switch (gameStatus)
             {
                 case GameStatus.Finished:
-                case GameStatus.SingleInProgress:
+                case GameStatus.SingleFinished:
                     return true;
                 default:
                     return false;

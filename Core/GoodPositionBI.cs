@@ -294,6 +294,7 @@ namespace Core
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x, y - 3), Orientation = Orientation.Vertical, Reversed = false });
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x + 1, y - 3), Orientation = Orientation.Vertical, Reversed = false });
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x - 2, y - 2), Orientation = Orientation.Vertical, Reversed = false });
+                positionsFilter1.Add(new Position { Coordinate = new Coordinate(x + 2, y - 2), Orientation = Orientation.Vertical, Reversed = false });
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x + 2, y - 1), Orientation = Orientation.Vertical, Reversed = false });
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x - 2, y), Orientation = Orientation.Vertical, Reversed = false });
 

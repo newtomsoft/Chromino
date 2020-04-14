@@ -22,12 +22,12 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private const int HelpNumber = 5;
         private readonly SignInManager<Player> _signInManager;
         private readonly UserManager<Player> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
-
         public RegisterModel(
             UserManager<Player> userManager,
             SignInManager<Player> signInManager,
@@ -44,9 +44,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
-
         public string ReturnUrl { get; set; }
-
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel //: IValidatableObject
@@ -96,7 +94,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                     }
                 }
 
-                var user = new Player { UserName = Input.PlayerName, Email = Input.Email };
+                var user = new Player { UserName = Input.PlayerName, Email = Input.Email, Help = HelpNumber };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

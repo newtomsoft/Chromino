@@ -125,6 +125,8 @@ namespace ChrominoBI
                     return PlayReturn.NotPlayerTurn;
                 else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
                     return PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
+                else if (GameDal.GetStatus(chrominoInGame.GameId).IsFinish())
+                    return PlayReturn.ErrorGameFinish;
             }
 
             List<Square> squaresInGame = SquareDal.List(GameId);
@@ -233,15 +235,9 @@ namespace ChrominoBI
             List<Player> players = GamePlayerDal.Players(GameId);
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
             foreach (Player player in players)
-            {
                 gamePlayers.Add(GamePlayerDal.Details(GameId, player.Id));
-            }
-
-            if (gamePlayers.Count == 1)
-            {
-                gamePlayers[0].Turn = true;
-            }
-            else
+            
+            if (gamePlayers.Count != 1)
             {
                 GamePlayer gamePlayer = (from gp in gamePlayers
                                          where gp.Turn == true
@@ -271,6 +267,10 @@ namespace ChrominoBI
                     gamePlayers[0].Turn = true;
 
                 gamePlayer.Turn = false;
+            }
+            else
+            {
+                gamePlayers[0].Turn = true;
             }
             GameDal.UpdateDate(GameId);
             Ctx.SaveChanges();

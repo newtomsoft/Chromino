@@ -39,9 +39,7 @@ namespace Controllers
 
             bool showPossiblesPositions = false;
             if (TempData["Help"] != null)
-            {
                 showPossiblesPositions = true;
-            }
 
             GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin, showPossiblesPositions);
             if (gameViewModel != null)
@@ -121,10 +119,8 @@ namespace Controllers
                 TempData["Players"] = pseudos;
                 return RedirectToAction("AgainstFriends", "Games", "newgame");
             }
-
             for (int i = 1; i < botsNumber + 1; i++)
                 players.Add(PlayerDal.Details("bot" + i));
-
             CreateGame(players, out int gameId);
             return RedirectToAction("Show", new { id = gameId });
         }
@@ -140,7 +136,6 @@ namespace Controllers
             List<Player> players = new List<Player>(botsNumber + 1) { PlayerDal.Details(PlayerId) };
             for (int iBot = 1; iBot <= botsNumber; iBot++)
                 players.Add(PlayerDal.Details("bot" + iBot));
-
             CreateGame(players, out int gameId);
             return RedirectToAction("Show", new { id = gameId });
         }
@@ -180,6 +175,7 @@ namespace Controllers
                 Orientation = orientation,
                 Flip = flip,
             };
+
             PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot

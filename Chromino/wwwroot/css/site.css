@@ -154,16 +154,54 @@ a {
     border-color: #1861ac;
 }
 
-.error {
+.text-error {
     color: red;
 }
 
-.infoMineure {
+.minorInfo {
     font-size: small;
 }
 
 .winner {
-    text-align: center !important;
+    font-weight: bold;
+}
+
+.popup-wait {
+    display: flex;
+    justify-content: center;
+}
+
+.wait {
+    height: 70px;
+    width: 70px;
+    background-image: url('/image/Wait.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.img-head {
+    height: 60px;
+    width: 60px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.img-info {
+    background-image: url('/image/Info.svg');
+}
+
+.img-error {
+    background-image: url('/image/Error.svg');
 }
 
 .popup_content {
@@ -177,7 +215,6 @@ a {
 
     .popup_content img {
         margin: auto;
-        align-content: center;
         display: grid;
     }
 
@@ -219,10 +256,11 @@ a {
 
 .emojis {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .emoji {
+    min-width: 5px;
     cursor: copy;
     font-size: larger;
     flex-shrink: 1;
