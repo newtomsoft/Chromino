@@ -17,7 +17,8 @@ namespace Data
         public DbSet<ChrominoInGame> ChrominosInGame { get; set; }
         public DbSet<GoodPosition> GoodPositions { get; set; }
         public DbSet<GoodPositionLevel> GoodPositionsLevel { get; set; }
-
+        public DbSet<Tip> Tips { get; set; }
+        public DbSet<TipOff> TipsOff { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
@@ -26,5 +27,10 @@ namespace Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
+
+        //protected new void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Tip>().HasIndex(x => x.Name).IsUnique();
+        //}
     }
 }

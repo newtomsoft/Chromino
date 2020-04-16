@@ -4,17 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Chromino</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <partial name="_IncludeCss" />
 </head>
 <body>
-    <noscript>
-        <p class="noscript">Merci d'activer Javascript afin de pouvoir jouer aux Chrominos</p>
-    </noscript>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/swipRefresh.js" asp-append-version="true"></script>
+    <partial name="_NoScript" />
+    <partial name="_IncludeJs" />
     @RenderSection("Scripts", required: false)
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">

@@ -76,7 +76,7 @@ namespace Data.DAL
             return result;
         }
 
-        public object Delete(IQueryable<int> gamesIdToDelete)
+        public int Delete(IQueryable<int> gamesIdToDelete)
         {
             var result = from s in Ctx.Squares
                          where gamesIdToDelete.Contains(s.GameId)

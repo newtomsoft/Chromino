@@ -31,11 +31,13 @@ namespace Batch
         {
             Methods = new Dictionary<string, Action>
             {
+                { "AddTips", AddTips },
                 { "DeleteGuests", DeleteGuests },
                 { "DeleteGamesWithoutPlayerTurn", DeleteGamesWithoutPlayerTurn },
                 { "DeleteGamesWithOnlyBots", DeleteGamesWithOnlyBots },
                 { "PlayBots", PlayBots },
                 { "ClearTurnWhenGameFinish", ClearTurnWhenGameFinish},
+                { "DeleteOldSinglesGames", DeleteOldSinglesGames},
             };
 
             Init(args);
@@ -86,14 +88,23 @@ namespace Batch
             Console.WriteLine("Suppression des invités et données associées");
             TimeSpan guestLifeTime = new TimeSpan(6, 0, 0);
             var guestsToDelete = PlayerDal.ListGuestWithOldGames(guestLifeTime, out var gamesIdToDelete);
-            Console.WriteLine($"  Suppression de {ChrominoInGameDal.Delete(gamesIdToDelete)} ChrominosInGame ok");
-            Console.WriteLine($"  Suppression de {ChrominoInHandDal.Delete(gamesIdToDelete)} ChrominosInHand ok");
-            Console.WriteLine($"  Suppression de {ChrominoInHandLastDal.Delete(gamesIdToDelete)} ChrominosInHandLast ok");
-            Console.WriteLine($"  Suppression de {GamePlayerDal.Delete(gamesIdToDelete)} GamePlayer ok");
-            Console.WriteLine($"  Suppression de {GoodPositionDal.Delete(gamesIdToDelete)} GoodPosition et GoodPositionLevel ok");
-            Console.WriteLine($"  Suppression de {SquareDal.Delete(gamesIdToDelete)} Square ok");
-            Console.WriteLine($"  Suppression de {GameDal.Delete(gamesIdToDelete)} Game ok");
-            Console.WriteLine($"  Suppression de {PlayerDal.Delete(guestsToDelete)} invités ok");
+            int nbDelete;
+            if ((nbDelete = ChrominoInGameDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} ChrominosInGame ok");
+            if ((nbDelete = ChrominoInHandDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} ChrominosInHand ok");
+            if ((nbDelete = ChrominoInHandLastDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} ChrominosInHandLast ok");
+            if ((nbDelete = GamePlayerDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} GamePlayer ok");
+            if ((nbDelete = GoodPositionDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} GoodPosition et GoodPositionLevel ok");
+            if ((nbDelete = SquareDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} Square ok");
+            if ((nbDelete = GameDal.Delete(gamesIdToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} Game ok");
+            if ((nbDelete = PlayerDal.Delete(guestsToDelete)) > 0)
+                Console.WriteLine($"  Suppression de {nbDelete} invités ok");
         }
         private static void DeleteGamesWithoutPlayerTurn()
         {
@@ -192,8 +203,8 @@ namespace Batch
             Console.WriteLine();
             Console.WriteLine("erase des tours des joueurs pour parties terminées");
             var gamesPlayers = from gp in Ctx.GamesPlayers
-                               join g in Ctx.Games on gp.GameId equals g.Id  
-                               where g.Status == GameStatus.Finished
+                               join g in Ctx.Games on gp.GameId equals g.Id
+                               where g.Status == GameStatus.Finished && gp.Turn
                                select gp;
 
             foreach (GamePlayer gamePlayer in gamesPlayers)
@@ -203,5 +214,48 @@ namespace Batch
             }
             Ctx.SaveChanges();
         }
+
+        private static void DeleteOldSinglesGames()
+        {
+
+
+        }
+
+        private static void AddTips()
+        {
+            Console.WriteLine();
+            Console.WriteLine("ajout des tips");
+
+            Tip validateChromino = new Tip
+            {
+                TipName = TipName.HowValidateChromino,
+                Description = "<p> Vous avez posé un chromino dans le jeu sans le valider.</p><p> Pensez à le valider en appuyant sur le bouton<button id='buttonInfoForPlaying' class='btn btn-toolbar btn-play' onclick='PlayChromino()'></button></p><p>Ou en appuyant sur le chromino jusqu'au flash.</p>",
+            };
+
+            Tip howMoveChromino = new Tip
+            {
+                TipName = TipName.HowMoveChromino,
+                Description = "<p> Vous devez déplacer un chromino de votre main dans le jeu.</p><p>Avec la souris, cliquez sur un chromino et déplacer la tout en maintenant appuyer le bouton et relacher le à l'endroit voulu.</p><p>Ou avec un écran tactile, appuyer avec le doigt sur le chromino et glisser le.</p>",
+            };
+
+            List<Tip> tips = new List<Tip> { validateChromino, howMoveChromino };
+            foreach (var tip in tips)
+            {
+                int tipId = (from t in Ctx.Tips
+                             where t.TipName == tip.TipName
+                             select t.Id).FirstOrDefault();
+                if (tipId == 0)
+                {
+                    Ctx.Tips.Add(tip);
+                    Ctx.SaveChanges();
+                    Console.WriteLine($"  tip {tip.TipName} ajouté");
+                }
+                else
+                {
+                    Console.WriteLine($"  tip {tip.TipName} déjà présent en base");
+                }
+            }
+        }
     }
 }
+

@@ -15,18 +15,18 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.PlayerName"></label>
-                    <input asp-for="Input.PlayerName" class="form-control" />
+                    <input asp-for="Input.PlayerName" class="form-control" autocomplete="username" />
                     <span asp-validation-for="Input.PlayerName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <div class="checkbox">
                         <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" checked/>
+                            <input asp-for="Input.RememberMe" checked />
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
