@@ -26,11 +26,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <partial name="_IncludeCss" />
 </head>
-
 <body>
+    <partial name="_NoScript" />
     <div id="toolbar">
         <a class="btn btn-toolbar btn-home" asp-controller="Home" asp-action="Index"></a>
         <button id="buttonInfo" class="btn btn-toolbar btn-infogame" onclick="ShowPopup('#infoPopup');"></button>
@@ -180,29 +179,48 @@
             }
         </script>
     }
+    <partial name="_IncludeJs" />
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/jquery.draggableTouch.js"></script>
-    <script src="~/js/jquery.popupoverlay.min.js"></script>
-    <script src="~/js/game.js" asp-append-version="true"></script>
-    <script src="~/js/swipRefresh.js"></script>
-    
     @{
-        int horizontal = (int)Orientation.Horizontal;
-        int vertical = (int)Orientation.Vertical;
+        const int horizontal = (int)Orientation.Horizontal;
+        const int vertical = (int)Orientation.Vertical;
         bool showInfoPopup = false;
         bool showBotPlayingInfoPopup = false;
         if (!Model.ShowPossiblesPositions && (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0)))))
             showInfoPopup = true;
         else if (ViewData["ShowBotPlayingInfoPopup"] != null)
             showBotPlayingInfoPopup = true;
+
+
+        string HowValidateChrominoDescription = Model.TipsOn.Where(x => x.TipName == TipName.HowValidateChromino).Select(x => x.Description).FirstOrDefault();
+        string HowMoveChrominoDescription = Model.TipsOn.Where(x => x.TipName == TipName.HowMoveChromino).Select(x => x.Description).FirstOrDefault();
+
+        int HowValidateChrominoId = Model.TipsOn.Where(x => x.TipName == TipName.HowValidateChromino).Select(x => x.Id).FirstOrDefault();
+        int HowMoveChrominoId = Model.TipsOn.Where(x => x.TipName == TipName.HowMoveChromino).Select(x => x.Id).FirstOrDefault();
+
     }
 
     <script>
     var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
     @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
     var ThisPlayerTurn = @thisPlayerTurn;
+    var GameAreaLinesNumber = @Model.LinesNumber;
+    var GameAreaColumnsNumber = @Model.ColumnsNumber;
+    var XMin = @Model.XMin;
+    var YMin = @Model.YMin;
+    var Horizontal = @horizontal;
+    var Vertical = @vertical;
+    var NotReadMessages = @notReadMessages;
+    var MemosNumber = @memosNumbers;
+    var PlayReturn = "@playReturn.ToString()";
+    var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
+    var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
+    var HowValidateChrominoDescription = "@Html.Raw(HowValidateChrominoDescription)";
+    var HowValidateChrominoId = @HowValidateChrominoId;
+    var HowMoveChrominoDescription = "@Html.Raw(HowMoveChrominoDescription)";
+    var HowMoveChrominoId = @HowMoveChrominoId;
+
+        HowMoveChrominoId
     var Squares = new Array;
     var Pseudos = new Array;
     @{
@@ -231,17 +249,6 @@
             move--;
         }
     }
-    var GameAreaLinesNumber = @Model.LinesNumber;
-    var GameAreaColumnsNumber = @Model.ColumnsNumber;
-    var XMin = @Model.XMin;
-    var YMin = @Model.YMin;
-    var Horizontal = @horizontal;
-    var Vertical = @vertical;
-    var NotReadMessages = @notReadMessages;
-    var MemosNumber = @memosNumbers;
-    var PlayReturn = "@playReturn.ToString()";
-    var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
-    var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
     </script>
 </body>
 </html>
@@ -405,17 +412,13 @@
     <p>Merci de patienter quelques secondes...</p>
     <div class="wait"></div>
 </div>
-@if (!Model.NoTips)
-{
-    <div id="playingInfoPopup" style="display:none">
-        <div class="img-head img-info" title="info"></div>
-        <p>Vous avez posé un chromino dans le jeu sans le valider.</p>
-        <p>Pensez à le valider en appuyant sur le bouton <button id="buttonInfoForPlaying" class="btn btn-toolbar btn-play" onclick="PlayChromino()"></button></p>
-        <p>Ou en appuyant sur le chromino jusqu'au flash.</p>
-        <form id="FormDisableTips" asp-action="DisableTips" asp-controller="Player">
-            <input name="gameId" value="@Model.Game.Id" type="hidden" />
-            <input id="dontShowTips" name="dontShowTips" type="checkbox" />Ne plus afficher
-        </form>
-        <button class="btn btn-primary" onclick="ClosePopupTips('#playingInfoPopup', '#dontShowTips');">Ok</button>
-    </div>
-}
+<div id="TipPopup" style="display:none">
+    <div class="img-head img-info" title="info"></div>
+    <div id="TipHtml"></div>
+    <form id="FormDisableTip" asp-action="Off" asp-controller="Tip">
+        <input name="gameId" value="@Model.Game.Id" type="hidden" />
+        <input id="TipId" name="tipId" type="hidden" />
+        <input id="DontShowTip" type="checkbox" />Ne plus afficher
+    </form>
+    <button class="btn btn-primary" onclick="ClosePopupTip('#TipPopup', '#DontShowTip');">Ok</button>
+</div>

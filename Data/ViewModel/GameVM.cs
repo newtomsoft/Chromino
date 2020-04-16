@@ -29,11 +29,12 @@ namespace Data.ViewModel
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
         public List<string> Pseudos { get; set; }
         public bool OpponenentsAreBots { get; set; }
-        public bool NoTips { get; set; }
         public List<PossiblesChrominoVM> PossiblesChrominosVM { get; set; }
         public bool ShowPossiblesPositions { get; set; }
+        public List<TipName> TipsNamesOn { get; set; }
+        public List<Tip> TipsOn { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, bool noTips, List<GoodPosition> goodPositions, bool showPossiblesPositions)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<TipName> tipsNamesOn, List<Tip> tipsOn)
         {
             Player = player;
             OpponenentsAreBots = opponenentsAreBots;
@@ -41,7 +42,6 @@ namespace Data.ViewModel
             PlayerTurn = playerTurn;
             GamePlayerTurn = gamePlayerTurn;
             GamePlayer = gamePlayer;
-            NoTips = noTips;
             ChrominosInStack = chrominosInStackNumber;
             BotsId = botsId;
             XMin = squares.Select(g => g.X).Min() - 2; // +- 2 pour marge permettant de poser un chromino sur un bord
@@ -85,6 +85,9 @@ namespace Data.ViewModel
             if (showPossiblesPositions)
                 foreach (GoodPosition goodPosition in goodPositions)
                     PossiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, XMin, YMin));
+
+            TipsNamesOn = tipsNamesOn;
+            TipsOn = tipsOn;
         }
 
         private int IndexGridState(int x, int y)

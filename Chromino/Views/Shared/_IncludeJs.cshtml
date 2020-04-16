@@ -1,0 +1,13 @@
+﻿<environment include="Development, Staging">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/swipRefresh.js" asp-append-version="true"></script>
+</environment>
+<environment include="Production">
+    <script src="https://code.jquery.com/jquery-latest.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+</environment>

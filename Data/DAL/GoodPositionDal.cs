@@ -87,7 +87,7 @@ namespace Data.DAL
             return ComputedChrominos;
         }
 
-        public object Delete(IQueryable<int> gamesIdToDelete)
+        public int Delete(IQueryable<int> gamesIdToDelete)
         {
             var resultGp = from gp in Ctx.GoodPositions
                          where gamesIdToDelete.Contains(gp.GameId)

@@ -14,14 +14,22 @@ a {
         text-decoration: none;
     }
 
-p.noscipt {
-    font-size: xx-large;
-    color: darkred;
-    background-color: antiquewhite;
-}
-
 .not-available {
     opacity: 0.33;
+}
+
+.noscript {
+    background-color: yellow;
+    font-size: xx-large;
+    text-align: center;
+    color: red;
+    width: 80%;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 60px;
 }
 
 .refresh {

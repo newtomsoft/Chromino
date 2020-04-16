@@ -17,7 +17,7 @@ namespace Data.Core
         /// <summary>
         /// DbContext du jeu
         /// </summary>
-        private readonly Context Ctx;
+        private Context Ctx { get; }
 
         /// <summary>
         /// variables d'environnement
@@ -44,14 +44,15 @@ namespace Data.Core
         /// <summary>
         /// les différentes Dal utilisées du context 
         /// </summary>
-        private readonly ChrominoInGameDal ChrominoInGameDal;
-        private readonly ChrominoInHandDal ChrominoInHandDal;
-        private readonly ChrominoDal ChrominoDal;
-        private readonly SquareDal SquareDal;
-        private readonly PlayerDal PlayerDal;
-        private readonly GamePlayerDal GamePlayerDal;
-        private readonly GameDal GameDal;
-        private readonly GoodPositionDal GoodPositionDal;
+        private ChrominoInGameDal ChrominoInGameDal { get; }
+        private ChrominoInHandDal ChrominoInHandDal { get; }
+        private ChrominoDal ChrominoDal { get; }
+        private SquareDal SquareDal { get; }
+        private PlayerDal PlayerDal { get; }
+        private GamePlayerDal GamePlayerDal { get; }
+        private GameDal GameDal { get; }
+        private GoodPositionDal GoodPositionDal { get; }
+        private TipDal TipDal { get; }
 
         public GameBI(Context ctx, IWebHostEnvironment env, int gameId)
         {
@@ -66,6 +67,7 @@ namespace Data.Core
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
             GoodPositionDal = new GoodPositionDal(ctx);
+            TipDal = new TipDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
             Players = GamePlayerDal.Players(gameId);
             GamePlayers = new List<GamePlayer>();
@@ -135,12 +137,13 @@ namespace Data.Core
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, playerId);
                 List<Square> squares = SquareDal.List(GameId);
                 List<int> botsId = PlayerDal.BotsId();
-                bool noTips = PlayerDal.Details(playerId).NoTips;
                 List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(GameId);
                 Game game = GameDal.Details(GameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId);
-                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, noTips, goodPositions, showPossiblesPositions);
+                List<TipName> tipsNamesOn = TipDal.ListNamesOn(playerId);
+                List<Tip> tipsOn = TipDal.ListOn(playerId);
+                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tipsNamesOn, tipsOn);
                 return gameViewModel;
             }
             else return null;

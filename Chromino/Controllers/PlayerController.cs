@@ -22,13 +22,6 @@ namespace Controllers
             SignInManager = signInManager;
         }
 
-        [HttpPost]
-        public IActionResult DisableTips(int gameId, string dontShowTips)
-        {
-            PlayerDal.DisableTips(PlayerId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
-        }
-
         public async Task<IActionResult> NoAccountAsync()
         {
             string guestName = "invit";
