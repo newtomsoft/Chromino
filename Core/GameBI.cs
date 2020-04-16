@@ -123,9 +123,11 @@ namespace Data.Core
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerTurn.Id);
                 else
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
-                if (GameDal.IsFinished(GameId) && !GamePlayerDal.GetViewFinished(GameId, playerId))
+
+                if (GameDal.IsFinished(GameId) && !GamePlayerDal.IsViewFinished(GameId, playerId))
                 {
                     GamePlayerDal.SetViewFinished(GameId, playerId);
+                    PlayerDal.IncreaseHelp(playerId, 1);
                     if (GamePlayerDal.GetWon(GameId, playerId) == null)
                         GamePlayerDal.SetWon(GameId, playerId, false);
                 }

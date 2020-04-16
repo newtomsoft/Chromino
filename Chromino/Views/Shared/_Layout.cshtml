@@ -9,11 +9,12 @@
 </head>
 <body>
     <noscript>
-        <p>Merci d'activer Javascript afin de pouvoir jouer aux Chrominos</p>
+        <p class="noscript">Merci d'activer Javascript afin de pouvoir jouer aux Chrominos</p>
     </noscript>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/swipRefresh.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -36,7 +37,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div id="DivTouch" class="container" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

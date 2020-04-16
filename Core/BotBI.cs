@@ -36,7 +36,10 @@ namespace ChrominoBI
                 if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playreturn))
                     return playreturn;
                 else
-                    return SkipTurn();
+                {
+                    SkipTurn();
+                    return PlayReturn.SkipTurn;
+                }
             }
             // le bot a un ou des chriminos pouvant être posés
             List<Square> squares = SquareDal.List(GameId);
@@ -90,16 +93,14 @@ namespace ChrominoBI
             else if (goodChrominos.Count != 0)
                 playReturn = Play(goodChrominos[0]);
             else
-                playReturn = SkipTurn();
-
+            {
+                SkipTurn();
+                playReturn = PlayReturn.SkipTurn;
+            }
             if (playReturn.IsError())
                 GoodPositionBI.RemoveBadEntrie(goodChrominos[0], PlayerId);
             else if (playReturn == PlayReturn.Ok && Env != null)
                 new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
-
-            if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))
-                playReturn = PlayReturn.GameFinish;
-
             return playReturn;
         }
 

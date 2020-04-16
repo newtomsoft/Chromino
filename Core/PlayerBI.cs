@@ -75,14 +75,12 @@ namespace ChrominoBI
         /// Indique que la partie est terminée si c'est au dernier joueur du tour de jouer, 
         /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
         /// </summary>
-        public PlayReturn SkipTurn()
+        public void SkipTurn()
         {
             GamePlayerDal.SetPass(GameId, PlayerId, true);
+            if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
+                new GameBI(Ctx, Env, GameId).SetGameFinished();
             ChangePlayerTurn();
-            if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId)))
-                return PlayReturn.GameFinish;
-            else
-                return PlayReturn.SkipTurn;
         }
 
         /// <summary>
@@ -191,7 +189,7 @@ namespace ChrominoBI
                     ChrominoInHandLastDal.Delete(GameId, playerId);
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
                     {
-                        PlayerDal.IncreaseWin(playerId);
+                        PlayerDal.IncreaseWinAndHelp(playerId);
                         GamePlayerDal.SetWon(GameId, playerId);
                     }
                     else
@@ -209,7 +207,11 @@ namespace ChrominoBI
                         Ctx.SaveChanges();
                     }
                     if (IsRoundLastPlayer() || !IsNextPlayersCanWin())
+                    {
+                        new GameBI(Ctx, Env, GameId).SetGameFinished();
+                        GamePlayerDal.SetViewFinished(GameId, PlayerId);
                         playreturn = PlayReturn.GameFinish;
+                    }
                 }
                 else
                 {
@@ -219,7 +221,12 @@ namespace ChrominoBI
                 }
 
                 if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))
+                {
+                    new GameBI(Ctx, Env, GameId).SetGameFinished();
+                    GamePlayerDal.SetViewFinished(GameId, PlayerId);
                     playreturn = PlayReturn.GameFinish;
+                }
+
                 if (Env != null)
                     new PictureFactoryTool(GameId, Path.Combine(Env.WebRootPath, "image/game"), Ctx).MakeThumbnail();
                 ChangePlayerTurn();
@@ -228,7 +235,8 @@ namespace ChrominoBI
         }
 
         /// <summary>
-        /// change le joueur dont c'est le tour de jouer
+        /// Change le joueur dont c'est le tour de jouer.
+        /// Si la partie est finie, ce n'est plus le tour d'aucun joueur
         /// </summary>
         public void ChangePlayerTurn()
         {
@@ -236,9 +244,10 @@ namespace ChrominoBI
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
             foreach (Player player in players)
                 gamePlayers.Add(GamePlayerDal.Details(GameId, player.Id));
-            
+
             if (gamePlayers.Count != 1)
             {
+
                 GamePlayer gamePlayer = (from gp in gamePlayers
                                          where gp.Turn == true
                                          select gp).FirstOrDefault();
@@ -249,24 +258,31 @@ namespace ChrominoBI
                                   orderby gp.Id descending
                                   select gp).FirstOrDefault();
                 }
-                gamePlayer.PreviouslyDraw = false;
-                bool selectNext = false;
-                bool selected = false;
-                foreach (GamePlayer currentGamePlayer in gamePlayers)
+                if (GameDal.IsFinished(GameId))
                 {
-                    if (selectNext)
-                    {
-                        currentGamePlayer.Turn = true;
-                        selected = true;
-                        break;
-                    }
-                    if (gamePlayer.Id == currentGamePlayer.Id)
-                        selectNext = true;
+                    gamePlayer.Turn = false;
                 }
-                if (!selected)
-                    gamePlayers[0].Turn = true;
+                else
+                {
+                    gamePlayer.PreviouslyDraw = false;
+                    bool selectNext = false;
+                    bool selected = false;
+                    foreach (GamePlayer currentGamePlayer in gamePlayers)
+                    {
+                        if (selectNext)
+                        {
+                            currentGamePlayer.Turn = true;
+                            selected = true;
+                            break;
+                        }
+                        if (gamePlayer.Id == currentGamePlayer.Id)
+                            selectNext = true;
+                    }
+                    if (!selected)
+                        gamePlayers[0].Turn = true;
 
-                gamePlayer.Turn = false;
+                    gamePlayer.Turn = false;
+                }
             }
             else
             {

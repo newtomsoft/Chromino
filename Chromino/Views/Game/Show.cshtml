@@ -34,15 +34,6 @@
     <div id="toolbar">
         <a class="btn btn-toolbar btn-home" asp-controller="Home" asp-action="Index"></a>
         <button id="buttonInfo" class="btn btn-toolbar btn-infogame" onclick="ShowPopup('#infoPopup');"></button>
-        @if (!Model.OpponenentsAreBots)
-        {
-            <button class="btn btn-toolbar btn-chat" onclick="ShowPopup('#ChatPopup');">
-                <p id="NotifChat" class="notification notification-red" style="display:none"></p>
-            </button>
-        }
-        <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');">
-            <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
-        </button>
         @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions && !Model.Game.Status.IsFinish())
         {
             <form id="FormHelp" asp-action="Help" style="display:none">
@@ -52,6 +43,15 @@
                 <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
             </button>
         }
+        @if (!Model.OpponenentsAreBots)
+        {
+            <button class="btn btn-toolbar btn-chat" onclick="ShowPopup('#ChatPopup');">
+                <p id="NotifChat" class="notification notification-red" style="display:none"></p>
+            </button>
+        }
+        <button class="btn btn-toolbar btn-memo" onclick="ShowPopup('#MemoPopup');">
+            <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
+        </button>
         @if (!Model.Game.Status.IsFinish())
         {
             if (Model.PlayerTurn.Id == Model.Player.Id)
@@ -90,7 +90,7 @@
         }
     </div>
     <br>
-    <div id="gameArea">
+    <div id="gameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
         @{
             string info = "";
             List<int> PossibleSquareIndexes = new List<int>();
@@ -186,6 +186,8 @@
     <script src="~/js/jquery.draggableTouch.js"></script>
     <script src="~/js/jquery.popupoverlay.min.js"></script>
     <script src="~/js/game.js" asp-append-version="true"></script>
+    <script src="~/js/swipRefresh.js"></script>
+    
     @{
         int horizontal = (int)Orientation.Horizontal;
         int vertical = (int)Orientation.Vertical;
@@ -387,10 +389,10 @@
                 <input id="Chat-input" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
                 <span asp-validation-for="Game.Chat" class="text-danger"></span>
                 <div class="emojis">
-                    <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😉</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span><span class="emoji">😘</span><span class="emoji">😍</span>
+                    <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
                 </div>
                 <div class="emojis">
-                    <span class="emoji">🤞</span><span class="emoji">👎</span><span class="emoji">🧐</span><span class="emoji">😕</span><span class="emoji">🥺</span><span class="emoji">😡</span><span class="emoji">🤬</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
+                    <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
                 </div>
                 <button id="ChatPopup-Submit" type="submit" class="btn btn-primary">Envoyer</button>
             </div>

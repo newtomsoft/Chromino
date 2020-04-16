@@ -31,9 +31,9 @@ namespace Data.DAL
                                  where p.UserName.StartsWith("invit") && g.PlayedDate < ToCompare
                                  select new { guests = p, gamesId = g.Id };
 
-            var allGuests =      from p in Ctx.Players
-                                 where p.UserName.StartsWith("invit")
-                                 select p;
+            var allGuests = from p in Ctx.Players
+                            where p.UserName.StartsWith("invit")
+                            select p;
 
             var guestsWithGame = from p in Ctx.Players
                                  join gp in Ctx.GamesPlayers on p.Id equals gp.PlayerId
@@ -99,13 +99,24 @@ namespace Data.DAL
             return player.Bot;
         }
 
-        public void IncreaseWin(int playerId)
+        public void IncreaseWinAndHelp(int playerId)
         {
             Player player = (from p in Ctx.Players
                              where p.Id == playerId
                              select p).FirstOrDefault();
 
             player.WonGames++;
+            player.Help += 3;
+            Ctx.SaveChanges();
+        }
+
+        public void IncreaseHelp(int playerId, int value)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            player.Help += value;
             Ctx.SaveChanges();
         }
 
@@ -153,3 +164,4 @@ namespace Data.DAL
         }
     }
 }
+

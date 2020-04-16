@@ -177,7 +177,7 @@ namespace Data.DAL
 
             var games = (from gp in Ctx.GamesPlayers
                          join g in firstFilter on gp.GameId equals g.Id
-                         where gp.PlayerId == playerId && gp.Turn && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
+                         where gp.PlayerId == playerId && (gp.Turn || g.Status == GameStatus.Finished && !gp.ViewFinished) && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
                          orderby g.PlayedDate
                          select g).AsNoTracking().ToHashSet().ToList();
 
@@ -210,6 +210,12 @@ namespace Data.DAL
                                       select g).AsNoTracking().ToList();
 
             return singleGames;
+        }
+
+        public IQueryable<GamePlayer> List()
+        {
+            return from gp in Ctx.GamesPlayers
+                   select gp;
         }
 
         public List<Game> SingleGamesInProgress(int playerId)
@@ -269,7 +275,7 @@ namespace Data.DAL
             return previouslyDraw;
         }
 
-        public bool GetViewFinished(int gameId, int playerId)
+        public bool IsViewFinished(int gameId, int playerId)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId

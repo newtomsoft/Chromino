@@ -25,36 +25,6 @@ namespace Controllers
         }
 
         /// <summary>
-        /// affiche une partie 
-        /// </summary>
-        /// <param name="id">Id de la partie</param>
-        /// <returns></returns>
-        public async Task<IActionResult> ShowAsync(int id)
-        {
-            if (id == 0)
-                return RedirectToAction("GameNotFound");
-
-            Player player = PlayerDal.Details(PlayerId);
-            var isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
-
-            bool showPossiblesPositions = false;
-            if (TempData["Help"] != null)
-                showPossiblesPositions = true;
-
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin, showPossiblesPositions);
-            if (gameViewModel != null)
-            {
-                if (GamePlayerDal.PlayerTurn(id).Bot)
-                    ViewData["ShowBotPlayingInfoPopup"] = true;
-                return View(gameViewModel);
-            }
-            else
-            {
-                return RedirectToAction("GameNotFound");
-            }
-        }
-
-        /// <summary>
         /// affiche à l'écran la prochaine partie à jouer
         /// </summary>
         /// <returns></returns>
@@ -153,6 +123,36 @@ namespace Controllers
         }
 
         /// <summary>
+        /// affiche une partie 
+        /// </summary>
+        /// <param name="id">Id de la partie</param>
+        /// <returns></returns>
+        public async Task<IActionResult> ShowAsync(int id)
+        {
+            if (id == 0)
+                return RedirectToAction("GameNotFound");
+
+            Player player = PlayerDal.Details(PlayerId);
+            bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
+
+            bool showPossiblesPositions = false;
+            if (TempData["Help"] != null)
+                showPossiblesPositions = true;
+
+            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin, showPossiblesPositions);
+            if (gameViewModel != null)
+            {
+                if (GamePlayerDal.PlayerTurn(id).Bot)
+                    ViewData["ShowBotPlayingInfoPopup"] = true;
+                return View(gameViewModel);
+            }
+            else
+            {
+                return RedirectToAction("GameNotFound");
+            }
+        }
+
+        /// <summary>
         /// tente de jouer le chromino à l'emplacement choisit par le joueur
         /// </summary>
         /// <param name="gameId">id du jeu</param>
@@ -179,8 +179,6 @@ namespace Controllers
             PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
                 TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
-            else if (playReturn == PlayReturn.GameFinish)
-                new GameBI(Ctx, Env, gameId).SetGameFinished();
             return RedirectToAction("Show", new { id = gameId });
         }
 
@@ -196,8 +194,6 @@ namespace Controllers
             PlayReturn playreturn;
             do playreturn = botBI.PlayBot();
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
-            if (playreturn == PlayReturn.GameFinish)
-                new GameBI(Ctx, Env, id).SetGameFinished();
             return RedirectToAction("Show", new { id });
         }
 

@@ -1,5 +1,4 @@
-﻿
-a.navbar-brand {
+﻿a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -15,8 +14,29 @@ a {
         text-decoration: none;
     }
 
+p.noscipt {
+    font-size: xx-large;
+    color: darkred;
+    background-color: antiquewhite;
+}
+
 .not-available {
     opacity: 0.33;
+}
+
+.refresh {
+    height: 35px;
+    width: 35px;
+    background-image: url('/image/Wait.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 60px;
 }
 
 .btn-primary {
@@ -72,6 +92,7 @@ a {
 .btn-lost {
     background-image: url('/image/button/Lost.svg');
 }
+
 
 
 .btn-toolbar {

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Batch
 {
@@ -29,6 +29,15 @@ namespace Batch
 
         static void Main(string[] args)
         {
+            Methods = new Dictionary<string, Action>
+            {
+                { "DeleteGuests", DeleteGuests },
+                { "DeleteGamesWithoutPlayerTurn", DeleteGamesWithoutPlayerTurn },
+                { "DeleteGamesWithOnlyBots", DeleteGamesWithOnlyBots },
+                { "PlayBots", PlayBots },
+                { "ClearTurnWhenGameFinish", ClearTurnWhenGameFinish},
+            };
+
             Init(args);
 
             if (Option == "")
@@ -40,7 +49,6 @@ namespace Batch
                 Methods[Option]();
             else
                 Console.WriteLine("paramètre invalide");
-
         }
 
         private static void Init(string[] args)
@@ -71,13 +79,6 @@ namespace Batch
             ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
             GoodPositionDal = new GoodPositionDal(Ctx);
             SquareDal = new SquareDal(Ctx);
-            Methods = new Dictionary<string, Action>
-            {
-                { "DeleteGuests", DeleteGuests },
-                { "DeleteGamesWithoutPlayerTurn", DeleteGamesWithoutPlayerTurn },
-                { "DeleteGamesWithOnlyBots", DeleteGamesWithOnlyBots },
-                { "PlayBots", PlayBots }
-            };
         }
         private static void DeleteGuests()
         {
@@ -168,6 +169,9 @@ namespace Batch
                     case PlayReturn.SkipTurn:
                         Console.WriteLine($"  le bot {botId} de la partie {gameId} a passé");
                         break;
+                    case PlayReturn.GameFinish:
+                        Console.WriteLine($"  la partie {gameId} est terminée");
+                        break;
                 }
             }
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino || playreturn == PlayReturn.SkipTurn);
@@ -183,5 +187,21 @@ namespace Batch
             }
         }
 
+        private static void ClearTurnWhenGameFinish()
+        {
+            Console.WriteLine();
+            Console.WriteLine("erase des tours des joueurs pour parties terminées");
+            var gamesPlayers = from gp in Ctx.GamesPlayers
+                               join g in Ctx.Games on gp.GameId equals g.Id  
+                               where g.Status == GameStatus.Finished
+                               select gp;
+
+            foreach (GamePlayer gamePlayer in gamesPlayers)
+            {
+                Console.WriteLine($"  partie {gamePlayer.GameId}");
+                gamePlayer.Turn = false;
+            }
+            Ctx.SaveChanges();
+        }
     }
 }
