@@ -59,7 +59,7 @@
     if (PlayReturn != "Ok")
         ShowPopup('#errorPopup');
     else if (ShowInfoPopup)
-        ShowPopup('#PopupButtonInfo');
+        ShowPopup('#PopupInfo');
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
 
@@ -528,15 +528,15 @@ function ShowFeature(id, description, illustration, isCheck) {
 
 function Action(elementId) {
     let tip = Tips.find(x => x.elementId == elementId);
-    let nameWithoutPrefix = elementId.replace("Button", "");
-    let form = "#Form" + nameWithoutPrefix;
-    let popup = "#Popup" + nameWithoutPrefix;
+    let functionName = elementId.replace("Button", "");
+    let form = "#Form" + functionName;
+    let popup = "#Popup" + functionName;
     if (tip != undefined)
         ShowFeature(tip.id, tip.description, tip.picture, true);
-    else if ($(form).length)
-        $(form).submit();
+    else if (typeof window[functionName] === "function")
+        window[functionName]();
     else if ($(popup).length)
         ShowPopup(popup);
-    else if (typeof window[nameWithoutPrefix] === "function")
-        window[nameWithoutPrefix]();
+    else if ($(form).length)
+        $(form).submit();
 }

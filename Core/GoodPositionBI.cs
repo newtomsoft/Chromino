@@ -35,7 +35,7 @@ namespace Core
             GoodPositionDal = new GoodPositionDal(ctx);
         }
 
-        public void RemovePlayedChromino(int? playerId, int chrominoId)
+        public void RemovePlayedChromino(int playerId, int chrominoId)
         {
             GoodPositionDal.Remove(GameId, playerId, chrominoId);
         }
