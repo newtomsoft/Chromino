@@ -31,10 +31,10 @@ namespace Data.ViewModel
         public bool OpponenentsAreBots { get; set; }
         public List<PossiblesChrominoVM> PossiblesChrominosVM { get; set; }
         public bool ShowPossiblesPositions { get; set; }
-        public List<TipName> TipsNamesOn { get; set; }
-        public List<Tip> TipsOn { get; set; }
+        public List<string> TipsDomElementIdOn { get; set; }
+        public List<Tip> Tips { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<TipName> tipsNamesOn, List<Tip> tipsOn)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<string> tipsDomElementIdOn, List<Tip> tipsOn)
         {
             Player = player;
             OpponenentsAreBots = opponenentsAreBots;
@@ -86,8 +86,8 @@ namespace Data.ViewModel
                 foreach (GoodPosition goodPosition in goodPositions)
                     PossiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, XMin, YMin));
 
-            TipsNamesOn = tipsNamesOn;
-            TipsOn = tipsOn;
+            TipsDomElementIdOn = tipsDomElementIdOn;
+            Tips = tipsOn;
         }
 
         private int IndexGridState(int x, int y)

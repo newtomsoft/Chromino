@@ -150,6 +150,11 @@ a {
     background-image: url('/image/button/Help.svg');
 }
 
+.btn-tip {
+    margin-top: 7px;
+    margin-bottom: 10px;
+}
+
 #buttonInfoForPlaying {
     display: inline;
     width: 40px;
@@ -260,9 +265,9 @@ a {
         text-align: center;
     }
 
-    .popup_content > img.example {
+    .popup_content > img.illustration {
         width: 350px;
-        max-width: 90%;
+        max-width: 88%;
         margin-left: auto;
         margin-right: auto;
         margin-top: 10px;
@@ -404,7 +409,7 @@ figcaption {
             padding-left: 10px;
         }
 
-#gameArea {
+#GameArea {
     height: 85vm;
     width: 85vm; /* IE9 fallback */
     width: 85vmin;

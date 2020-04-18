@@ -25,21 +25,21 @@ namespace Data.DAL
             return result;
         }
 
-        public Tip Details(TipName tipName)
-        {
-            var result = (from t in Ctx.Tips
-                          where t.TipName == tipName
-                          select t).AsNoTracking().FirstOrDefault();
+        //public Tip Details(TipName tipName)
+        //{
+        //    var result = (from t in Ctx.Tips
+        //                  where t.TipName == tipName
+        //                  select t).AsNoTracking().FirstOrDefault();
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public List<TipName> ListNamesOn(int playerId)
+        public List<string> ListNamesOn(int playerId)
         {
             var tipsoff = from t in Ctx.Tips
                           join toff in Ctx.TipsOff on t.Id equals toff.TipId
                           where toff.PlayerId == playerId
-                          select t.TipName;
+                          select t.DomElementId;
 
             return ListNames().Except(tipsoff).ToList();
         }
@@ -61,10 +61,10 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        private IQueryable<TipName> ListNames()
+        private IQueryable<string> ListNames()
         {
             var results = from t in Ctx.Tips
-                          select t.TipName;
+                          select t.DomElementId;
 
             return results;
         }

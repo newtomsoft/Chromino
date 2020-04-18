@@ -16,13 +16,11 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-
 namespace ChrominoApp.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private const int HelpNumber = 5;
         private readonly SignInManager<Player> _signInManager;
         private readonly UserManager<Player> _userManager;
         private readonly ILogger<RegisterModel> _logger;
@@ -94,7 +92,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
                     }
                 }
 
-                var user = new Player { UserName = Input.PlayerName, Email = Input.Email, Help = HelpNumber };
+                var user = new Player { UserName = Input.PlayerName, Email = Input.Email, Help = Player.InitHelp };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

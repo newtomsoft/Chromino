@@ -10,11 +10,12 @@ namespace Data.Models
         [Key]
         public int Id { get; set; }
 
-        public TipName TipName { get; set; }
+        [Required]
+        public string DomElementId { get; set; }
 
         [Required]
         public string Description { get; set; }
 
-        public string IllustrationImagePath { get; set; }
+        public string PicturePath { get; set; }
     }
 }

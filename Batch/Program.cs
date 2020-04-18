@@ -225,34 +225,83 @@ namespace Batch
         {
             Console.WriteLine();
             Console.WriteLine("ajout des tips");
-
+            #region tips
             Tip validateChromino = new Tip
             {
-                TipName = TipName.HowValidateChromino,
+                DomElementId = "ValidateChromino",
                 Description = "<p> Vous avez posé un chromino dans le jeu sans le valider.</p><p> Pensez à le valider en appuyant sur le bouton<button id='buttonInfoForPlaying' class='btn btn-toolbar btn-play' onclick='PlayChromino()'></button></p><p>Ou en appuyant sur le chromino jusqu'au flash.</p>",
             };
-
-            Tip howMoveChromino = new Tip
+            //Tip howMoveChromino = new Tip
+            //{
+            //    TipName = TipName.HowMoveChromino,
+            //    Description = "<p> Vous devez déplacer un chromino de votre main dans le jeu.</p><p>Avec la souris, cliquez sur un chromino et déplacer la tout en maintenant appuyer le bouton et relacher le à l'endroit voulu.</p><p>Ou avec un écran tactile, appuyer avec le doigt sur le chromino et glisser le.</p>",
+            //};
+            Tip home = new Tip
             {
-                TipName = TipName.HowMoveChromino,
-                Description = "<p> Vous devez déplacer un chromino de votre main dans le jeu.</p><p>Avec la souris, cliquez sur un chromino et déplacer la tout en maintenant appuyer le bouton et relacher le à l'endroit voulu.</p><p>Ou avec un écran tactile, appuyer avec le doigt sur le chromino et glisser le.</p>",
+                DomElementId = "ButtonHome",
+                Description = "<p>Ceci est la maison !</p>",
             };
-
-            List<Tip> tips = new List<Tip> { validateChromino, howMoveChromino };
+            Tip info = new Tip
+            {
+                DomElementId = "ButtonInfo",
+                Description = "<p>Ceci est l'info !</p>",
+            };
+            Tip help = new Tip
+            {
+                DomElementId = "ButtonHelp",
+                Description = "<p>Ceci est l'aide de jeu pour visualiser les emplacements possibles !</p>",
+            };
+            Tip chat = new Tip
+            {
+                DomElementId = "ButtonChat",
+                Description = "<p>Ceci est le chat !</p>",
+            };
+            Tip memo = new Tip
+            {
+                DomElementId = "ButtonMemo",
+                Description = "<p>Ceci est le mémo !</p>",
+            };
+            Tip next = new Tip
+            {
+                DomElementId = "ButtonNextGame",
+                Description = "<p>Ceci est le bouton pour passer à une autre partie !</p>",
+            };
+            Tip draw = new Tip
+            {
+                DomElementId = "ButtonDrawChromino",
+                Description = "<p>Ceci est le bouton pour piocher !</p>",
+            };
+            Tip skip = new Tip
+            {
+                DomElementId = "ButtonSkipTurn",
+                Description = "<p>Ceci est le bouton pour passer !</p>",
+            };
+            Tip gameArea = new Tip
+            {
+                DomElementId = "GameArea",
+                Description = "<p>Ceci est le premier chromino du jeu !</p>",
+            };
+            Tip handChrominos = new Tip
+            {
+                DomElementId = "HandChromino",
+                Description = "<p>Ceci est un chromino de votre main !</p>",
+            };
+            #endregion
+            List<Tip> tips = new List<Tip> {home, info, help, chat, memo, next, draw, skip, gameArea, handChrominos, validateChromino };
             foreach (var tip in tips)
             {
                 int tipId = (from t in Ctx.Tips
-                             where t.TipName == tip.TipName
+                             where t.DomElementId == tip.DomElementId
                              select t.Id).FirstOrDefault();
                 if (tipId == 0)
                 {
                     Ctx.Tips.Add(tip);
                     Ctx.SaveChanges();
-                    Console.WriteLine($"  tip {tip.TipName} ajouté");
+                    Console.WriteLine($"  tip {tip.DomElementId} ajouté");
                 }
                 else
                 {
-                    Console.WriteLine($"  tip {tip.TipName} déjà présent en base");
+                    Console.WriteLine($"  tip {tip.DomElementId} déjà présent en base");
                 }
             }
         }

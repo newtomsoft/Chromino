@@ -147,9 +147,15 @@ namespace Data.DAL
             }
         }
 
-        public int Delete(IQueryable<Player> guests)
+        public int Delete(IQueryable<Player> players)
         {
-            Ctx.Players.RemoveRange(guests);
+            Ctx.Players.RemoveRange(players);
+            return Ctx.SaveChanges();
+        }
+
+        public int Delete(int playerId)
+        {
+            Ctx.Players.Remove(Details(playerId));
             return Ctx.SaveChanges();
         }
     }

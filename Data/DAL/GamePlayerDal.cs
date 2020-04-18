@@ -459,5 +459,15 @@ namespace Data.DAL
 
             return gamePlayers;
         }
+
+        public IQueryable<int> GamesId(int playerId)
+        {
+
+            var gamesId = from gp in Ctx.GamesPlayers
+                          where gp.PlayerId == playerId
+                          select gp.GameId;
+
+            return gamesId;
+        }
     }
 }
