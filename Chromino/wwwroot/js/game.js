@@ -20,7 +20,7 @@
         AnimateChrominosPlayed(0);
     }
     $("#buttonPrevious").click(function () {
-        if (IndexMove < Squares.length / 3 - 1) {
+        if (IndexMove < HistoryChrominos.length - 1) {
             IndexMove++;
         }
         AnimateChrominosPlayed();
@@ -73,29 +73,29 @@
 //***************************************************//
 //**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
-var IndexMove = 0;
+let IndexMove = 0;
 function AnimateChrominosPlayed() {
-    index = IndexMove * 3;
-    for (i = index; i < index + 3; i++) {
-        for (iflash = 0; iflash < 3; iflash++) {
-            ShowSquare('#' + Squares[i]);
-            AnimateSquare('#' + Squares[i]);
-        }
+    for (let i = 0; i < 2; i++) {
+        ShowSquare('#' + HistoryChrominos[IndexMove].square0);
+        AnimateSquare('#' + HistoryChrominos[IndexMove].square0);
+        ShowSquare('#' + HistoryChrominos[IndexMove].square1);
+        AnimateSquare('#' + HistoryChrominos[IndexMove].square1);
+        ShowSquare('#' + HistoryChrominos[IndexMove].square2);
+        AnimateSquare('#' + HistoryChrominos[IndexMove].square2);
     }
-    $('#PlayerHistoryPseudo').html(Pseudos[IndexMove]).fadeIn().delay(1000).fadeOut();
+    $('#PlayerHistoryPseudo').html(HistoryChrominos[IndexMove].playerName).fadeIn().delay(1000).fadeOut();
 }
 
 function AnimateSquare(squareId) {
-    $(squareId).fadeToggle(150, function () {
-        $(this).fadeToggle(150);
+    $(squareId).fadeToggle(170, function () {
+        $(this).fadeToggle(170);
     });
 }
 
 function HideChrominosPlayed() {
-    index = (IndexMove - 1) * 3;
-    for (i = index; i < index + 3; i++) {
-        HideSquare('#' + Squares[i]);
-    }
+    HideSquare('#' + HistoryChrominos[IndexMove - 1].square0);
+    HideSquare('#' + HistoryChrominos[IndexMove - 1].square1);
+    HideSquare('#' + HistoryChrominos[IndexMove - 1].square2);
 }
 
 function HideSquare(squareId) {
