@@ -86,7 +86,7 @@
                 <input id="FormOrientation" name="orientation" />
                 <input id="FormFlip" name="flip" />
             </form>
-            <button class="btn btn-toolbar btn-play" style="display:none" onclick="PlayChromino()"></button>
+            <button id="ButtonPlayChromino" class="btn btn-toolbar btn-play" style="display:none" onclick="Action(this.id);"></button>
         }
         @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
         {
@@ -95,7 +95,7 @@
         }
     </div>
     <br>
-    <div id="GameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()" onclick="Action(this.id);">
+    <div id="GameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
         @{
             string info = "";
             List<int> PossibleSquareIndexes = new List<int>();
@@ -109,9 +109,9 @@
             }
         }
         <div id="PlayerHistory">
-            <div id="previousNextButton">
-                <div id="buttonPrevious"></div>
-                <div id="buttonNext"></div>
+            <div id="HistoryChrominos" onclick="Action(this.id);">
+                <button id="ButtonPreviousChromino" class="btn btn-historyChromino btn-previousChromino"></button>
+                <button id="ButtonNextChromino" class="btn btn-historyChromino btn-nextChromino"></button>
                 <div id="PlayerHistoryPseudo">@info</div>
             </div>
         </div>
@@ -130,7 +130,10 @@
                         if (Model.SquaresVM[index].OpenLeft) classOpenSides += "Left";
                         if (Model.SquaresVM[index].OpenTop) classOpenSides += "Top";
                         string classColor = color.ToString();
-                        <div id="Square_@index" class="@classOpenSides @classColor"></div>
+                        string onclick = "";
+                        if (color == ColorCh.Cameleon)
+                            onclick = "onclick=Action('Cameleon');";
+                        <div id="Square_@index" class="@classOpenSides @classColor" @onclick></div>
                     }
                     else
                     {
@@ -147,18 +150,20 @@
             </div>
         }
     </div>
-    @foreach (ChrominoVM chrominosViewModel in Model.PlayerChrominosVM)
-    {
-        string id = chrominosViewModel.ChrominoId.ToString();
-        <div id="@id" class="handPlayerChromino" onclick="Action('HandChromino');">
-            @for (int i = 0; i < 3; i++)
-            {
-                ColorCh color = chrominosViewModel.SquaresVM[i].Color;
-                string classColor = color.ToString();
-                <div class="Square @classColor"></div>
-            }
-        </div>
-    }
+    <div id="Hand" onclick="Action(this.id);">
+        @foreach (ChrominoVM chrominosViewModel in Model.PlayerChrominosVM)
+        {
+            string id = chrominosViewModel.ChrominoId.ToString();
+            <div id="@id" class="handPlayerChromino">
+                @for (int i = 0; i < 3; i++)
+                {
+                    ColorCh color = chrominosViewModel.SquaresVM[i].Color;
+                    string classColor = color.ToString();
+                    <div class="Square @classColor"></div>
+                }
+            </div>
+        }
+    </div>
     @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
     {
         <script>

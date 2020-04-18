@@ -141,9 +141,8 @@ namespace Data.Core
                 Game game = GameDal.Details(GameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId);
-                List<string> tipsNamesOn = TipDal.ListNamesOn(playerId);
                 List<Tip> tips = TipDal.ListOn(playerId);
-                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tipsNamesOn, tips);
+                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips);
                 return gameViewModel;
             }
             else return null;

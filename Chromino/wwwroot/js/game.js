@@ -19,18 +19,22 @@
     if (!PreviouslyDraw && ThisPlayerTurn) {
         AnimateChrominosPlayed(0);
     }
-    $("#buttonPrevious").click(function () {
-        if (IndexMove < HistoryChrominos.length - 1) {
-            IndexMove++;
+    $("#ButtonPreviousChromino").click(function () {
+        if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
+            if (IndexMove < HistoryChrominos.length - 1) {
+                IndexMove++;
+            }
+            AnimateChrominosPlayed();
+            HideChrominosPlayed();
         }
-        AnimateChrominosPlayed();
-        HideChrominosPlayed();
     });
-    $("#buttonNext").click(function () {
-        if (IndexMove > 0) {
-            IndexMove--;
+    $("#ButtonNextChromino").click(function () {
+        if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
+            if (IndexMove > 0) {
+                IndexMove--;
+            }
+            AnimateChrominosPlayed();
         }
-        AnimateChrominosPlayed();
     });
 
     // désactivation du menu contextuel clic droit
@@ -93,9 +97,11 @@ function AnimateSquare(squareId) {
 }
 
 function HideChrominosPlayed() {
-    HideSquare('#' + HistoryChrominos[IndexMove - 1].square0);
-    HideSquare('#' + HistoryChrominos[IndexMove - 1].square1);
-    HideSquare('#' + HistoryChrominos[IndexMove - 1].square2);
+    if (IndexMove > 0) {
+        HideSquare('#' + HistoryChrominos[IndexMove - 1].square0);
+        HideSquare('#' + HistoryChrominos[IndexMove - 1].square1);
+        HideSquare('#' + HistoryChrominos[IndexMove - 1].square2);
+    }
 }
 
 function HideSquare(squareId) {
@@ -158,36 +164,6 @@ function ShowSquare(squareId) {
     $(squareId).removeClass("OpenAll CloseNone Free");
 }
 
-
-//***************************************************//
-//********** gestion popups de la partie ************//
-//***************************************************//
-
-function ShowPopup(popup) {
-    $(popup).show();
-    $(popup).popup({
-        autoopen: true,
-        transition: 'all 0.4s'
-    });
-
-    $.fn.popup.defaults.pagecontainer = '#page';
-    if (popup == '#ChatPopup') {
-        $('#ChatPopup-textarea').scrollTop(300);
-        let timeoutScroll;
-        clearTimeout(timeoutScroll);
-        timeoutScroll = setTimeout(function () {
-            $('#ChatPopup-textarea').scrollTop($('#ChatPopup-textarea')[0].scrollHeight);
-        }, 50);
-        if (NotReadMessages > 0) {
-            $('#ChatPopup-Read').show();
-        }
-    }
-}
-
-function ClosePopup(popup) {
-    $(popup).popup('hide');
-}
-
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
@@ -201,45 +177,49 @@ let OffsetLastChromino = 0;
 let OffsetGameArea = null;
 
 function StartDraggable() {
-    $(".handPlayerChromino").draggableTouch()
-        .on("dragstart", function () {
-            $(this).css('cursor', 'grabbing');
-            ScheduleRotate();
-            LastChrominoMove = this;
-            PositionLastChromino = $(LastChrominoMove).offset();
-            SchedulePut();
-            StopScheduleValidateChromino();
-        }).on("dragend", function () {
-            if (IsChrominoInGameArea(this)) {
-                $('.btn-play').show();
-                ScheduleValidateChromino();
-            }
-            else {
-                $('.btn-play').hide();
-            }
-            $(this).css('cursor', 'grab');
-            LastChrominoMove = this;
-            OffsetLastChromino = $(this).offset();
-            MagnetChromino();
-            if (ToRotate) {
-                ToRotate = false;
-                clearTimeout(TimeoutRotate);
-                Rotation(LastChrominoMove);
-            }
-            let offset = $(LastChrominoMove).offset();
-            if (ToPut && PositionLastChromino.left == offset.left && PositionLastChromino.top == offset.top) {
-                clearTimeout(TimeoutPut);
-                PlayChromino();
-            }
-            ToPut = false;
-        });
+    if (Tips.find(x => x.elementId == "Hand") == undefined) {
+        $(".handPlayerChromino").draggableTouch()
+            .on("dragstart", function () {
+                $(this).css('cursor', 'grabbing');
+                ScheduleRotate();
+                LastChrominoMove = this;
+                PositionLastChromino = $(LastChrominoMove).offset();
+                SchedulePut();
+                StopScheduleValidateChromino();
+            }).on("dragend", function () {
+                if (IsChrominoInGameArea(this)) {
+                    $('.btn-play').show();
+                    ScheduleValidateChromino();
+                }
+                else {
+                    $('.btn-play').hide();
+                }
+                $(this).css('cursor', 'grab');
+                LastChrominoMove = this;
+                OffsetLastChromino = $(this).offset();
+                MagnetChromino();
+                if (ToRotate) {
+                    ToRotate = false;
+                    clearTimeout(TimeoutRotate);
+                    Rotation(LastChrominoMove);
+                }
+                let offset = $(LastChrominoMove).offset();
+                if (ToPut && PositionLastChromino.left == offset.left && PositionLastChromino.top == offset.top) {
+                    clearTimeout(TimeoutPut);
+                    PlayChromino();
+                }
+                ToPut = false;
+            });
+    }
 }
 
 function StopDraggable() {
-    $(this).off("mouseup");
-    $(this).off("mousedown");
-    $(document).off("mousemove");
-    $('.handPlayerChromino').draggableTouch("disable");
+    if (Tips.find(x => x.elementId == "Hand") == undefined) {
+        $(this).off("mouseup");
+        $(this).off("mousedown");
+        $(document).off("mousemove");
+        $('.handPlayerChromino').draggableTouch("disable");
+    }
 }
 
 function ScheduleRotate() {
@@ -484,18 +464,34 @@ function PlayChromino() {
 }
 
 //***************************************************//
-//****** popup d'aides pour l'interface de jeu ******//
+//********** gestion popups de la partie ************//
 //***************************************************//
-function TipClosePopup(popup, checkBox) {
-    if ($(checkBox).is(":checked")) {
-        $("#TipFormDisable").submit();
-    }
-    else {
-        ClosePopup(popup);
+
+function ShowPopup(popup) {
+    StopScheduleValidateChromino();
+    $(popup).show();
+    $(popup).popup({
+        autoopen: true,
+        transition: 'all 0.4s'
+    });
+    $.fn.popup.defaults.pagecontainer = '#page';
+    if (popup == '#ChatPopup') {
+        $('#ChatPopup-textarea').scrollTop(300);
+        let timeoutScroll;
+        clearTimeout(timeoutScroll);
+        timeoutScroll = setTimeout(function () {
+            $('#ChatPopup-textarea').scrollTop($('#ChatPopup-textarea')[0].scrollHeight);
+        }, 50);
+        if (NotReadMessages > 0) {
+            $('#ChatPopup-Read').show();
+        }
     }
 }
 
-// HowValidateChromino
+function ClosePopup(popup) {
+    $(popup).popup('hide');
+}
+
 let TimeoutValidateChromino = null;
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
@@ -508,9 +504,14 @@ function StopScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
 }
 
-//***************************************************//
-//****** Actions des boutons avec didactitiels ******//
-//***************************************************//
+function TipClosePopup(popup, checkBox) {
+    if ($(checkBox).is(":checked")) {
+        $("#TipFormDisable").submit();
+    }
+    else {
+        ClosePopup(popup);
+    }
+}
 
 function ShowFeature(id, description, illustration, isCheck) {
     $('#TipHtml').html(description);
@@ -530,13 +531,12 @@ function Action(elementId) {
     let nameWithoutPrefix = elementId.replace("Button", "");
     let form = "#Form" + nameWithoutPrefix;
     let popup = "#Popup" + nameWithoutPrefix;
-    if (tip != undefined) {
+    if (tip != undefined)
         ShowFeature(tip.id, tip.description, tip.picture, true);
-    }
-    else if ($(form).length) {
+    else if ($(form).length)
         $(form).submit();
-    }
-    else if ($(popup).length) {
+    else if ($(popup).length)
         ShowPopup(popup);
-    }
+    else if (typeof window[nameWithoutPrefix] === "function")
+        window[nameWithoutPrefix]();
 }

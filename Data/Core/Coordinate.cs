@@ -59,7 +59,7 @@ namespace Data.Core
             else if (orientation == Orientation.Vertical)
                 Y = flip ? -1 : 1;
             else
-                throw new Exception("Exception Orientation on définit");
+                throw new Exception("Exception Orientation non définit");
         }
 
 

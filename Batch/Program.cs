@@ -276,18 +276,28 @@ namespace Batch
                 DomElementId = "ButtonSkipTurn",
                 Description = "<p>Ceci est le bouton pour passer !</p>",
             };
-            Tip gameArea = new Tip
-            {
-                DomElementId = "GameArea",
-                Description = "<p>Ceci est le premier chromino du jeu !</p>",
-            };
             Tip handChrominos = new Tip
             {
-                DomElementId = "HandChromino",
+                DomElementId = "Hand",
                 Description = "<p>Ceci est un chromino de votre main !</p>",
             };
+            Tip history = new Tip
+            {
+                DomElementId = "HistoryChrominos",
+                Description = "<p>permet de visulaiser l'historique des chrominos posés !</p>",
+            };
+            Tip play = new Tip
+            {
+                DomElementId = "ButtonPlayChromino",
+                Description = "<p>permet de valider votre chromino</p>",
+            };
+            Tip cameleon = new Tip
+            {
+                DomElementId = "Cameleon",
+                Description = "<p>crhomino caméléon</p>",
+            };
             #endregion
-            List<Tip> tips = new List<Tip> {home, info, help, chat, memo, next, draw, skip, gameArea, handChrominos, validateChromino };
+            List<Tip> tips = new List<Tip> {home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon };
             foreach (var tip in tips)
             {
                 int tipId = (from t in Ctx.Tips
