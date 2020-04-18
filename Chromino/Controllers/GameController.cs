@@ -219,7 +219,7 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Skip(int gameId)
+        public IActionResult SkipTurn(int gameId)
         {
             new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
             return RedirectToAction("Show", new { id = gameId });

@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using ChrominoBI;
+using Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,7 +31,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Required]
+            //[Required]
             [DataType(DataType.Password)]
             [Display(Name = "Mot de passe")]
             public string Password { get; set; }
@@ -67,26 +68,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-
-            var userId = await _userManager.GetUserIdAsync(user);
-            try
-            {
-                var result = await _userManager.DeleteAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
-                }
-                await _signInManager.SignOutAsync();
-                _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
-            }
-            catch
-            {
-                ModelState.AddModelError(string.Empty, "Cette fonctionnalité n'est pas encore développée. Merci de votre compréhension.");
-                return Page();
-            }
-
-            return Redirect("~/");
+            return RedirectToAction("Delete", "Player");
         }
     }
 }

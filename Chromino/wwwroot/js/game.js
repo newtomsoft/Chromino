@@ -55,11 +55,9 @@
     if (PlayReturn != "Ok")
         ShowPopup('#errorPopup');
     else if (ShowInfoPopup)
-        ShowPopup('#infoPopup');
+        ShowPopup('#PopupButtonInfo');
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
-
-    ScheduleHowMoveChromino();
 
     //emojis du chat
     $(".emoji").click(function () {
@@ -265,7 +263,7 @@ function SchedulePut() {
 }
 
 function ShowOkToPut() {
-    $('#gameArea').fadeToggle(25, function () {
+    $('#GameArea').fadeToggle(25, function () {
         $(this).fadeToggle(25);
     });
     $(LastChrominoMove).fadeToggle(25, function () {
@@ -403,18 +401,18 @@ function ResizeGameArea() {
         });
         SetAngleByClass(".handPlayerChromino", 90);
     }
-    $('#gameArea').height(SquareSize * GameAreaLinesNumber);
-    $('#gameArea').width(SquareSize * GameAreaColumnsNumber);
+    $('#GameArea').height(SquareSize * GameAreaLinesNumber);
+    $('#GameArea').width(SquareSize * GameAreaColumnsNumber);
     $('.gameLineArea').outerHeight("auto");
     $('.Square').outerHeight(SquareSize);
     $('.Square').outerWidth(SquareSize);
     $('.handPlayerChromino').outerHeight(SquareSize);
-    $('#gameArea').show();
+    $('#GameArea').show();
     $('.gameLineArea').css('display', 'flex');
-    var gameAreaOffset = $('#gameArea').offset();
+    var gameAreaOffset = $('#GameArea').offset();
     GameAreaOffsetX = gameAreaOffset.left;
     GameAreaOffsetY = gameAreaOffset.top;
-    OffsetGameArea = $('#gameArea').offset();
+    OffsetGameArea = $('#GameArea').offset();
 }
 
 function IsChrominoInGameArea(chromino) {
@@ -429,8 +427,8 @@ function IsChrominoInGameArea(chromino) {
         offsetLeft = 0.5 * SquareSize;
         offsetTop = 2.5 * SquareSize;
     }
-    let heightGameArea = $('#gameArea').height();
-    let widthGameArea = $('#gameArea').width();
+    let heightGameArea = $('#GameArea').height();
+    let widthGameArea = $('#GameArea').width();
     let offsetLastChromino = $(chromino).offset();
     if (offsetLastChromino.left + offsetLeft > OffsetGameArea.left && offsetLastChromino.left + offsetRight < OffsetGameArea.left + widthGameArea && offsetLastChromino.top + offsetTop > OffsetGameArea.top && offsetLastChromino.top + offsetBottom < OffsetGameArea.top + heightGameArea)
         return true;
@@ -477,7 +475,7 @@ function PlayChromino() {
         $("#FormX").val(xIndex + XMin);
         $("#FormY").val(yIndex + YMin);
         $("#FormChrominoId").val(LastChrominoMove.id);
-        $("#FormSendMove").submit();
+        $("#FormPlayChromino").submit();
     }
     else {
         $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
@@ -488,9 +486,9 @@ function PlayChromino() {
 //***************************************************//
 //****** popup d'aides pour l'interface de jeu ******//
 //***************************************************//
-function ClosePopupTip(popup, checkBox) {
+function TipClosePopup(popup, checkBox) {
     if ($(checkBox).is(":checked")) {
-        $("#FormDisableTip").submit();
+        $("#TipFormDisable").submit();
     }
     else {
         ClosePopup(popup);
@@ -500,29 +498,45 @@ function ClosePopupTip(popup, checkBox) {
 // HowValidateChromino
 let TimeoutValidateChromino = null;
 function ScheduleValidateChromino() {
-    if (HowValidateChrominoId != 0) {
-        clearTimeout(TimeoutValidateChromino);
-        TimeoutValidateChromino = setTimeout(function () {
-            $('#TipHtml').html(HowValidateChrominoDescription);
-            $('#TipId').val(HowValidateChrominoId);
-            ShowPopup('#TipPopup');
-        }, 6000);
-    }
+    clearTimeout(TimeoutValidateChromino);
+    TimeoutValidateChromino = setTimeout(function () {
+        Action("ValidateChromino");
+    }, 4000);
+
 }
 function StopScheduleValidateChromino() {
-    if (HowValidateChrominoId != 0)
-        clearTimeout(TimeoutValidateChromino);
+    clearTimeout(TimeoutValidateChromino);
 }
 
-// HowMoveChromino
-let TimeoutHowMoveChromino = null;
-function ScheduleHowMoveChromino() {
-    clearTimeout(TimeoutHowMoveChromino);
-    TimeoutHowMoveChromino = setTimeout(function () {
-        if (HowMoveChrominoId != 0) {
-            $('#TipHtml').html(HowMoveChrominoDescription);
-            $('#TipId').val(HowMoveChrominoId);
-            ShowPopup('#TipPopup');
-        }
-    }, 2000);
+//***************************************************//
+//****** Actions des boutons avec didactitiels ******//
+//***************************************************//
+
+function ShowFeature(id, description, illustration, isCheck) {
+    $('#TipHtml').html(description);
+    $('#TipId').val(id);
+    $('#TipDontShowAgain').prop('checked', isCheck);
+    if (illustration != "") {
+        $('#TipIllustration').val(illustration);
+        $('#TipIllustration').show();
+    }
+    else
+        $('#TipIllustration').hide();
+    ShowPopup('#TipPopup');
+}
+
+function Action(elementId) {
+    let tip = Tips.find(x => x.elementId == elementId);
+    let nameWithoutPrefix = elementId.replace("Button", "");
+    let form = "#Form" + nameWithoutPrefix;
+    let popup = "#Popup" + nameWithoutPrefix;
+    if (tip != undefined) {
+        ShowFeature(tip.id, tip.description, tip.picture, true);
+    }
+    else if ($(form).length) {
+        $(form).submit();
+    }
+    else if ($(popup).length) {
+        ShowPopup(popup);
+    }
 }

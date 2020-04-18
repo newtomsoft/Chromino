@@ -124,7 +124,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new Player { UserName = Input.PlayerName };
+                var user = new Player { UserName = Input.PlayerName, Help = Player.InitHelp };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

@@ -19,7 +19,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tip", x => x.Id);
-                    table.UniqueConstraint("UQ_Tip", x => x.TipName);
                 });
 
             migrationBuilder.CreateTable(
