@@ -211,7 +211,7 @@
             {
                 string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
                 string playerPass = currentPseudo == "Vous" ? "Vous avez passé" :  $"{currentPseudo} a passé";
-                @:HistoryChrominos.push({ playerName: "Na", square0: "Na", square1: "Na", square2: "Na"});
+                @:HistoryChrominos.push({ playerName: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
                 move--;
             }
             string[] squares = new string[3];
@@ -224,7 +224,6 @@
     </script>
 </body>
 </html>
-
 <div id="PopupInfo" style="display:none">
     <div class="img-head img-info" title="info"></div>
     @if (Model.Game.Status.IsFinish())
