@@ -5,6 +5,7 @@ using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
 using Microsoft.AspNetCore.Hosting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -79,7 +80,16 @@ namespace ChrominoBI
         {
             GamePlayerDal.SetPass(GameId, PlayerId, true);
             if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
+            {
                 new GameBI(Ctx, Env, GameId).SetGameFinished();
+                List<int> playersIdWin = ChrominoInHandDal.PlayersIdWithMinChrominos(GameId);
+                List<int> playersIdLoose = GamePlayerDal.PlayersId(GameId).Except(playersIdWin).ToList();
+                foreach (int playerId in playersIdWin)
+                    Win(playerId);
+                foreach (int playerId in playersIdLoose)
+                    Loose(playerId);
+            }
+
             ChangePlayerTurn();
         }
 
@@ -113,13 +123,11 @@ namespace ChrominoBI
         /// <returns>PlayReturn.Ok si valide, PlayReturn.GameFinish si la partie est finie</returns>
         public PlayReturn Play(ChrominoInGame chrominoInGame)
         {
-            int? nullablePlayerId = chrominoInGame.PlayerId;
             int numberInHand = 0;
-            if (nullablePlayerId != null)
+            if (PlayerId != 0)
             {
-                int playerId = (int)nullablePlayerId;
-                numberInHand = ChrominoInHandDal.ChrominosNumber(GameId, playerId);
-                if (GamePlayerDal.PlayerTurn(GameId).Id != playerId)
+                numberInHand = ChrominoInHandDal.ChrominosNumber(GameId, PlayerId);
+                if (GamePlayerDal.PlayerTurn(GameId).Id != PlayerId)
                     return PlayReturn.NotPlayerTurn;
                 else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
                     return PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
@@ -166,36 +174,32 @@ namespace ChrominoBI
             ChrominoInGameDal.Add(chrominoInGame);
             ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
             GameDal.IncreaseMove(GameId);
-            GoodPositionBI.RemovePlayedChromino(nullablePlayerId, chrominoInGame.ChrominoId);
+            GoodPositionBI.RemovePlayedChromino(PlayerId, chrominoInGame.ChrominoId);
             GoodPositionBI.RemoveAndUpdateAllPlayers();
 
             PlayReturn playreturn = PlayReturn.Ok;
-            if (nullablePlayerId != null)
+            if (PlayerId != 0)
             {
-                int playerId = (int)nullablePlayerId;
                 numberInHand--;
-                GamePlayerDal.SetPass(GameId, playerId, false);
+                GamePlayerDal.SetPass(GameId, PlayerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
-                GamePlayerDal.AddPoints(GameId, playerId, points);
+                GamePlayerDal.AddPoints(GameId, PlayerId, points);
                 if (GamePlayerDal.Players(GameId).Count > 1)
-                    PlayerDal.AddPoints(playerId, points);
+                    PlayerDal.AddPoints(PlayerId, points);
 
                 if (numberInHand == 1)
                 {
-                    ChrominoInHandLastDal.Update(GameId, playerId, ChrominoInHandDal.FirstChromino(GameId, playerId).Id);
+                    ChrominoInHandLastDal.Update(GameId, PlayerId, ChrominoInHandDal.FirstChromino(GameId, PlayerId).Id);
                 }
                 else if (numberInHand == 0)
                 {
-                    ChrominoInHandLastDal.Delete(GameId, playerId);
+                    ChrominoInHandLastDal.Delete(GameId, PlayerId);
                     if (GamePlayerDal.PlayersNumber(GameId) > 1)
-                    {
-                        PlayerDal.IncreaseWinAndHelp(playerId);
-                        GamePlayerDal.SetWon(GameId, playerId);
-                    }
+                        Win(PlayerId);
                     else
                     {
                         int chrominosInGame = ChrominoInGameDal.Count(GameId);
-                        PlayerDal.Details(playerId).SinglePlayerGamesPoints += chrominosInGame switch
+                        PlayerDal.Details(PlayerId).SinglePlayerGamesPoints += chrominosInGame switch
                         {
                             8 => 100,
                             9 => 90,
@@ -203,7 +207,7 @@ namespace ChrominoBI
                             11 => 82,
                             _ => 92 - chrominosInGame,
                         };
-                        PlayerDal.Details(playerId).SinglePlayerGamesFinished++;
+                        PlayerDal.Details(PlayerId).SinglePlayerGamesFinished++;
                         Ctx.SaveChanges();
                     }
                     if (IsRoundLastPlayer() || !IsNextPlayersCanWin())
@@ -215,9 +219,9 @@ namespace ChrominoBI
                 }
                 else
                 {
-                    int chrominoId = ChrominoInHandLastDal.IdOf(GameId, playerId);
+                    int chrominoId = ChrominoInHandLastDal.IdOf(GameId, PlayerId);
                     if (chrominoInGame.ChrominoId == chrominoId)
-                        ChrominoInHandLastDal.Delete(GameId, playerId);
+                        ChrominoInHandLastDal.Delete(GameId, PlayerId);
                 }
 
                 if (IsRoundLastPlayer() && GamePlayerDal.IsSomePlayerWon(GameId))
@@ -290,6 +294,20 @@ namespace ChrominoBI
             }
             GameDal.UpdateDate(GameId);
             Ctx.SaveChanges();
+        }
+
+        public void Loose(int playerId)
+        {
+            GamePlayerDal.SetViewFinished(GameId, playerId);
+            PlayerDal.IncreaseHelp(playerId, 1);
+            if (GamePlayerDal.GetWon(GameId, playerId) == null)
+                GamePlayerDal.SetWon(GameId, playerId, false);
+        }
+
+        public void Win(int playerId)
+        {
+            PlayerDal.IncreaseWinAndHelp(playerId);
+            GamePlayerDal.SetWon(GameId, playerId);
         }
 
         /// <summary>

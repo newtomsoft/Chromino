@@ -38,10 +38,10 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void Remove(int gameId, int? botId, int chrominoId)
+        public void Remove(int gameId, int playerId, int chrominoId)
         {
             List<GoodPosition> gpToRemove = (from cc in Ctx.GoodPositions
-                                             where cc.GameId == gameId && cc.PlayerId == botId && cc.ChrominoId == chrominoId
+                                             where cc.GameId == gameId && cc.PlayerId == playerId && cc.ChrominoId == chrominoId
                                              select cc).ToList();
 
             if (gpToRemove.Count > 0)

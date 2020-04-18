@@ -74,6 +74,28 @@ namespace Data.DAL
         }
 
         /// <summary>
+        /// Joueurs avec le moins de chrominos en main
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <returns></returns>
+        public List<int> PlayersIdWithMinChrominos(int gameId)
+        {
+            var playerId_chrominoNb = from ch in Ctx.ChrominosInHand
+                                      where ch.GameId == gameId
+                                      group ch by ch.PlayerId into g
+                                      orderby g.Count()
+                                      select new { playerId = g.Key, chrominoNumber = g.Count() };
+
+            var min = playerId_chrominoNb.Min(x => x.chrominoNumber);
+
+            var playerIds = (from p_c in playerId_chrominoNb
+                             where p_c.chrominoNumber == min
+                             select p_c.playerId).ToList();
+
+            return playerIds;
+        }
+
+        /// <summary>
         /// Nombre total de chrominos dans toutes les mains des joueurs
         /// </summary>
         /// <param name="gameId">Id du jeu</param>

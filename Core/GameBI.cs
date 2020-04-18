@@ -127,12 +127,8 @@ namespace Data.Core
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
 
                 if (GameDal.IsFinished(GameId) && !GamePlayerDal.IsViewFinished(GameId, playerId))
-                {
-                    GamePlayerDal.SetViewFinished(GameId, playerId);
-                    PlayerDal.IncreaseHelp(playerId, 1);
-                    if (GamePlayerDal.GetWon(GameId, playerId) == null)
-                        GamePlayerDal.SetWon(GameId, playerId, false);
-                }
+                   new PlayerBI(Ctx, Env, GameId, playerId).Loose(playerId);
+
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(GameId, playerTurn.Id);
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, playerId);
                 List<Square> squares = SquareDal.List(GameId);
