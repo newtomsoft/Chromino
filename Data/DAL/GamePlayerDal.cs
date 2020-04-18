@@ -48,6 +48,15 @@ namespace Data.DAL
             return ids;
         }
 
+        public List<int> WinnersId(int gameId)
+        {
+            List<int> ids = (from gp in Ctx.GamesPlayers
+                             where gp.GameId == gameId && gp.Win == true
+                             select gp.PlayerId).ToList();
+
+            return ids;
+        }
+
         public int PlayerId(int gameId, string playerPseudo)
         {
             int playerId = (from gp in Ctx.GamesPlayers

@@ -143,12 +143,12 @@ namespace Controllers
             if (TempData["Help"] != null)
                 showPossiblesPositions = true;
 
-            GameVM gameViewModel = new GameBI(Ctx, Env, id).GameViewModel(PlayerId, isAdmin, showPossiblesPositions);
-            if (gameViewModel != null)
+            GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin, showPossiblesPositions);
+            if (gameVM != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)
                     ViewData["ShowBotPlayingInfoPopup"] = true;
-                return View(gameViewModel);
+                return View(gameVM);
             }
             else
             {

@@ -97,7 +97,7 @@ namespace Data.Core
             playerBI.ChangePlayerTurn();
         }
 
-        public GameVM GameViewModel(int playerId, bool isAdmin, bool showPossiblesPositions)
+        public GameVM GameVM(int playerId, bool isAdmin, bool showPossiblesPositions)
         {
             Player playerTurn = GamePlayerDal.PlayerTurn(GameId);
             List<Player> players = GamePlayerDal.Players(GameId);
@@ -127,8 +127,14 @@ namespace Data.Core
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
 
                 if (GameDal.IsFinished(GameId) && !GamePlayerDal.IsViewFinished(GameId, playerId))
-                   new PlayerBI(Ctx, Env, GameId, playerId).Loose(playerId);
-
+                {
+                    if (GamePlayerDal.GetWon(GameId, playerId) != true)
+                        new PlayerBI(Ctx, Env, GameId, playerId).LooseGame(playerId);
+                    else if (GamePlayerDal.WinnersId(GameId).Count > 1) // draw game
+                        new PlayerBI(Ctx, Env, GameId, playerId).WinGame(playerId, true);
+                    else // only 1 winner
+                        new PlayerBI(Ctx, Env, GameId, playerId).WinGame(playerId);
+                }
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(GameId, playerTurn.Id);
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, playerId);
                 List<Square> squares = SquareDal.List(GameId);

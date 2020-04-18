@@ -99,24 +99,24 @@ namespace Data.DAL
             return player.Bot;
         }
 
-        public void IncreaseWinAndHelp(int playerId)
+        public void IncreaseWinAndHelp(int playerId, int helpIncrease)
         {
             Player player = (from p in Ctx.Players
                              where p.Id == playerId
                              select p).FirstOrDefault();
 
             player.WonGames++;
-            player.Help += 3;
+            player.Help += helpIncrease;
             Ctx.SaveChanges();
         }
 
-        public void IncreaseHelp(int playerId, int value)
+        public void IncreaseHelp(int playerId, int increaseHelp)
         {
             Player player = (from p in Ctx.Players
                              where p.Id == playerId
                              select p).FirstOrDefault();
 
-            player.Help += value;
+            player.Help += increaseHelp;
             Ctx.SaveChanges();
         }
 

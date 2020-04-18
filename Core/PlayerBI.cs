@@ -85,11 +85,10 @@ namespace ChrominoBI
                 List<int> playersIdWin = ChrominoInHandDal.PlayersIdWithMinChrominos(GameId);
                 List<int> playersIdLoose = GamePlayerDal.PlayersId(GameId).Except(playersIdWin).ToList();
                 foreach (int playerId in playersIdWin)
-                    Win(playerId);
+                    WinGame(playerId, playersIdWin.Count > 1);
                 foreach (int playerId in playersIdLoose)
-                    Loose(playerId);
+                    LooseGame(playerId);
             }
-
             ChangePlayerTurn();
         }
 
@@ -194,9 +193,8 @@ namespace ChrominoBI
                 else if (numberInHand == 0)
                 {
                     ChrominoInHandLastDal.Delete(GameId, PlayerId);
-                    if (GamePlayerDal.PlayersNumber(GameId) > 1)
-                        Win(PlayerId);
-                    else
+                    GamePlayerDal.SetWon(GameId, PlayerId);
+                    if (GamePlayerDal.PlayersNumber(GameId) == 1)
                     {
                         int chrominosInGame = ChrominoInGameDal.Count(GameId);
                         PlayerDal.Details(PlayerId).SinglePlayerGamesPoints += chrominosInGame switch
@@ -213,7 +211,6 @@ namespace ChrominoBI
                     if (IsRoundLastPlayer() || !IsNextPlayersCanWin())
                     {
                         new GameBI(Ctx, Env, GameId).SetGameFinished();
-                        GamePlayerDal.SetViewFinished(GameId, PlayerId);
                         playreturn = PlayReturn.GameFinish;
                     }
                 }
@@ -296,7 +293,7 @@ namespace ChrominoBI
             Ctx.SaveChanges();
         }
 
-        public void Loose(int playerId)
+        public void LooseGame(int playerId)
         {
             GamePlayerDal.SetViewFinished(GameId, playerId);
             PlayerDal.IncreaseHelp(playerId, 1);
@@ -304,10 +301,14 @@ namespace ChrominoBI
                 GamePlayerDal.SetWon(GameId, playerId, false);
         }
 
-        public void Win(int playerId)
+        public void WinGame(int playerId, bool drawGame = false)
         {
-            PlayerDal.IncreaseWinAndHelp(playerId);
+            GamePlayerDal.SetViewFinished(GameId, playerId);
             GamePlayerDal.SetWon(GameId, playerId);
+            if (drawGame)
+                PlayerDal.IncreaseWinAndHelp(playerId, 2);
+            else
+                PlayerDal.IncreaseWinAndHelp(playerId, 3);
         }
 
         /// <summary>
