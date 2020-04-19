@@ -14,8 +14,16 @@ namespace Data.Models
         public string DomElementId { get; set; }
 
         [Required]
+        public string HeadPictureClass { get; set; }
+
+        [Required]
         public string Description { get; set; }
 
-        public string PicturePath { get; set; }
+        public string IllustrationPicture { get; set; }
+
+        public int? NextTipId { get; set; }
+
+
+        public virtual Tip NextTip { get; set; }
     }
 }

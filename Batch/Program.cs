@@ -225,79 +225,115 @@ namespace Batch
         {
             Console.WriteLine();
             Console.WriteLine("ajout des tips");
-            #region tips
+            #region tips singles
             Tip validateChromino = new Tip
             {
                 DomElementId = "ValidateChromino",
-                Description = "<p> Vous avez posé un chromino dans le jeu sans le valider.</p><p> Pensez à le valider en appuyant sur le bouton<button id='buttonInfoForPlaying' class='btn btn-toolbar btn-play' onclick='PlayChromino()'></button></p><p>Ou en appuyant sur le chromino jusqu'au flash.</p>",
+                HeadPictureClass = "btn-home",
+                Description = "<p>Vous avez posé un chromino dans le jeu sans le valider.</p><p> Pensez à le valider en appuyant sur le bouton<button id='buttonInfoForPlaying' class='btn btn-toolbar btn-play' onclick='PlayChromino()'></button></p><p>Ou en appuyant sur le chromino jusqu'au flash.</p>",
             };
-            //Tip howMoveChromino = new Tip
-            //{
-            //    TipName = TipName.HowMoveChromino,
-            //    Description = "<p> Vous devez déplacer un chromino de votre main dans le jeu.</p><p>Avec la souris, cliquez sur un chromino et déplacer la tout en maintenant appuyer le bouton et relacher le à l'endroit voulu.</p><p>Ou avec un écran tactile, appuyer avec le doigt sur le chromino et glisser le.</p>",
-            //};
+
+            Tip welcomePicture = new Tip
+            {
+                DomElementId = "WelcomePicture",
+                HeadPictureClass = "div-welcome",
+                Description = "",
+                IllustrationPicture = "",
+            };
             Tip home = new Tip
             {
                 DomElementId = "ButtonHome",
-                Description = "<p>Ceci est la maison !</p>",
+                HeadPictureClass = "btn-home",
+                Description = "<p>Cette icône permet de retourner à la page d’accueil.</p>",
             };
             Tip info = new Tip
             {
                 DomElementId = "ButtonInfo",
-                Description = "<p>Ceci est l'info !</p>",
+                HeadPictureClass = "btn-infogame",
+                Description = "<p>Cette icône ouvre une fenêtre qui indique les informations essentielles de la partie : </p><li>L'ordre aléatoire des joueurs.</li><li>Le nombre de chrominos par joueur.</li><li>Le nombre de chrominos de la pioche.</li><br/><p>A noter que lorsqu’il ne reste qu’un chromino à un joueur, celui-ci sera visible dans cette fenêtre.</p>",
             };
             Tip help = new Tip
             {
                 DomElementId = "ButtonHelp",
-                Description = "<p>Ceci est l'aide de jeu pour visualiser les emplacements possibles !</p>",
+                HeadPictureClass = "btn-helpPlay",
+                Description = "<p>Cette icône permet de connaître les emplacements possibles des chrominos.</p><p>Ils sont symbolisés par une couleur.</p><p>Un numéro indique le nombre d'aides restant. </p><p>Ce nombre augmente de 3 par victoire, et d'1 par défaite.</p><p>A utiliser donc avec parcimonie.</p>",
             };
             Tip chat = new Tip
             {
                 DomElementId = "ButtonChat",
-                Description = "<p>Ceci est le chat !</p>",
+                HeadPictureClass = "btn-chat",
+                Description = "<p>Cette icône ouvre une fenêtre de chat.</p><p>Un numéro indique la réception de nouveaux messages.</p>",
             };
             Tip memo = new Tip
             {
                 DomElementId = "ButtonMemo",
-                Description = "<p>Ceci est le mémo !</p>",
+                HeadPictureClass = "btn-memo",
+                Description = "<p>Cette icône ouvre un bloc note permettant de noter les chrominos des adversaires pour les bloquer le moment venu.</p><p>Un numéro apparaît lorsqu'une ou plusieurs notes est inscrite dans celui-ci.</p>",
             };
             Tip next = new Tip
             {
                 DomElementId = "ButtonNextGame",
-                Description = "<p>Ceci est le bouton pour passer à une autre partie !</p>",
+                HeadPictureClass = "btn-nextgame",
+                Description = "<p>Cette icône permet de passer à la partie suivante.</p><p>Idéal pour jouer plusieurs parties les unes après les autres sans repasser par l'accueil.</p>",
             };
             Tip draw = new Tip
             {
                 DomElementId = "ButtonDrawChromino",
-                Description = "<p>Ceci est le bouton pour piocher !</p>",
+                HeadPictureClass = "btn-draw",
+                Description = "<p>Cette icône permet de piocher lorsqu'on ne peut pas (ou qu'on ne veut pas) placer de chromino dans le jeu.</p>",
             };
             Tip skip = new Tip
             {
                 DomElementId = "ButtonSkipTurn",
-                Description = "<p>Ceci est le bouton pour passer !</p>",
+                HeadPictureClass = "btn-skip",
+                Description = "<p>Cette icône permet de passer son tour si le chromino pioché ne peut pas être placé (ou qu'on ne veut pas le poser)</p>",
             };
             Tip handChrominos = new Tip
             {
                 DomElementId = "Hand",
-                Description = "<p>Ceci est un chromino de votre main !</p>",
+                HeadPictureClass = "onechromino",
+                Description = "<p>Les chrominos de votre main doivent tous être posés dans le jeu à des positions valides pour remporter la partie.</p><p>Pour déplacer un chromino, appuyer dessus tout en maintenant la pression et relacher à l'endroit voulu<p><p>Pour faire pivoter un chromino de 90°, appuyer brièvement dessus.<p><br/>",
             };
             Tip history = new Tip
             {
                 DomElementId = "HistoryChrominos",
+                HeadPictureClass = "btn-previous-next",
                 Description = "<p>permet de visulaiser l'historique des chrominos posés !</p>",
             };
             Tip play = new Tip
             {
                 DomElementId = "ButtonPlayChromino",
-                Description = "<p>permet de valider votre chromino</p>",
+                HeadPictureClass = "btn-play",
+                Description = "<p>Cette icône permet de valider le chromino placé dans le jeu.</p><p>Il est également possible de le valider en appuyant sur celui-ci pendant une courte durée.</p>",
             };
             Tip cameleon = new Tip
             {
                 DomElementId = "Cameleon",
-                Description = "<p>crhomino caméléon</p>",
+                HeadPictureClass = "btn-cameleon",
+                Description = "<p>Ce chromino \\\"caméléon\\\" a un joker en son centre.</p><p>Ce joker peut être assemblé à n'importe quelle couleur d'un autre chromino.</p>",
+                IllustrationPicture = "HowPlayWithCameleon.svg",
             };
+            
+            List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcomePicture };
+            AddTipsInDb(tips);
             #endregion
-            List<Tip> tips = new List<Tip> {home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon };
+            #region tips parents
+            Tip welcomeText = new Tip
+            {
+                DomElementId = "WelcomeText",
+                HeadPictureClass = "div-welcome",
+                Description = "<p>Bienvenue dans votre première partie de chromino en ligne.<p><p>L'objectif est de déposer ses chrominos contre les autres en assurant au moins deux contacts entre des carrés de couleurs identiques.</p><p>En cliquant la première fois sur une icône, une aide spécifique vous guidera.</p>",
+                NextTipId = (from t in Ctx.Tips
+                             where t.DomElementId == "WelcomePicture"
+                             select t.Id).FirstOrDefault(),
+            };
+            List<Tip> tipsParent = new List<Tip> { welcomeText };
+            AddTipsInDb(tipsParent);
+            #endregion
+        }
+
+        private static void AddTipsInDb(List<Tip> tips)
+        {
             foreach (var tip in tips)
             {
                 int tipId = (from t in Ctx.Tips

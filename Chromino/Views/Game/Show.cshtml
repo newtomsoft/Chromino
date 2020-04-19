@@ -202,7 +202,7 @@
     @{
         foreach (Tip tip in Model.Tips)
         {
-            @:Tips.push({ id:"@tip.Id", elementId: "@tip.DomElementId", description: "@Html.Raw(tip.Description)", picture: "@tip.PicturePath" });
+            @:Tips.push({ id: "@tip.Id", elementId: "@tip.DomElementId", headPictureClass:"@tip.HeadPictureClass", description: "@Html.Raw(tip.Description)", illustrationPicture: "@tip.IllustrationPicture", nextTip:"@tip.NextTipId" });
         }
     }
     var HistoryChrominos = new Array;
@@ -230,7 +230,7 @@
 </body>
 </html>
 <div id="PopupInfo" style="display:none">
-    <div class="img-head img-info" title="info"></div>
+    <div class="div-head img-info" title="info"></div>
     @if (Model.Game.Status.IsFinish())
     {
         <h2>La partie est terminée</h2>
@@ -325,7 +325,7 @@
     }
 </div>
 <div id="errorPopup" style="display:none">
-    <div class="img-head img-error" title="erreur"></div>
+    <div class="div-head div-error" title="erreur"></div>
     @switch (playReturn)
     {
         case PlayReturn.NotFree:
@@ -408,19 +408,20 @@
     </div>
 </div>
 <div id="botPlayingInfoPopup" class="popup-wait" style="display:none">
-    <div class="img-head img-info" title="info"></div>
+    <div class="div-head img-info" title="info"></div>
     <p>Le bot est en train de jouer.</p>
     <p>Merci de patienter quelques secondes...</p>
     <div class="wait"></div>
 </div>
 <div id="TipPopup" style="display:none">
-    <div class="img-head img-info" title="info"></div>
+    <div id="TipHeadPicture" class="div-head" title="didacticiel"></div>
     <div id="TipHtml"></div>
-    <img id="TipIllustration" class="illustration" src="" alt="illustration" />
+    <div id="TipIllustration" title="illustration"></div>
     <form id="TipFormDisable" asp-action="Off" asp-controller="Tip">
         <input name="gameId" value="@Model.Game.Id" type="hidden" />
         <input id="TipId" name="tipId" type="hidden" />
-        <input id="TipDontShowAgain" type="checkbox" />Ne plus afficher
+        <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher
     </form>
     <button class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');">Ok</button>
+    <button id="tipNextTip" class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');" style="display:none">Suivant</button>
 </div>
