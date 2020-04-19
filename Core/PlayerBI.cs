@@ -85,9 +85,9 @@ namespace ChrominoBI
                 List<int> playersIdWin = ChrominoInHandDal.PlayersIdWithMinChrominos(GameId);
                 List<int> playersIdLoose = GamePlayerDal.PlayersId(GameId).Except(playersIdWin).ToList();
                 foreach (int playerId in playersIdWin)
-                    WinGame(playerId, playersIdWin.Count > 1);
+                    GamePlayerDal.SetWon(GameId, playerId);
                 foreach (int playerId in playersIdLoose)
-                    LooseGame(playerId);
+                    GamePlayerDal.SetWon(GameId, playerId, false);
             }
             ChangePlayerTurn();
         }
@@ -305,10 +305,7 @@ namespace ChrominoBI
         {
             GamePlayerDal.SetViewFinished(GameId, playerId);
             GamePlayerDal.SetWon(GameId, playerId);
-            if (drawGame)
-                PlayerDal.IncreaseWinAndHelp(playerId, 2);
-            else
-                PlayerDal.IncreaseWinAndHelp(playerId, 3);
+            PlayerDal.IncreaseWinAndHelp(playerId, drawGame ? 2 : 3);
         }
 
         /// <summary>

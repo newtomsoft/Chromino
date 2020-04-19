@@ -126,14 +126,20 @@ namespace Data.Core
                 else
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
 
+                bool askRematch = false;
                 if (GameDal.IsFinished(GameId) && !GamePlayerDal.IsViewFinished(GameId, playerId))
                 {
+                    PlayerBI playerBI = new PlayerBI(Ctx, Env, GameId, playerId);
                     if (GamePlayerDal.GetWon(GameId, playerId) != true)
-                        new PlayerBI(Ctx, Env, GameId, playerId).LooseGame(playerId);
+                    {
+                        playerBI.LooseGame(playerId);
+                        if (GamePlayerDal.IsAllLoosersViewFinished(GameId))
+                            askRematch = true;
+                    }
                     else if (GamePlayerDal.WinnersId(GameId).Count > 1) // draw game
-                        new PlayerBI(Ctx, Env, GameId, playerId).WinGame(playerId, true);
+                        playerBI.WinGame(playerId, true);
                     else // only 1 winner
-                        new PlayerBI(Ctx, Env, GameId, playerId).WinGame(playerId);
+                        playerBI.WinGame(playerId);
                 }
                 GamePlayer gamePlayerTurn = GamePlayerDal.Details(GameId, playerTurn.Id);
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, playerId);
@@ -144,7 +150,7 @@ namespace Data.Core
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId);
                 List<Tip> tips = TipDal.ListOn(playerId);
-                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips);
+                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch);
                 return gameViewModel;
             }
             else return null;

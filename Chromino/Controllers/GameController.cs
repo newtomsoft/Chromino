@@ -80,7 +80,7 @@ namespace Controllers
             if (botsNumber + players.Count > MaxPlayers)
                 errors.Add($"Le nombre de joueurs est supérieur à {MaxPlayers}. Il ne faut pas chercher à dépasser les bornes des limites ! ;-)");
             else if (botsNumber < 0)
-                errors.Add($"Le nombre de bots est inférieur à 0. Bien tenté mais ça ne passe pas ici ! ;-)");
+                errors.Add($"Le nombre de bots est inférieur à 0. Bien tenté mais ça ne passe pas ici ! 😉");
 
             if (errors.Count != 0)
             {
@@ -118,6 +118,20 @@ namespace Controllers
         public IActionResult NewSingle()
         {
             List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
+            CreateGame(players, out int gameId);
+            return RedirectToAction("Show", new { id = gameId });
+        }
+
+        /// <summary>
+        /// création d'une partie "revanche"
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Rematch(string[] playersName)
+        {
+            List<Player> players = new List<Player>();
+            foreach (string name in playersName)
+                players.Add(PlayerDal.Details(name));
             CreateGame(players, out int gameId);
             return RedirectToAction("Show", new { id = gameId });
         }
