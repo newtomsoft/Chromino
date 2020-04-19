@@ -513,16 +513,26 @@ function TipClosePopup(popup, checkBox) {
     }
 }
 
-function ShowFeature(id, description, illustration, isCheck) {
-    $('#TipHtml').html(description);
-    $('#TipId').val(id);
+function ShowTipFeature(tip, isCheck) {
+    $('#TipHeadPicture').removeClass().addClass("div-head " + tip.headPictureClass);
+    $('#TipHtml').html(tip.description);
+    $('#TipId').val(tip.id);
     $('#TipDontShowAgain').prop('checked', isCheck);
-    if (illustration != "") {
-        $('#TipIllustration').val(illustration);
-        $('#TipIllustration').show();
+    if (tip.nextTip != "") {
+        // onclick = tip.nextTipId
+        $('#TipNextTip').show();
     }
     else
+        $('#TipNextTip').hide();
+    if (tip.illustrationPicture != "") {
+        //$('#TipIllustration').val(tip.illustrationPicture);
+        $('#TipIllustration').addClass("illustration " + tip.illustrationPicture);
+        $('#TipIllustration').show();
+    }
+    else {
+        $('#TipIllustration').removeClass();
         $('#TipIllustration').hide();
+    }
     ShowPopup('#TipPopup');
 }
 
@@ -532,7 +542,7 @@ function Action(elementId) {
     let form = "#Form" + functionName;
     let popup = "#Popup" + functionName;
     if (tip != undefined)
-        ShowFeature(tip.id, tip.description, tip.picture, true);
+        ShowTipFeature(tip, true);
     else if (typeof window[functionName] === "function")
         window[functionName]();
     else if ($(popup).length)

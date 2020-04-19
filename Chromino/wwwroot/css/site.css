@@ -152,6 +152,10 @@ a {
     background-image: url('/image/button/Help.svg');
 }
 
+.btn-cameleon {
+    background-image: url('/image/button/Cameleon.svg');
+}
+
 .btn-tip {
     margin-top: 7px;
     margin-bottom: 10px;
@@ -245,10 +249,10 @@ a {
     margin-bottom: 15px;
 }
 
-.img-head {
+.div-head {
     height: 60px;
     width: 60px;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-origin: content-box;
     margin-left: auto;
@@ -261,7 +265,7 @@ a {
     background-image: url('/image/Info.svg');
 }
 
-.img-error {
+.div-error {
     background-image: url('/image/Error.svg');
 }
 
@@ -292,15 +296,23 @@ a {
         text-align: center;
     }
 
-    .popup_content > img.illustration {
-        width: 350px;
+    .popup_content > .illustration {
         max-width: 88%;
+        height: 150px;
+        max-height: 50%;
         margin-left: auto;
         margin-right: auto;
         margin-top: 10px;
         margin-bottom: 10px;
-        display: grid;
-        align-content: center;
+        display: flex;
+        justify-content: space-between;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-origin: content-box;
+    }
+
+    .popup_content > .illustration-cameleon {
+        background-image: url('/image/example/HowPlayWithCameleon.svg');
     }
 
 .popup-memochat {
