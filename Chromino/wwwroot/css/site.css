@@ -101,7 +101,9 @@ a {
     background-image: url('/image/button/Lost.svg');
 }
 
-
+.btn-rematch {
+    background-image: url('/image/button/Rematch.svg');
+}
 
 .btn-toolbar {
     flex-shrink: 1;

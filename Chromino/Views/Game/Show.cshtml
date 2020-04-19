@@ -42,7 +42,7 @@
                 <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
             </button>
         }
-        @if (!Model.OpponenentsAreBots)
+        @if (!Model.OpponentsAreBots)
         {
             <button id="ButtonChat" class="btn btn-toolbar btn-chat" onclick="Action(this.id);">
                 <p id="NotifChat" class="notification notification-red" style="display:none"></p>
@@ -234,7 +234,21 @@
     @if (Model.Game.Status.IsFinish())
     {
         <h2>La partie est terminée</h2>
-        <br />
+        @if (Model.GamePlayer.Win == false)
+        {
+            <h3>Vous avez perdu</h3>
+            <br />
+        }
+        else if (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))
+        {
+            <h3>Victoire ex aequo</h3>
+            <br />
+        }
+        else
+        {
+            <h3>Victoire !</h3>
+            <br />
+        }
     }
     else
     {
@@ -284,6 +298,17 @@
                 <p class="winner">@pseudoChromino.Key a gagné la partie</p>
             }
         }
+    }
+    @if (Model.AskRematch)
+    {
+        <form id="FormRematch" asp-action="Rematch" hidden>
+            <input name="playersName" value="@Model.Player.UserName" />
+            @foreach (var pseudo_chromino in pseudosExceptCurrentPlayer_Chrominos)
+            {
+                <input name="playersName" value="@pseudo_chromino.Key" />
+            }
+        </form>
+        <div>faire la revanche ?&nbsp;<button type="submit" form="FormRematch" class="btn btn-toolbar btn-rematch"></button></div>
     }
     <br />
     @if (Model.ChrominosInStack > 1)

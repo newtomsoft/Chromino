@@ -286,11 +286,21 @@ namespace Data.DAL
 
         public bool IsViewFinished(int gameId, int playerId)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers.AsNoTracking()
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            return gamePlayer != null ? gamePlayer.ViewFinished : true;
+            return gamePlayer?.ViewFinished ?? true;
+        }
+
+        public bool IsAllLoosersViewFinished(int gameId)
+        {
+            int id = (from gp in Ctx.GamesPlayers.AsNoTracking()
+                      join p in Ctx.Players.AsNoTracking() on gp.PlayerId equals p.Id
+                      where gp.GameId == gameId && gp.Win != true && !gp.ViewFinished && !p.Bot
+                      select gp.Id).FirstOrDefault();
+
+            return id == 0 ? true : false;
         }
 
         public void SetViewFinished(int gameId, int playerId)
