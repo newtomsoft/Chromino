@@ -6,19 +6,31 @@ namespace Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "NoTips",
+                table: "AspNetUsers");
+
             migrationBuilder.CreateTable(
                 name: "Tip",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipName = table.Column<int>(nullable: false),
+                    DomElementId = table.Column<string>(nullable: false),
+                    HeadPictureClass = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: false),
-                    IllustrationImagePath = table.Column<string>(nullable: true)
+                    IllustrationPictureClass = table.Column<string>(nullable: true),
+                    NextTipId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tip", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tip_Tip_NextTipId",
+                        column: x => x.NextTipId,
+                        principalTable: "Tip",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,6 +60,11 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tip_NextTipId",
+                table: "Tip",
+                column: "NextTipId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TipOff_PlayerId",
                 table: "TipOff",
                 column: "PlayerId");
@@ -65,6 +82,13 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tip");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "NoTips",
+                table: "AspNetUsers",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
     }
 }

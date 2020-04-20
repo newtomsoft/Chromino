@@ -47,11 +47,26 @@ a {
     top: 60px;
 }
 
+.popup {
+    min-width: 250px;
+    max-width: 450px;
+}
+
+.popup-memochat {
+    min-width: 300px;
+    min-height: 400px;
+    max-height: 95%;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
     margin: 0px;
+}
+
+.btn-tip {
+    margin-bottom: 8px;
 }
 
 .btn-homepage {
@@ -69,40 +84,55 @@ a {
         background-color: azure;
     }
 
-.btn-humanvshuman {
+.btn-historyChromino {
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    background-size: 22px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 8px;
+}
+
+.img-humanvshuman {
     background-image: url('/image/button/HumanVsHuman.svg');
 }
 
-.btn-humanvsbot {
+.img-humanvsbot {
     background-image: url('/image/button/HumanVsBot.svg');
 }
 
-.btn-humansingle {
+.img-humansingle {
     background-image: url('/image/button/HumanSingle.svg');
 }
 
-.btn-statistics {
+.img-statistics {
     background-image: url('/image/button/Stats.svg');
 }
 
-.btn-settings {
+.img-settings {
     background-image: url('/image/button/Settings.svg');
 }
 
-.btn-inprogress {
+.img-inprogress {
     background-image: url('/image/button/InProgress.svg');
 }
 
-.btn-won {
+.img-won {
     background-image: url('/image/button/Won.svg');
 }
 
-.btn-lost {
+.img-lost {
     background-image: url('/image/button/Lost.svg');
 }
 
-.btn-rematch {
+.img-rematch {
     background-image: url('/image/button/Rematch.svg');
+}
+
+#toolbar {
+    position: fixed;
+    display: flex;
 }
 
 .btn-toolbar {
@@ -116,67 +146,75 @@ a {
     background-origin: content-box;
 }
 
-.btn-play {
+.img-play {
     background-image: url('/image/button/Play.svg');
 }
 
-.btn-skip {
+.img-skip {
     background-image: url('/image/button/Skip.svg');
 }
 
-.btn-draw {
+.img-draw {
     background-image: url('/image/button/Draw.svg');
 }
 
-.btn-infogame {
+.img-infogame {
     background-image: url('/image/button/Info.svg');
 }
 
-.btn-home {
+.img-home {
     background-image: url('/image/button/Home.svg');
 }
 
-.btn-chat {
+.img-chat {
     background-image: url('/image/button/Chat.svg');
 }
 
-.btn-memo {
+.img-memo {
     background-image: url('/image/button/Memo.svg');
 }
 
-.btn-nextgame {
+.img-nextgame {
     background-image: url('/image/button/Next.svg');
 }
 
-.btn-helpPlay {
+.img-helpPlay {
     background-image: url('/image/button/Help.svg');
 }
 
-.btn-cameleon {
+.img-cameleon {
     background-image: url('/image/button/Cameleon.svg');
+    background-position: center center;
 }
 
-.btn-tip {
+.img-hand {
+    background-image: url('/image/button/Hand.svg');
+    background-position: center center;
+}
+
+.img-tip {
     margin-top: 7px;
     margin-bottom: 10px;
 }
 
-.btn-historyChromino {
-    cursor: pointer;
-    width: 22px;
-    height: 22px;
-    background-size: 22px;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin: 8px;
+.img-previousChromino {
+    background-image: url(/image/button/LeftArrow.svg);
 }
 
-.btn-previousChromino {
-    background-image: url(/image/LeftArrow.svg);
+.img-nextChromino {
+    background-image: url(/image/button/RightArrow.svg);
 }
 
-.btn-nextChromino {
-    background-image: url(/image/RightArrow.svg);
+.img-previous-next {
+    background-image: url(/image/button/LeftRightArrow.svg);
+}
+
+.img-playcameleon {
+    background-image: url('/image/example/HowPlayWithCameleon.svg');
+}
+
+.img-okko {
+    background-image: url('/image/example/OkAndKo.svg');
 }
 
 #HistoryChrominos {
@@ -261,10 +299,6 @@ a {
     margin-bottom: 15px;
 }
 
-.img-info {
-    background-image: url('/image/Info.svg');
-}
-
 .div-error {
     background-image: url('/image/Error.svg');
 }
@@ -296,30 +330,31 @@ a {
         text-align: center;
     }
 
-    .popup_content > .illustration {
-        max-width: 88%;
-        height: 150px;
-        max-height: 50%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-origin: content-box;
-    }
+.popup_close {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    border-radius: 2px;
+    background: none;
+    border: 0;
+    font-size: 25px;
+    font-family: fantasy;
+    padding: 0 10px;
+}
 
-    .popup_content > .illustration-cameleon {
-        background-image: url('/image/example/HowPlayWithCameleon.svg');
-    }
+.illustrations {
+    display: flex;
+    justify-content: center;
+}
 
-.popup-memochat {
-    min-width: 300px;
-    max-width: 95%;
-    min-height: 400px;
-    max-height: 95%;
+.illustration {
+    width: 90%;
+    height: 150px;
+    margin: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-position: center center;
 }
 
 #ChatPopup-textarea {
@@ -777,11 +812,6 @@ figcaption {
 
 #PlayerHistoryPseudo {
     font-size: x-large;
-}
-
-#toolbar {
-    position: fixed;
-    display: flex;
 }
 
 @media screen and (orientation: portrait) {

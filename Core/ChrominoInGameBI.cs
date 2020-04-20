@@ -77,7 +77,7 @@ namespace ChrominoBI
                     int n2 = SquareDal.GetNumberSameColorsAround(GameId, chrominoCoordinates[2], ChrominoInGame.Flip ? chromino.FirstColor : chromino.ThirdColor);
                     if (n0 == -1 || n1 == -1 || n2 == -1)
                         playReturn = PlayReturn.DifferentColorsAround;
-                    if (n0 + n1 + n2 < 2)
+                    else if (n0 + n1 + n2 < 2)
                         playReturn = PlayReturn.NotMinTwoSameColors;
                 }
                 if (playReturn.IsError())

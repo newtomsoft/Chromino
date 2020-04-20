@@ -31,24 +31,24 @@
     <partial name="_NoScript" />
     <div id="toolbar">
         <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
-        <button id="ButtonHome" class="btn btn-toolbar btn-home" onclick="Action(this.id);"></button>
-        <button id="ButtonInfo" class="btn btn-toolbar btn-infogame" onclick="Action(this.id);"></button>
+        <button id="ButtonHome" class="btn btn-toolbar img-home" onclick="Action(this.id);"></button>
+        <button id="ButtonInfo" class="btn btn-toolbar img-infogame" onclick="Action(this.id);"></button>
         @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions && !Model.Game.Status.IsFinish())
         {
             <form id="FormHelp" asp-action="Help" style="display:none">
                 <input name="gameId" value="@Model.Game.Id" />
             </form>
-            <button id="ButtonHelp" class="btn btn-toolbar btn-helpPlay" onclick="Action(this.id);">
+            <button id="ButtonHelp" class="btn btn-toolbar img-helpPlay" onclick="Action(this.id);">
                 <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
             </button>
         }
         @if (!Model.OpponentsAreBots)
         {
-            <button id="ButtonChat" class="btn btn-toolbar btn-chat" onclick="Action(this.id);">
+            <button id="ButtonChat" class="btn btn-toolbar img-chat" onclick="Action(this.id);">
                 <p id="NotifChat" class="notification notification-red" style="display:none"></p>
             </button>
         }
-        <button id="ButtonMemo" class="btn btn-toolbar btn-memo" onclick="Action(this.id);">
+        <button id="ButtonMemo" class="btn btn-toolbar img-memo" onclick="Action(this.id);">
             <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
         </button>
         @if (!Model.Game.Status.IsFinish())
@@ -61,14 +61,14 @@
                     <form id="FormDrawChromino" asp-action="DrawChromino" style="display:none">
                         <input name="gameId" value="@Model.Game.Id" />
                     </form>
-                    <button id="ButtonDrawChromino" class="btn btn-toolbar btn-draw" onclick="Action(this.id);"></button>
+                    <button id="ButtonDrawChromino" class="btn btn-toolbar img-draw" onclick="Action(this.id);"></button>
                 }
                 else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
                 {
                     <form id="FormSkipTurn" asp-action="SkipTurn" style="display:none">
                         <input name="gameId" value="@Model.Game.Id" />
                     </form>
-                    <button id="ButtonSkipTurn" class="btn btn-toolbar btn-skip" onclick="Action(this.id);"></button>
+                    <button id="ButtonSkipTurn" class="btn btn-toolbar img-skip" onclick="Action(this.id);"></button>
                 }
             }
             else
@@ -86,12 +86,12 @@
                 <input id="FormOrientation" name="orientation" />
                 <input id="FormFlip" name="flip" />
             </form>
-            <button id="ButtonPlayChromino" class="btn btn-toolbar btn-play" style="display:none" onclick="Action(this.id);"></button>
+            <button id="ButtonPlayChromino" class="btn btn-toolbar img-play" style="display:none" onclick="Action(this.id);"></button>
         }
         @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
         {
             <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
-            <button id="ButtonNextGame" class="btn btn-toolbar btn-nextgame" onclick="Action(this.id);"></button>
+            <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" onclick="Action(this.id);"></button>
         }
     </div>
     <br>
@@ -110,8 +110,8 @@
         }
         <div id="PlayerHistory">
             <div id="HistoryChrominos" onclick="Action(this.id);">
-                <button id="ButtonPreviousChromino" class="btn btn-historyChromino btn-previousChromino"></button>
-                <button id="ButtonNextChromino" class="btn btn-historyChromino btn-nextChromino"></button>
+                <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
+                <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
                 <div id="PlayerHistoryPseudo">@info</div>
             </div>
         </div>
@@ -202,7 +202,7 @@
     @{
         foreach (Tip tip in Model.Tips)
         {
-            @:Tips.push({ id: "@tip.Id", elementId: "@tip.DomElementId", headPictureClass:"@tip.HeadPictureClass", description: "@Html.Raw(tip.Description)", illustrationPicture: "@tip.IllustrationPicture", nextTip:"@tip.NextTipId" });
+            @:Tips.push({ id: "@tip.Id", elementId: "@tip.DomElementId", headPictureClass:"@tip.HeadPictureClass", description: "@Html.Raw(tip.Description)", illustrationPictureClass: "@tip.IllustrationPictureClass" });
         }
     }
     var HistoryChrominos = new Array;
@@ -229,8 +229,8 @@
     </script>
 </body>
 </html>
-<div id="PopupInfo" style="display:none">
-    <div class="div-head img-info" title="info"></div>
+<div id="PopupInfo" class="popup" style="display:none">
+    <div class="div-head img-infogame" title="information"></div>
     @if (Model.Game.Status.IsFinish())
     {
         <h2>La partie est terminée</h2>
@@ -241,7 +241,7 @@
         }
         else if (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))
         {
-            <h3>Victoire ex aequo</h3>
+            <h3>Victoire ex-æquo</h3>
             <br />
         }
         else
@@ -308,7 +308,7 @@
                 <input name="playersName" value="@pseudo_chromino.Key" />
             }
         </form>
-        <div>faire la revanche ?&nbsp;<button type="submit" form="FormRematch" class="btn btn-toolbar btn-rematch"></button></div>
+        <div>faire la revanche ?&nbsp;<button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch"></button></div>
     }
     <br />
     @if (Model.ChrominosInStack > 1)
@@ -324,7 +324,7 @@
         <p class="minorInfo">Il n'y a plus de chrominos dans la pioche</p>
     }
 </div>
-<div id="errorPopup" style="display:none">
+<div id="errorPopup" class="popup" style="display:none">
     <div class="div-head div-error" title="erreur"></div>
     @switch (playReturn)
     {
@@ -364,23 +364,22 @@
             break;
     }
 </div>
-<div id="PopupMemo" class="popup-memochat" style="display:none">
-    <div>
-        <form asp-action="Add" asp-controller="Memo">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <label asp-for="GamePlayer.Memo"></label>
-                <textarea asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
-                <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </div>
-        </form>
-    </div>
+<div id="PopupMemo" class="popup popup-memochat" style="display:none">
+    <div class="div-head img-memo" title="mémo"></div>
+    <form asp-action="Add" asp-controller="Memo">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <input name="gameId" value="@Model.Game.Id" type="hidden" />
+            <textarea asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
+            <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+    </form>
 </div>
-<div id="PopupChat" class="popup-memochat" style="display:none">
+<div id="PopupChat" class="popup popup-memochat" style="display:none">
+    <div class="div-head img-chat" title="chat"></div>
     <form id="form-SetReadChat" asp-action="SetRead" asp-controller="Chat" hidden>
         <input name="gameId" value="@Model.Game.Id" type="hidden" />
     </form>
@@ -389,7 +388,6 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <label asp-for="Game.Chat"></label>
                 <textarea id="ChatPopup-textarea" class="form-control" rows="10" disabled>@Model.Game.Chat</textarea>
                 <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Marquer comme lu</button>
             </div>
@@ -407,21 +405,22 @@
         </form>
     </div>
 </div>
-<div id="botPlayingInfoPopup" class="popup-wait" style="display:none">
+<div id="botPlayingInfoPopup" class="popup popup-wait" style="display:none">
     <div class="div-head img-info" title="info"></div>
     <p>Le bot est en train de jouer.</p>
     <p>Merci de patienter quelques secondes...</p>
     <div class="wait"></div>
 </div>
-<div id="TipPopup" style="display:none">
+<div id="TipPopup" class="popup" style="display:none">
     <div id="TipHeadPicture" class="div-head" title="didacticiel"></div>
     <div id="TipHtml"></div>
-    <div id="TipIllustration" title="illustration"></div>
+    <div class="illustrations">
+        <div id="TipIllustration" title="illustration"></div>
+    </div>
     <form id="TipFormDisable" asp-action="Off" asp-controller="Tip">
         <input name="gameId" value="@Model.Game.Id" type="hidden" />
         <input id="TipId" name="tipId" type="hidden" />
         <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher
     </form>
     <button class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');">Ok</button>
-    <button id="tipNextTip" class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');" style="display:none">Suivant</button>
 </div>
