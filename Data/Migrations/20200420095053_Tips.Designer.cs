@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200417144457_deleteNoTipFromPlayer")]
-    partial class deleteNoTipFromPlayer
+    [Migration("20200420095053_Tips")]
+    partial class Tips
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -431,13 +431,23 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IllustrationImagePath")
+                    b.Property<string>("DomElementId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TipName")
+                    b.Property<string>("HeadPictureClass")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IllustrationPictureClass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NextTipId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextTipId");
 
                     b.ToTable("Tip");
                 });
@@ -723,6 +733,13 @@ namespace Data.Migrations
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Models.Tip", b =>
+                {
+                    b.HasOne("Data.Models.Tip", "NextTip")
+                        .WithMany()
+                        .HasForeignKey("NextTipId");
                 });
 
             modelBuilder.Entity("Data.Models.TipOff", b =>

@@ -14,6 +14,7 @@
 
     ResizeGameArea();
     StartDraggable();
+    Action("Welcome");
 
     //animatation des derniers chromino joués
     if (!PreviouslyDraw && ThisPlayerTurn) {
@@ -188,11 +189,11 @@ function StartDraggable() {
                 StopScheduleValidateChromino();
             }).on("dragend", function () {
                 if (IsChrominoInGameArea(this)) {
-                    $('.btn-play').show();
+                    $('#ButtonPlayChromino').show();
                     ScheduleValidateChromino();
                 }
                 else {
-                    $('.btn-play').hide();
+                    $('#ButtonPlayChromino').hide();
                 }
                 $(this).css('cursor', 'grab');
                 LastChrominoMove = this;
@@ -470,10 +471,7 @@ function PlayChromino() {
 function ShowPopup(popup) {
     StopScheduleValidateChromino();
     $(popup).show();
-    $(popup).popup({
-        autoopen: true,
-        transition: 'all 0.4s'
-    });
+    $(popup).popup({ closebutton: true, autoopen: true, transition: 'all 0.4s' });
     $.fn.popup.defaults.pagecontainer = '#page';
     if (popup == '#ChatPopup') {
         $('#ChatPopup-textarea').scrollTop(300);
@@ -514,23 +512,21 @@ function TipClosePopup(popup, checkBox) {
 }
 
 function ShowTipFeature(tip, isCheck) {
-    $('#TipHeadPicture').removeClass().addClass("div-head " + tip.headPictureClass);
+    if (tip.headPictureClass != "") {
+        $('#TipHeadPicture').removeClass().addClass("div-head " + tip.headPictureClass);
+        $('#TipHeadPicture').show();
+    }
+    else {
+        $('#TipHeadPicture').hide();
+    }
     $('#TipHtml').html(tip.description);
     $('#TipId').val(tip.id);
     $('#TipDontShowAgain').prop('checked', isCheck);
-    if (tip.nextTip != "") {
-        // onclick = tip.nextTipId
-        $('#TipNextTip').show();
-    }
-    else
-        $('#TipNextTip').hide();
-    if (tip.illustrationPicture != "") {
-        //$('#TipIllustration').val(tip.illustrationPicture);
-        $('#TipIllustration').addClass("illustration " + tip.illustrationPicture);
+    if (tip.illustrationPictureClass != "") {
+        $('#TipIllustration').removeClass().addClass("illustration " + tip.illustrationPictureClass);
         $('#TipIllustration').show();
     }
     else {
-        $('#TipIllustration').removeClass();
         $('#TipIllustration').hide();
     }
     ShowPopup('#TipPopup');

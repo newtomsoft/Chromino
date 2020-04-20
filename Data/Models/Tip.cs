@@ -19,7 +19,7 @@ namespace Data.Models
         [Required]
         public string Description { get; set; }
 
-        public string IllustrationPicture { get; set; }
+        public string IllustrationPictureClass { get; set; }
 
         public int? NextTipId { get; set; }
 

@@ -437,7 +437,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IllustrationPicture")
+                    b.Property<string>("IllustrationPictureClass")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("NextTipId")
