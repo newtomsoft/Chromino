@@ -73,6 +73,13 @@
         $('#Chat-input').val(textBefore + $(this).html() + textAfter);
         $("#Chat-input").focus();
     });
+
+
+    //clic sur fermeture fenetre tip
+
+
+
+
 });
 
 //***************************************************//
@@ -502,28 +509,19 @@ function StopScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
 }
 
-function TipClosePopup(popup, checkBox) {
-    if ($(checkBox).is(":checked")) {
-        $("#TipFormDisable").submit();
-    }
-    else {
-        ClosePopup(popup);
-    }
-}
-
-function ShowTipFeature(tip, isCheck, hasCloseButton) {
-    if (tip.headPictureClass != "") {
-        $('#TipHeadPicture').removeClass().addClass("div-head " + tip.headPictureClass);
+function ShowTipFeature(isCheck, hasCloseButton) {
+    if (Tip.headPictureClass != "") {
+        $('#TipHeadPicture').removeClass().addClass("div-head " + Tip.headPictureClass);
         $('#TipHeadPicture').show();
     }
     else {
         $('#TipHeadPicture').hide();
     }
-    $('#TipHtml').html(tip.description);
-    $('#TipId').val(tip.id);
+    $('#TipHtml').html(Tip.description);
+    //$('#TipId').val(Tip.id);
     $('#TipDontShowAgain').prop('checked', isCheck);
-    if (tip.illustrationPictureClass != "") {
-        $('#TipIllustration').removeClass().addClass("illustration " + tip.illustrationPictureClass);
+    if (Tip.illustrationPictureClass != "") {
+        $('#TipIllustration').removeClass().addClass("illustration " + Tip.illustrationPictureClass);
         $('#TipIllustration').show();
     }
     else {
@@ -531,14 +529,14 @@ function ShowTipFeature(tip, isCheck, hasCloseButton) {
     }
     ShowPopup('#TipPopup', hasCloseButton);
 }
-
+var Tip;
 function Action(elementId) {
-    let tip = Tips.find(x => x.elementId == elementId);
+    Tip = Tips.find(x => x.elementId == elementId);
     let functionName = elementId.replace("Button", "");
     let form = "#Form" + functionName;
     let popup = "#Popup" + functionName;
-    if (tip != undefined)
-        ShowTipFeature(tip, true, false);
+    if (Tip != undefined)
+        ShowTipFeature(true, false);
     else if (typeof window[functionName] === "function")
         window[functionName]();
     else if ($(popup).length)

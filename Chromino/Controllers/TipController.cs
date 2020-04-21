@@ -24,9 +24,9 @@ namespace Controllers
         }
 
         [HttpPost]
-        public IActionResult Off(int gameId, int tipId, string dontShowAllTips)
+        public IActionResult Off(int gameId, int tipId, bool dontShowAllTips)
         {
-            if (dontShowAllTips == "on")
+            if (dontShowAllTips)
                 TipDal.SetAllOff(PlayerId);
             else
                 TipDal.SetOff(PlayerId, tipId);

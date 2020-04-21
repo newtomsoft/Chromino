@@ -154,8 +154,10 @@
         </div>
     }
 </div>
-@section Script1{
-    @if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
+
+@if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
+{
+    @section ScriptPlayBot
     {
         <script>
             window.onload = function () {
@@ -176,8 +178,9 @@
         showBotPlayingInfoPopup = true;
 }
 
-@section Script2{
-<script>
+@section ScriptPreJs
+{
+    <script>
 var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
 var ThisPlayerTurn = @thisPlayerTurn;
@@ -220,7 +223,26 @@ var HistoryChrominos = new Array;
         move--;
     }
 }
-</script>
+function TipClosePopup(popup, checkBox) {
+    if ($(checkBox).is(":checked")) {
+        let dontShowAllTips = false;
+        if ($('input[name=dontShowAllTips]').is(':checked'))
+            dontShowAllTips = true;
+        $.ajax({
+            url: '@Url.Action("Off", "Tip")',
+            type: 'POST',
+            data: { gameId:@Model.Game.Id, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
+            success: function () {
+                if (dontShowAllTips)
+                    Tips = new Array;
+                else
+                    Tips.splice(Tips.findIndex(x => x.id == Tip.id), 1);
+            }
+        });
+    }
+    ClosePopup(popup);
+}
+    </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
@@ -412,11 +434,7 @@ var HistoryChrominos = new Array;
     <div class="illustrations">
         <div id="TipIllustration" title="illustration"></div>
     </div>
-    <form id="TipFormDisable" asp-action="Off" asp-controller="Tip">
-        <input name="gameId" value="@Model.Game.Id" type="hidden" />
-        <input id="TipId" name="tipId" type="hidden" />
-        <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher cette fenêtre
-        <div><input name="dontShowAllTips" type="checkbox" /> Ne plus afficher aucune fenêtre du didacticiel</div>
-    </form>
+    <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher cette fenêtre
+    <div><input name="dontShowAllTips" type="checkbox" /> Ne plus afficher aucune fenêtre du didacticiel</div>
     <button class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');">C'est noté !</button>
 </div>
