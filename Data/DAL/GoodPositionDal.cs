@@ -90,12 +90,12 @@ namespace Data.DAL
         public int Delete(IQueryable<int> gamesIdToDelete)
         {
             var resultGp = from gp in Ctx.GoodPositions
-                         where gamesIdToDelete.Contains(gp.GameId)
-                         select gp;
+                           where gamesIdToDelete.Contains(gp.GameId)
+                           select gp;
 
             var resultGpl = from gpl in Ctx.GoodPositionsLevel
-                         where gamesIdToDelete.Contains(gpl.GameId)
-                         select gpl;
+                            where gamesIdToDelete.Contains(gpl.GameId)
+                            select gpl;
 
             Ctx.GoodPositions.RemoveRange(resultGp);
             Ctx.GoodPositionsLevel.RemoveRange(resultGpl);
