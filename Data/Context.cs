@@ -27,10 +27,5 @@ namespace Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
-
-        //protected new void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Tip>().HasIndex(x => x.Name).IsUnique();
-        //}
     }
 }

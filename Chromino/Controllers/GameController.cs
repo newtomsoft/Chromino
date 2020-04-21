@@ -146,10 +146,6 @@ namespace Controllers
             if (id == 0)
                 return RedirectToAction("GameNotFound");
 
-            ChrominoInHandDal.PlayersIdWithMinChrominos(id);
-
-
-
             Player player = PlayerDal.Details(PlayerId);
             bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
 

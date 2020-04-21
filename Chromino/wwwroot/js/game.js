@@ -468,10 +468,10 @@ function PlayChromino() {
 //********** gestion popups de la partie ************//
 //***************************************************//
 
-function ShowPopup(popup) {
+function ShowPopup(popup, hasCloseButton = true) {
     StopScheduleValidateChromino();
     $(popup).show();
-    $(popup).popup({ closebutton: true, autoopen: true, transition: 'all 0.4s' });
+    $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
     $.fn.popup.defaults.pagecontainer = '#page';
     if (popup == '#ChatPopup') {
         $('#ChatPopup-textarea').scrollTop(300);
@@ -511,7 +511,7 @@ function TipClosePopup(popup, checkBox) {
     }
 }
 
-function ShowTipFeature(tip, isCheck) {
+function ShowTipFeature(tip, isCheck, hasCloseButton) {
     if (tip.headPictureClass != "") {
         $('#TipHeadPicture').removeClass().addClass("div-head " + tip.headPictureClass);
         $('#TipHeadPicture').show();
@@ -529,7 +529,7 @@ function ShowTipFeature(tip, isCheck) {
     else {
         $('#TipIllustration').hide();
     }
-    ShowPopup('#TipPopup');
+    ShowPopup('#TipPopup', hasCloseButton);
 }
 
 function Action(elementId) {
@@ -538,7 +538,7 @@ function Action(elementId) {
     let form = "#Form" + functionName;
     let popup = "#Popup" + functionName;
     if (tip != undefined)
-        ShowTipFeature(tip, true);
+        ShowTipFeature(tip, true, false);
     else if (typeof window[functionName] === "function")
         window[functionName]();
     else if ($(popup).length)
