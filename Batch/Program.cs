@@ -230,7 +230,7 @@ namespace Batch
             {
                 DomElementId = "Welcome",
                 HeadPictureClass = "",
-                Description = " <p>Bienvenue dans votre première partie de chromino en ligne.<p><p>L'objectif est d'accoler ses chrominos contre d'autres en assurant au moins deux contacts entre des carrés de couleurs identiques.</p><p>Bons jeux !</p>",
+                Description = " <p>Bienvenue dans ce jeu.<p><p>Vous devez accoler vos chrominos contre d'autres en assurant au moins 2 contacts entre des carrés de mêmes couleurs.</p><p>En cliquant la 1ère fois sur un élement du jeu, une aide spécifique vous guidera.</p><p>Bons jeux !</p>",
                 IllustrationPictureClass = "img-okko",
             };
             Tip validateChromino = new Tip
