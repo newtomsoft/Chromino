@@ -161,7 +161,6 @@ namespace Core
 
         private List<Position> PositionsToDeleteAroundSquares(List<Square> squares, int indexSquare)
         {
-            List<Position> positions = new List<Position>();
             List<Square> lastSquares = new List<Square> { squares[indexSquare], squares[1 + indexSquare], squares[2 + indexSquare] };
             int x = lastSquares[1].X;
             int y = lastSquares[1].Y;
@@ -171,6 +170,9 @@ namespace Core
                 throw new Exception("chromino en erreur");
 
             Orientation orientation = offset.GetOrientation();
+            List<Position> positions = new List<Position>();
+
+            #region ajout des positions
             if (orientation == Orientation.Horizontal)
             {
                 positions.Add(new Position { Coordinate = new Coordinate(x - 3, y - 1), Orientation = Orientation.Horizontal, Reversed = false });
@@ -259,6 +261,8 @@ namespace Core
                 positions.Add(new Position { Coordinate = new Coordinate(x + 1, y + 1), Orientation = Orientation.Vertical, Reversed = false });
                 positions.Add(new Position { Coordinate = new Coordinate(x, y + 2), Orientation = Orientation.Vertical, Reversed = false });
             }
+            #endregion
+
             return positions;
         }
 
@@ -270,7 +274,7 @@ namespace Core
         private List<Position> CandidatesPositionsAroundSquares(List<Square> squares, int indexSquare)
         {
             List<Square> lastSquares = new List<Square> { squares[indexSquare], squares[1 + indexSquare], squares[2 + indexSquare] };
-            List<Position> positionsFilter1 = new List<Position>();
+
             int x = lastSquares[1].X;
             int y = lastSquares[1].Y;
 
@@ -280,6 +284,9 @@ namespace Core
                 throw new Exception("Dernier chromino posé en erreur");
 
             Orientation orientation = absOffset.GetOrientation();
+            List<Position> positionsFilter1 = new List<Position>();
+
+            #region ajout des positionsFilter1
             if (orientation == Orientation.Horizontal)
             {
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x - 3, y - 1), Orientation = Orientation.Horizontal, Reversed = false });
@@ -340,6 +347,7 @@ namespace Core
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x + 1, y + 1), Orientation = Orientation.Vertical, Reversed = false });
                 positionsFilter1.Add(new Position { Coordinate = new Coordinate(x, y + 2), Orientation = Orientation.Vertical, Reversed = false });
             }
+            #endregion
 
             List<Position> candidatesPositions = new List<Position>();
             foreach (var position in positionsFilter1)
@@ -373,27 +381,12 @@ namespace Core
         private void RemoveAndUpdate(bool remove, int playerId, bool wholeGame, int chrominoId)
         {
             List<Square> squares = SquareDal.List(GameId);
-            int chrominoNumber;
-            if (wholeGame)
-                chrominoNumber = squares.Count / 3;
-            else
-                chrominoNumber = 1;
-
+            int chrominoNumber = wholeGame ? squares.Count / 3 : 1;
             for (int iSquare = (chrominoNumber - 1) * 3; iSquare >= 0; iSquare -= 3)
             {
-                List<Position> positionsToDelete;
-                if (remove)
-                    positionsToDelete = PositionsToDeleteAroundSquares(squares, iSquare);
-                else
-                    positionsToDelete = new List<Position>();
-
+                List<Position> positionsToDelete = remove ? PositionsToDeleteAroundSquares(squares, iSquare) : new List<Position>();
                 List<Position> candidatesPositions = CandidatesPositionsAroundSquares(squares, iSquare);
-
-                List<int> playersId;
-                if (playerId == 0)
-                    playersId = GamePlayerDal.PlayersId(GameId);
-                else
-                    playersId = new List<int> { playerId };
+                List<int> playersId = playerId == 0 ? GamePlayerDal.PlayersId(GameId) : new List<int> { playerId };
 
                 GoodPositionComparer goodPositionComparer = new GoodPositionComparer();
                 foreach (int currentPlayerId in playersId)

@@ -312,7 +312,7 @@ namespace Batch
                 Description = "<p>Ce chromino \\\"caméléon\\\" a un joker en son centre.</p><p>Ce joker peut être accolé à n'importe quelle couleur d'un autre chromino comme sur l'exemple ci-dessous.</p>",
                 IllustrationPictureClass = "img-playcameleon",
             };
-            
+
             List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcome };
             AddTipsInDb(tips);
             #endregion
