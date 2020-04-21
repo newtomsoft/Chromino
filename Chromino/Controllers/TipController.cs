@@ -24,9 +24,12 @@ namespace Controllers
         }
 
         [HttpPost]
-        public IActionResult Off(int gameId, int tipId)
+        public IActionResult Off(int gameId, int tipId, string dontShowAllTips)
         {
-            TipDal.SetOff(PlayerId, tipId);
+            if (dontShowAllTips == "on")
+                TipDal.SetAllOff(PlayerId);
+            else
+                TipDal.SetOff(PlayerId, tipId);
             return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }

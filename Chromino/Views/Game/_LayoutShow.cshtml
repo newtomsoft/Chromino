@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Chromino</title>
+    <partial name="_IncludeCss" />
+</head>
+<body>
+    <partial name="_NoScript" />
+    <partial name="_IncludeJs" />
+    @RenderSection("Script1", required: true)
+    @RenderSection("Script2", required: true)
+    <div id="DivTouch" class="container" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
+        @RenderBody()
+    </div>
+</body>
+</html>

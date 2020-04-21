@@ -23,14 +23,14 @@ namespace Data.DAL
             return result;
         }
 
-        //public Tip Details(TipName tipName)
-        //{
-        //    var result = (from t in Ctx.Tips
-        //                  where t.TipName == tipName
-        //                  select t).AsNoTracking().FirstOrDefault();
+        public TipOff Details(int playerId, int tipId)
+        {
+            var result = (from t in Ctx.TipsOff
+                          where t.TipId == tipId && t.PlayerId == playerId
+                          select t).AsNoTracking().FirstOrDefault();
 
-        //    return result;
-        //}
+            return result;
+        }
 
         public List<string> ListNamesOn(int playerId)
         {
@@ -39,7 +39,7 @@ namespace Data.DAL
                           where toff.PlayerId == playerId
                           select t.DomElementId;
 
-            return ListNames().Except(tipsoff).ToList();
+            return Names().Except(tipsoff).ToList();
         }
 
         public List<Tip> ListOn(int playerId)
@@ -49,7 +49,7 @@ namespace Data.DAL
                           where toff.PlayerId == playerId
                           select t;
 
-            return List().Except(tipsoff).ToList();
+            return Ctx.Tips.Except(tipsoff).ToList();
         }
 
         public void SetOff(int playerId, int tipid)
@@ -59,18 +59,24 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        private IQueryable<string> ListNames()
+        public void SetAllOff(int playerId)
+        {
+            List<Tip> tips = Ctx.Tips.AsNoTracking().ToList();
+            foreach (Tip tip in tips)
+            {
+                if (Details(playerId, tip.Id) == null)
+                {
+                    TipOff tipOff = new TipOff { TipId = tip.Id, PlayerId = playerId };
+                    Ctx.TipsOff.Add(tipOff);
+                }
+            }
+            Ctx.SaveChanges();
+        }
+
+        private IQueryable<string> Names()
         {
             var results = from t in Ctx.Tips
                           select t.DomElementId;
-
-            return results;
-        }
-
-        private IQueryable<Tip> List()
-        {
-            var results = from t in Ctx.Tips
-                          select t;
 
             return results;
         }
