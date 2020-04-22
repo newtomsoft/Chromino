@@ -20,12 +20,12 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int gameId, string memo)
+        public JsonResult Add(int gameId, string memo)
         {
             if (memo != null)
                 memo = memo.Trim();
             GamePlayerDal.ChangeMemo(gameId, PlayerId, memo);
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return new JsonResult(new { memosNumber = memo?.Count(x => x == '\n') + 1 ?? 0 });
         }
     }
 }
