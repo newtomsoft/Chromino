@@ -17,19 +17,18 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int gameId, string chat)
+        public JsonResult Add(int gameId, string chat)
         {
             string newChat = $"{PlayerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {chat}\n";
-            GameDal.UpdateChat(gameId, newChat, PlayerId);
+            string resultChat = GameDal.UpdateChat(gameId, newChat, PlayerId);
             GameDal.SetChatRead(gameId, PlayerId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
+            return new JsonResult(new { chat = resultChat });
         }
 
         [HttpPost]
-        public IActionResult SetRead(int gameId)
+        public void Read(int gameId)
         {
             GameDal.SetChatRead(gameId, PlayerId);
-            return RedirectToAction("Show", "Game", new { id = gameId });
         }
     }
 }

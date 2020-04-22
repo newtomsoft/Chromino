@@ -81,20 +81,20 @@ $(document).ready(function () {
 
     //emojis du chat
     $(".emoji").click(function () {
-        let selectionStart = $("#Chat-input").prop("selectionStart");
-        let text = $("#Chat-input").val();
+        let selectionStart = $('#ChatInput').prop("selectionStart");
+        let text = $('#ChatInput').val();
         let textBefore = text.substring(0, selectionStart);
         let textAfter = text.substring(selectionStart, text.length);
-        $('#Chat-input').val(textBefore + $(this).html() + textAfter);
-        $("#Chat-input").focus();
+        $('#ChatInput').val(textBefore + $(this).html() + textAfter);
+        $('#ChatInput').focus();
     });
 
-
-    //clic sur fermeture fenetre tip
-
-
-
-
+    // touche entrée sur chat
+    $('#ChatInput').on('keydown', function (e) {
+        if (e.which == 13) {
+            AddChat();
+        }
+    });
 });
 
 //***************************************************//
@@ -102,15 +102,17 @@ $(document).ready(function () {
 //***************************************************//
 
 function AnimateChrominosPlayed() {
-    for (let i = 0; i < 2; i++) {
-        ShowSquare('#' + HistoryChrominos[IndexMove].square0);
-        AnimateSquare('#' + HistoryChrominos[IndexMove].square0);
-        ShowSquare('#' + HistoryChrominos[IndexMove].square1);
-        AnimateSquare('#' + HistoryChrominos[IndexMove].square1);
-        ShowSquare('#' + HistoryChrominos[IndexMove].square2);
-        AnimateSquare('#' + HistoryChrominos[IndexMove].square2);
+    if (HistoryChrominos.length != 0) {
+        for (let i = 0; i < 2; i++) {
+            ShowSquare('#' + HistoryChrominos[IndexMove].square0);
+            AnimateSquare('#' + HistoryChrominos[IndexMove].square0);
+            ShowSquare('#' + HistoryChrominos[IndexMove].square1);
+            AnimateSquare('#' + HistoryChrominos[IndexMove].square1);
+            ShowSquare('#' + HistoryChrominos[IndexMove].square2);
+            AnimateSquare('#' + HistoryChrominos[IndexMove].square2);
+        }
+        $('#PlayerHistoryPseudo').html(HistoryChrominos[IndexMove].playerName).fadeIn().delay(1000).fadeOut();
     }
-    $('#PlayerHistoryPseudo').html(HistoryChrominos[IndexMove].playerName).fadeIn().delay(1000).fadeOut();
 }
 
 function AnimateSquare(squareId) {
@@ -484,16 +486,15 @@ function ShowPopup(popup, hasCloseButton = true) {
     $(popup).show();
     $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
     $.fn.popup.defaults.pagecontainer = '#page';
-    if (popup == '#ChatPopup') {
-        $('#ChatPopup-textarea').scrollTop(300);
+    if (popup == '#PopupChat') {
+        ReadChat();
+        $('#ChatPopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);
         timeoutScroll = setTimeout(function () {
-            $('#ChatPopup-textarea').scrollTop($('#ChatPopup-textarea')[0].scrollHeight);
+            $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
         }, 50);
-        if (NotReadMessages > 0) {
-            $('#ChatPopup-Read').show();
-        }
+
     }
 }
 
@@ -558,7 +559,7 @@ function TipClosePopup(popup, checkBox) {
         if ($('input[name=dontShowAllTips]').is(':checked'))
             dontShowAllTips = true;
         $.ajax({
-            url: UrlActionTipOff,
+            url: UrlTipOff,
             type: 'POST',
             data: { gameId: GameId, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
             success: function () {
@@ -575,7 +576,7 @@ function TipClosePopup(popup, checkBox) {
 function AddMemo() {
     let memoContent = $('#MemoContent').val();
     $.ajax({
-        url: UrlActionMemoAdd,
+        url: UrlMemoAdd,
         type: 'POST',
         data: { gameId: GameId, memo: memoContent },
         success: function (data) {
@@ -590,4 +591,33 @@ function AddMemo() {
             }
         }
     });
+}
+
+function AddChat() {
+    let chatAdd = $('#ChatInput').val();
+    if (chatAdd != "") {
+        $.ajax({
+            url: UrlChatAdd,
+            type: 'POST',
+            data: { gameId: GameId, chat: chatAdd },
+            success: function (data) {
+                $('#ChatPopupContent').val(data.chat);
+                $('#ChatInput').val("");
+            }
+        });
+    }
+}
+
+function ReadChat() {
+    if (NotReadMessages > 0) {
+        $.ajax({
+            url: UrlChatRead,
+            type: 'POST',
+            data: { gameId: GameId },
+            success: function () {
+                $('#NotifChat').text("0");
+                $('#NotifChat').hide();
+            }
+        });
+    }
 }

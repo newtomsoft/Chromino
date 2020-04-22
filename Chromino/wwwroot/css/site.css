@@ -357,7 +357,7 @@ a {
     background-position: center center;
 }
 
-#ChatPopup-textarea {
+#ChatPopupContent {
     width: 400px;
     max-width: 100%;
 }
