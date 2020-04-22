@@ -181,6 +181,9 @@
 @section ScriptPreJs
 {
     <script>
+var GameId = @Model.Game.Id;
+var UrlActionTipOff = '@Url.Action("Off", "Tip")';
+var UrlActionMemoAdd = '@Url.Action("Add", "Memo")';
 var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
 var ThisPlayerTurn = @thisPlayerTurn;
@@ -223,25 +226,7 @@ var HistoryChrominos = new Array;
         move--;
     }
 }
-function TipClosePopup(popup, checkBox) {
-    if ($(checkBox).is(":checked")) {
-        let dontShowAllTips = false;
-        if ($('input[name=dontShowAllTips]').is(':checked'))
-            dontShowAllTips = true;
-        $.ajax({
-            url: '@Url.Action("Off", "Tip")',
-            type: 'POST',
-            data: { gameId:@Model.Game.Id, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
-            success: function () {
-                if (dontShowAllTips)
-                    Tips = new Array;
-                else
-                    Tips.splice(Tips.findIndex(x => x.id == Tip.id), 1);
-            }
-        });
-    }
-    ClosePopup(popup);
-}
+
     </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
@@ -383,17 +368,15 @@ function TipClosePopup(popup, checkBox) {
 </div>
 <div id="PopupMemo" class="popup popup-memochat" style="display:none">
     <div class="div-head img-memo" title="mémo"></div>
-    <form asp-action="Add" asp-controller="Memo">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
-            <input name="gameId" value="@Model.Game.Id" type="hidden" />
-            <textarea asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
-            <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-        </div>
-    </form>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input name="gameId" value="@Model.Game.Id" type="hidden" />
+        <textarea id="MemoContent" asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
+        <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button id="MemoAdd" class="btn btn-primary" onclick="AddMemo();">Enregistrer</button>
+    </div>
 </div>
 <div id="PopupChat" class="popup popup-memochat" style="display:none">
     <div class="div-head img-chat" title="chat"></div>

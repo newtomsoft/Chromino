@@ -1,4 +1,19 @@
-﻿$(document).ready(function () {
+﻿var TimeoutPut = null;
+var ToPut = false;
+var PositionLastChromino;
+var TimeoutRotate = null;
+var ToRotate = true;
+var LastChrominoMove = null;
+var OffsetLastChromino = 0;
+var OffsetGameArea = null;
+var GameAreaOffsetX;
+var GameAreaOffsetY;
+var SquareSize;
+var Tip;
+var TimeoutValidateChromino = null;
+var IndexMove = 0;
+
+$(document).ready(function () {
     $(document).click(function () {
         StopDraggable();
         StartDraggable();
@@ -85,7 +100,7 @@
 //***************************************************//
 //**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
-let IndexMove = 0;
+
 function AnimateChrominosPlayed() {
     for (let i = 0; i < 2; i++) {
         ShowSquare('#' + HistoryChrominos[IndexMove].square0);
@@ -175,15 +190,6 @@ function ShowSquare(squareId) {
 //***************************************************//
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
-let TimeoutPut = null;
-let ToPut = false;
-let PositionLastChromino;
-let TimeoutRotate = null;
-let ToRotate = true;
-let LastChrominoMove = null;
-let OffsetLastChromino = 0;
-let OffsetGameArea = null;
-
 function StartDraggable() {
     if (Tips.find(x => x.elementId == "Hand") == undefined) {
         $(".handPlayerChromino").draggableTouch()
@@ -357,9 +363,6 @@ function SetAngleByClass(classChromino, rotate) {
 //***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
-let GameAreaOffsetX;
-let GameAreaOffsetY;
-let SquareSize;
 
 function ResizeGameArea() {
     var documentWidth = $(document).width();
@@ -427,6 +430,7 @@ function IsChrominoInGameArea(chromino) {
 //***************************************//
 //******* fonction PlayChromino *********//
 //***************************************//
+
 function PlayChromino() {
     if (!ThisPlayerTurn) {
         $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
@@ -497,7 +501,7 @@ function ClosePopup(popup) {
     $(popup).popup('hide');
 }
 
-let TimeoutValidateChromino = null;
+
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
@@ -518,7 +522,6 @@ function ShowTipFeature(isCheck, hasCloseButton) {
         $('#TipHeadPicture').hide();
     }
     $('#TipHtml').html(Tip.description);
-    //$('#TipId').val(Tip.id);
     $('#TipDontShowAgain').prop('checked', isCheck);
     if (Tip.illustrationPictureClass != "") {
         $('#TipIllustration').removeClass().addClass("illustration " + Tip.illustrationPictureClass);
@@ -529,7 +532,7 @@ function ShowTipFeature(isCheck, hasCloseButton) {
     }
     ShowPopup('#TipPopup', hasCloseButton);
 }
-var Tip;
+
 function Action(elementId) {
     Tip = Tips.find(x => x.elementId == elementId);
     let functionName = elementId.replace("Button", "");
@@ -543,4 +546,48 @@ function Action(elementId) {
         ShowPopup(popup);
     else if ($(form).length)
         $(form).submit();
+}
+
+
+//***************************************************//
+//********************** Ajax ***********************//
+//***************************************************//
+function TipClosePopup(popup, checkBox) {
+    if ($(checkBox).is(":checked")) {
+        let dontShowAllTips = false;
+        if ($('input[name=dontShowAllTips]').is(':checked'))
+            dontShowAllTips = true;
+        $.ajax({
+            url: UrlActionTipOff,
+            type: 'POST',
+            data: { gameId: GameId, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
+            success: function () {
+                if (dontShowAllTips)
+                    Tips = new Array;
+                else
+                    Tips.splice(Tips.findIndex(x => x.id == Tip.id), 1);
+            }
+        });
+    }
+    ClosePopup(popup);
+}
+
+function AddMemo() {
+    let memoContent = $('#MemoContent').val();
+    $.ajax({
+        url: UrlActionMemoAdd,
+        type: 'POST',
+        data: { gameId: GameId, memo: memoContent },
+        success: function (data) {
+            ClosePopup("#PopupMemo");
+            if (data.memosNumber != 0) {
+                $('#NotifMemo').text(data.memosNumber);
+                $('#NotifMemo').show();
+            }
+            else {
+                $('#NotifMemo').text(0);
+                $('#NotifMemo').hide();
+            }
+        }
+    });
 }
