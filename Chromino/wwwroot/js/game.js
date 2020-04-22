@@ -471,10 +471,6 @@ function PlayChromino() {
         $("#FormChrominoId").val(LastChrominoMove.id);
         $("#FormPlayChromino").submit();
     }
-    else {
-        $('#errorMessage').html("Vous devez poser un chromino dans le jeu");
-        ShowPopup('#errorPopup');
-    }
 }
 
 //***************************************************//
