@@ -35,7 +35,7 @@
     @if (!Model.OpponentsAreBots)
     {
         <button id="ButtonChat" class="btn btn-toolbar img-chat" onclick="Action(this.id);">
-            <p id="NotifChat" class="notification notification-red" style="display:none"></p>
+            <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
         </button>
     }
     <button id="ButtonMemo" class="btn btn-toolbar img-memo" onclick="Action(this.id);">
@@ -182,8 +182,10 @@
 {
     <script>
 var GameId = @Model.Game.Id;
-var UrlActionTipOff = '@Url.Action("Off", "Tip")';
-var UrlActionMemoAdd = '@Url.Action("Add", "Memo")';
+var UrlTipOff = '@Url.Action("Off", "Tip")';
+var UrlMemoAdd = '@Url.Action("Add", "Memo")';
+var UrlChatAdd = '@Url.Action("Add", "Chat")';
+var UrlChatRead = '@Url.Action("Read", "Chat")';
 var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
 var ThisPlayerTurn = @thisPlayerTurn;
@@ -368,41 +370,25 @@ var HistoryChrominos = new Array;
 </div>
 <div id="PopupMemo" class="popup popup-memochat" style="display:none">
     <div class="div-head img-memo" title="mémo"></div>
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <input name="gameId" value="@Model.Game.Id" type="hidden" />
-        <textarea id="MemoContent" asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
-        <span asp-validation-for="GamePlayer.Memo" class="text-danger"></span>
-    </div>
+    <textarea id="MemoContent" asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
     <div class="form-group">
         <button id="MemoAdd" class="btn btn-primary" onclick="AddMemo();">Enregistrer</button>
     </div>
 </div>
 <div id="PopupChat" class="popup popup-memochat" style="display:none">
     <div class="div-head img-chat" title="chat"></div>
-    <form id="form-SetReadChat" asp-action="SetRead" asp-controller="Chat" hidden>
-        <input name="gameId" value="@Model.Game.Id" type="hidden" />
-    </form>
     <div>
-        <form asp-action="Add" asp-controller="Chat">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <input name="gameId" value="@Model.Game.Id" type="hidden" />
-                <textarea id="ChatPopup-textarea" class="form-control" rows="10" disabled>@Model.Game.Chat</textarea>
-                <button id="ChatPopup-Read" form="form-SetReadChat" type="submit" class="btn btn-primary" style="display:none">Marquer comme lu</button>
+        <textarea id="ChatPopupContent" class="form-control" rows="10" disabled>@Model.Game.Chat</textarea>
+        <div class="form-group">
+            <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+            <div class="emojis">
+                <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
             </div>
-            <div class="form-group">
-                <input id="Chat-input" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
-                <span asp-validation-for="Game.Chat" class="text-danger"></span>
-                <div class="emojis">
-                    <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
-                </div>
-                <div class="emojis">
-                    <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
-                </div>
-                <button id="ChatPopup-Submit" type="submit" class="btn btn-primary">Envoyer</button>
+            <div class="emojis">
+                <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
             </div>
-        </form>
+            <button id="ChatAdd" class="btn btn-primary" onclick="AddChat();">Envoyer</button>
+        </div>
     </div>
 </div>
 <div id="botPlayingInfoPopup" class="popup popup-wait" style="display:none">

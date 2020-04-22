@@ -115,7 +115,7 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public void UpdateChat(int gameId, string chat, int playerId)
+        public string UpdateChat(int gameId, string chat, int playerId)
         {
             Game game = (from g in Ctx.Games
                          where g.Id == gameId
@@ -131,6 +131,7 @@ namespace Data.DAL
                 gamePlayer.NotReadMessages++;
 
             Ctx.SaveChanges();
+            return game.Chat;
         }
 
         public void SetChatRead(int gameId, int playerId)
