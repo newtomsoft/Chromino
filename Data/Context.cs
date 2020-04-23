@@ -19,6 +19,7 @@ namespace Data
         public DbSet<GoodPositionLevel> GoodPositionsLevel { get; set; }
         public DbSet<Tip> Tips { get; set; }
         public DbSet<TipOff> TipsOff { get; set; }
+        public DbSet<PlayError> PlayErrors { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

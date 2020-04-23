@@ -177,23 +177,33 @@ namespace Controllers
         /// <param name="flip">true si le chromino est tourné de 180°</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
+        public JsonResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
-            ChrominoInGame chrominoInGame = new ChrominoInGame()
-            {
-                GameId = gameId,
-                PlayerId = PlayerId,
-                ChrominoId = chrominoId,
-                XPosition = x,
-                YPosition = y,
-                Orientation = orientation,
-                Flip = flip,
-            };
+            if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
+                return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
+            if (GameDal.GetStatus(gameId).IsFinish())
+                return new JsonResult(new { errorReturn = PlayReturn.ErrorGameFinish.ToString() });
+            if (ChrominoInHandDal.ChrominosNumber(gameId, PlayerId) == 1 && ChrominoDal.IsCameleon(chrominoId))
+                return new JsonResult(new { errorReturn = PlayReturn.LastChrominoIsCameleon.ToString() });
 
+            ChrominoInGame chrominoInGame = new ChrominoInGame() { GameId = gameId, PlayerId = PlayerId, ChrominoId = chrominoId, XPosition = x, YPosition = y, Orientation = orientation, Flip = flip, };
             PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
-                TempData["PlayReturn"] = playReturn; //todo voir si ajax doit appeler NextPlayerPlayIfBot
-            return RedirectToAction("Show", new { id = gameId });
+                return new JsonResult(new { errorReturn = playReturn.ToString() });
+            else
+            {
+                GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false, false); // todo définir correctement les booléen
+                var squaresVM = gameVM.SquaresVM;
+                int squaresNumber = gameVM.LinesNumber * gameVM.ColumnsNumber;
+                // todo : factoriser suite = Draw
+                Chromino chromino = ChrominoDal.Details(chrominoId);
+                ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
+                List<string> colors = new List<string>();
+                for (int i = 0; i < 3; i++)
+                    colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
+                int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
+                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = colors, squaresVM = gameVM.SquaresVM });
+            }
         }
 
         /// <summary>
@@ -204,11 +214,26 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult PlayBot(int id, int botId)
         {
+            ChrominoInGame chrominoInGame;
             BotBI botBI = new BotBI(Ctx, Env, id, botId);
             PlayReturn playreturn;
-            do playreturn = botBI.PlayBot();
+            do playreturn = botBI.PlayBot(out chrominoInGame);
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
-            return RedirectToAction("Show", new { id });
+            // todo : factoriser suite = Draw
+            List<string> colors = new List<string>();
+            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
+            if (chrominoInGame != null)
+            {
+                Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
+                ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoInGame.ChrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
+                for (int i = 0; i < 3; i++)
+                    colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
+                return new JsonResult(new { botSkip = false, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), x = chrominoInGame.XPosition, y = chrominoInGame.YPosition, orientation = chrominoInGame.Orientation, flip = chrominoInGame.Flip, colors = colors });
+            }
+            else
+            {
+                return new JsonResult(new { botSkip = true, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
+            }
         }
 
         /// <summary>
@@ -217,14 +242,22 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult DrawChromino(int gameId)
+        public JsonResult DrawChromino(int gameId)
         {
-            int playersNumber = GamePlayerDal.PlayersNumber(gameId);
-            GamePlayer gamePlayer = GamePlayerDal.Details(gameId, PlayerId);
-            if ((!gamePlayer.PreviouslyDraw || playersNumber == 1) && ChrominoInGameDal.InStack(gameId) > 0)
-                new PlayerBI(Ctx, Env, gameId, PlayerId).TryDrawChromino(out _);
+            if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
+                return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
+            if (GamePlayerDal.Details(gameId, PlayerId).PreviouslyDraw && GamePlayerDal.PlayersNumber(gameId) != 1)
+                return new JsonResult(new { errorReturn = PlayReturn.CantDraw2TimesInARow.ToString() });
+            if (ChrominoInGameDal.InStack(gameId) == 0)
+                return new JsonResult(new { errorReturn = PlayReturn.NoMoreChrominosInStack.ToString() });
 
-            return RedirectToAction("Show", new { id = gameId });
+            int chrominoId = new PlayerBI(Ctx, Env, gameId, PlayerId).TryDrawChromino(out _);
+            Chromino chromino = ChrominoDal.Details(chrominoId);
+            ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
+            List<string> colors = new List<string>();
+            for (int i = 0; i < 3; i++)
+                colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
+            return new JsonResult(new { id = chrominoId, colors = colors });
         }
 
         /// <summary>
@@ -233,10 +266,13 @@ namespace Controllers
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult SkipTurn(int gameId)
+        public JsonResult SkipTurn(int gameId)
         {
-            new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
-            return RedirectToAction("Show", new { id = gameId });
+            if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
+                return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
+
+            int nextPlayerId = new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
+            return new JsonResult(new { id = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
         }
 
         /// <summary>
@@ -247,9 +283,23 @@ namespace Controllers
         [HttpPost]
         public IActionResult Help(int gameId)
         {
-            if (PlayerDal.DecreaseHelp(PlayerId))
-                TempData["Help"] = true;
-            return RedirectToAction("Show", new { id = gameId });
+            bool status = PlayerDal.DecreaseHelp(PlayerId);
+            HashSet<int> possibleSquareIndexes = new HashSet<int>();
+            if (status)
+            {
+                int xMin = SquareDal.XMin(gameId) - 2; // -2 : marges
+                int xMax = SquareDal.XMax(gameId) + 2;
+                int yMin = SquareDal.YMin(gameId) - 2;
+                int columnsNumber = xMax - xMin + 1;
+                List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(gameId, PlayerId);
+                var possiblesChrominosVM = new List<PossiblesChrominoVM>();
+                foreach (GoodPosition goodPosition in goodPositions)
+                    possiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, xMin, yMin));
+                for (int iChromino = 0; iChromino < possiblesChrominosVM.Count; iChromino++)
+                    for (int i = 0; i < 3; i++)
+                        possibleSquareIndexes.Add(possiblesChrominosVM[iChromino].IndexesX[i] + possiblesChrominosVM[iChromino].IndexesY[i] * columnsNumber);
+            }
+            return new JsonResult(new { status = true, indexes = possibleSquareIndexes });
         }
 
         /// <summary>

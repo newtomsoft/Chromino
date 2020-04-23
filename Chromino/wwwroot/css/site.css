@@ -217,6 +217,29 @@ a {
     background-image: url('/image/example/OkAndKo.svg');
 }
 
+.img-diffsides {
+    background-image: url('/image/example/DiffSides.svg');
+}
+
+.img-2sides {
+    background-image: url('/image/example/2Sides.svg');
+}
+
+.img-lastturncameleon {
+    background-image: url('/image/example/LastTurnCameleon.svg');
+}
+
+
+#ErrorText1 {
+}
+
+
+#ErrorIllustrationCaption {
+    text-align: center;
+    font-size: small;
+}
+
+
 #HistoryChrominos {
     position: relative;
     top: -3px;

@@ -32,6 +32,7 @@ namespace Batch
             Methods = new Dictionary<string, Action>
             {
                 { "AddTips", AddTips },
+                { "AddPlayErrors", AddPlayErrors },
                 { "DeleteGuests", DeleteGuests },
                 { "DeleteGamesWithoutPlayerTurn", DeleteGamesWithoutPlayerTurn },
                 { "DeleteGamesWithOnlyBots", DeleteGamesWithOnlyBots },
@@ -168,7 +169,7 @@ namespace Batch
             PlayReturn playreturn;
             do
             {
-                playreturn = botBI.PlayBot();
+                playreturn = botBI.PlayBot(out ChrominoInGame _);
                 switch (playreturn)
                 {
                     case PlayReturn.Ok:
@@ -312,10 +313,10 @@ namespace Batch
                 Description = "<p>Ce chromino \\\"caméléon\\\" a un joker en son centre.</p><p>Ce joker peut être accolé à n'importe quelle couleur d'un autre chromino comme sur l'exemple ci-dessous.</p>",
                 IllustrationPictureClass = "img-playcameleon",
             };
-
+            #endregion
             List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcome };
             AddTipsInDb(tips);
-            #endregion
+            
         }
 
         private static void AddTipsInDb(List<Tip> tips)
@@ -329,7 +330,7 @@ namespace Batch
                 {
                     Ctx.Tips.Add(tip);
                     Ctx.SaveChanges();
-                    Console.WriteLine($"  - tip {tip.DomElementId} ajouté");
+                    Console.WriteLine($"  tip {tip.DomElementId} ajouté");
                 }
                 else
                 {
@@ -337,6 +338,81 @@ namespace Batch
                 }
             }
         }
+
+        private static void AddPlayErrors()
+        {
+            Console.WriteLine();
+            Console.WriteLine("ajout des erreurs de jeux");
+            #region erreurs
+            PlayError differentColorsAround = new PlayError
+            {
+                Name = "DifferentColorsAround",
+                Description = "Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes.",
+                IllustrationPictureClass = "img-diffsides",
+                IllustrationPictureCaption = "exemple invalide et exemple valide"
+            };
+            PlayError notFree = new PlayError
+            {
+                Name = "NotFree",
+                Description = "L'emplacement où vous posez votre chromino n'est pas libre.",
+            };
+            PlayError notMinTwoSameColors = new PlayError
+            {
+                Name = "NotMinTwoSameColors",
+                Description = "Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu.",
+                IllustrationPictureClass = "img-2sides",
+                IllustrationPictureCaption = "exemples valides",
+            };
+            PlayError lastChrominoIsCameleon = new PlayError
+            {
+                Name = "LastChrominoIsCameleon",
+                Description = "Vous ne pouvez pas jouer un chromino caméléon en dernier. Vous devez piocher",
+                IllustrationPictureClass = "img-lastturncameleon",
+                IllustrationPictureCaption = "exemple de chromino Caméléon"
+            };
+            PlayError notPlayerTurn = new PlayError
+            {
+                Name = "NotPlayerTurn",
+                Description = "Ce n'est pas votre tour de jouer",
+            };
+            PlayError errorGameFinish = new PlayError
+            {
+                Name = "ErrorGameFinish",
+                Description = "La partie est terminée.",
+            };
+            PlayError cantDraw2TimesInARow = new PlayError
+            {
+                Name = "CantDraw2TimesInARow",
+                Description = "Vous ne pouvez pas piocher 2 fois de suite. Vous devez passer votre tour.",
+            };
+            PlayError noMoreChrominosInStack = new PlayError
+            {
+                Name = "NoMoreChrominosInStack",
+                Description = "Il n'y a plus de chrominos dans la pioche. Vous devez soit poser un chrimono, soit passer votre tour.",
+            };
+            #endregion
+            List<PlayError> errors = new List<PlayError> { differentColorsAround, notFree, notMinTwoSameColors , lastChrominoIsCameleon, notPlayerTurn , errorGameFinish, cantDraw2TimesInARow , noMoreChrominosInStack};
+            AddPlayErrorsInDb(errors);
+        }
+
+        private static void AddPlayErrorsInDb(List<PlayError> errors)
+        {
+            foreach (var error in errors)
+            {
+                int tipId = (from t in Ctx.PlayErrors
+                             where t.Name == error.Name
+                             select t.Id).FirstOrDefault();
+                if (tipId == 0)
+                {
+                    Ctx.PlayErrors.Add(error);
+                    Ctx.SaveChanges();
+                    Console.WriteLine($"  erreur {error.Name} ajouté");
+                }
+                else
+                {
+                    Console.WriteLine($"  (erreur {error.Name} déjà présent en base)");
+                }
+            }
+        }
     }
 }
-

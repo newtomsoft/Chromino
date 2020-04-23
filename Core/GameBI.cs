@@ -53,6 +53,7 @@ namespace Data.Core
         private GameDal GameDal { get; }
         private GoodPositionDal GoodPositionDal { get; }
         private TipDal TipDal { get; }
+        private PlayErrorDal PlayErrorDal { get; }
 
         public GameBI(Context ctx, IWebHostEnvironment env, int gameId)
         {
@@ -68,6 +69,7 @@ namespace Data.Core
             GamePlayerDal = new GamePlayerDal(ctx);
             GoodPositionDal = new GoodPositionDal(ctx);
             TipDal = new TipDal(ctx);
+            PlayErrorDal = new PlayErrorDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
             Players = GamePlayerDal.Players(gameId);
             GamePlayers = new List<GamePlayer>();
@@ -148,10 +150,11 @@ namespace Data.Core
                 List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(GameId);
                 Game game = GameDal.Details(GameId);
                 bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
-                List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId);
+                List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId); //todo virer
                 List<Tip> tips = TipDal.ListOn(playerId);
-                GameVM gameViewModel = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch);
-                return gameViewModel;
+                List<PlayError> playErrors = PlayErrorDal.List();
+                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch, playErrors);
+                return gameVM;
             }
             else return null;
         }

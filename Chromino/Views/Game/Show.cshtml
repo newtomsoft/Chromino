@@ -10,7 +10,6 @@
     string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
-    PlayReturn playReturn = TempData["PlayReturn"] == null ? PlayReturn.Ok : (PlayReturn)TempData["PlayReturn"];
     int memosNumbers = 0;
     int notReadMessages = 0;
     if (Model.GamePlayer != null)
@@ -18,72 +17,55 @@
         memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
         notReadMessages = Model.GamePlayer.NotReadMessages;
     }
+    string styleButtonSkip = "display:none";
+    string styleButtonDraw = "display:none";
+    string styleButtonNextGame = "display:none";
 }
-<div id="toolbar">
-    <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
-    <button id="ButtonHome" class="btn btn-toolbar img-home" onclick="Action(this.id);"></button>
-    <button id="ButtonInfo" class="btn btn-toolbar img-infogame" onclick="Action(this.id);"></button>
-    @if (Model.Player.Help > 0 && !Model.ShowPossiblesPositions && !Model.Game.Status.IsFinish())
-    {
-        <form id="FormHelp" asp-action="Help" style="display:none">
-            <input name="gameId" value="@Model.Game.Id" />
-        </form>
-        <button id="ButtonHelp" class="btn btn-toolbar img-helpPlay" onclick="Action(this.id);">
+    <div id="toolbar">
+        <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
+        <button id="ButtonHome" class="btn btn-toolbar img-home" onclick="Action(this.id);"></button>
+        <button id="ButtonInfo" class="btn btn-toolbar img-infogame" onclick="Action(this.id);"></button>
+        <button id="ButtonHelp" class="btn btn-toolbar img-helpPlay" style="display:none" onclick="Action(this.id);">
             <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
         </button>
-    }
-    @if (!Model.OpponentsAreBots)
-    {
-        <button id="ButtonChat" class="btn btn-toolbar img-chat" onclick="Action(this.id);">
-            <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
+
+        @if (!Model.OpponentsAreBots)
+        {
+            <button id="ButtonChat" class="btn btn-toolbar img-chat" onclick="Action(this.id);">
+                <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
+            </button>
+        }
+        <button id="ButtonMemo" class="btn btn-toolbar img-memo" onclick="Action(this.id);">
+            <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
         </button>
-    }
-    <button id="ButtonMemo" class="btn btn-toolbar img-memo" onclick="Action(this.id);">
-        <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
-    </button>
-    @if (!Model.Game.Status.IsFinish())
-    {
-        if (Model.PlayerTurn.Id == Model.Player.Id)
+
+        @if (!Model.Game.Status.IsFinish())
         {
-            playerTurn = "C'est à vous de jouer";
-            @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
+            if (Model.PlayerTurn.Id == Model.Player.Id)
             {
-                <form id="FormDrawChromino" asp-action="DrawChromino" style="display:none">
-                    <input name="gameId" value="@Model.Game.Id" />
-                </form>
-                <button id="ButtonDrawChromino" class="btn btn-toolbar img-draw" onclick="Action(this.id);"></button>
+                playerTurn = "C'est à vous de jouer";
+                @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
+                    styleButtonDraw = "display:initial";
+                else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
+                    styleButtonSkip = "display:initial";
             }
-            else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
+            else
             {
-                <form id="FormSkipTurn" asp-action="SkipTurn" style="display:none">
-                    <input name="gameId" value="@Model.Game.Id" />
-                </form>
-                <button id="ButtonSkipTurn" class="btn btn-toolbar img-skip" onclick="Action(this.id);"></button>
+                playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
             }
         }
-        else
+        <button id="ButtonDrawChromino" class="btn btn-toolbar img-draw" style="@styleButtonDraw" onclick="Action(this.id);"></button>
+        <button id="ButtonSkipTurn" class="btn btn-toolbar img-skip" style="@styleButtonSkip" onclick="Action(this.id);"></button>
+
+        @if (!Model.Game.Status.IsFinish() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
         {
-            playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
+            <button id="ButtonPlayChromino" class="btn btn-toolbar img-play" style="display:none" onclick="Action(this.id);"></button>
         }
-    }
-    @if (!Model.Game.Status.IsFinish() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
-    {
-        <form id="FormPlayChromino" asp-action="Play" hidden>
-            <input id="FormGameId" name="gameId" value="@Model.Game.Id" />
-            <input id="FormChrominoId" name="chrominoId" />
-            <input id="FormX" name="x" />
-            <input id="FormY" name="y" />
-            <input id="FormOrientation" name="orientation" />
-            <input id="FormFlip" name="flip" />
-        </form>
-        <button id="ButtonPlayChromino" class="btn btn-toolbar img-play" style="display:none" onclick="Action(this.id);"></button>
-    }
-    @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
-    {
+        @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
+            styleButtonNextGame = "display:initial";
         <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
-        <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" onclick="Action(this.id);"></button>
-    }
-</div>
+        <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" style="@styleButtonNextGame" onclick="Action(this.id);"></button>
+    </div>
 <br>
 <div id="GameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
     @{
@@ -141,13 +123,13 @@
     }
 </div>
 <div id="Hand" onclick="Action(this.id);">
-    @foreach (ChrominoVM chrominosViewModel in Model.PlayerChrominosVM)
+    @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {
-        string id = chrominosViewModel.ChrominoId.ToString();
+        string id = chrominoVM.ChrominoId.ToString();
         <div id="@id" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
-                ColorCh color = chrominosViewModel.SquaresVM[i].Color;
+                ColorCh color = chrominoVM.SquaresVM[i].Color;
                 string classColor = color.ToString();
                 <div class="Square @classColor"></div>
             }
@@ -155,23 +137,13 @@
     }
 </div>
 
-@if (Model.BotsId.Contains(Model.PlayerTurn.Id) && !Model.Game.Status.IsFinish())
-{
-    @section ScriptPlayBot
-    {
-        <script>
-            window.onload = function () {
-                location.assign("@Url.Action("PlayBot", "Game", new { id = Model.Game.Id, botId = Model.PlayerTurn.Id})");
-            }
-        </script>
-    }
-}
-<partial name="_IncludeJs" />
 @{
     const int horizontal = (int)Orientation.Horizontal;
     const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = false;
     bool showBotPlayingInfoPopup = false;
+
+    // todo TempData["PlayReturn"] à supprimer
     if (!Model.ShowPossiblesPositions && (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0)))))
         showInfoPopup = true;
     else if (ViewData["ShowBotPlayingInfoPopup"] != null)
@@ -181,11 +153,21 @@
 @section ScriptPreJs
 {
     <script>
+var PlayerId = @Model.Player.Id;
+var PlayerTurnId = @Model.PlayerTurn.Id;
+var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
+var PlayersNumber = @Model.Pseudos.Count;
 var GameId = @Model.Game.Id;
+var HelpNumber = @Model.Player.Help;
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatAdd = '@Url.Action("Add", "Chat")';
 var UrlChatRead = '@Url.Action("Read", "Chat")';
+var UrlPlay = '@Url.Action("Play")';
+var UrlSkip = '@Url.Action("SkipTurn")';
+var UrlDraw = '@Url.Action("DrawChromino")';
+var UrlPlayBot = '@Url.Action("PlayBot")';
+var UrlHelp = '@Url.Action("Help")';
 var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
 var ThisPlayerTurn = @thisPlayerTurn;
@@ -197,18 +179,22 @@ var Horizontal = @horizontal;
 var Vertical = @vertical;
 var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
-var PlayReturn = "@playReturn.ToString()";
 var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
 var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
+var PlayErrors = new Array;
 var Tips = new Array;
+var HistoryChrominos = new Array;
 @{
+    foreach (PlayError playError in Model.PlayErrors)
+    {
+        @:PlayErrors.push({ name: "@playError.Name", description: "@Html.Raw(playError.Description)", illustrationPictureClass: "@playError.IllustrationPictureClass", illustrationPictureCaption: "@playError.IllustrationPictureCaption" });
+    }
+
     foreach (Tip tip in Model.Tips)
     {
         @:Tips.push({ id: "@tip.Id", elementId: "@tip.DomElementId", headPictureClass:"@tip.HeadPictureClass", description: "@Html.Raw(tip.Description)", illustrationPictureClass: "@tip.IllustrationPictureClass" });
     }
-}
-var HistoryChrominos = new Array;
-@{
+
     byte move = (byte)(Model.Game.Move - 1);
     for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
     {
@@ -217,7 +203,7 @@ var HistoryChrominos = new Array;
         while (move > Model.ChrominosPlayedVM[iChromino].Move)
         {
             string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
-            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" :  $"{currentPseudo} a passé";
+            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" : $"{currentPseudo} a passé";
             @:HistoryChrominos.push({ playerName: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
             move--;
         }
@@ -228,7 +214,6 @@ var HistoryChrominos = new Array;
         move--;
     }
 }
-
     </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
@@ -328,45 +313,13 @@ var HistoryChrominos = new Array;
         <p class="minorInfo">Il n'y a plus de chrominos dans la pioche</p>
     }
 </div>
-<div id="errorPopup" class="popup" style="display:none">
+<div id="PopupError" class="popup" style="display:none">
     <div class="div-head div-error" title="erreur"></div>
-    @switch (playReturn)
-    {
-        case PlayReturn.NotFree:
-            <p id="errorMessage">L'emplacement où vous posez votre chromino n'est pas libre.</p>
-            <p style="text-align:center">Merci de rejouer.</p>
-            break;
-        case PlayReturn.DifferentColorsAround:
-            <p id="errorMessage">Les cotés de votre chromino ne peuvent pas toucher des couleurs différentes.</p>
-            <p style="text-align:center">Merci de rejouer.</p>
-            <img class="illustration" src="~/image/example/DiffSides.svg" alt="example" />
-            <p style="text-align:center; font-size:small">exemple invalide et exemple valide</p>
-            break;
-        case PlayReturn.NotMinTwoSameColors:
-            <p id="errorMessage">Au moins 2 cotés de votre chromino doivent toucher un chromino en jeu.</p>
-            <p style="text-align:center">Merci de rejouer.</p>
-            <img class="illustration" src="~/image/example/2Sides.svg" alt="example" />
-            <p style="text-align:center; font-size:small">exemples valides</p>
-            break;
-        case PlayReturn.LastChrominoIsCameleon:
-            <p id="errorMessage">Vous ne pouvez pas jouer un chromino caméléon en dernier.</p>
-            <p style="text-align:center">Merci de piocher un chromino.</p>
-            <img class="illustration" src="~/image/example/LastTurnCameleon.svg" alt="example" />
-            <p style="text-align:center; font-size:small">exemple de chromino Caméléon</p>
-            break;
-        case PlayReturn.NotPlayerTurn:
-            <p id="errorMessage">Vous avez déjà joué.</p>
-            <p style="text-align:center">Merci d'attendre votre tour.</p>
-            break;
-        case PlayReturn.ErrorGameFinish:
-            <p id="errorMessage">La partie est terminée.</p>
-            <p style="text-align:center">Vous ne pouvez plus y jouer.</p>
-            break;
-        default:
-            <p id="errorMessage"></p>
-            <p id="errorMessageEnd" style="text-align:center"></p>
-            break;
-    }
+    <p id="ErrorText"></p>
+    <div class="illustrations">
+        <div id="ErrorIllustration" title="illustration"></div>
+    </div>
+    <p id="ErrorIllustrationCaption" title="légende"></p>
 </div>
 <div id="PopupMemo" class="popup popup-memochat" style="display:none">
     <div class="div-head img-memo" title="mémo"></div>

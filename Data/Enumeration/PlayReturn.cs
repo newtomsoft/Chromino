@@ -12,6 +12,8 @@
         SkipTurn,
         GameFinish,
         ErrorGameFinish,
+        CantDraw2TimesInARow,
+        NoMoreChrominosInStack,
     }
 
     public static class PlayReturnMethods
@@ -26,6 +28,8 @@
                 case PlayReturn.DifferentColorsAround:
                 case PlayReturn.NotPlayerTurn:
                 case PlayReturn.ErrorGameFinish:
+                case PlayReturn.CantDraw2TimesInARow:
+                case PlayReturn.NoMoreChrominosInStack:
                     return true;
                 default:
                     return false;
