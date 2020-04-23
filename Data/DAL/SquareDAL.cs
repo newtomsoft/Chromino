@@ -76,6 +76,50 @@ namespace Data.DAL
             return result;
         }
 
+        /// <summary>
+        /// abscisse min du jeu
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
+        public int XMin(int gameId)
+        {
+            int min = (from s in Ctx.Squares
+                       where s.GameId == gameId
+                       select s.X).Min();
+
+            return min;
+        }
+
+        /// <summary>
+        /// abscisse max du jeu
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
+        public int XMax(int gameId)
+        {
+            int max = (from s in Ctx.Squares
+                       where s.GameId == gameId
+                       select s.X).Max();
+
+            return max;
+        }
+
+        /// <summary>
+        /// ordonnée min du jeu
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
+        public int YMin(int gameId)
+        {
+            int min = (from s in Ctx.Squares
+                          where s.GameId == gameId
+                          select s.Y).Min();
+
+            return min;
+        }
+
+
+
         public int Delete(IQueryable<int> gamesIdToDelete)
         {
             var result = from s in Ctx.Squares
@@ -85,5 +129,7 @@ namespace Data.DAL
             Ctx.Squares.RemoveRange(result);
             return Ctx.SaveChanges();
         }
+
+
     }
 }

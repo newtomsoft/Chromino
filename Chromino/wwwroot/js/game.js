@@ -12,29 +12,17 @@ var SquareSize;
 var Tip;
 var TimeoutValidateChromino = null;
 var IndexMove = 0;
+var HelpIndexes = new Array;
 
 $(document).ready(function () {
-    $(document).click(function () {
-        StopDraggable();
-        StartDraggable();
-    });
+    InitDom();
+    RefreshDom();
+});
 
-    $(document).mouseup(function () {
-        MagnetChromino();
-    });
 
-    $(window).resize(function () {
-        ResizeGameArea();
-    });
-
-    ResizeGameArea();
-    StartDraggable();
+function InitDom() {
     Action("Welcome");
 
-    //animatation des derniers chromino joués
-    if (!PreviouslyDraw && ThisPlayerTurn) {
-        AnimateChrominosPlayed(0);
-    }
     $("#ButtonPreviousChromino").click(function () {
         if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
             if (IndexMove < HistoryChrominos.length - 1) {
@@ -53,31 +41,31 @@ $(document).ready(function () {
         }
     });
 
+    $(document).click(function () {
+        StopDraggable();
+        StartDraggable();
+    });
+
+    $(document).mouseup(function () {
+        MagnetChromino();
+    });
+
+    $(window).resize(function () {
+        ResizeGameArea();
+    });
+
     // désactivation du menu contextuel clic droit
     window.oncontextmenu = function (event) {
         event.preventDefault();
         event.stopPropagation();
     };
 
-    // affichage notif nombre de messages non lus
-    if (NotReadMessages != 0) {
-        $('#NotifChat').text(NotReadMessages);
-        $('#NotifChat').show();
-    }
-
-    // affichage notif nombres de mémos
-    if (MemosNumber != 0) {
-        $('#NotifMemo').text(MemosNumber);
-        $('#NotifMemo').show();
-    }
-
-    // affichage popup
-    if (PlayReturn != "Ok")
-        ShowPopup('#errorPopup');
-    else if (ShowInfoPopup)
-        ShowPopup('#PopupInfo');
-    else if (ShowBotPlayingInfoPopup)
-        ShowPopup('#botPlayingInfoPopup');
+    // touche entrée sur chat
+    $('#ChatInput').on('keydown', function (e) {
+        if (e.which == 13) {
+            AddChat();
+        }
+    });
 
     //emojis du chat
     $(".emoji").click(function () {
@@ -88,14 +76,7 @@ $(document).ready(function () {
         $('#ChatInput').val(textBefore + $(this).html() + textAfter);
         $('#ChatInput').focus();
     });
-
-    // touche entrée sur chat
-    $('#ChatInput').on('keydown', function (e) {
-        if (e.which == 13) {
-            AddChat();
-        }
-    });
-});
+}
 
 //***************************************************//
 //**** gestion affichage derniers chrominos joués ***//
@@ -381,8 +362,6 @@ function ResizeGameArea() {
             offset += SquareSize + Math.floor(SquareSize / 10);
         });
         SetAngleByClass(".handPlayerChromino", 0);
-
-
     }
     else {
         height -= 200;
@@ -427,50 +406,6 @@ function IsChrominoInGameArea(chromino) {
         return true;
     else
         return false;
-}
-
-//***************************************//
-//******* fonction PlayChromino *********//
-//***************************************//
-
-function PlayChromino() {
-    if (!ThisPlayerTurn) {
-        $('#errorMessage').html("Vous devez attendre votre tour avant de jouer !");
-        $('#errorMessageEnd').html("Merci");
-        ShowPopup('#errorPopup');
-        return;
-    }
-    if (LastChrominoMove != null) {
-        let offset = $(LastChrominoMove).offset();
-        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
-        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
-        switch (GetAngle(LastChrominoMove)) {
-            case 0:
-                $("#FormOrientation").val(Horizontal);
-                $("#FormFlip").val(false);
-                break;
-            case 90:
-                $("#FormOrientation").val(Vertical);
-                $("#FormFlip").val(false);
-                yIndex--;
-                break;
-            case 180:
-                $("#FormOrientation").val(Horizontal);
-                $("#FormFlip").val(true);
-                break;
-            case 270:
-                $("#FormOrientation").val(Vertical);
-                $("#FormFlip").val(true);
-                yIndex--;
-                break;
-            default:
-                break;
-        }
-        $("#FormX").val(xIndex + XMin);
-        $("#FormY").val(yIndex + YMin);
-        $("#FormChrominoId").val(LastChrominoMove.id);
-        $("#FormPlayChromino").submit();
-    }
 }
 
 //***************************************************//
@@ -545,6 +480,25 @@ function Action(elementId) {
         $(form).submit();
 }
 
+function ErrorReturn(playReturn) {
+    let index = PlayErrors.findIndex(x => x.name == playReturn)
+    if (index >= 0) {
+        $('#ErrorText').html(PlayErrors[index].description);
+        $('#ErrorIllustration').removeClass().addClass("illustration " + PlayErrors[index].illustrationPictureClass);
+        $('#ErrorIllustrationCaption').html(PlayErrors[index].illustrationPictureCaption);
+        if (PlayErrors[index].illustrationPictureClass != "") {
+            $('#ErrorIllustration').show();
+            $('#ErrorIllustrationCaption').show();
+        }
+        else {
+            $('#ErrorIllustration').hide();
+            $('#ErrorIllustrationCaption').hide();
+        }
+        ShowPopup('#PopupError');
+    }
+}
+
+
 
 //***************************************************//
 //********************** Ajax ***********************//
@@ -558,12 +512,7 @@ function TipClosePopup(popup, checkBox) {
             url: UrlTipOff,
             type: 'POST',
             data: { gameId: GameId, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
-            success: function () {
-                if (dontShowAllTips)
-                    Tips = new Array;
-                else
-                    Tips.splice(Tips.findIndex(x => x.id == Tip.id), 1);
-            }
+            success: function () { CallbackTipClosePopup(dontShowAllTips) },
         });
     }
     ClosePopup(popup);
@@ -575,17 +524,7 @@ function AddMemo() {
         url: UrlMemoAdd,
         type: 'POST',
         data: { gameId: GameId, memo: memoContent },
-        success: function (data) {
-            ClosePopup("#PopupMemo");
-            if (data.memosNumber != 0) {
-                $('#NotifMemo').text(data.memosNumber);
-                $('#NotifMemo').show();
-            }
-            else {
-                $('#NotifMemo').text(0);
-                $('#NotifMemo').hide();
-            }
-        }
+        success: function (data) { CallbackAddMemo(data) },
     });
 }
 
@@ -596,10 +535,7 @@ function AddChat() {
             url: UrlChatAdd,
             type: 'POST',
             data: { gameId: GameId, chat: chatAdd },
-            success: function (data) {
-                $('#ChatPopupContent').val(data.chat);
-                $('#ChatInput').val("");
-            }
+            success: function (data) { CallbackAddChat(data) },
         });
     }
 }
@@ -610,10 +546,87 @@ function ReadChat() {
             url: UrlChatRead,
             type: 'POST',
             data: { gameId: GameId },
-            success: function () {
-                $('#NotifChat').text("0");
-                $('#NotifChat').hide();
-            }
+            success: function () { CallbackReadChat(); }
+        });
+    }
+}
+
+function Help() {
+    $.ajax({
+        url: UrlHelp,
+        type: 'POST',
+        data: { gameId: GameId },
+        success: function (data) { CallbackHelp(data); }
+    });
+}
+
+function SkipTurn() {
+    $.ajax({
+        url: UrlSkip,
+        type: 'POST',
+        data: { gameId: GameId },
+        success: function (data) { CallbackSkipTurn(data); },
+    });
+}
+
+function DrawChromino() {
+    $.ajax({
+        url: UrlDraw,
+        type: 'POST',
+        data: { gameId: GameId },
+        success: function (data) { CallbackDrawChromino(data); },
+    });
+}
+
+function PlayBot(botId) {
+    //todo tester pas fin de partie ?
+    //!Model.Game.Status.IsFinish()
+    $.ajax({
+        url: UrlPlayBot,
+        type: 'POST',
+        data: { id: GameId, botId: botId },
+        success: function (data) { CallbackPlayBot(data); },
+    });
+}
+
+function PlayChromino() {
+    if (LastChrominoMove != null) {
+        let offset = $(LastChrominoMove).offset();
+        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
+        let chrominoId = LastChrominoMove.id;
+        let orientation;
+        let flip;
+        switch (GetAngle(LastChrominoMove)) {
+            case 0:
+                orientation = Horizontal;
+                flip = false;
+                break;
+            case 90:
+                orientation = Vertical;
+                flip = false;
+                yIndex--;
+                break;
+            case 180:
+                orientation = Horizontal;
+                flip = true;
+                break;
+            case 270:
+                orientation = Vertical;
+                flip = true;
+                yIndex--;
+                break;
+            default:
+                break;
+        }
+        let x = xIndex + XMin;
+        let y = yIndex + YMin;
+        $.ajax({
+            url: UrlPlay,
+            type: 'POST',
+            data: { gameId: GameId, chrominoId: chrominoId, x: x, y: y, orientation: orientation, flip: flip },
+            //todo : passer autre argument pour spécifier de recalculer SquaresVM ou pas en fonction de si on dépasse des dimensions de gameArea
+            success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },
         });
     }
 }

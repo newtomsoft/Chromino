@@ -33,8 +33,9 @@ namespace Data.ViewModel
         public bool ShowPossiblesPositions { get; set; }
         public List<Tip> Tips { get; set; }
         public bool AskRematch { get; set; }
+        public List<PlayError> PlayErrors { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<Tip> tipsOn, bool askRematch)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
         {
             Player = player;
             OpponentsAreBots = opponenentsAreBots;
@@ -59,11 +60,11 @@ namespace Data.ViewModel
 
             PlayerChrominosVM = new List<ChrominoVM>();
             foreach (Chromino chromino in playerChrominos)
-                PlayerChrominosVM.Add(new ChrominoVM() { ChrominoId = chromino.Id, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } });
+                PlayerChrominosVM.Add(new ChrominoVM { ChrominoId = chromino.Id, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } });
 
             Pseudos_LastChrominoVM = new Dictionary<string, ChrominoVM>();
             foreach (var pseudo_chromino in pseudos_lastChrominos)
-                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key != Player.UserName ? pseudo_chromino.Key : "Vous", new ChrominoVM() { ChrominoId = pseudo_chromino.Value.Id, SquaresVM = new SquareVM[3] { new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false), new SquareVM(pseudo_chromino.Value.SecondColor, true, false, true, false), new SquareVM(pseudo_chromino.Value.ThirdColor, true, false, true, false) } });
+                Pseudos_LastChrominoVM.Add(pseudo_chromino.Key != Player.UserName ? pseudo_chromino.Key : "Vous", new ChrominoVM { ChrominoId = pseudo_chromino.Value.Id, SquaresVM = new SquareVM[3] { new SquareVM(pseudo_chromino.Value.FirstColor, true, false, false, false), new SquareVM(pseudo_chromino.Value.SecondColor, true, false, true, false), new SquareVM(pseudo_chromino.Value.ThirdColor, true, false, true, false) } });
 
             ChrominosPlayedVM = new List<ChrominoPlayedVM>();
             foreach (ChrominoInGame chrominoInGame in chrominosInGamePlayed)
@@ -80,14 +81,15 @@ namespace Data.ViewModel
                 PseudosChrominos["Vous"] = value;
             }
 
-            ShowPossiblesPositions = showPossiblesPositions;
-            PossiblesChrominosVM = new List<PossiblesChrominoVM>();
-            if (showPossiblesPositions)
-                foreach (GoodPosition goodPosition in goodPositions)
-                    PossiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, XMin, YMin));
+            //ShowPossiblesPositions = showPossiblesPositions;
+            //PossiblesChrominosVM = new List<PossiblesChrominoVM>();
+            //if (showPossiblesPositions)
+            //    foreach (GoodPosition goodPosition in goodPositions)
+            //        PossiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, XMin, YMin));
 
             Tips = tipsOn;
             AskRematch = askRematch;
+            PlayErrors = playErrors;
         }
 
         private int IndexGridState(int x, int y)

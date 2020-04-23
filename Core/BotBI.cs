@@ -22,9 +22,11 @@ namespace ChrominoBI
         /// <summary>
         /// fait jouer le bot
         /// </summary>
+        /// <param name="chrominoInGamePlayed">chromino joué. null si aucun</param>
         /// <returns></returns>
-        public PlayReturn PlayBot()
+        public PlayReturn PlayBot(out ChrominoInGame chrominoInGamePlayed)
         {
+            chrominoInGamePlayed = null;
             List<ChrominoInHand> chrominosInHand = ChrominoInHandDal.ChrominosByPriority(GameId, PlayerId);
             HandBI handBI = new HandBI(Ctx, chrominosInHand);
             int chrominoIdNotToPlay = handBI.ChrominoIdIfSingleWithCameleons();
@@ -33,7 +35,7 @@ namespace ChrominoBI
             int playersNumber = GamePlayerDal.PlayersNumber(GameId);
             if (goodPositions.Count == 0)
             {
-                if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playreturn))
+                if ((!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playreturn) != 0)
                     return playreturn;
                 else
                 {
@@ -84,14 +86,23 @@ namespace ChrominoBI
                     goodChrominos.Add(currentPotentialChromino);
                 }
             }
-            if (goodChrominos.Count == 0 && openToOpponentChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playReturn))
+            if (goodChrominos.Count == 0 && openToOpponentChrominos.Count == 0 && (!previouslyDraw || playersNumber == 1) && TryDrawChromino(out PlayReturn playReturn) != 0)
             { }
             else if (goodChrominos.Count == 0 && neitherGoodNorBadChrominos.Count > 0)
+            {
+                chrominoInGamePlayed = neitherGoodNorBadChrominos[0];
                 playReturn = Play(neitherGoodNorBadChrominos[0]);
+            }
             else if (goodChrominos.Count == 0 && openToOpponentChrominos.Count > 0 && !IsRisky(openToOpponentChrominos, out int index))
+            {
+                chrominoInGamePlayed = openToOpponentChrominos[index];
                 playReturn = Play(openToOpponentChrominos[index]);
+            }
             else if (goodChrominos.Count != 0)
+            {
+                chrominoInGamePlayed = goodChrominos[0];
                 playReturn = Play(goodChrominos[0]);
+            }
             else
             {
                 SkipTurn();

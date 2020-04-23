@@ -21,7 +21,9 @@
     "outputFileName": "wwwroot/js/game.min.js",
     "inputFiles": [
       "wwwroot/js/game.js",
-      "wwwroot/js/swipRefresh.js"
+      "wwwroot/js/swipRefresh.js",
+      "wwwroot/js/domManipulation.js",
+      "wwwroot/js/ajaxCallback.js"
     ],
     "minify": {
       "enabled": true,

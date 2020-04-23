@@ -67,7 +67,6 @@ namespace ChrominoBI
             GoodPositionDal = new GoodPositionDal(ctx);
             ChrominoInHandLastDal = new ChrominoInHandLastDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
-
         }
 
         /// <summary>
@@ -75,7 +74,7 @@ namespace ChrominoBI
         /// Indique que la partie est terminée si c'est au dernier joueur du tour de jouer, 
         /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
         /// </summary>
-        public void SkipTurn()
+        public int SkipTurn()
         {
             GamePlayerDal.SetPass(GameId, PlayerId, true);
             if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
@@ -88,7 +87,7 @@ namespace ChrominoBI
                 foreach (int playerId in playersIdLoose)
                     GamePlayerDal.SetWon(GameId, playerId, false);
             }
-            ChangePlayerTurn();
+            return ChangePlayerTurn();
         }
 
         /// <summary>
@@ -96,8 +95,8 @@ namespace ChrominoBI
         /// S'il n'y a plus de chrimino dans la pioche, ne fait rien
         /// </summary>
         /// <param name="playReturn">PlayReturn.DrawChromino si pioche ok</param>
-        /// <returns>true si tentative ok</returns>
-        public bool TryDrawChromino(out PlayReturn playReturn)
+        /// <returns>id du chromino si tentative ok. sinon 0</returns>
+        public int TryDrawChromino(out PlayReturn playReturn)
         {
             int chrominoId = ChrominoInHandDal.FromStack(GameId, PlayerId);
             if (chrominoId != 0)
@@ -105,13 +104,11 @@ namespace ChrominoBI
                 GoodPositionBI.Add(PlayerId, chrominoId);
                 GamePlayerDal.SetPreviouslyDraw(GameId, PlayerId);
                 playReturn = PlayReturn.DrawChromino;
-                return true;
             }
             else
-            {
-                playReturn = PlayReturn.Ok;
-                return false;
-            }
+                playReturn = PlayReturn.NoMoreChrominosInStack;
+
+            return chrominoId;
         }
 
         /// <summary>
@@ -121,18 +118,7 @@ namespace ChrominoBI
         /// <returns>PlayReturn.Ok si valide, PlayReturn.GameFinish si la partie est finie</returns>
         public PlayReturn Play(ChrominoInGame chrominoInGame)
         {
-            int numberInHand = 0;
-            if (PlayerId != 0)
-            {
-                numberInHand = ChrominoInHandDal.ChrominosNumber(GameId, PlayerId);
-                if (GamePlayerDal.PlayerTurn(GameId).Id != PlayerId)
-                    return PlayReturn.NotPlayerTurn;
-                else if (numberInHand == 1 && ChrominoDal.IsCameleon(chrominoInGame.ChrominoId))
-                    return PlayReturn.LastChrominoIsCameleon; // interdit de jouer le denier chromino si c'est un caméléon
-                else if (GameDal.GetStatus(chrominoInGame.GameId).IsFinish())
-                    return PlayReturn.ErrorGameFinish;
-            }
-
+            int numberInHand = PlayerId == 0 ? 0 : ChrominoInHandDal.ChrominosNumber(GameId, PlayerId);
             List<Square> squaresInGame = SquareDal.List(GameId);
             Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
             ChrominoInGameBI chrominoInGameBI = new ChrominoInGameBI(Ctx, GameId, chrominoInGame);
@@ -238,9 +224,11 @@ namespace ChrominoBI
         /// Change le joueur dont c'est le tour de jouer.
         /// Si la partie est finie, ce n'est plus le tour d'aucun joueur
         /// </summary>
-        public void ChangePlayerTurn()
+        /// <returns>id du joueur dont c'est le tour. 0 si la partie est finie</returns>
+        public int ChangePlayerTurn()
         {
             List<Player> players = GamePlayerDal.Players(GameId);
+            int playerTurnId = PlayerId;
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
             foreach (Player player in players)
                 gamePlayers.Add(GamePlayerDal.Details(GameId, player.Id));
@@ -261,6 +249,7 @@ namespace ChrominoBI
                 if (GameDal.IsFinished(GameId))
                 {
                     gamePlayer.Turn = false;
+                    playerTurnId = 0;
                 }
                 else
                 {
@@ -272,6 +261,7 @@ namespace ChrominoBI
                         if (selectNext)
                         {
                             currentGamePlayer.Turn = true;
+                            playerTurnId = currentGamePlayer.PlayerId;
                             selected = true;
                             break;
                         }
@@ -279,17 +269,21 @@ namespace ChrominoBI
                             selectNext = true;
                     }
                     if (!selected)
+                    {
                         gamePlayers[0].Turn = true;
-
+                        playerTurnId = gamePlayers[0].PlayerId;
+                    }
                     gamePlayer.Turn = false;
                 }
             }
             else
             {
                 gamePlayers[0].Turn = true;
+                playerTurnId = gamePlayers[0].PlayerId;
             }
             GameDal.UpdateDate(GameId);
             Ctx.SaveChanges();
+            return playerTurnId;
         }
 
         public void LooseGame(int playerId)
