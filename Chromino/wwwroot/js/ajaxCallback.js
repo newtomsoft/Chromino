@@ -82,7 +82,7 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         if (true) // todo tester augmentation de l'air de jeu
             AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous");
         else
-            RefreshGameArea(data.squaresVM);
+            ResizeGameArea(data.squaresVM);
         RemoveChrominoInHand(chrominoId);
         RefreshDom();
     }
@@ -98,7 +98,7 @@ function CallbackPlayBot(data) {
         }
         else {
             AddHistorySkipTurn(data.botName);
-            RefreshGameArea(data.squaresVM);
+            ResizeGameArea(data.squaresVM);
         }
             
     }

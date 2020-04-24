@@ -152,13 +152,7 @@
 
 @section ScriptPreJs
 {
-    <script>
-var PlayerId = @Model.Player.Id;
-var PlayerTurnId = @Model.PlayerTurn.Id;
-var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
-var PlayersNumber = @Model.Pseudos.Count;
-var GameId = @Model.Game.Id;
-var HelpNumber = @Model.Player.Help;
+<script>
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatAdd = '@Url.Action("Add", "Chat")';
@@ -168,6 +162,12 @@ var UrlSkip = '@Url.Action("SkipTurn")';
 var UrlDraw = '@Url.Action("DrawChromino")';
 var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
+var PlayerId = @Model.Player.Id;
+var PlayerTurnId = @Model.PlayerTurn.Id;
+var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
+var PlayersNumber = @Model.Pseudos.Count;
+var GameId = @Model.Game.Id;
+var HelpNumber = @Model.Player.Help;
 var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
 @{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
 var ThisPlayerTurn = @thisPlayerTurn;
