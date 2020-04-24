@@ -71,7 +71,7 @@ namespace Data.DAL
 
             return player;
         }
-        public string Pseudo(int id)
+        public string Name(int id)
         {
             string pseudo = (from p in Ctx.Players
                              where p.Id == id

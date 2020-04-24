@@ -1,6 +1,10 @@
-﻿function RefreshDom() {
+﻿function RefreshDom(opponentPlay) {
     if (IsBot)
         PlayBot(PlayerTurnId);
+
+    if (opponentPlay) {
+        AnimateChrominosPlayed(true);
+    }
 
     ResizeGameArea();
     StartDraggable();
@@ -53,29 +57,39 @@ function AddChrominoInHand(chromino) {
     ResizeGameArea();
 }
 
-function AddChrominoInGame(xIndex, yIndex, orientation, flip, colors) {
-    offset = orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
+function AddChrominoInGame(chromino, playerName) {
+    offset = chromino.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
+    let squaresName = new Array;
     for (var iSquare = 0; iSquare < 3; iSquare++) {
-        i = xIndex + offset.x * iSquare;
-        j = yIndex + offset.y * iSquare;
+        i = chromino.xIndex + offset.x * iSquare;
+        j = chromino.yIndex + offset.y * iSquare;
         index = i + j * GameAreaColumnsNumber;
-        squareSelector = "#Square_" + index;
-        if (iSquare == 0) {
-            classColor = flip ? colors[2] : colors[0];
-            classOpenSides = orientation == Horizontal ? "Square OpenRight" : "Square OpenBottom";
+        squareName = "Square_" + index;
+        squaresName.push(squareName);
+        squareSelector = "#" + squareName;
+        switch (iSquare) {
+            case 0:
+                classColor = chromino.flip ? chromino.colors[2] : chromino.colors[0];
+                classOpenSides = chromino.orientation == Horizontal ? "Square OpenRight" : "Square OpenBottom";
+                break;
+            case 1:
+                classColor = chromino.colors[1];
+                classOpenSides = chromino.orientation == Horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
+                break;
+            case 2:
+                classColor = chromino.flip ? chromino.colors[0] : chromino.colors[2];
+                classOpenSides = chromino.orientation == Horizontal ? "Square OpenLeft" : "Square OpenTop";
+                break;
         }
-        else if (iSquare == 1) {
-            classColor = colors[1];
-            classOpenSides = orientation == Horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
-        }
-        else {
-            classColor = flip ? colors[0] : colors[2];
-            classOpenSides = orientation == Horizontal ? "Square OpenLeft" : "Square OpenTop";
-        }
-
         $(squareSelector).removeClass().addClass(classOpenSides + " " + classColor);
     }
+    HistoryChrominos.splice(0, 0, { playerName: playerName, square0: squaresName[0], square1: squaresName[1], square2: squaresName[2] });
     ResizeGameArea();
+}
+
+function AddHistorySkipTurn(playerName) {
+    HistoryChrominos.splice(0, 0, { playerName: playerName + (playerName == "Vous" ? " avez" : " a") + " passé" });
+
 }
 
 function RefreshGameArea(squaresVM) {

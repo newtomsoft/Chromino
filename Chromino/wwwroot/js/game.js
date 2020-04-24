@@ -82,7 +82,9 @@ function InitDom() {
 //**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
 
-function AnimateChrominosPlayed() {
+function AnimateChrominosPlayed(reset) {
+    if (reset)
+        IndexMove = 0;
     if (HistoryChrominos.length != 0) {
         for (let i = 0; i < 2; i++) {
             ShowSquare('#' + HistoryChrominos[IndexMove].square0);

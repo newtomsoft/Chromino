@@ -108,7 +108,6 @@ namespace Data.Core
                 // je joueur est Admin, ou est dans la partie ou c'est une partie entre bots
                 Player player = PlayerDal.Details(playerId);
                 int chrominosInStackNumber = ChrominoInGameDal.InStack(GameId);
-                string playerPseudo = PlayerDal.Pseudo(playerId);
                 Dictionary<string, int> pseudosChrominos = new Dictionary<string, int>();
                 List<string> pseudos = new List<string>();
                 foreach (Player currentPlayer in players)
