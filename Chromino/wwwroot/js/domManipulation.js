@@ -61,9 +61,15 @@ function AddChrominoInGame(chromino, playerName) {
     offset = chromino.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
     let squaresName = new Array;
     for (var iSquare = 0; iSquare < 3; iSquare++) {
-        i = chromino.xIndex + offset.x * iSquare;
-        j = chromino.yIndex + offset.y * iSquare;
-        index = i + j * GameAreaColumnsNumber;
+        x = chromino.xIndex + offset.x * iSquare;
+        y = chromino.yIndex + offset.y * iSquare;
+        if (y > GameAreaLinesNumber - 3) {
+            AddGameLineEnd();
+        }
+        if (x > GameAreaColumnsNumber - 3) {
+            AddGameColumnEnd();
+        }
+        index = x + y * GameAreaColumnsNumber;
         squareName = "Square_" + index;
         squaresName.push(squareName);
         squareSelector = "#" + squareName;
@@ -92,36 +98,50 @@ function AddHistorySkipTurn(playerName) {
 
 }
 
-function RefreshGameArea(squaresVM) {
-    //todo
+function AddGameLineEnd() {
+    let firstIndexToAdd = GameAreaLinesNumber * GameAreaColumnsNumber;
+    let divToAdd = `<div id="Line_${GameAreaLinesNumber}" class="gameLineArea">`;
+    for (let i = 0; i < GameAreaColumnsNumber; i++)
+        divToAdd += `<div id="Square_${firstIndexToAdd + i}" class="Square Free"></div>`;
+    divToAdd += '</div>'
+    $(divToAdd).appendTo('#GameArea');
+    GameAreaLinesNumber++;
 }
 
+function AddGameColumnEnd() {
+    $("div[id^='Line_']").each(function (i) {
+        let squareNumber = (GameAreaColumnsNumber + 1) * (i + 1) - 1;
+        let divToAdd = `<div id="Square_${squareNumber}" class="Square Free"></div>`;
+        $(divToAdd).appendTo(this);
+        let lineSelector = "#Line_" + (i + 1);
+        $(lineSelector).children(".Square").each(function (j) {
+            this.id = "Square_" + (squareNumber + j + 1);
+        });
+    });
+    GameAreaColumnsNumber++;
+}
 
 function RemoveChrominoInHand(chrominoId) {
     $('#' + chrominoId).remove();
 }
-
 function ShowButtonNextGame() {
     $('#ButtonNextGame').show();
 }
 function HideButtonNextGame() {
     $('#ButtonNextGame').hide();
 }
-
 function ShowButtonSkipTurn() {
     $('#ButtonSkipTurn').show();
 }
 function HideButtonSkipTurn() {
     $('#ButtonSkipTurn').hide();
 }
-
 function ShowButtonDrawChromino() {
     $('#ButtonDrawChromino').show();
 }
 function HideButtonDrawChromino() {
     $('#ButtonDrawChromino').hide();
 }
-
 function ShowButtonPlayChromino() {
     $('#ButtonPlayChromino').show();
 }
