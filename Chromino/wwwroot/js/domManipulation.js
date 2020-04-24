@@ -63,12 +63,21 @@ function AddChrominoInGame(chromino, playerName) {
     for (var iSquare = 0; iSquare < 3; iSquare++) {
         x = chromino.xIndex + offset.x * iSquare;
         y = chromino.yIndex + offset.y * iSquare;
-        if (y > GameAreaLinesNumber - 3) {
-            AddGameLineEnd();
+        if (y > GameAreaLinesNumber - 3)
+            AddGameLineBottom();
+        else if (y < 2) {
+            AddGameLineTop(y);
+            chromino.yIndex = 2;
+            y = 2;
         }
-        if (x > GameAreaColumnsNumber - 3) {
-            AddGameColumnEnd();
+        if (x > GameAreaColumnsNumber - 3)
+            AddGameColumnRight();
+        else if (x < 2) {
+            AddGameColumnLeft(x);
+            chromino.xIndex = 2;
+            x = 2;
         }
+
         index = x + y * GameAreaColumnsNumber;
         squareName = "Square_" + index;
         squaresName.push(squareName);
@@ -98,7 +107,7 @@ function AddHistorySkipTurn(playerName) {
 
 }
 
-function AddGameLineEnd() {
+function AddGameLineBottom() {
     let firstIndexToAdd = GameAreaLinesNumber * GameAreaColumnsNumber;
     let divToAdd = `<div id="Line_${GameAreaLinesNumber}" class="gameLineArea">`;
     for (let i = 0; i < GameAreaColumnsNumber; i++)
@@ -108,9 +117,43 @@ function AddGameLineEnd() {
     GameAreaLinesNumber++;
 }
 
-function AddGameColumnEnd() {
+function AddGameLineTop(y) {
+    for (let i = 0; i < 2 - y; i++) {
+        $("div[id^='Line_']").each(function (i) {
+            this.id = "Line_" + (i + 1);
+        });
+        $(".Square").each(function (j) {
+            this.id = "Square_" + (GameAreaColumnsNumber + j);
+        });
+        let divToAdd = `<div id="Line_0" class="gameLineArea">`;
+        for (let i = 0; i < GameAreaColumnsNumber; i++)
+            divToAdd += `<div id="Square_${i}" class="Square Free"></div>`;
+        divToAdd += '</div>'
+        $('#GameArea').prepend(divToAdd);
+        GameAreaLinesNumber++;
+        YMin--;
+    }
+}
+
+function AddGameColumnLeft(x) {
+    for (let i = 0; i < 2 - x; i++) {
+        $("div[id^='Line_']").each(function (i) {
+            let squareNumber = (GameAreaColumnsNumber + 1) * i;
+            let divToAdd = `<div id="Square_${squareNumber}" class="Square Free"></div>`;
+            let lineSelector = "#Line_" + i;
+            $(lineSelector).children(".Square").each(function (j) {
+                this.id = "Square_" + (squareNumber + j + 1);
+            });
+            $(this).prepend(divToAdd);
+        });
+        GameAreaColumnsNumber++;
+        XMin--;
+    }
+}
+
+function AddGameColumnRight() {
     $("div[id^='Line_']").each(function (i) {
-        let squareNumber = (GameAreaColumnsNumber + 1) * (i + 1) - 1;
+        let squareNumber = i * (GameAreaColumnsNumber + 1) + GameAreaColumnsNumber;
         let divToAdd = `<div id="Square_${squareNumber}" class="Square Free"></div>`;
         $(divToAdd).appendTo(this);
         let lineSelector = "#Line_" + (i + 1);
