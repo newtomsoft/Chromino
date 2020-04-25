@@ -217,7 +217,13 @@ namespace Controllers
             ChrominoInGame chrominoInGame;
             BotBI botBI = new BotBI(Ctx, Env, id, botId);
             PlayReturn playreturn;
-            do playreturn = botBI.PlayBot(out chrominoInGame);
+            bool botDraw = false;
+            do
+            {
+                playreturn = botBI.PlayBot(out chrominoInGame);
+                if (playreturn == PlayReturn.DrawChromino)
+                    botDraw = true;
+            }
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
             // todo : factoriser suite = Draw
             List<string> colors = new List<string>();
@@ -228,11 +234,11 @@ namespace Controllers
                 ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoInGame.ChrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
                 for (int i = 0; i < 3; i++)
                     colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
-                return new JsonResult(new {botName = PlayerDal.Name(botId), botSkip = false, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), x = chrominoInGame.XPosition, y = chrominoInGame.YPosition, orientation = chrominoInGame.Orientation, flip = chrominoInGame.Flip, colors = colors });
+                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = false, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), x = chrominoInGame.XPosition, y = chrominoInGame.YPosition, orientation = chrominoInGame.Orientation, flip = chrominoInGame.Flip, colors = colors });
             }
             else
             {
-                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = true, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
+                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = true, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
             }
         }
 

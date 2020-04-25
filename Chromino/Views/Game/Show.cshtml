@@ -162,6 +162,8 @@ var UrlSkip = '@Url.Action("SkipTurn")';
 var UrlDraw = '@Url.Action("DrawChromino")';
 var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
+        var IsGameFinish = @Model.Game.Status.IsFinish().ToString().ToLower();
+        var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
 var PlayerTurnId = @Model.PlayerTurn.Id;
 var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
@@ -300,18 +302,7 @@ var HistoryChrominos = new Array;
         <div>faire la revanche ?&nbsp;<button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch"></button></div>
     }
     <br />
-    @if (Model.ChrominosInStack > 1)
-    {
-        <p class="minorInfo">Pioche : @Model.ChrominosInStack chrominos</p>
-    }
-    else if (Model.ChrominosInStack == 1)
-    {
-        <p class="minorInfo">Pioche : 1 chromino</p>
-    }
-    else
-    {
-        <p class="minorInfo">Il n'y a plus de chrominos dans la pioche</p>
-    }
+    <p id="InStack" class="minorInfo"></p>
 </div>
 <div id="PopupError" class="popup" style="display:none">
     <div class="div-head div-error" title="erreur"></div>

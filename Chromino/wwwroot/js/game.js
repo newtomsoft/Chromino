@@ -627,7 +627,6 @@ function PlayChromino() {
             url: UrlPlay,
             type: 'POST',
             data: { gameId: GameId, chrominoId: chrominoId, x: x, y: y, orientation: orientation, flip: flip },
-            //todo : passer autre argument pour spécifier de recalculer SquaresVM ou pas en fonction de si on dépasse des dimensions de gameArea
             success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },
         });
     }
