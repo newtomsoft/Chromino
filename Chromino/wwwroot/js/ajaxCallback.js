@@ -46,6 +46,7 @@ function CallbackDrawChromino(data) {
     }
     else {
         AddChrominoInHand(data);
+        DecreaseInStack();
         if (PlayersNumber > 1) {
             HideButtonDrawChromino();
             ShowButtonSkipTurn();
@@ -90,17 +91,16 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
 
 function CallbackPlayBot(data) {
     RefreshVar(data);
-    if (!data.botSkip) {
-        if (true) {
-            let xIndex = data.x - XMin;
-            let yIndex = data.y - YMin;
-            AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.botName);
-        }
-        else {
-            AddHistorySkipTurn(data.botName);
-            ResizeGameArea(data.squaresVM);
-        }
-            
+    if (data.botDraw)
+        DecreaseInStack();
+    if (data.botSkip) {
+        AddHistorySkipTurn(data.botName);
+        ResizeGameArea(data.squaresVM);
+    }
+    else {
+        let xIndex = data.x - XMin;
+        let yIndex = data.y - YMin;
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.botName);
     }
     if (PlayerTurnId == PlayerId) {
         ShowButtonDrawChromino();
@@ -108,4 +108,9 @@ function CallbackPlayBot(data) {
         HideButtonNextGame();
     }
     RefreshDom(true);
+}
+
+function DecreaseInStack() {
+    InStack--;
+    UpdateInStack();
 }

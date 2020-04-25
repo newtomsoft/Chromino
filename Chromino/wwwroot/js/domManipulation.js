@@ -45,8 +45,24 @@
         ShowPopup('#PopupInfo');
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
+
+    //InStack
+    UpdateInStack();
 }
 
+function UpdateInStack() {
+    switch (InStack) {
+        case 0:
+            $('#InStack').html("Il n'y a plus de chrominos dans la pioche");
+            break;
+        case 1:
+            $('#InStack').html('Pioche : 1 chromino');
+            break
+        default:
+            $('#InStack').html(`Pioche : ${InStack} chrominos`);
+            break;
+    }
+}
 
 function AddChrominoInHand(chromino) {
     let divToAdd = `<div id="${chromino.id}" class="handPlayerChromino">`;
