@@ -34,7 +34,7 @@ function InitDom() {
             if (IndexMove < HistoryChrominos.length - 1) {
                 IndexMove++;
             }
-            AnimateChrominosPlayed();
+            AnimateChromino(2, true);
             HideChrominosPlayed();
         }
     });
@@ -43,7 +43,7 @@ function InitDom() {
             if (IndexMove > 0) {
                 IndexMove--;
             }
-            AnimateChrominosPlayed();
+            AnimateChromino(2, true);
         }
     });
 
@@ -88,20 +88,26 @@ function InitDom() {
 //**** gestion affichage derniers chrominos joués ***//
 //***************************************************//
 
-function AnimateChrominosPlayed(reset) {
-    if (reset)
+function AnimateChromino(loopNumber, history, historyReset) {
+    if (historyReset)
         IndexMove = 0;
+    let index = history ? IndexMove : 0;
     if (HistoryChrominos.length != 0) {
-        for (let i = 0; i < 2; i++) {
-            ShowSquare('#' + HistoryChrominos[IndexMove].square0);
-            AnimateSquare('#' + HistoryChrominos[IndexMove].square0);
-            ShowSquare('#' + HistoryChrominos[IndexMove].square1);
-            AnimateSquare('#' + HistoryChrominos[IndexMove].square1);
-            ShowSquare('#' + HistoryChrominos[IndexMove].square2);
-            AnimateSquare('#' + HistoryChrominos[IndexMove].square2);
+        ShowSquare('#' + HistoryChrominos[index].square0);
+        ShowSquare('#' + HistoryChrominos[index].square1);
+        ShowSquare('#' + HistoryChrominos[index].square2);
+        for (let i = 0; i < loopNumber; i++) {
+            AnimateSquare('#' + HistoryChrominos[index].square0);
+            AnimateSquare('#' + HistoryChrominos[index].square1);
+            AnimateSquare('#' + HistoryChrominos[index].square2);
         }
-        $('#PlayerHistoryPseudo').html(HistoryChrominos[IndexMove].playerName).fadeIn().delay(1000).fadeOut();
+        if (history)
+            $('#PlayerHistoryPseudo').html(HistoryChrominos[index].playerName).fadeIn().delay(1000).fadeOut();
     }
+}
+
+function ShowLastChrominoPlayed() {
+    AnimateChromino(0);
 }
 
 function AnimateSquare(squareId) {

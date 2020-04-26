@@ -2,54 +2,33 @@
     if (IsBot)
         PlayBot(PlayerTurnId);
 
-    if (opponentPlay) {
-        AnimateChrominosPlayed(true);
-    }
+    RefreshOpponentChromino(opponentPlay);
 
-    ResizeGameArea();
-    StopDraggable();
-    StartDraggable();
+    //if (!PreviouslyDraw && ThisPlayerTurn) {
+    //    AnimateChromino(2, true);
+    //}
 
-    if (!PreviouslyDraw && ThisPlayerTurn) {
-        AnimateChrominosPlayed(0);
-    }
-
-    if (NotReadMessages != 0) {
-        $('#NotifChat').text(NotReadMessages);
-        $('#NotifChat').show();
-    }
-
-    if (MemosNumber != 0) {
-        $('#NotifMemo').text(MemosNumber);
-        $('#NotifMemo').show();
-    }
-
-    if (HelpNumber != 0 && !IsGameFinish) {
-        $('#HelpNumber').text(HelpNumber);
-        $('#ButtonHelp').show();
-    }
-
-    $('.Square').removeClass('Possible');
-    if (HelpIndexes.length > 0) {
-        let squaresSelected = HelpIndexes.map(i => '#Square_' + i).join(", ");
-        $(squaresSelected).addClass('Possible');
-        HelpIndexes = new Array;
-    }
-
+    RefreshButtonChat();
+    RefreshButtonMemo();
+    RefreshButtonHelp();
+    RefreshHelp();
     RefreshInfoPopup();
     if (ShowInfoPopup)
         ShowPopup('#PopupInfo');
     else if (ShowBotPlayingInfoPopup)
         ShowPopup('#botPlayingInfoPopup');
 
-    RefreshInStack();
-
+    StopDraggable();
+    StartDraggable();
     if (IsGameFinish) {
         HideButtonDrawChromino();
         HideButtonPlayChromino();
         HideButtonSkipTurn();
         ShowButtonNextGame();
+        RefreshButtonHelp()
+        StopDraggable();
     }
+    ResizeGameArea();
 }
 
 function RefreshInfoPopup() {
@@ -129,32 +108,26 @@ function AddChrominoInHand(chromino) {
 }
 
 function AddChrominoInGame(chromino, playerName) {
-    offset = chromino.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
+    if (chromino.yIndex == GameAreaLinesNumber - 2 && chromino.orientation == Horizontal || chromino.yIndex == GameAreaLinesNumber - 4 && chromino.orientation == Vertical)
+        AddGameLineBottom(1);
+    else if (chromino.yIndex == GameAreaLinesNumber - 3 && chromino.orientation == Vertical)
+        AddGameLineBottom(2);
+    else if (chromino.yIndex < 2) {
+        AddGameLineTop(2 - chromino.yIndex);
+        chromino.yIndex = 2;
+    }
+    if (chromino.xIndex == GameAreaColumnsNumber - 2 && chromino.orientation == Vertical || chromino.xIndex == GameAreaColumnsNumber - 4 && chromino.orientation == Horizontal)
+        AddGameColumnRight(1);
+    else if (chromino.xIndex == GameAreaColumnsNumber - 3 && chromino.orientation == Horizontal)
+        AddGameColumnRight(2);
+    else if (chromino.xIndex < 2) {
+        AddGameColumnLeft(2 - chromino.xIndex);
+        chromino.xIndex = 2;
+    }
     let squaresName = new Array;
+    offset = chromino.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
     for (var iSquare = 0; iSquare < 3; iSquare++) {
-        x = chromino.xIndex + offset.x * iSquare;
-        y = chromino.yIndex + offset.y * iSquare;
-        if (y > GameAreaLinesNumber - 3) {
-            if (chromino.orientation == Vertical && iSquare == 1)
-                AddGameLineBottom(2);
-            else
-                AddGameLineBottom(1);
-        }
-        else if (y < 2) {
-            AddGameLineTop(2 - y);
-            chromino.yIndex = 2;
-            y = 2;
-        }
-        if (x == GameAreaColumnsNumber - 2 && chromino.orientation == Vertical || x == GameAreaColumnsNumber - 4 && chromino.orientation == Horizontal)
-            AddGameColumnRight(1);
-        else if (x == GameAreaColumnsNumber - 3 && chromino.orientation == Horizontal)
-            AddGameColumnRight(2);
-        else if (x < 2) {
-            AddGameColumnLeft(2 - x);
-            chromino.xIndex = 2;
-            x = 2;
-        }
-        index = x + y * GameAreaColumnsNumber;
+        index = chromino.xIndex + offset.x * iSquare + (chromino.yIndex + offset.y * iSquare) * GameAreaColumnsNumber;
         squareName = "Square_" + index;
         squaresName.push(squareName);
         squareSelector = "#" + squareName;
@@ -175,6 +148,7 @@ function AddChrominoInGame(chromino, playerName) {
         $(squareSelector).removeClass().addClass(classOpenSides + " " + classColor);
     }
     HistoryChrominos.splice(0, 0, { playerName: playerName, square0: squaresName[0], square1: squaresName[1], square2: squaresName[2] });
+    ShowLastChrominoPlayed();
     ResizeGameArea();
 }
 
@@ -182,29 +156,33 @@ function AddHistorySkipTurn(playerName) {
     HistoryChrominos.splice(0, 0, { playerName: playerName + (playerName == "Vous" ? " avez" : " a") + " passé" });
 }
 
-function AddGameLineBottom() {
-    let firstIndexToAdd = GameAreaLinesNumber * GameAreaColumnsNumber;
-    let divToAdd = `<div id="Line_${GameAreaLinesNumber}" class="gameLineArea">`;
-    for (let i = 0; i < GameAreaColumnsNumber; i++)
-        divToAdd += `<div id="Square_${firstIndexToAdd + i}" class="Square Free"></div>`;
-    divToAdd += '</div>'
-    $(divToAdd).appendTo('#GameArea');
-    GameAreaLinesNumber++;
+function AddGameLineBottom(add) {
+    for (let iadd = 0; iadd < add; iadd++) {
+        let firstIndexToAdd = GameAreaLinesNumber * GameAreaColumnsNumber;
+        let divToAdd = `<div id="Line_${GameAreaLinesNumber}" class="gameLineArea">`;
+        for (let i = 0; i < GameAreaColumnsNumber; i++)
+            divToAdd += `<div id="Square_${firstIndexToAdd + i}" class="Square Free"></div>`;
+        divToAdd += '</div>'
+        $(divToAdd).appendTo('#GameArea');
+        GameAreaLinesNumber++;
+    }
 }
 
 function AddGameLineTop(add) {
-    for (let i = 0; i < add; i++) {
+    for (let iadd = 0; iadd < add; iadd++) {
         $("div[id^='Line_']").each(function (i) {
             this.id = "Line_" + (i + 1);
         });
-        $(".Square").each(function (j) {
-            this.id = "Square_" + (GameAreaColumnsNumber + j);
+        $(".Square").each(function (i) {
+            this.id = "Square_" + (GameAreaColumnsNumber + i);
         });
         let divToAdd = `<div id="Line_0" class="gameLineArea">`;
         for (let i = 0; i < GameAreaColumnsNumber; i++)
             divToAdd += `<div id="Square_${i}" class="Square Free"></div>`;
         divToAdd += '</div>'
         $('#GameArea').prepend(divToAdd);
+        GameAreaLinesNumber++;
+        YMin--;
     }
     let increase = add * GameAreaColumnsNumber;
     HistoryChrominos.forEach(function (item) {
@@ -215,42 +193,36 @@ function AddGameLineTop(add) {
         newNumber = parseInt(item.square2.replace("Square_", "")) + increase;
         item.square2 = "Square_" + newNumber;
     });
-    GameAreaLinesNumber++;
-    YMin--;
 }
 
 function AddGameColumnLeft(add) {
-    for (let i = 0; i < add; i++) {
+    let oldColumnsNumber = GameAreaColumnsNumber;
+    for (let iadd = 0; iadd < add; iadd++) {
         $("div[id^='Line_']").each(function (i) {
             let squareNumber = (GameAreaColumnsNumber + 1) * i;
             let divToAdd = `<div id="Square_${squareNumber}" class="Square Free"></div>`;
             let lineSelector = "#Line_" + i;
             $(lineSelector).children(".Square").each(function (j) {
-                newId = "Square_" + (squareNumber + j + 1);
-                squarefound = HistoryChrominos.find(c => c.square0 == this.id);
-                if (squarefound !== undefined)
-                    squarefound.square0 = newId;
-                else {
-                    squarefound = HistoryChrominos.find(c => c.square1 == this.id);
-                    if (squarefound !== undefined)
-                        squarefound.square1 = newId;
-                    else {
-                        squarefound = HistoryChrominos.find(c => c.square2 == this.id);
-                        if (squarefound !== undefined)
-                            squarefound.square2 = newId;
-                    }
-                }
-                this.id = newId
+                this.id = "Square_" + (squareNumber + j + 1);
             });
             $(this).prepend(divToAdd);
         });
         GameAreaColumnsNumber++;
         XMin--;
     }
+    HistoryChrominos.forEach(function (item) {
+        oldNumber = parseInt(item.square0.replace("Square_", ""));
+        item.square0 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
+        oldNumber = parseInt(item.square1.replace("Square_", ""));
+        item.square1 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
+        oldNumber = parseInt(item.square2.replace("Square_", ""));
+        item.square2 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
+    });
 }
 
 function AddGameColumnRight(add) {
-    for (let iAdd = 0; iAdd < add; iAdd++) {
+    let oldColumnsNumber = GameAreaColumnsNumber;
+    for (let iadd = 0; iadd < add; iadd++) {
         $("div[id^='Line_']").each(function (i) {
             let squareNumber = i * (GameAreaColumnsNumber + 1) + GameAreaColumnsNumber;
             let divToAdd = `<div id="Square_${squareNumber}" class="Square Free"></div>`;
@@ -260,16 +232,16 @@ function AddGameColumnRight(add) {
                 this.id = "Square_" + (squareNumber + j + 1);
             });
         });
+        GameAreaColumnsNumber++;
     }
     HistoryChrominos.forEach(function (item) {
         oldNumber = parseInt(item.square0.replace("Square_", ""));
-        item.square0 = "Square_" + (oldNumber + add * Math.floor(oldNumber / GameAreaColumnsNumber));
+        item.square0 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
         oldNumber = parseInt(item.square1.replace("Square_", ""));
-        item.square1 = "Square_" + (oldNumber + add * Math.floor(oldNumber / GameAreaColumnsNumber));
+        item.square1 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
         oldNumber = parseInt(item.square2.replace("Square_", ""));
-        item.square2 = "Square_" + (oldNumber + add * Math.floor(oldNumber / GameAreaColumnsNumber));
+        item.square2 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
     });
-    GameAreaColumnsNumber++;
 }
 
 function RemoveChrominoInHand(chrominoId) {
@@ -298,4 +270,42 @@ function ShowButtonPlayChromino() {
 }
 function HideButtonPlayChromino() {
     $('#ButtonPlayChromino').hide();
+}
+
+function RefreshButtonHelp() {
+    if (HelpNumber != 0 && !IsGameFinish) {
+        $('#HelpNumber').text(HelpNumber);
+        $('#ButtonHelp').show();
+    }
+    else
+        $('#ButtonHelp').hide();
+}
+function RefreshButtonMemo() {
+    if (MemosNumber != 0) {
+        $('#NotifMemo').text(MemosNumber);
+        $('#NotifMemo').show();
+    }
+    else
+        $('#NotifMemo').hide();
+}
+function RefreshButtonChat() {
+    if (NotReadMessages != 0) {
+        $('#NotifChat').text(NotReadMessages);
+        $('#NotifChat').show();
+    }
+    else
+        $('#NotifChat').hide();
+}
+function RefreshHelp() {
+    $('.Square').removeClass('Possible');
+    if (HelpIndexes.length > 0) {
+        let squares = HelpIndexes.map(i => '#Square_' + i).join(", ");
+        $(squares).addClass('Possible');
+        HelpIndexes = new Array;
+    }
+}
+function RefreshOpponentChromino(opponentPlay) {
+    if (opponentPlay) {
+        AnimateChromino(3, true, true);
+    }
 }
