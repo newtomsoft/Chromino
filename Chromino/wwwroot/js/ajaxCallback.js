@@ -58,6 +58,8 @@ function CallbackDrawChromino(data) {
             HideButtonDrawChromino();
             ShowButtonSkipTurn();
         }
+        else if (InStack == 0)
+            HideButtonDrawChromino();
     }
 }
 

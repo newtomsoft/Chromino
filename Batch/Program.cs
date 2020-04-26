@@ -388,7 +388,7 @@ namespace Batch
             PlayError noMoreChrominosInStack = new PlayError
             {
                 Name = "NoMoreChrominosInStack",
-                Description = "Il n'y a plus de chrominos dans la pioche. Vous devez soit poser un chrimono, soit passer votre tour.",
+                Description = "Il n'y a plus de chrominos dans la pioche. Vous devez soit poser un chromino, soit passer votre tour.",
             };
             #endregion
             List<PlayError> errors = new List<PlayError> { differentColorsAround, notFree, notMinTwoSameColors , lastChrominoIsCameleon, notPlayerTurn , errorGameFinish, cantDraw2TimesInARow , noMoreChrominosInStack};
