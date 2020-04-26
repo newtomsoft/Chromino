@@ -162,10 +162,11 @@ var UrlSkip = '@Url.Action("SkipTurn")';
 var UrlDraw = '@Url.Action("DrawChromino")';
 var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
-        var IsGameFinish = @Model.Game.Status.IsFinish().ToString().ToLower();
-        var InStack = @Model.ChrominosInStack;
+var IsGameFinish = @Model.Game.Status.IsFinish().ToString().ToLower();
+var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
 var PlayerTurnId = @Model.PlayerTurn.Id;
+var PlayerTurnName = "@Model.PlayerTurn.UserName";
 var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
 var PlayersNumber = @Model.Pseudos.Count;
 var GameId = @Model.Game.Id;
@@ -183,10 +184,17 @@ var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
 var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
 var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
+var Players = new Array;
 var PlayErrors = new Array;
 var Tips = new Array;
 var HistoryChrominos = new Array;
 @{
+    foreach (var pseudoChromino in Model.PseudosChrominos)
+    {
+        int id = Model.PseudosIds[pseudoChromino.Key];
+        @:Players.push({ id: @id, name: "@pseudoChromino.Key", chrominosNumber: @pseudoChromino.Value, lastChrominoColors: ["Red", "Red", "Red"] });
+    }
+
     foreach (PlayError playError in Model.PlayErrors)
     {
         @:PlayErrors.push({ name: "@playError.Name", description: "@Html.Raw(playError.Description)", illustrationPictureClass: "@playError.IllustrationPictureClass", illustrationPictureCaption: "@playError.IllustrationPictureCaption" });
@@ -220,75 +228,10 @@ var HistoryChrominos = new Array;
 }
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
-    @if (Model.Game.Status.IsFinish())
+    <div id="PopupInfoHead"></div>
+    @foreach (var pseudoId in Model.PseudosIds)
     {
-        @if (Model.GamePlayer.Win == false)
-        {
-            <h2>Vous avez perdu</h2>
-            <h3>Dommage</h3>
-            <br />
-        }
-        else if (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))
-        {
-            <h2>Victoire ex-æquo </h2>
-            <h3>Bravo</h3>
-            <br />
-        }
-        else
-        {
-            <h2>Victoire</h2>
-            <h3>Bravo !</h3>
-            <br />
-        }
-    }
-    else
-    {
-        <h3>@playerTurn</h3>
-    }
-    @foreach (var pseudoChromino in Model.PseudosChrominos)
-    {
-        string pseudoHave = pseudoChromino.Key == "Vous" ? "Vous avez" : pseudoChromino.Key + " a";
-        if (pseudoChromino.Value > 1)
-        {
-            <p>@pseudoHave @pseudoChromino.Value chrominos en main</p>
-        }
-        else if (pseudoChromino.Value == 1)
-        {
-            <div class="opponentLastChromino">
-                @pseudoHave &nbsp;
-                @for (int i = 0; i < 3; i++)
-                {
-                    string classOpenSides;
-                    switch (i)
-                    {
-                        case 0:
-                            classOpenSides = "OpenRight";
-                            break;
-                        case 1:
-                            classOpenSides = "OpenRightLeft";
-                            break;
-                        case 2:
-                        default:
-                            classOpenSides = "OpenLeft";
-                            break;
-                    }
-                    ColorCh color = Model.Pseudos_LastChrominoVM[pseudoChromino.Key].SquaresVM[i].Color;
-                    string classColor = color.ToString();
-                    <div class="Square @classOpenSides @classColor"></div>
-                }
-            </div>
-        }
-        else
-        {
-            if (pseudoChromino.Key == "Vous")
-            {
-                <p class="winner">Vous avez gagné la partie</p>
-            }
-            else
-            {
-                <p class="winner">@pseudoChromino.Key a gagné la partie</p>
-            }
-        }
+        <div id="Player_@pseudoId.Value"></div>
     }
     @if (Model.AskRematch)
     {

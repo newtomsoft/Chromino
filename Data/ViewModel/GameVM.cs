@@ -19,6 +19,7 @@ namespace Data.ViewModel
         public SquareVM[] SquaresVM { get; set; }
         public int ChrominosInStack { get; set; }
         public Dictionary<string, int> PseudosChrominos { get; set; }
+        public Dictionary<string, int> PseudosIds { get; set; }
         public Dictionary<string, ChrominoVM> Pseudos_LastChrominoVM { get; set; }
         public List<ChrominoVM> PlayerChrominosVM { get; set; }
         public Player PlayerTurn { get; set; }
@@ -35,7 +36,7 @@ namespace Data.ViewModel
         public bool AskRematch { get; set; }
         public List<PlayError> PlayErrors { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
         {
             Player = player;
             OpponentsAreBots = opponenentsAreBots;
@@ -72,6 +73,7 @@ namespace Data.ViewModel
 
             Pseudos = pseudos;
             PseudosChrominos = pseudosChrominos;
+            PseudosIds = pseudosIds;
             int indexPlayerPseudo = Pseudos.IndexOf(Player.UserName);
             if (indexPlayerPseudo != -1)
             {
@@ -79,13 +81,10 @@ namespace Data.ViewModel
                 int value = PseudosChrominos[Player.UserName];
                 PseudosChrominos.Remove(Player.UserName);
                 PseudosChrominos["Vous"] = value;
+                value = PseudosIds[Player.UserName];
+                PseudosIds.Remove(Player.UserName);
+                PseudosIds["Vous"] = value;
             }
-
-            //ShowPossiblesPositions = showPossiblesPositions;
-            //PossiblesChrominosVM = new List<PossiblesChrominoVM>();
-            //if (showPossiblesPositions)
-            //    foreach (GoodPosition goodPosition in goodPositions)
-            //        PossiblesChrominosVM.Add(new PossiblesChrominoVM(goodPosition, XMin, YMin));
 
             Tips = tipsOn;
             AskRematch = askRematch;
