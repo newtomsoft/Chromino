@@ -15,7 +15,11 @@ var IndexMove = 0;
 var HelpIndexes = new Array;
 
 $(document).ready(function () {
+    InitDom();
+    RefreshDom();
+});
 
+function InitDom() {
     HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
         this.forEach(function (item) {
             if (item.square0 !== undefined) {
@@ -37,12 +41,6 @@ $(document).ready(function () {
             }
         });
     };
-    InitDom();
-    RefreshDom();
-});
-
-
-function InitDom() {
     Action("Welcome");
     RefreshVar();
     Players.forEach(function (player) {
@@ -88,7 +86,7 @@ function InitDom() {
         event.stopPropagation();
     };
 
-    // touche entrée sur chat
+    // touche entrer sur chat
     $('#ChatInput').on('keydown', function (e) {
         if (e.which == 13) {
             AddChat();
@@ -123,8 +121,11 @@ function AnimateChromino(loopNumber, history, historyReset) {
             AnimateSquare('#' + HistoryChrominos[index].square1);
             AnimateSquare('#' + HistoryChrominos[index].square2);
         }
-        if (history)
+        if (history) {
+            $('#PlayerHistoryPseudo').css('opacity', '1');
+            $('#PlayerHistoryPseudo').dequeue();
             $('#PlayerHistoryPseudo').html(HistoryChrominos[index].playerName).fadeIn().delay(1000).fadeOut();
+        }
     }
 }
 
