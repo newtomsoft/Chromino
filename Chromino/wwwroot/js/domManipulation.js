@@ -10,7 +10,6 @@
 
     RefreshButtonChat();
     RefreshButtonMemo();
-    RefreshButtonHelp();
     RefreshHelp();
     RefreshInfoPopup();
     if (ShowInfoPopup)
@@ -26,7 +25,6 @@
         HideButtonPlayChromino();
         HideButtonSkipTurn();
         ShowButtonNextGame();
-        RefreshButtonHelp()
         StopDraggable();
     }
 
@@ -283,6 +281,7 @@ function RefreshHelp() {
         $(squares).addClass('Possible');
         HelpIndexes = new Array;
     }
+    RefreshButtonHelp();
 }
 function RefreshOpponentChromino(opponentPlay) {
     if (opponentPlay) {

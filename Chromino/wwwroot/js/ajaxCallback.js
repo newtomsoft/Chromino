@@ -39,11 +39,14 @@ function CallbackAddChat(data) {
 }
 
 function CallbackHelp(data) {
-    if (data.status) {
-        HelpNumber--;
+    if (data.indexes.length > 0) {
         HelpIndexes = data.indexes;
-        RefreshHelp();
+        HelpNumber--;
     }
+    else {
+        $('#PlayerHistoryPseudo').html("Pas d'emplacements possibles").fadeIn().delay(1000).fadeOut();
+    }
+    RefreshHelp();
 }
 
 function CallbackDrawChromino(data) {
