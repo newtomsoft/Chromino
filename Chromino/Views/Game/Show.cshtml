@@ -66,13 +66,11 @@
     <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" style="@styleButtonNextGame" onclick="Action(this.id);"></button>
 </div>
 <br>
-<div id="PlayerHistory">
-    <div id="HistoryChrominos" onclick="Action(this.id);">
-        <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
-        <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
-        <div id="PlayerHistoryPseudo"></div>
-    </div>
+<div id="HistoryChrominos" onclick="Action(this.id);">
+    <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
+    <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
 </div>
+<div id="PlayerHistoryPseudo"></div>
 <div id="GameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
     @for (int j = 0; j < Model.LinesNumber; j++)
     {
