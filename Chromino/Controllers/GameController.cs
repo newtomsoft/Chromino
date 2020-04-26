@@ -293,7 +293,7 @@ namespace Controllers
                     for (int i = 0; i < 3; i++)
                         possibleSquareIndexes.Add(possiblesChrominosVM[iChromino].IndexesX[i] + possiblesChrominosVM[iChromino].IndexesY[i] * columnsNumber);
             }
-            return new JsonResult(new { status = true, indexes = possibleSquareIndexes });
+            return new JsonResult(new { indexes = possibleSquareIndexes });
         }
 
         /// <summary>
