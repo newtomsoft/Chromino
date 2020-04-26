@@ -23,6 +23,7 @@
       "wwwroot/js/game.js",
       "wwwroot/js/swipRefresh.js",
       "wwwroot/js/domManipulation.js",
+      "wwwroot/js/ajaxCall.js",
       "wwwroot/js/ajaxCallback.js"
     ],
     "minify": {

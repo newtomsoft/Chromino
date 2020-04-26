@@ -115,6 +115,12 @@ namespace Data.Core
                     pseudosChrominos.Add(currentPlayer.UserName, ChrominoInHandDal.ChrominosNumber(GameId, currentPlayer.Id));
                     pseudos.Add(currentPlayer.UserName);
                 }
+                Dictionary<string, int> pseudosIds = new Dictionary<string, int>();
+
+                //todo : pas très propre. revoir construtrion liste PlayerVM {ids, name, chrominosNumber, lastChromino} ?
+                foreach (var pseudoChromino in pseudosChrominos) 
+                    pseudosIds.Add(pseudoChromino.Key, PlayerDal.Details(pseudoChromino.Key).Id);
+
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
                 foreach (var pseudo_chromino in pseudosChrominos)
                 {
@@ -152,7 +158,7 @@ namespace Data.Core
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId); //todo virer
                 List<Tip> tips = TipDal.ListOn(playerId);
                 List<PlayError> playErrors = PlayErrorDal.List();
-                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch, playErrors);
+                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch, playErrors);
                 return gameVM;
             }
             else return null;

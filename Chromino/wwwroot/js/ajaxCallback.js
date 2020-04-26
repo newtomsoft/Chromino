@@ -1,6 +1,12 @@
 ﻿function RefreshVar(data) {
-    IsBot = data.isBot;
-    PlayerTurnId = data.nextPlayerId;
+    if (data !== undefined) {
+        if (data.isBot !== undefined) IsBot = data.isBot;
+        if (data.finish !== undefined) IsGameFinish = data.finish;
+        if (data.nextPlayerId !== undefined) PlayerTurnId = data.nextPlayerId;
+    }
+    if (IsGameFinish) ShowInfoPopup = IsGameFinish;
+    PlayerTurnName = Players.find(p => p.id == PlayerTurnId).name;
+    PlayerTurnText = PlayerTurnName == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurnName} de jouer`;
 }
 
 function CallbackReadChat() {
@@ -47,6 +53,7 @@ function CallbackDrawChromino(data) {
     else {
         AddChrominoInHand(data);
         DecreaseInStack();
+        UpdateInHandNumber(PlayerId, 1);
         if (PlayersNumber > 1) {
             HideButtonDrawChromino();
             ShowButtonSkipTurn();
@@ -64,6 +71,7 @@ function CallbackSkipTurn(data) {
         AddHistorySkipTurn("Vous");
         IsBot = data.isBot;
         PlayerTurnId = data.id;
+        RefreshVar(data);
         RefreshDom();
     }
 }
@@ -73,35 +81,36 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         ErrorReturn(data.errorReturn);
     }
     else {
-        RefreshVar(data);
         if (PlayersNumber > 1) {
             HideButtonDrawChromino();
             HideButtonSkipTurn();
             ShowButtonNextGame();
         }
         HideButtonPlayChromino();
-        if (true) // todo tester augmentation de l'air de jeu
-            AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous");
-        else
-            ResizeGameArea(data.squaresVM);
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous");
         RemoveChrominoInHand(chrominoId);
+        UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
+        RefreshVar(data);
         RefreshDom();
     }
 }
 
 function CallbackPlayBot(data) {
-    RefreshVar(data);
-    if (data.botDraw)
+    if (data.botDraw) {
         DecreaseInStack();
+        UpdateInHandNumber(PlayerTurnId, 1);
+    }
     if (data.botSkip) {
-        AddHistorySkipTurn(data.botName);
+        AddHistorySkipTurn(data.botName); // todo optimiser avec Players[x].name
         ResizeGameArea(data.squaresVM);
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
         AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.botName);
+        UpdateInHandNumber(PlayerTurnId, -1, data.lastChrominoColors);
     }
+    RefreshVar(data);
     if (PlayerTurnId == PlayerId) {
         ShowButtonDrawChromino();
         HideButtonSkipTurn();
@@ -112,5 +121,16 @@ function CallbackPlayBot(data) {
 
 function DecreaseInStack() {
     InStack--;
-    UpdateInStack();
+    RefreshInStack();
+}
+
+function UpdateInHandNumber(playerId, step, lastChrominoColors) {
+    let player = Players.find(p => p.id == playerId);
+    player.chrominosNumber += step;
+    if (player.chrominosNumber == 1) {
+        player.lastChrominoColors = lastChrominoColors;
+        if (player.name != "Vous")
+            ShowInfoPopup = true;
+    }
+    UpdateInHandNumberDom(player);
 }

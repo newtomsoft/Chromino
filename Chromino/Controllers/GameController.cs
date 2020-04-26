@@ -192,17 +192,14 @@ namespace Controllers
                 return new JsonResult(new { errorReturn = playReturn.ToString() });
             else
             {
-                GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false, false); // todo définir correctement les booléen
+                GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false, false); //todo faire plus léger
                 var squaresVM = gameVM.SquaresVM;
                 int squaresNumber = gameVM.LinesNumber * gameVM.ColumnsNumber;
-                // todo : factoriser suite = Draw
-                Chromino chromino = ChrominoDal.Details(chrominoId);
-                ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
-                List<string> colors = new List<string>();
-                for (int i = 0; i < 3; i++)
-                    colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
+                List<string> lastChrominoColors = ColorsLastChromino(gameId, PlayerId);
+                List<string> playedChrominocolors = ColorsPlayedChromino(chrominoId);
                 int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
-                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = colors, squaresVM = gameVM.SquaresVM });
+                bool finish = GameDal.GetStatus(gameId).IsFinish();
+                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = playedChrominocolors, squaresVM = gameVM.SquaresVM, lastChrominoColors = lastChrominoColors, finish = finish });
             }
         }
 
@@ -225,20 +222,18 @@ namespace Controllers
                     botDraw = true;
             }
             while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
-            // todo : factoriser suite = Draw
-            List<string> colors = new List<string>();
+
+            List<string> lastChrominoColors = ColorsLastChromino(id, botId);
             int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
+            bool finish = GameDal.GetStatus(id).IsFinish();
             if (chrominoInGame != null)
             {
-                Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
-                ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoInGame.ChrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
-                for (int i = 0; i < 3; i++)
-                    colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
-                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = false, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), x = chrominoInGame.XPosition, y = chrominoInGame.YPosition, orientation = chrominoInGame.Orientation, flip = chrominoInGame.Flip, colors = colors });
+                List<string> playedChrominocolors = ColorsPlayedChromino(chrominoInGame.ChrominoId);
+                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = false, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), x = chrominoInGame.XPosition, y = chrominoInGame.YPosition, orientation = chrominoInGame.Orientation, flip = chrominoInGame.Flip, colors = playedChrominocolors, lastChrominoColors = lastChrominoColors, finish = finish });
             }
             else
             {
-                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = true, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
+                return new JsonResult(new { botName = PlayerDal.Name(botId), botSkip = true, botDraw = botDraw, nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), finish = finish });
             }
         }
 
@@ -258,11 +253,7 @@ namespace Controllers
                 return new JsonResult(new { errorReturn = PlayReturn.NoMoreChrominosInStack.ToString() });
 
             int chrominoId = new PlayerBI(Ctx, Env, gameId, PlayerId).TryDrawChromino(out _);
-            Chromino chromino = ChrominoDal.Details(chrominoId);
-            ChrominoVM chrominosVM = new ChrominoVM { ChrominoId = chrominoId, SquaresVM = new SquareVM[3] { new SquareVM(chromino.FirstColor), new SquareVM(chromino.SecondColor), new SquareVM(chromino.ThirdColor) } };
-            List<string> colors = new List<string>();
-            for (int i = 0; i < 3; i++)
-                colors.Add(chrominosVM.SquaresVM[i].Color.ToString());
+            List<string> colors = ColorsPlayedChromino(chrominoId);
             return new JsonResult(new { id = chrominoId, colors = colors });
         }
 
@@ -278,7 +269,8 @@ namespace Controllers
                 return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
 
             int nextPlayerId = new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
-            return new JsonResult(new { id = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId) });
+            bool finish = GameDal.GetStatus(gameId).IsFinish();
+            return new JsonResult(new { id = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), finish = finish });
         }
 
         /// <summary>
@@ -324,6 +316,28 @@ namespace Controllers
             gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);
             new GameBI(Ctx, Env, gameId).BeginGame(randomPlayers.Count);
+        }
+
+        private List<string> ColorsLastChromino(int gameId, int playerId)
+        {
+            List<string> lastChrominoColors = new List<string>(3);
+            if (ChrominoInHandDal.ChrominosNumber(gameId, playerId) == 1)
+            {
+                Chromino lastChromino = ChrominoInHandDal.FirstChromino(gameId, playerId);
+                lastChrominoColors.Add(lastChromino.FirstColor.ToString());
+                lastChrominoColors.Add(lastChromino.SecondColor.ToString());
+                lastChrominoColors.Add(lastChromino.ThirdColor.ToString());
+            }
+            return lastChrominoColors;
+        }
+
+        private List<string> ColorsPlayedChromino(int chrominoId)
+        {
+            Chromino chromino = ChrominoDal.Details(chrominoId);
+            if (chromino != null)
+                return new List<string> { chromino.FirstColor.ToString(), chromino.SecondColor.ToString(), chromino.ThirdColor.ToString() };
+            else
+                return new List<string>(0);
         }
     }
 }
