@@ -150,10 +150,8 @@ namespace Controllers
             bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
 
             bool showPossiblesPositions = false;
-            if (TempData["Help"] != null)
-                showPossiblesPositions = true;
 
-            GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin, showPossiblesPositions);
+            GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin);
             if (gameVM != null)
             {
                 if (GamePlayerDal.PlayerTurn(id).Bot)
@@ -192,14 +190,12 @@ namespace Controllers
                 return new JsonResult(new { errorReturn = playReturn.ToString() });
             else
             {
-                GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false, false); //todo faire plus léger
-                var squaresVM = gameVM.SquaresVM;
-                int squaresNumber = gameVM.LinesNumber * gameVM.ColumnsNumber;
                 List<string> lastChrominoColors = ColorsLastChromino(gameId, PlayerId);
                 List<string> playedChrominocolors = ColorsPlayedChromino(chrominoId);
                 int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
                 bool finish = GameDal.GetStatus(gameId).IsFinish();
-                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = playedChrominocolors, squaresVM = gameVM.SquaresVM, lastChrominoColors = lastChrominoColors, finish = finish });
+                //var squaresVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false).SquaresVM; //todo faire plus léger
+                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = playedChrominocolors, /*squaresVM = squaresVM,*/ lastChrominoColors = lastChrominoColors, finish = finish });
             }
         }
 

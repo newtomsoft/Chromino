@@ -292,11 +292,6 @@ a {
     font-weight: bold;
 }
 
-.popup-wait {
-    display: flex;
-    justify-content: center;
-}
-
 .wait {
     height: 70px;
     width: 70px;

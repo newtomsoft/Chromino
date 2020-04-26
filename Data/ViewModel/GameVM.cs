@@ -31,12 +31,11 @@ namespace Data.ViewModel
         public List<string> Pseudos { get; set; }
         public bool OpponentsAreBots { get; set; }
         public List<PossiblesChrominoVM> PossiblesChrominosVM { get; set; }
-        public bool ShowPossiblesPositions { get; set; }
         public List<Tip> Tips { get; set; }
         public bool AskRematch { get; set; }
         public List<PlayError> PlayErrors { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, bool showPossiblesPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
         {
             Player = player;
             OpponentsAreBots = opponenentsAreBots;

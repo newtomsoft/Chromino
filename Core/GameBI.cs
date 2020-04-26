@@ -99,7 +99,7 @@ namespace Data.Core
             playerBI.ChangePlayerTurn();
         }
 
-        public GameVM GameVM(int playerId, bool isAdmin, bool showPossiblesPositions)
+        public GameVM GameVM(int playerId, bool isAdmin)
         {
             Player playerTurn = GamePlayerDal.PlayerTurn(GameId);
             List<Player> players = GamePlayerDal.Players(GameId);
@@ -158,7 +158,7 @@ namespace Data.Core
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId); //todo virer
                 List<Tip> tips = TipDal.ListOn(playerId);
                 List<PlayError> playErrors = PlayErrorDal.List();
-                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, showPossiblesPositions, tips, askRematch, playErrors);
+                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, tips, askRematch, playErrors);
                 return gameVM;
             }
             else return null;

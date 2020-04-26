@@ -4,7 +4,6 @@
 @model GameVM
 @{
     const string classFree = "Free";
-    const string classPossible = "Possible";
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
     string playerTurn = "";
@@ -67,23 +66,11 @@
     <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" style="@styleButtonNextGame" onclick="Action(this.id);"></button>
 </div>
 <br>
-@{
-    string info = "";
-    List<int> PossibleSquareIndexes = new List<int>();
-    if (Model.ShowPossiblesPositions)
-    {
-        for (int iChromino = 0; iChromino < Model.PossiblesChrominosVM.Count; iChromino++)
-            for (int i = 0; i < 3; i++)
-                PossibleSquareIndexes.Add(Model.PossiblesChrominosVM[iChromino].IndexesX[i] + Model.PossiblesChrominosVM[iChromino].IndexesY[i] * Model.ColumnsNumber);
-        if (Model.PossiblesChrominosVM.Count == 0)
-            info = "Aucun emplacement sur lequel jouer";
-    }
-}
 <div id="PlayerHistory">
     <div id="HistoryChrominos" onclick="Action(this.id);">
         <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
         <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
-        <div id="PlayerHistoryPseudo">@info</div>
+        <div id="PlayerHistoryPseudo"></div>
     </div>
 </div>
 <div id="GameArea" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
@@ -110,7 +97,6 @@
                 else
                 {
                     string classColor = classFree;
-                    if (PossibleSquareIndexes.Contains(index)) classColor = classPossible;
                     string classCloseEdge = "Square";
                     if (i < Model.ColumnsNumber - 1 && Model.SquaresVM[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseRight";
                     if (j < Model.LinesNumber - 1 && Model.SquaresVM[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
@@ -144,7 +130,7 @@
     bool showBotPlayingInfoPopup = false;
 
     // todo TempData["PlayReturn"] à supprimer
-    if (!Model.ShowPossiblesPositions && (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0)))))
+    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
         showInfoPopup = true;
     else if (ViewData["ShowBotPlayingInfoPopup"] != null)
         showBotPlayingInfoPopup = true;
@@ -277,12 +263,6 @@ var HistoryChrominos = new Array;
             <button id="ChatAdd" class="btn btn-primary" onclick="AddChat();">Envoyer</button>
         </div>
     </div>
-</div>
-<div id="botPlayingInfoPopup" class="popup popup-wait" style="display:none">
-    <div class="div-head img-info" title="info"></div>
-    <p>Le bot est en train de jouer.</p>
-    <p>Merci de patienter quelques secondes...</p>
-    <div class="wait"></div>
 </div>
 <div id="TipPopup" class="popup" style="display:none">
     <div id="TipHeadPicture" class="div-head" title="didacticiel"></div>
