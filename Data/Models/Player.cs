@@ -12,7 +12,10 @@ namespace Data.Models
         public bool Bot { get; set; }
         public int Help { get; set; }
 
-
+#if DEBUG
+        static public int InitHelp = 99;
+#else
         static public int InitHelp = 5;
+#endif
     }
 }

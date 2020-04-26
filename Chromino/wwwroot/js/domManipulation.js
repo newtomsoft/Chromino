@@ -15,9 +15,10 @@
     RefreshInfoPopup();
     if (ShowInfoPopup)
         ShowPopup('#PopupInfo');
-    else if (ShowBotPlayingInfoPopup)
-        ShowPopup('#botPlayingInfoPopup');
+    //else if (ShowBotPlayingInfoPopup)
+    //    ShowPopup('#botPlayingInfoPopup');
 
+    ResizeGameArea();
     StopDraggable();
     StartDraggable();
     if (IsGameFinish) {
@@ -28,7 +29,7 @@
         RefreshButtonHelp()
         StopDraggable();
     }
-    ResizeGameArea();
+
 }
 
 function RefreshInfoPopup() {
@@ -184,15 +185,7 @@ function AddGameLineTop(add) {
         GameAreaLinesNumber++;
         YMin--;
     }
-    let increase = add * GameAreaColumnsNumber;
-    HistoryChrominos.forEach(function (item) {
-        newNumber = parseInt(item.square0.replace("Square_", "")) + increase;
-        item.square0 = "Square_" + newNumber;
-        newNumber = parseInt(item.square1.replace("Square_", "")) + increase;
-        item.square1 = "Square_" + newNumber;
-        newNumber = parseInt(item.square2.replace("Square_", "")) + increase;
-        item.square2 = "Square_" + newNumber;
-    });
+    HistoryChrominos.UpdateSquares(add, GameAreaColumnsNumber, 'top');
 }
 
 function AddGameColumnLeft(add) {
@@ -210,14 +203,7 @@ function AddGameColumnLeft(add) {
         GameAreaColumnsNumber++;
         XMin--;
     }
-    HistoryChrominos.forEach(function (item) {
-        oldNumber = parseInt(item.square0.replace("Square_", ""));
-        item.square0 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
-        oldNumber = parseInt(item.square1.replace("Square_", ""));
-        item.square1 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
-        oldNumber = parseInt(item.square2.replace("Square_", ""));
-        item.square2 = "Square_" + (oldNumber + add * (1 + Math.floor(oldNumber / oldColumnsNumber)));
-    });
+    HistoryChrominos.UpdateSquares(add, oldColumnsNumber, 'left');
 }
 
 function AddGameColumnRight(add) {
@@ -234,14 +220,8 @@ function AddGameColumnRight(add) {
         });
         GameAreaColumnsNumber++;
     }
-    HistoryChrominos.forEach(function (item) {
-        oldNumber = parseInt(item.square0.replace("Square_", ""));
-        item.square0 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
-        oldNumber = parseInt(item.square1.replace("Square_", ""));
-        item.square1 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
-        oldNumber = parseInt(item.square2.replace("Square_", ""));
-        item.square2 = "Square_" + (oldNumber + add * Math.floor(oldNumber / oldColumnsNumber));
-    });
+
+    HistoryChrominos.UpdateSquares(add, oldColumnsNumber, 'right');
 }
 
 function RemoveChrominoInHand(chrominoId) {

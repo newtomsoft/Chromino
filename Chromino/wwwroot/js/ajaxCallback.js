@@ -42,7 +42,7 @@ function CallbackHelp(data) {
     if (data.status) {
         HelpNumber--;
         HelpIndexes = data.indexes;
-        RefreshDom();
+        RefreshHelp();
     }
 }
 
@@ -104,7 +104,6 @@ function CallbackPlayBot(data) {
     }
     if (data.botSkip) {
         AddHistorySkipTurn(data.botName); // todo optimiser avec Players[x].name
-        ResizeGameArea(data.squaresVM);
     }
     else {
         let xIndex = data.x - XMin;

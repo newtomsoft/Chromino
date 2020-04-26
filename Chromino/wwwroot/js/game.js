@@ -15,6 +15,28 @@ var IndexMove = 0;
 var HelpIndexes = new Array;
 
 $(document).ready(function () {
+
+    HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
+        this.forEach(function (item) {
+            if (item.square0 !== undefined) {
+                for (i = 0; i < 3; i++) {
+                    squareProp = "square" + i;
+                    oldNumber = parseInt(item[squareProp].replace("Square_", ""));
+                    switch (placeToAdd) {
+                        case 'top':
+                            item[squareProp] = "Square_" + (oldNumber + addNumber * columnsNumber);
+                            break;
+                        case 'right':
+                            item[squareProp] = "Square_" + (oldNumber + addNumber * Math.floor(oldNumber / columnsNumber));
+                            break;
+                        case 'left':
+                            item[squareProp] = "Square_" + (oldNumber + addNumber * (1 + Math.floor(oldNumber / columnsNumber)));
+                            break;
+                    }
+                }
+            }
+        });
+    };
     InitDom();
     RefreshDom();
 });
