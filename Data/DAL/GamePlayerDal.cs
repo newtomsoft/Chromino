@@ -313,7 +313,7 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public bool IsAllPass(int gameId)
+        public bool IsAllSkip(int gameId)
         {
             var passs = from gp in Ctx.GamesPlayers
                         where gp.GameId == gameId
@@ -331,16 +331,16 @@ namespace Data.DAL
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <param name="playerId">id du joueur</param>
-        /// <param name="pass">true : le joueur a passé son tour</param>
-        public void SetPass(int gameId, int playerId, bool pass)
+        /// <param name="skip">true : le joueur a passé son tour</param>
+        public void SetSkip(int gameId, int playerId, bool skip)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId
                                      select gp).FirstOrDefault();
 
-            gamePlayer.PreviouslyPass = pass;
+            gamePlayer.PreviouslyPass = skip;
 
-            if (pass)
+            if (skip)
             {
                 Game game = (from g in Ctx.Games
                              where g.Id == gameId
@@ -349,6 +349,15 @@ namespace Data.DAL
                 game.Move++;
             }
             Ctx.SaveChanges();
+        }
+
+        public bool IsSkip(int gameId, int playerId)
+        {
+            bool skip = (from gp in Ctx.GamesPlayers
+                         where gp.GameId == gameId && gp.PlayerId == playerId
+                         select gp.PreviouslyPass).FirstOrDefault();
+
+            return skip;
         }
 
         public bool? GetWon(int gameId, int playerId)

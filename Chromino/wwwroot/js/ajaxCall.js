@@ -73,14 +73,14 @@ function DrawChromino() {
     });
 }
 
-function PlayBot(botId) {
+function WaitPlayingBot(botId) {
     $('#PlayerHistoryPseudo').html("Le bot joue...").fadeIn();
     if (!IsGameFinish) {
         $.ajax({
             url: UrlPlayBot,
             type: 'POST',
             data: { id: GameId, botId: botId },
-            success: function (data) { CallbackPlayBot(data); },
+            success: function (data) { OpponentHavePlayed(data, botId); },
         });
     }
 }
@@ -148,13 +148,13 @@ function GetPlayersInfos() {
     });
 }
 
-function WaitOpponentPlayed(){
+function WaitPlayingOpponent() {
     if (PlayersNumber != 1 && !IsBot) {
         $.ajax({
             url: UrlWaitOpponentPlayed,
             type: 'POST',
-            data: { gameId: GameId, playerTurnId: PlayerTurnId},
-            success: function (data) { CallbackOpponentPlayed(data); },
+            data: { gameId: GameId, playerTurnId: PlayerTurnId },
+            success: function (data) { OpponentHavePlayed(data, PlayerTurnId); },
         });
     }
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

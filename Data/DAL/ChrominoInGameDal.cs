@@ -90,6 +90,18 @@ namespace Data.DAL
             return chrominosInGame;
         }
 
+        public ChrominoInGame LatestPlayed(int gameId, int playerId)
+        {
+            ChrominoInGame chrominoInGame = (from cg in Ctx.ChrominosInGame
+                                             where cg.GameId == gameId && cg.PlayerId == playerId
+                                             orderby cg.Move descending
+                                             select cg).AsNoTracking().FirstOrDefault();
+
+            return chrominoInGame;
+        }
+
+
+
         public void Add(ChrominoInGame chrominoInGame)
         {
             chrominoInGame.Id = 0;
