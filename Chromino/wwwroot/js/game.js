@@ -13,6 +13,7 @@ var Tip;
 var TimeoutValidateChromino = null;
 var IndexMove = 0;
 var HelpIndexes = new Array;
+var Players;
 
 $(document).ready(function () {
     InitDom();
@@ -20,6 +21,7 @@ $(document).ready(function () {
 });
 
 function InitDom() {
+    GetPlayersInfos();
     HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
         this.forEach(function (item) {
             if (item.square0 !== undefined) {
@@ -41,6 +43,7 @@ function InitDom() {
             }
         });
     };
+
     Action("Welcome");
     RefreshVar();
     Players.forEach(function (player) {

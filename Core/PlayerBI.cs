@@ -294,11 +294,12 @@ namespace ChrominoBI
                 GamePlayerDal.SetWon(GameId, playerId, false);
         }
 
-        public void WinGame(int playerId, bool drawGame = false)
+        public bool WinGame(int playerId, bool drawGame = false)
         {
             GamePlayerDal.SetViewFinished(GameId, playerId);
             GamePlayerDal.SetWon(GameId, playerId);
             PlayerDal.IncreaseWinAndHelp(playerId, drawGame ? 2 : 3);
+            return true;
         }
 
         /// <summary>

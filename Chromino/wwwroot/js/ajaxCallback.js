@@ -1,15 +1,4 @@
-﻿function RefreshVar(data) {
-    if (data !== undefined) {
-        if (data.isBot !== undefined) IsBot = data.isBot;
-        if (data.finish !== undefined) IsGameFinish = data.finish;
-        if (data.nextPlayerId !== undefined) PlayerTurnId = data.nextPlayerId;
-    }
-    if (IsGameFinish) ShowInfoPopup = IsGameFinish;
-    PlayerTurnName = Players.find(p => p.id == PlayerTurnId).name;
-    PlayerTurnText = PlayerTurnName == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurnName} de jouer`;
-}
-
-function CallbackReadChat() {
+﻿function CallbackReadChat() {
     $('#NotifChat').text("0");
     $('#NotifChat').hide();
 }
@@ -97,6 +86,7 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
         RefreshVar(data);
         RefreshDom();
+        WaitOpponentPlayed();
     }
 }
 
@@ -123,6 +113,16 @@ function CallbackPlayBot(data) {
     RefreshDom(true);
 }
 
+function CallbackEnd(data) {
+    if (data.askRematch) {
+        $("#AskRematch").show();
+    }
+}
+
+function CallbackOpponentPlayed(data){
+    alert("adversaire a joué id :" + data.id);
+}
+
 function DecreaseInStack() {
     InStack--;
     RefreshInStack();
@@ -137,4 +137,18 @@ function UpdateInHandNumber(playerId, step, lastChrominoColors) {
             ShowInfoPopup = true;
     }
     UpdateInHandNumberDom(player);
+}
+
+function RefreshVar(data) {
+    if (data !== undefined) {
+        if (data.isBot !== undefined) IsBot = data.isBot;
+        if (data.finish !== undefined) IsGameFinish = data.finish;
+        if (data.nextPlayerId !== undefined) PlayerTurnId = data.nextPlayerId;
+    }
+    PlayerTurnName = Players.find(p => p.id == PlayerTurnId).name;
+    PlayerTurnText = PlayerTurnName == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurnName} de jouer`;
+    if (IsGameFinish) {
+        ShowInfoPopup = true;
+        End();
+    }
 }

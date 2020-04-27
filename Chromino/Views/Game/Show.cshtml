@@ -38,7 +38,7 @@
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
     </button>
 
-    @if (!Model.Game.Status.IsFinish())
+    @if (!Model.Game.Status.IsFinished())
     {
         if (Model.PlayerTurn.Id == Model.Player.Id)
         {
@@ -56,11 +56,11 @@
     <button id="ButtonDrawChromino" class="btn btn-toolbar img-draw" style="@styleButtonDraw" onclick="Action(this.id);"></button>
     <button id="ButtonSkipTurn" class="btn btn-toolbar img-skip" style="@styleButtonSkip" onclick="Action(this.id);"></button>
 
-    @if (!Model.Game.Status.IsFinish() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
+    @if (!Model.Game.Status.IsFinished() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
     {
         <button id="ButtonPlayChromino" class="btn btn-toolbar img-play" style="display:none" onclick="Action(this.id);"></button>
     }
-    @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinish())
+    @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinished())
         styleButtonNextGame = "display:initial";
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
     <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" style="@styleButtonNextGame" onclick="Action(this.id);"></button>
@@ -128,7 +128,7 @@
     bool showBotPlayingInfoPopup = false;
 
     // todo TempData["PlayReturn"] à supprimer
-    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinish() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinished() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
         showInfoPopup = true;
     else if (ViewData["ShowBotPlayingInfoPopup"] != null)
         showBotPlayingInfoPopup = true;
@@ -146,7 +146,10 @@ var UrlSkip = '@Url.Action("SkipTurn")';
 var UrlDraw = '@Url.Action("DrawChromino")';
 var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
-var IsGameFinish = @Model.Game.Status.IsFinish().ToString().ToLower();
+var UrlEnd = '@Url.Action("End")';
+var UrlPlayersIdChrominosNumber = '@Url.Action("IdsChrominosNumber", "Player")';
+var UrlWaitOpponentPlayed = '@Url.Action("WaitOpponentPlayed")';
+var IsGameFinish = @Model.Game.Status.IsFinished().ToString().ToLower();
 var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
 var PlayerTurnId = @Model.PlayerTurn.Id;
@@ -168,17 +171,10 @@ var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
 var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
 var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
-var Players = new Array;
 var PlayErrors = new Array;
 var Tips = new Array;
 var HistoryChrominos = new Array;
 @{
-    foreach (var pseudoChromino in Model.PseudosChrominos)
-    {
-        int id = Model.PseudosIds[pseudoChromino.Key];
-        @:Players.push({ id: @id, name: "@pseudoChromino.Key", chrominosNumber: @pseudoChromino.Value, lastChrominoColors: ["Red", "Red", "Red"] });
-    }
-
     foreach (PlayError playError in Model.PlayErrors)
     {
         @:PlayErrors.push({ name: "@playError.Name", description: "@Html.Raw(playError.Description)", illustrationPictureClass: "@playError.IllustrationPictureClass", illustrationPictureCaption: "@playError.IllustrationPictureCaption" });
@@ -213,20 +209,20 @@ var HistoryChrominos = new Array;
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
     <div id="PopupInfoHead"></div>
+    <form id="FormRematch" asp-action="Rematch" hidden>
+        <input name="playersName" value="@Model.Player.UserName" />
+        @foreach (var pseudo_chromino in pseudosExceptCurrentPlayer_Chrominos)
+        {
+            <input name="playersName" value="@pseudo_chromino.Key" />
+        }
+    </form>
+    <div id="AskRematch" style="display:none">
+        <div class="askrematch">faire la revanche ?</div>
+        <button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch askrematch"></button>
+    </div>
     @foreach (var pseudoId in Model.PseudosIds)
     {
         <div id="Player_@pseudoId.Value"></div>
-    }
-    @if (Model.AskRematch)
-    {
-        <form id="FormRematch" asp-action="Rematch" hidden>
-            <input name="playersName" value="@Model.Player.UserName" />
-            @foreach (var pseudo_chromino in pseudosExceptCurrentPlayer_Chrominos)
-            {
-                <input name="playersName" value="@pseudo_chromino.Key" />
-            }
-        </form>
-        <div>faire la revanche ?&nbsp;<button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch"></button></div>
     }
     <br />
     <p id="InStack" class="minorInfo"></p>
