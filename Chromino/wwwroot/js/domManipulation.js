@@ -1,6 +1,8 @@
 ﻿function RefreshDom(opponentPlay) {
     if (IsBot)
-        PlayBot(PlayerTurnId);
+        WaitPlayingBot(PlayerTurnId);
+    else if (PlayerTurnId != PlayerId)
+        WaitPlayingOpponent();
 
     RefreshOpponentChromino(opponentPlay);
 

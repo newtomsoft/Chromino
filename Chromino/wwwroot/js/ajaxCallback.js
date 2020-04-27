@@ -86,23 +86,23 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
         RefreshVar(data);
         RefreshDom();
-        WaitOpponentPlayed();
     }
 }
 
-function CallbackPlayBot(data) {
-    if (data.botDraw) {
+function OpponentHavePlayed(data, playerId) {
+    let name = Players.find(p => p.id == playerId).name;
+    if (data.draw) {
         DecreaseInStack();
-        UpdateInHandNumber(PlayerTurnId, 1);
+        UpdateInHandNumber(playerId, 1);
     }
-    if (data.botSkip) {
-        AddHistorySkipTurn(data.botName); // todo optimiser avec Players[x].name
+    if (data.skip) {
+        AddHistorySkipTurn(name);
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.botName);
-        UpdateInHandNumber(PlayerTurnId, -1, data.lastChrominoColors);
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.name);
+        UpdateInHandNumber(playerId, -1, data.lastChrominoColors);
     }
     RefreshVar(data);
     if (PlayerTurnId == PlayerId) {
@@ -117,10 +117,6 @@ function CallbackEnd(data) {
     if (data.askRematch) {
         $("#AskRematch").show();
     }
-}
-
-function CallbackOpponentPlayed(data){
-    alert("adversaire a joué id :" + data.id);
 }
 
 function DecreaseInStack() {

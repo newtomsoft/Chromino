@@ -76,8 +76,8 @@ namespace ChrominoBI
         /// </summary>
         public int SkipTurn()
         {
-            GamePlayerDal.SetPass(GameId, PlayerId, true);
-            if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllPass(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
+            GamePlayerDal.SetSkip(GameId, PlayerId, true);
+            if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllSkip(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
             {
                 new GameBI(Ctx, Env, GameId).SetGameFinished();
                 List<int> playersIdWin = ChrominoInHandDal.PlayersIdWithMinChrominos(GameId);
@@ -165,7 +165,7 @@ namespace ChrominoBI
             if (PlayerId != 0)
             {
                 numberInHand--;
-                GamePlayerDal.SetPass(GameId, PlayerId, false);
+                GamePlayerDal.SetSkip(GameId, PlayerId, false);
                 int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
                 GamePlayerDal.AddPoints(GameId, PlayerId, points);
                 if (GamePlayerDal.Players(GameId).Count > 1)
