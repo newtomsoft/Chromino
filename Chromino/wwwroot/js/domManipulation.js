@@ -14,6 +14,8 @@
     RefreshInfoPopup();
     if (ShowInfoPopup)
         ShowPopup('#PopupInfo');
+    else
+        ClosePopup('#PopupInfo');
     //else if (ShowBotPlayingInfoPopup)
     //    ShowPopup('#botPlayingInfoPopup');
 

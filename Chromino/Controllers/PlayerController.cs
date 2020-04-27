@@ -19,15 +19,32 @@ namespace Controllers
     public class PlayerController : CommonController
     {
         protected ChrominoInHandLastDal ChrominoInHandLastDal { get; }
-        protected GoodPositionDal GoodPositionDal { get; }
         private SignInManager<Player> SignInManager { get; set; }
 
         public PlayerController(Context context, UserManager<Player> userManager, SignInManager<Player> signInManager) : base(context, userManager, null)
         {
             SignInManager = signInManager;
             ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
-            GoodPositionDal = new GoodPositionDal(Ctx);
         }
+
+        public JsonResult IdsChrominosNumber(int gameId)
+        {
+            List<Object> playersWithInfos = new List<Object>();
+            foreach (int playerId in GamePlayerDal.PlayersId(gameId))
+            {
+                int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerId);
+                string[] lastChrominoColors = new string[] { "", "", "" };
+                if (chrominosNumber == 1)
+                {
+                    Chromino c = ChrominoInHandDal.FirstChromino(gameId, playerId);
+                    lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
+                }
+                string name = playerId == PlayerId ? "Vous" : PlayerDal.Name(playerId);
+                playersWithInfos.Add(new { id = playerId, name = name, chrominosNumber = chrominosNumber, lastChrominoColors = lastChrominoColors });
+            }
+            return new JsonResult(playersWithInfos);
+        }
+
 
         public async Task<IActionResult> NoAccountAsync()
         {

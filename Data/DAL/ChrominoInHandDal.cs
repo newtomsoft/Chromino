@@ -37,7 +37,12 @@ namespace Data.DAL
         }
 
 
-
+        /// <summary>
+        /// Retourne le premier chromino de la main d'un joueur
+        /// </summary>
+        /// <param name="gameId">Id de la partie</param>
+        /// <param name="playerId">Id du joueur</param>
+        /// <returns></returns>
         public Chromino FirstChromino(int gameId, int playerId)
         {
             Chromino chromino = (from ch in Ctx.ChrominosInHand

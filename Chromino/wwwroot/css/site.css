@@ -130,6 +130,11 @@ a {
     background-image: url('/image/button/Rematch.svg');
 }
 
+.askrematch {
+    margin: auto !important;
+    text-align: center;
+}
+
 #toolbar {
     position: fixed;
     display: flex;

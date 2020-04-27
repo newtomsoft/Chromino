@@ -10,7 +10,7 @@
 
     public static class GameStatusInfo
     {
-        public static bool IsFinish(this GameStatus gameStatus)
+        public static bool IsFinished(this GameStatus gameStatus)
         {
             switch (gameStatus)
             {

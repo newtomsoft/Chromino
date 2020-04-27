@@ -98,11 +98,7 @@ namespace Data.DAL
 
         public bool IsFinished(int gameId)
         {
-            int id = (from g in Ctx.Games
-                      where g.Id == gameId && (g.Status == GameStatus.Finished || g.Status == GameStatus.SingleFinished)
-                      select g.Id).FirstOrDefault();
-
-            return id == 0 ? false : true;
+            return GetStatus(gameId).IsFinished();
         }
 
         public void UpdateDate(int id)

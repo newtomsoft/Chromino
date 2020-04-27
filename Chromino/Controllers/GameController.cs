@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Tool;
 
@@ -179,12 +180,12 @@ namespace Controllers
         {
             if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
                 return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
-            if (GameDal.GetStatus(gameId).IsFinish())
+            if (GameDal.IsFinished(gameId))
                 return new JsonResult(new { errorReturn = PlayReturn.ErrorGameFinish.ToString() });
             if (ChrominoInHandDal.ChrominosNumber(gameId, PlayerId) == 1 && ChrominoDal.IsCameleon(chrominoId))
                 return new JsonResult(new { errorReturn = PlayReturn.LastChrominoIsCameleon.ToString() });
 
-            ChrominoInGame chrominoInGame = new ChrominoInGame() { GameId = gameId, PlayerId = PlayerId, ChrominoId = chrominoId, XPosition = x, YPosition = y, Orientation = orientation, Flip = flip, };
+            ChrominoInGame chrominoInGame = new ChrominoInGame() { GameId = gameId, PlayerId = PlayerId, ChrominoId = chrominoId, XPosition = x, YPosition = y, Orientation = orientation, Flip = flip };
             PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
                 return new JsonResult(new { errorReturn = playReturn.ToString() });
@@ -193,9 +194,8 @@ namespace Controllers
                 List<string> lastChrominoColors = ColorsLastChromino(gameId, PlayerId);
                 List<string> playedChrominocolors = ColorsPlayedChromino(chrominoId);
                 int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
-                bool finish = GameDal.GetStatus(gameId).IsFinish();
-                //var squaresVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, false).SquaresVM; //todo faire plus léger
-                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = playedChrominocolors, /*squaresVM = squaresVM,*/ lastChrominoColors = lastChrominoColors, finish = finish });
+                bool finish = GameDal.IsFinished(gameId);
+                return new JsonResult(new { nextPlayerId = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), colors = playedChrominocolors, lastChrominoColors = lastChrominoColors, finish = finish });
             }
         }
 
@@ -221,7 +221,7 @@ namespace Controllers
 
             List<string> lastChrominoColors = ColorsLastChromino(id, botId);
             int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
-            bool finish = GameDal.GetStatus(id).IsFinish();
+            bool finish = GameDal.GetStatus(id).IsFinished();
             if (chrominoInGame != null)
             {
                 List<string> playedChrominocolors = ColorsPlayedChromino(chrominoInGame.ChrominoId);
@@ -265,7 +265,7 @@ namespace Controllers
                 return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
 
             int nextPlayerId = new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
-            bool finish = GameDal.GetStatus(gameId).IsFinish();
+            bool finish = GameDal.GetStatus(gameId).IsFinished();
             return new JsonResult(new { id = nextPlayerId, isBot = PlayerDal.IsBot(nextPlayerId), finish = finish });
         }
 
@@ -304,6 +304,51 @@ namespace Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// Cloture de la partie
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult End(int gameId)
+        {
+            if (GameDal.IsFinished(gameId) && !GamePlayerDal.IsViewFinished(gameId, PlayerId))
+            {
+                PlayerBI playerBI = new PlayerBI(Ctx, Env, gameId, PlayerId);
+                if (GamePlayerDal.GetWon(gameId, PlayerId) != true)
+                {
+                    playerBI.LooseGame(PlayerId);
+                    if (GamePlayerDal.IsAllLoosersViewFinished(gameId))
+                        return new JsonResult(new { askRematch = true });
+                    return new JsonResult(new { askRematch = false });
+                }
+                else if (GamePlayerDal.WinnersId(gameId).Count > 1) // draw game
+                    return new JsonResult(new { returnOk = playerBI.WinGame(PlayerId, true) }); // todo return null possible ?
+                else // only 1 winner
+                    return new JsonResult(new { returnOk = playerBI.WinGame(PlayerId) });
+            }
+            return new JsonResult(new { dejavu = true });
+        }
+
+        /// <summary>
+        /// indique si un joueur a joué et donne les infos 
+        /// </summary>
+        /// <param name="gameId">id du jeu</param>
+        /// <param name="playerTurnId">id du joueur dont c'est le tour à l'appel</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult WaitOpponentPlayed(int gameId, int playerTurnId)
+        {
+            int currentPlayerTurnId = playerTurnId;
+            while (currentPlayerTurnId == playerTurnId)
+            {
+                Thread.Sleep(5000);
+                currentPlayerTurnId = GamePlayerDal.PlayerTurn(gameId).Id;
+            }
+            return new JsonResult(new { id = currentPlayerTurnId });
+        }
+
 
         private void CreateGame(List<Player> players, out int gameId)
         {
