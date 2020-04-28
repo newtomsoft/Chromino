@@ -53,7 +53,8 @@ a {
 }
 
 .popup-memochat {
-    min-width: 300px;
+    width: 400px !important;
+    max-width: 96%;
     min-height: 400px;
     max-height: 95%;
 }
@@ -133,6 +134,11 @@ a {
 .askrematch {
     margin: auto !important;
     text-align: center;
+}
+
+#Askrematch {
+    margin-bottom: 10px;
+    margin-top: -25px;
 }
 
 #toolbar {
@@ -372,10 +378,10 @@ a {
     background-position: center center;
 }
 
-#ChatPopupContent {
+/*#ChatPopupContent {
     width: 400px;
     max-width: 100%;
-}
+}*/
 
 .emojis {
     display: flex;

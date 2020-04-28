@@ -253,6 +253,12 @@ function ShowButtonPlayChromino() {
 function HideButtonPlayChromino() {
     $('#ButtonPlayChromino').hide();
 }
+function ShowButtonChat() {
+    $('#ButtonChat').show();
+}
+function HideButtonChat() {
+    $('#ButtonChat').hide();
+}
 
 function RefreshButtonHelp() {
     if (HelpNumber != 0 && !IsGameFinish) {

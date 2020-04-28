@@ -8,4 +8,9 @@ namespace Tool
     {
         public static List<T> RandomSort<T>(this List<T> list) => list.OrderBy(_ => new Random().Next()).ToList();
     }
+
+    public static class BoolTool
+    {
+        public static string ToJs(this bool value) => value.ToString().ToLower();
+    }
 }
