@@ -47,12 +47,14 @@ function ReadChat() {
 }
 
 function Help() {
-    $.ajax({
-        url: UrlHelp,
-        type: 'POST',
-        data: { gameId: GameId },
-        success: function (data) { CallbackHelp(data); }
-    });
+    if ($(".Possible").length == 0) {
+        $.ajax({
+            url: UrlHelp,
+            type: 'POST',
+            data: { gameId: GameId },
+            success: function (data) { CallbackHelp(data); }
+        });
+    }
 }
 
 function SkipTurn() {
@@ -85,8 +87,39 @@ function WaitPlayingBot(botId) {
     }
 }
 
+function End() {
+    $.ajax({
+        url: UrlEnd,
+        type: 'POST',
+        data: { gameId: GameId },
+        success: function (data) { CallbackEnd(data); },
+    });
+}
+
+function GetPlayersInfos() {
+    $.ajax({
+        url: UrlPlayersIdChrominosNumber,
+        type: 'POST',
+        async: false,
+        data: { gameId: GameId },
+        success: function (data) { Players = data; },
+    });
+}
+
+function WaitPlayingOpponent() {
+    if (PlayersNumber != 1 && !IsBot) {
+        $.ajax({
+            url: UrlWaitOpponentPlayed,
+            type: 'POST',
+            data: { gameId: GameId, playerTurnId: PlayerTurnId },
+            success: function (data) { OpponentHavePlayed(data, PlayerTurnId); },
+        });
+    }
+}
+
 function PlayChromino() {
     ShowInfoPopup = false;
+    HideButtonPlayChromino();
     if (!IsGameFinish) {
         if (LastChrominoMove != null) {
             let offset = $(LastChrominoMove).offset();
@@ -128,33 +161,3 @@ function PlayChromino() {
         }
     }
 }
-
-function End() {
-    $.ajax({
-        url: UrlEnd,
-        type: 'POST',
-        data: { gameId: GameId },
-        success: function (data) { CallbackEnd(data); },
-    });
-}
-
-function GetPlayersInfos() {
-    $.ajax({
-        url: UrlPlayersIdChrominosNumber,
-        type: 'POST',
-        async: false,
-        data: { gameId: GameId },
-        success: function (data) { Players = data; },
-    });
-}
-
-function WaitPlayingOpponent() {
-    if (PlayersNumber != 1 && !IsBot) {
-        $.ajax({
-            url: UrlWaitOpponentPlayed,
-            type: 'POST',
-            data: { gameId: GameId, playerTurnId: PlayerTurnId },
-            success: function (data) { OpponentHavePlayed(data, PlayerTurnId); },
-        });
-    }
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

@@ -22,6 +22,13 @@ $(document).ready(function () {
 
 function InitDom() {
     GetPlayersInfos();
+    if (!OpponentsAreBots)
+        ShowButtonChat();
+    $("#MemoAdd").click(AddMemo);
+    $("#ChatAdd").click(AddChat);
+    $(".doAction").click(function () { Action(this.id); });
+    $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
+
     HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
         this.forEach(function (item) {
             if (item.square0 !== undefined) {
@@ -224,12 +231,12 @@ function StartDraggable() {
                 SchedulePut();
                 StopScheduleValidateChromino();
             }).on("dragend", function () {
-                if (IsChrominoInGameArea(this)) {
-                    $('#ButtonPlayChromino').show();
+                if (IsChrominoInGameArea(this) && PlayerId == PlayerTurnId && !IsGameFinish) {
+                    ShowButtonPlayChromino();
                     ScheduleValidateChromino();
                 }
                 else {
-                    $('#ButtonPlayChromino').hide();
+                    HideButtonPlayChromino();
                 }
                 $(this).css('cursor', 'grab');
                 LastChrominoMove = this;

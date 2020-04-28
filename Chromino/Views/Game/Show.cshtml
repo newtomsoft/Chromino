@@ -1,6 +1,7 @@
 ﻿@using Data.Models
 @using Data.ViewModel
 @using Data.Enumeration
+@using Tool
 @model GameVM
 @{
     const string classFree = "Free";
@@ -22,19 +23,18 @@
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
-    <button id="ButtonHome" class="btn btn-toolbar img-home" onclick="Action(this.id);"></button>
-    <button id="ButtonInfo" class="btn btn-toolbar img-infogame" onclick="Action(this.id);"></button>
-    <button id="ButtonHelp" class="btn btn-toolbar img-helpPlay" style="display:none" onclick="Action(this.id);">
+    <button id="ButtonHome" class="doAction btn btn-toolbar img-home"></button>
+    <button id="ButtonInfo" class="doAction btn btn-toolbar img-infogame"></button>
+    <button id="ButtonHelp" class="doAction btn btn-toolbar img-helpPlay" style="display:none">
         <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
     </button>
 
-    @if (!Model.OpponentsAreBots)
-    {
-        <button id="ButtonChat" class="btn btn-toolbar img-chat" onclick="Action(this.id);">
-            <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
-        </button>
-    }
-    <button id="ButtonMemo" class="btn btn-toolbar img-memo" onclick="Action(this.id);">
+    @*@if (!Model.OpponentsAreBots)
+        { }*@
+    <button id="ButtonChat" class="doAction btn btn-toolbar img-chat" style="display:none">
+        <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
+    </button>
+    <button id="ButtonMemo" class="doAction btn btn-toolbar img-memo">
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
     </button>
 
@@ -53,20 +53,16 @@
             playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
         }
     }
-    <button id="ButtonDrawChromino" class="btn btn-toolbar img-draw" style="@styleButtonDraw" onclick="Action(this.id);"></button>
-    <button id="ButtonSkipTurn" class="btn btn-toolbar img-skip" style="@styleButtonSkip" onclick="Action(this.id);"></button>
-
-    @if (!Model.Game.Status.IsFinished() && Model.PlayerTurn.Id == Model.Player.Id && (Model.PlayerChrominosVM.Count != 1 || Model.PlayerChrominosVM[0].SquaresVM[1].Color != ColorCh.Cameleon))
-    {
-        <button id="ButtonPlayChromino" class="btn btn-toolbar img-play" style="display:none" onclick="Action(this.id);"></button>
-    }
+    <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="@styleButtonDraw"></button>
+    <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="@styleButtonSkip"></button>
+    <button id="ButtonPlayChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
     @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinished())
         styleButtonNextGame = "display:initial";
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
-    <button id="ButtonNextGame" class="btn btn-toolbar img-nextgame" style="@styleButtonNextGame" onclick="Action(this.id);"></button>
+    <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="@styleButtonNextGame"></button>
 </div>
 <br>
-<div id="HistoryChrominos" onclick="Action(this.id);">
+<div id="HistoryChrominos" class="doAction">
     <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
     <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
 </div>
@@ -87,10 +83,10 @@
                     if (Model.SquaresVM[index].OpenLeft) classOpenSides += "Left";
                     if (Model.SquaresVM[index].OpenTop) classOpenSides += "Top";
                     string classColor = color.ToString();
-                    string onclick = "";
+                    string doAction = "";
                     if (color == ColorCh.Cameleon)
-                        onclick = "onclick=Action('Cameleon');";
-                    <div id="Square_@index" class="@classOpenSides @classColor" @onclick></div>
+                        doAction = "doAction";
+                    <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
                 }
                 else
                 {
@@ -106,11 +102,10 @@
         </div>
     }
 </div>
-<div id="Hand" onclick="Action(this.id);">
+<div id="Hand" class="doAction">
     @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {
-        string id = chrominoVM.ChrominoId.ToString();
-        <div id="@id" class="handPlayerChromino">
+        <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
                 ColorCh color = chrominoVM.SquaresVM[i].Color;
@@ -126,7 +121,6 @@
     const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = false;
     bool showBotPlayingInfoPopup = false;
-
     // todo TempData["PlayReturn"] à supprimer
     if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinished() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
         showInfoPopup = true;
@@ -154,7 +148,8 @@ var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
 var PlayerTurnId = @Model.PlayerTurn.Id;
 var PlayerTurnName = "@Model.PlayerTurn.UserName";
-var IsBot = @Model.PlayerTurn.Bot.ToString().ToLower();
+var OpponentsAreBots = @Model.OpponentsAreBots.ToString().ToLower();
+var IsBot = @Model.PlayerTurn.Bot.ToJs();
 var PlayersNumber = @Model.Pseudos.Count;
 var GameId = @Model.Game.Id;
 var HelpNumber = @Model.Player.Help;
@@ -216,8 +211,8 @@ var HistoryChrominos = new Array;
             <input name="playersName" value="@pseudo_chromino.Key" />
         }
     </form>
-    <div id="AskRematch" style="display:none">
-        <div class="askrematch">faire la revanche ?</div>
+    <div id="Askrematch" style="display:none">
+        <div id="Askrematch-text" class="askrematch"></div>
         <button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch askrematch"></button>
     </div>
     @foreach (var pseudoId in Model.PseudosIds)
@@ -239,7 +234,7 @@ var HistoryChrominos = new Array;
     <div class="div-head img-memo" title="mémo"></div>
     <textarea id="MemoContent" asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
     <div class="form-group">
-        <button id="MemoAdd" class="btn btn-primary" onclick="AddMemo();">Enregistrer</button>
+        <button id="MemoAdd" class="btn btn-primary">Enregistrer</button>
     </div>
 </div>
 <div id="PopupChat" class="popup popup-memochat" style="display:none">
@@ -254,7 +249,7 @@ var HistoryChrominos = new Array;
             <div class="emojis">
                 <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
             </div>
-            <button id="ChatAdd" class="btn btn-primary" onclick="AddChat();">Envoyer</button>
+            <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
         </div>
     </div>
 </div>
@@ -266,5 +261,5 @@ var HistoryChrominos = new Array;
     </div>
     <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher cette fenêtre
     <div><input name="dontShowAllTips" type="checkbox" /> Ne plus afficher aucune fenêtre du didacticiel</div>
-    <button class="btn btn-primary btn-tip" onclick="TipClosePopup('#TipPopup', '#TipDontShowAgain');">C'est noté !</button>
+    <button id="TipClose" class="btn btn-primary btn-tip">C'est noté !</button>
 </div>

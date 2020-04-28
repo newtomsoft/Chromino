@@ -46,6 +46,8 @@ function CallbackDrawChromino(data) {
         AddChrominoInHand(data);
         DecreaseInStack();
         UpdateInHandNumber(PlayerId, 1);
+        StopDraggable();
+        StartDraggable();
         if (PlayersNumber > 1) {
             HideButtonDrawChromino();
             ShowButtonSkipTurn();
@@ -114,8 +116,13 @@ function OpponentHavePlayed(data, playerId) {
 }
 
 function CallbackEnd(data) {
-    if (data.askRematch) {
-        $("#AskRematch").show();
+    if (OpponentsAreBots) {
+        $("#Askrematch-text").html("Rejouer ?");
+        $("#Askrematch").show();
+    }
+    else if (data.askRematch) {
+        $("#Askrematch-text").html("Prendre votre revanche ?");
+        $("#Askrematch").show();
     }
 }
 

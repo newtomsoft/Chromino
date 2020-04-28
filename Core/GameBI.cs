@@ -154,7 +154,7 @@ namespace Data.Core
                 List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(GameId);
                 Game game = GameDal.Details(GameId);
-                bool opponenentsAreBots = GamePlayerDal.IsOpponenentsAreBots(GameId, playerId);
+                bool opponenentsAreBots = GamePlayerDal.IsAllBots(GameId, playerId);
                 List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId); //todo virer
                 List<Tip> tips = TipDal.ListOn(playerId);
                 List<PlayError> playErrors = PlayErrorDal.List();

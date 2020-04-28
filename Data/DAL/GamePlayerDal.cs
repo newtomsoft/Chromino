@@ -383,38 +383,20 @@ namespace Data.DAL
         /// indique si tous les joueurs de la partie sont des bots ou non
         /// </summary>
         /// <param name="gameId">Id de la partie</param>
+        /// <param name="excludeId">Id du joueur à éventuellement exclure</param>
         /// <returns>true si tous les joueurs sont des bots</returns>
-        public bool IsAllBots(int gameId)
+        public bool IsAllBots(int gameId, int excludeId = 0)
         {
             var ids = from gp in Ctx.GamesPlayers
                       join p in Ctx.Players on gp.PlayerId equals p.Id
-                      where gp.GameId == gameId
+                      where gp.GameId == gameId && gp.PlayerId != excludeId
                       select p.Bot;
 
             if (ids.Contains(false))
                 return false;
             else
                 return true;
-        }
-
-        /// <summary>
-        /// indique si tous adversaire du joueur la partie sont des bots ou non
-        /// </summary>
-        /// <param name="gameId">Id de la partie</param>
-        /// <param name="playerId">Id du joueur</param>
-        /// <returns>true si tous les advesaires sont des bots</returns>
-        public bool IsOpponenentsAreBots(int gameId, int playerId)
-        {
-            var ids = from gp in Ctx.GamesPlayers
-                      join p in Ctx.Players on gp.PlayerId equals p.Id
-                      where gp.GameId == gameId && gp.PlayerId != playerId
-                      select p.Bot;
-
-            if (ids.Contains(false))
-                return false;
-            else
-                return true;
-        }
+        }       
 
         /// <summary>
         /// retourne l'Id du dernier joueur du tour du jeu
