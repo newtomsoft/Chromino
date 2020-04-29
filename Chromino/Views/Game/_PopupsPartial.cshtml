@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Data.Models
+
+
+<div id="PopupError" class="popup" style="display:none">
+    <div class="div-head div-error" title="erreur"></div>
+    <p id="ErrorText"></p>
+    <div class="illustrations">
+        <div id="ErrorIllustration" title="illustration"></div>
+    </div>
+    <p id="ErrorIllustrationCaption" title="légende"></p>
+</div>
+<div id="PopupMemo" class="popup popup-memochat" style="display:none">
+    <div class="div-head img-memo" title="mémo"></div>
+    <textarea id="MemoContent" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)"></textarea>
+    <div class="form-group">
+        <button id="MemoAdd" class="btn btn-primary">Enregistrer</button>
+    </div>
+</div>
+<div id="PopupChat" class="popup popup-memochat" style="display:none">
+    <div class="div-head img-chat" title="chat"></div>
+    <div>
+        <textarea id="ChatPopupContent" class="form-control" rows="10" disabled></textarea>
+        <div class="form-group">
+            <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+            <div class="emojis">
+                <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
+            </div>
+            <div class="emojis">
+                <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
+            </div>
+            <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
+        </div>
+    </div>
+</div>
+<div id="TipPopup" class="popup" style="display:none">
+    <div id="TipHeadPicture" class="div-head" title="didacticiel"></div>
+    <div id="TipHtml"></div>
+    <div class="illustrations">
+        <div id="TipIllustration" title="illustration"></div>
+    </div>
+    <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher cette fenêtre
+    <div><input name="dontShowAllTips" type="checkbox" /> Ne plus afficher aucune fenêtre du didacticiel</div>
+    <button id="TipClose" class="btn btn-primary btn-tip">C'est noté !</button>
+</div>
+

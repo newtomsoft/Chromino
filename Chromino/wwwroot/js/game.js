@@ -22,13 +22,12 @@ $(document).ready(function () {
 
 function InitDom() {
     GetPlayersInfos();
-    if (!OpponentsAreBots)
-        ShowButtonChat();
+    ShowButtonChat();
+    RefreshButtonNextGame();
     $("#MemoAdd").click(AddMemo);
     $("#ChatAdd").click(AddChat);
     $(".doAction").click(function () { Action(this.id); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
-
     HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
         this.forEach(function (item) {
             if (item.square0 !== undefined) {
@@ -50,15 +49,12 @@ function InitDom() {
             }
         });
     };
-
     Action("Welcome");
     RefreshVar();
     Players.forEach(function (player) {
         UpdateInHandNumberDom(player);
     });
-
     RefreshInfoPopup();
-
     $("#ButtonPreviousChromino").click(function () {
         if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
             if (IndexMove < HistoryChrominos.length - 1) {
@@ -81,29 +77,23 @@ function InitDom() {
         StopDraggable();
         StartDraggable();
     });
-
     $(document).mouseup(function () {
         MagnetChromino();
     });
-
     $(window).resize(function () {
         ResizeGameArea();
     });
-
     // désactivation du menu contextuel clic droit
     window.oncontextmenu = function (event) {
         event.preventDefault();
         event.stopPropagation();
     };
-
     // touche entrer sur chat
     $('#ChatInput').on('keydown', function (e) {
         if (e.which == 13) {
             AddChat();
         }
     });
-
-    //emojis du chat
     $(".emoji").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();

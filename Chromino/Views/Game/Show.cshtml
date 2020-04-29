@@ -19,7 +19,6 @@
     }
     string styleButtonSkip = "display:none";
     string styleButtonDraw = "display:none";
-    string styleButtonNextGame = "display:none";
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
@@ -28,38 +27,17 @@
     <button id="ButtonHelp" class="doAction btn btn-toolbar img-helpPlay" style="display:none">
         <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
     </button>
-
-    @*@if (!Model.OpponentsAreBots)
-        { }*@
     <button id="ButtonChat" class="doAction btn btn-toolbar img-chat" style="display:none">
         <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
     </button>
     <button id="ButtonMemo" class="doAction btn btn-toolbar img-memo">
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
     </button>
-
-    @if (!Model.Game.Status.IsFinished())
-    {
-        if (Model.PlayerTurn.Id == Model.Player.Id)
-        {
-            playerTurn = "C'est à vous de jouer";
-            @if (Model.ChrominosInStack > 0 && (!Model.GamePlayerTurn.PreviouslyDraw || pseudosExceptCurrentPlayer_Chrominos.Count == 0))
-                styleButtonDraw = "display:initial";
-            else if (pseudosExceptCurrentPlayer_Chrominos.Count > 0)
-                styleButtonSkip = "display:initial";
-        }
-        else
-        {
-            playerTurn = $"C'est à {@Model.PlayerTurn.UserName} de jouer";
-        }
-    }
     <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="@styleButtonDraw"></button>
     <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="@styleButtonSkip"></button>
     <button id="ButtonPlayChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
-    @if (!Model.BotsId.Contains(Model.PlayerTurn.Id) && Model.PlayerTurn.Id != Model.Player.Id || Model.Game.Status.IsFinished())
-        styleButtonNextGame = "display:initial";
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
-    <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="@styleButtonNextGame"></button>
+    <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="display:none"></button>
 </div>
 <br>
 <div id="HistoryChrominos" class="doAction">
@@ -121,8 +99,7 @@
     const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = false;
     bool showBotPlayingInfoPopup = false;
-    // todo TempData["PlayReturn"] à supprimer
-    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinished() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && TempData["PlayReturn"] == null && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
+    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinished() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
         showInfoPopup = true;
     else if (ViewData["ShowBotPlayingInfoPopup"] != null)
         showBotPlayingInfoPopup = true;
@@ -143,19 +120,17 @@ var UrlHelp = '@Url.Action("Help")';
 var UrlEnd = '@Url.Action("End")';
 var UrlPlayersIdChrominosNumber = '@Url.Action("IdsChrominosNumber", "Player")';
 var UrlWaitOpponentPlayed = '@Url.Action("WaitOpponentPlayed")';
-var IsGameFinish = @Model.Game.Status.IsFinished().ToString().ToLower();
+var IsGameFinish = @Model.Game.Status.IsFinished().ToJs();
 var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
 var PlayerTurnId = @Model.PlayerTurn.Id;
 var PlayerTurnName = "@Model.PlayerTurn.UserName";
-var OpponentsAreBots = @Model.OpponentsAreBots.ToString().ToLower();
-var IsBot = @Model.PlayerTurn.Bot.ToJs();
+var OpponentsAreBots = @Model.OpponentsAreBots.ToJs();
+var IsBotTurn = @Model.PlayerTurn.Bot.ToJs();
 var PlayersNumber = @Model.Pseudos.Count;
 var GameId = @Model.Game.Id;
 var HelpNumber = @Model.Player.Help;
-var PreviouslyDraw = @Model.GamePlayerTurn.PreviouslyDraw.ToString().ToLower();
-@{string thisPlayerTurn = (Model.PlayerTurn.Id == Model.Player.Id).ToString().ToLower();}
-var ThisPlayerTurn = @thisPlayerTurn;
+var HaveDraw = @Model.GamePlayer.PreviouslyDraw.ToJs();
 var GameAreaLinesNumber = @Model.LinesNumber;
 var GameAreaColumnsNumber = @Model.ColumnsNumber;
 var XMin = @Model.XMin;
@@ -164,8 +139,8 @@ var Horizontal = @horizontal;
 var Vertical = @vertical;
 var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
-var ShowInfoPopup = @showInfoPopup.ToString().ToLower();
-var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToString().ToLower();
+var ShowInfoPopup = @showInfoPopup.ToJs();
+var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToJs();
 var PlayErrors = new Array;
 var Tips = new Array;
 var HistoryChrominos = new Array;
@@ -221,45 +196,4 @@ var HistoryChrominos = new Array;
     }
     <br />
     <p id="InStack" class="minorInfo"></p>
-</div>
-<div id="PopupError" class="popup" style="display:none">
-    <div class="div-head div-error" title="erreur"></div>
-    <p id="ErrorText"></p>
-    <div class="illustrations">
-        <div id="ErrorIllustration" title="illustration"></div>
-    </div>
-    <p id="ErrorIllustrationCaption" title="légende"></p>
-</div>
-<div id="PopupMemo" class="popup popup-memochat" style="display:none">
-    <div class="div-head img-memo" title="mémo"></div>
-    <textarea id="MemoContent" asp-for="GamePlayer.Memo" name="memo" class="form-control" rows="15" placeholder="Mémo (visible seulement par vous)">@Model.GamePlayer.Memo</textarea>
-    <div class="form-group">
-        <button id="MemoAdd" class="btn btn-primary">Enregistrer</button>
-    </div>
-</div>
-<div id="PopupChat" class="popup popup-memochat" style="display:none">
-    <div class="div-head img-chat" title="chat"></div>
-    <div>
-        <textarea id="ChatPopupContent" class="form-control" rows="10" disabled>@Model.Game.Chat</textarea>
-        <div class="form-group">
-            <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
-            <div class="emojis">
-                <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
-            </div>
-            <div class="emojis">
-                <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
-            </div>
-            <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
-        </div>
-    </div>
-</div>
-<div id="TipPopup" class="popup" style="display:none">
-    <div id="TipHeadPicture" class="div-head" title="didacticiel"></div>
-    <div id="TipHtml"></div>
-    <div class="illustrations">
-        <div id="TipIllustration" title="illustration"></div>
-    </div>
-    <input id="TipDontShowAgain" type="checkbox" /> Ne plus afficher cette fenêtre
-    <div><input name="dontShowAllTips" type="checkbox" /> Ne plus afficher aucune fenêtre du didacticiel</div>
-    <button id="TipClose" class="btn btn-primary btn-tip">C'est noté !</button>
 </div>

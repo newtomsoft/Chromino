@@ -1,37 +1,24 @@
 ﻿function RefreshDom(opponentPlay) {
-    if (IsBot)
+    if (IsBotTurn)
         WaitPlayingBot(PlayerTurnId);
     else if (PlayerTurnId != PlayerId)
         WaitPlayingOpponent();
 
     RefreshOpponentChromino(opponentPlay);
-
-    //if (!PreviouslyDraw && ThisPlayerTurn) {
-    //    AnimateChromino(2, true);
-    //}
-
+    RefreshButtonNextGame();
     RefreshButtonChat();
     RefreshButtonMemo();
+    RefreshButtonsDrawSkip();
     RefreshHelp();
     RefreshInfoPopup();
-    if (ShowInfoPopup)
-        ShowPopup('#PopupInfo');
-    else
-        ClosePopup('#PopupInfo');
-    //else if (ShowBotPlayingInfoPopup)
-    //    ShowPopup('#botPlayingInfoPopup');
-
     ResizeGameArea();
     StopDraggable();
     StartDraggable();
     if (IsGameFinish) {
-        HideButtonDrawChromino();
         HideButtonPlayChromino();
-        HideButtonSkipTurn();
-        ShowButtonNextGame();
+        RefreshButtonNextGame();
         StopDraggable();
     }
-
 }
 
 function RefreshInfoPopup() {
@@ -51,6 +38,8 @@ function RefreshInfoPopup() {
         $('#PopupInfoHead').html(`<h3>${PlayerTurnText}</h3>`);
     }
     RefreshInStack();
+    if (ShowInfoPopup && PlayerTurnId == PlayerId || IsGameFinish)
+        ShowPopup('#PopupInfo');
 }
 
 function RefreshInStack() {
@@ -176,7 +165,7 @@ function AddGameLineTop(add) {
         $("div[id^='Line_']").each(function (i) {
             this.id = "Line_" + (i + 1);
         });
-        $(".Square").each(function (i) {
+        $("div[id^='Line_']").children(".Square").each(function (i) {
             this.id = "Square_" + (GameAreaColumnsNumber + i);
         });
         let divToAdd = `<div id="Line_0" class="gameLineArea">`;
@@ -229,24 +218,32 @@ function AddGameColumnRight(add) {
 function RemoveChrominoInHand(chrominoId) {
     $('#' + chrominoId).remove();
 }
-function ShowButtonNextGame() {
-    $('#ButtonNextGame').show();
+function RefreshButtonNextGame() {
+    if (!OpponentsAreBots && !IsBotTurn && PlayerId != PlayerTurnId)
+        $('#ButtonNextGame').show();
+    else
+        $('#ButtonNextGame').hide();
 }
-function HideButtonNextGame() {
-    $('#ButtonNextGame').hide();
+
+function RefreshButtonsDrawSkip() {
+    if (IsGameFinish) {
+        $('#ButtonDrawChromino').hide();
+        $('#ButtonSkipTurn').hide();
+    }
+    else if (PlayerTurnId != PlayerId) {
+        $('#ButtonDrawChromino').hide();
+        $('#ButtonSkipTurn').hide();
+    }
+    else if (InStack > 0 && (!HaveDraw || PlayersNumber == 1)) {
+        $('#ButtonDrawChromino').show();
+        $('#ButtonSkipTurn').hide();
+    }
+    else {
+        $('#ButtonDrawChromino').hide();
+        $('#ButtonSkipTurn').show();
+    }
 }
-function ShowButtonSkipTurn() {
-    $('#ButtonSkipTurn').show();
-}
-function HideButtonSkipTurn() {
-    $('#ButtonSkipTurn').hide();
-}
-function ShowButtonDrawChromino() {
-    $('#ButtonDrawChromino').show();
-}
-function HideButtonDrawChromino() {
-    $('#ButtonDrawChromino').hide();
-}
+
 function ShowButtonPlayChromino() {
     $('#ButtonPlayChromino').show();
 }
@@ -254,7 +251,8 @@ function HideButtonPlayChromino() {
     $('#ButtonPlayChromino').hide();
 }
 function ShowButtonChat() {
-    $('#ButtonChat').show();
+    if (!OpponentsAreBots)
+        $('#ButtonChat').show();
 }
 function HideButtonChat() {
     $('#ButtonChat').hide();

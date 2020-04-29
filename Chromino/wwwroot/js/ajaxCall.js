@@ -36,14 +36,12 @@ function AddChat() {
 }
 
 function ReadChat() {
-    if (NotReadMessages > 0) {
-        $.ajax({
-            url: UrlChatRead,
-            type: 'POST',
-            data: { gameId: GameId },
-            success: function () { CallbackReadChat(); }
-        });
-    }
+    $.ajax({
+        url: UrlChatRead,
+        type: 'POST',
+        data: { gameId: GameId },
+        success: function (data) { CallbackReadChat(data); }
+    });
 }
 
 function Help() {
@@ -107,7 +105,7 @@ function GetPlayersInfos() {
 }
 
 function WaitPlayingOpponent() {
-    if (PlayersNumber != 1 && !IsBot) {
+    if (PlayersNumber != 1 && !IsBotTurn) {
         $.ajax({
             url: UrlWaitOpponentPlayed,
             type: 'POST',

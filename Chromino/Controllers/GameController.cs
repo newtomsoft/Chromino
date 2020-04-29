@@ -32,8 +32,8 @@ namespace Controllers
         public IActionResult ShowNextToPlay()
         {
             TempData["ByShowNextToPlay"] = true;
-            int gameId = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
-            return gameId == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id = gameId });
+            int id = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
+            return id == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id });
         }
 
         /// <summary>
