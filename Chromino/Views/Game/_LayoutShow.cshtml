@@ -10,8 +10,9 @@
     <partial name="_NoScript" />
     <partial name="_IncludeJs" />
     @RenderSection("ScriptPreJs", required: true)
-    <div id="DivTouch" class="container" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
+    <div id="ContainerGame" class="container" ontouchstart="TouchStart()" ontouchmove="TouchMove()" ontouchend="TouchEnd()">
         @RenderBody()
     </div>
+    <partial name="_PopupsPartial" />
 </body>
 </html>

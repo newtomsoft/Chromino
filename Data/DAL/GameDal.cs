@@ -129,6 +129,15 @@ namespace Data.DAL
             Ctx.SaveChanges();
             return game.Chat;
         }
+        public string GetChat(int gameId)
+        {
+            string chat = (from g in Ctx.Games
+                         where g.Id == gameId
+                         select g.Chat).FirstOrDefault();
+
+            return chat;
+        }
+
 
         public void SetChatRead(int gameId, int playerId)
         {

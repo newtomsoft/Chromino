@@ -26,9 +26,11 @@ namespace ChrominoApp.Controllers
         }
 
         [HttpPost]
-        public void Read(int gameId)
+        public JsonResult Read(int gameId)
         {
             GameDal.SetChatRead(gameId, PlayerId);
+            string chat = GameDal.GetChat(gameId);
+            return new JsonResult(new { chat = chat});
         }
     }
 }
