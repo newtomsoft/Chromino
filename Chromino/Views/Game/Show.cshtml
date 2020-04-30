@@ -7,7 +7,6 @@
     const string classFree = "Free";
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
-    string playerTurn = "";
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
     int memosNumbers = 0;
@@ -19,6 +18,10 @@
     }
     string styleButtonSkip = "display:none";
     string styleButtonDraw = "display:none";
+    const int horizontal = (int)Orientation.Horizontal;
+    const int vertical = (int)Orientation.Vertical;
+    bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
+
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
@@ -94,20 +97,9 @@
     }
 </div>
 
-@{
-    const int horizontal = (int)Orientation.Horizontal;
-    const int vertical = (int)Orientation.Vertical;
-    bool showInfoPopup = false;
-    bool showBotPlayingInfoPopup = false;
-    if (TempData["ByShowNextToPlay"] != null || Model.Game.Status.IsFinished() || (Model.PlayerTurn.Id == Model.Player.Id && !Model.GamePlayerTurn.PreviouslyDraw && (pseudosExceptCurrentPlayer_Chrominos.ContainsValue(1) || pseudosExceptCurrentPlayer_Chrominos.ContainsValue(0))))
-        showInfoPopup = true;
-    else if (ViewData["ShowBotPlayingInfoPopup"] != null)
-        showBotPlayingInfoPopup = true;
-}
-
 @section ScriptPreJs
 {
-    <script>
+<script>
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatAdd = '@Url.Action("Add", "Chat")';
@@ -140,7 +132,6 @@ var Vertical = @vertical;
 var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
 var ShowInfoPopup = @showInfoPopup.ToJs();
-var ShowBotPlayingInfoPopup = @showBotPlayingInfoPopup.ToJs();
 var PlayErrors = new Array;
 var Tips = new Array;
 var HistoryChrominos = new Array;
@@ -174,7 +165,7 @@ var HistoryChrominos = new Array;
         move--;
     }
 }
-    </script>
+</script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
