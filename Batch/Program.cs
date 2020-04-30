@@ -316,7 +316,7 @@ namespace Batch
             #endregion
             List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcome };
             AddTipsInDb(tips);
-            
+
         }
 
         private static void AddTipsInDb(List<Tip> tips)
@@ -391,7 +391,7 @@ namespace Batch
                 Description = "Il n'y a plus de chrominos dans la pioche. Vous devez soit poser un chromino, soit passer votre tour.",
             };
             #endregion
-            List<PlayError> errors = new List<PlayError> { differentColorsAround, notFree, notMinTwoSameColors , lastChrominoIsCameleon, notPlayerTurn , errorGameFinish, cantDraw2TimesInARow , noMoreChrominosInStack};
+            List<PlayError> errors = new List<PlayError> { differentColorsAround, notFree, notMinTwoSameColors, lastChrominoIsCameleon, notPlayerTurn, errorGameFinish, cantDraw2TimesInARow, noMoreChrominosInStack };
             AddPlayErrorsInDb(errors);
         }
 
