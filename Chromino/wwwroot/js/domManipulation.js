@@ -62,7 +62,7 @@ function UpdateInHandNumberDom(player) {
     switch (player.chrominosNumber) {
         case 0:
             $('#Player_' + player.id).addClass("winner");
-            $('#Player_' + player.id).html(`${playerHave} gagné la partie`);
+            $('#Player_' + player.id).html(`${playerHave} terminé`);
             break;
         case 1:
             $('#Player_' + player.id).addClass("opponentLastChromino");

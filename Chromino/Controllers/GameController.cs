@@ -31,7 +31,7 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult ShowNextToPlay()
         {
-            TempData["ByShowNextToPlay"] = true;
+            TempData["ShowInfo"] = true;
             int id = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
             return id == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id });
         }
@@ -149,20 +149,11 @@ namespace Controllers
 
             Player player = PlayerDal.Details(PlayerId);
             bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
-
-            bool showPossiblesPositions = false;
-
             GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin);
             if (gameVM != null)
-            {
-                if (GamePlayerDal.PlayerTurn(id).Bot)
-                    ViewData["ShowBotPlayingInfoPopup"] = true;
                 return View(gameVM);
-            }
             else
-            {
                 return RedirectToAction("GameNotFound");
-            }
         }
 
         /// <summary>

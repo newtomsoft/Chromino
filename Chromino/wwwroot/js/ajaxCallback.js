@@ -61,7 +61,6 @@ function CallbackSkipTurn(data) {
         ErrorReturn(player.errorReturn);
     }
     else {
-        //HideButtonSkipTurn();
         RefreshButtonNextGame();
         AddHistorySkipTurn("Vous");
         IsBotTurn = data.isBot;
@@ -76,11 +75,6 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         ErrorReturn(data.errorReturn);
     }
     else {
-        //if (PlayersNumber > 1) {
-        //    HideButtonDrawChromino();
-        //    HideButtonSkipTurn();
-        //    RefreshButtonNextGame();
-        //}
         HideButtonPlayChromino();
         AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous");
         RemoveChrominoInHand(chrominoId);
@@ -132,7 +126,7 @@ function DecreaseInStack() {
 function UpdateInHandNumber(playerId, step, lastChrominoColors) {
     let player = Players.find(p => p.id == playerId);
     player.chrominosNumber += step;
-    if (player.chrominosNumber == 1) {
+    if (player.chrominosNumber <= 1) {
         player.lastChrominoColors = lastChrominoColors;
         if (player.name != "Vous")
             ShowInfoPopup = true;
