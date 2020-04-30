@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Data.Core
+namespace Data.BI
 {
     public class Coordinate
     {

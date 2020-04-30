@@ -1,4 +1,4 @@
-﻿using Data.Core;
+﻿using Data.BI;
 using Data.ViewModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
