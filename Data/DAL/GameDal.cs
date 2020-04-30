@@ -132,8 +132,8 @@ namespace Data.DAL
         public string GetChat(int gameId)
         {
             string chat = (from g in Ctx.Games
-                         where g.Id == gameId
-                         select g.Chat).FirstOrDefault();
+                           where g.Id == gameId
+                           select g.Chat).FirstOrDefault();
 
             return chat;
         }

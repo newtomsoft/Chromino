@@ -30,7 +30,7 @@ namespace ChrominoApp.Controllers
         {
             GameDal.SetChatRead(gameId, PlayerId);
             string chat = GameDal.GetChat(gameId);
-            return new JsonResult(new { chat = chat});
+            return new JsonResult(new { chat = chat });
         }
     }
 }

@@ -112,8 +112,8 @@ namespace Data.DAL
         public int YMin(int gameId)
         {
             int min = (from s in Ctx.Squares
-                          where s.GameId == gameId
-                          select s.Y).Min();
+                       where s.GameId == gameId
+                       select s.Y).Min();
 
             return min;
         }

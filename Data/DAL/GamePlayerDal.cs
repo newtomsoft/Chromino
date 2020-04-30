@@ -396,7 +396,7 @@ namespace Data.DAL
                 return false;
             else
                 return true;
-        }       
+        }
 
         /// <summary>
         /// retourne l'Id du dernier joueur du tour du jeu

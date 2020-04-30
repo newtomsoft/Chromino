@@ -118,7 +118,7 @@ namespace Data.Core
                 Dictionary<string, int> pseudosIds = new Dictionary<string, int>();
 
                 //todo : pas très propre. revoir construtrion liste PlayerVM {ids, name, chrominosNumber, lastChromino} ?
-                foreach (var pseudoChromino in pseudosChrominos) 
+                foreach (var pseudoChromino in pseudosChrominos)
                     pseudosIds.Add(pseudoChromino.Key, PlayerDal.Details(pseudoChromino.Key).Id);
 
                 Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
