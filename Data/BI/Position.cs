@@ -1,6 +1,6 @@
 ﻿using Data.Enumeration;
 
-namespace Data.Core
+namespace Data.BI
 {
     public class Position
     {

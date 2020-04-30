@@ -1,4 +1,4 @@
-﻿using Data.Core;
+﻿using Data.BI;
 using Data.Enumeration;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;

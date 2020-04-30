@@ -1,6 +1,6 @@
 ﻿using Core;
 using Data;
-using Data.Core;
+using Data.BI;
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
