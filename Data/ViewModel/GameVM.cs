@@ -56,7 +56,7 @@ namespace Data.ViewModel
             for (int i = 0; i < SquaresVM.Length; i++)
                 SquaresVM[i] = new SquareVM(ColorCh.None);
             foreach (Square square in squares)
-                SquaresVM[IndexGridState(square.X, square.Y)] = square.SquareViewModel;
+                SquaresVM[IndexGridState(square.X, square.Y)] = square.SquareVM;
 
             PlayerChrominosVM = new List<ChrominoVM>();
             foreach (Chromino chromino in playerChrominos)
