@@ -1,8 +1,8 @@
-﻿namespace Data.ViewModel
+﻿namespace Data.Models
 {
     public class ChrominoVM
     {
-        public SquareVM[] SquaresVM { get; set; }
+        public Square[] Squares { get; set; }
         public int ChrominoId { get; set; }
     }
 }

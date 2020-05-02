@@ -2,7 +2,6 @@
 using Data.DAL;
 using Data.Enumeration;
 using Data.Models;
-using Data.ViewModel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -55,13 +54,13 @@ namespace Tool
                 linesNumber += 2 * offsetY;
             }
             int squaresNumber = columnsNumber * linesNumber;
-            var squaresVM = new SquareVM[squaresNumber];
-            for (int i = 0; i < squaresVM.Length; i++)
-                squaresVM[i] = new SquareVM(ColorCh.None, true, true, true, true);
+            var squaresToDraw = new Square[squaresNumber];
+            for (int i = 0; i < squaresToDraw.Length; i++)
+                squaresToDraw[i] = new Square { Color = ColorCh.None, OpenRight = true, OpenBottom = true, OpenLeft = true, OpenTop = true };
             foreach (Square square in squares)
             {
                 int index = (square.Y + offsetY) * columnsNumber + square.X + offsetX - (yMin * columnsNumber + xMin);
-                squaresVM[index] = square.SquareVM;
+                squaresToDraw[index] = square;
             }
 
             //construction de l'image
@@ -79,15 +78,15 @@ namespace Tool
                 {
                     bool firstCameleonPixel = true;
                     int index = i + j * columnsNumber;
-                    ColorCh colorSquare = squaresVM[index].Color;
-                    ColorCh colorSquareLeft = i != 0 ? squaresVM[i - 1 + j * columnsNumber].Color : ColorCh.None;
-                    ColorCh colorSquareRight = i != columnsNumber - 1 ? squaresVM[i + 1 + j * columnsNumber].Color : ColorCh.None;
-                    ColorCh colorSquareTop = j != 0 ? squaresVM[i + (j - 1) * columnsNumber].Color : ColorCh.None;
-                    ColorCh colorSquareBottom = j != linesNumber - 1 ? squaresVM[i + (j + 1) * columnsNumber].Color : ColorCh.None;
-                    bool openRight = squaresVM[index].OpenRight;
-                    bool openBottom = squaresVM[index].OpenBottom;
-                    bool openLeft = squaresVM[index].OpenLeft;
-                    bool openTop = squaresVM[index].OpenTop;
+                    ColorCh colorSquare = squaresToDraw[index].Color;
+                    ColorCh colorSquareLeft = i != 0 ? squaresToDraw[i - 1 + j * columnsNumber].Color : ColorCh.None;
+                    ColorCh colorSquareRight = i != columnsNumber - 1 ? squaresToDraw[i + 1 + j * columnsNumber].Color : ColorCh.None;
+                    ColorCh colorSquareTop = j != 0 ? squaresToDraw[i + (j - 1) * columnsNumber].Color : ColorCh.None;
+                    ColorCh colorSquareBottom = j != linesNumber - 1 ? squaresToDraw[i + (j + 1) * columnsNumber].Color : ColorCh.None;
+                    bool openRight = squaresToDraw[index].OpenRight;
+                    bool openBottom = squaresToDraw[index].OpenBottom;
+                    bool openLeft = squaresToDraw[index].OpenLeft;
+                    bool openTop = squaresToDraw[index].OpenTop;
                     for (int x = i * imageSquareSize; x < (i + 1) * imageSquareSize; x++)
                     {
                         for (int y = j * imageSquareSize; y < (j + 1) * imageSquareSize; y++)
