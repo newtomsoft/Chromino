@@ -1,4 +1,5 @@
-﻿using Data.Enumeration;
+﻿using Data.BI;
+using Data.Enumeration;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,5 +20,14 @@ namespace Data.Models
         public bool OpenTop { get; set; }
 
         public Game Game { get; set; }
+
+
+        [NotMapped]
+        public Coordinate Coordinate { get => new Coordinate(X, Y); }
+        public Coordinate GetRight() => new Coordinate(X + 1, Y);
+        public Coordinate GetBottom() => new Coordinate(X, Y + 1);
+        public Coordinate GetLeft() => new Coordinate(X - 1, Y);
+        public Coordinate GetTop() => new Coordinate(X, Y - 1);
+
     }
 }

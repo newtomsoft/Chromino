@@ -55,14 +55,14 @@
             @for (int i = 0; i < Model.ColumnsNumber; i++)
             {
                 int index = i + j * Model.ColumnsNumber;
-                ColorCh color = Model.SquaresVM[index].Color;
+                ColorCh color = Model.Squares[index].Color;
                 if (color != ColorCh.None)
                 {
                     string classOpenSides = "Square Open";
-                    if (Model.SquaresVM[index].OpenRight) classOpenSides += "Right";
-                    if (Model.SquaresVM[index].OpenBottom) classOpenSides += "Bottom";
-                    if (Model.SquaresVM[index].OpenLeft) classOpenSides += "Left";
-                    if (Model.SquaresVM[index].OpenTop) classOpenSides += "Top";
+                    if (Model.Squares[index].OpenRight) classOpenSides += "Right";
+                    if (Model.Squares[index].OpenBottom) classOpenSides += "Bottom";
+                    if (Model.Squares[index].OpenLeft) classOpenSides += "Left";
+                    if (Model.Squares[index].OpenTop) classOpenSides += "Top";
                     string classColor = color.ToString();
                     string doAction = "";
                     if (color == ColorCh.Cameleon)
@@ -73,10 +73,10 @@
                 {
                     string classColor = classFree;
                     string classCloseEdge = "Square";
-                    if (i < Model.ColumnsNumber - 1 && Model.SquaresVM[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseRight";
-                    if (j < Model.LinesNumber - 1 && Model.SquaresVM[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
-                    if (i > 0 && Model.SquaresVM[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
-                    if (j > 0 && Model.SquaresVM[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
+                    if (i < Model.ColumnsNumber - 1 && Model.Squares[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseRight";
+                    if (j < Model.LinesNumber - 1 && Model.Squares[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
+                    if (i > 0 && Model.Squares[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
+                    if (j > 0 && Model.Squares[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
                     <div id="Square_@index" class="@classCloseEdge @classColor"></div>
                 }
             }
@@ -89,7 +89,7 @@
         <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
-                ColorCh color = chrominoVM.SquaresVM[i].Color;
+                ColorCh color = chrominoVM.Squares[i].Color;
                 string classColor = color.ToString();
                 <div class="Square @classColor"></div>
             }
