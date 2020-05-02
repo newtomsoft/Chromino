@@ -169,15 +169,14 @@ namespace Controllers
         [HttpPost]
         public JsonResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
-            if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
-                return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
-            if (GameDal.IsFinished(gameId))
-                return new JsonResult(new { errorReturn = PlayReturn.ErrorGameFinish.ToString() });
+            PlayReturn playReturn = IsTurn(gameId, PlayerId);
+            if (playReturn != PlayReturn.Ok)
+                return new JsonResult(new { errorReturn = playReturn.ToString() });
             if (ChrominoInHandDal.ChrominosNumber(gameId, PlayerId) == 1 && ChrominoDal.IsCameleon(chrominoId))
                 return new JsonResult(new { errorReturn = PlayReturn.LastChrominoIsCameleon.ToString() });
 
             ChrominoInGame chrominoInGame = new ChrominoInGame() { GameId = gameId, PlayerId = PlayerId, ChrominoId = chrominoId, XPosition = x, YPosition = y, Orientation = orientation, Flip = flip };
-            PlayReturn playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
+            playReturn = new PlayerBI(Ctx, Env, gameId, PlayerId).Play(chrominoInGame);
             if (playReturn.IsError())
                 return new JsonResult(new { errorReturn = playReturn.ToString() });
             else
@@ -195,19 +194,22 @@ namespace Controllers
         /// <param name="id">Id de la partie</param>
         /// <param name="botId">Id du bot</param>
         /// <returns></returns>
+        [HttpPost]
         public IActionResult PlayBot(int id, int botId)
         {
+            PlayReturn playReturn = IsTurn(id, botId);
+            if(playReturn != PlayReturn.Ok)
+                return new JsonResult(new { errorReturn = playReturn.ToString() });
             ChrominoInGame chrominoInGame;
             BotBI botBI = new BotBI(Ctx, Env, id, botId);
-            PlayReturn playreturn;
             bool draw = false;
             do
             {
-                playreturn = botBI.PlayBot(out chrominoInGame);
-                if (playreturn == PlayReturn.DrawChromino)
+                playReturn = botBI.PlayBot(out chrominoInGame);
+                if (playReturn == PlayReturn.DrawChromino)
                     draw = true;
             }
-            while (playreturn.IsError() || playreturn == PlayReturn.DrawChromino);
+            while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
 
             List<string> lastChrominoColors = ColorsLastChromino(id, botId);
             int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
@@ -287,6 +289,8 @@ namespace Controllers
                 for (int iChromino = 0; iChromino < possiblesChrominosVM.Count; iChromino++)
                     for (int i = 0; i < 3; i++)
                         indexes.Add(possiblesChrominosVM[iChromino].IndexesX[i] + possiblesChrominosVM[iChromino].IndexesY[i] * columnsNumber);
+                if (indexes.Count == 0)
+                    PlayerDal.IncreaseHelp(PlayerId);
             }
             return new JsonResult(new { indexes });
         }
@@ -401,6 +405,16 @@ namespace Controllers
                 return new List<string> { chromino.FirstColor.ToString(), chromino.SecondColor.ToString(), chromino.ThirdColor.ToString() };
             else
                 return new List<string>(0);
+        }
+
+        private PlayReturn IsTurn(int gameId, int playerId)
+        {
+            if (GamePlayerDal.PlayerTurn(gameId).Id != playerId)
+                return PlayReturn.NotPlayerTurn;
+            else if (GameDal.IsFinished(gameId))
+                return PlayReturn.ErrorGameFinish;
+            else
+                return PlayReturn.Ok;
         }
     }
 }

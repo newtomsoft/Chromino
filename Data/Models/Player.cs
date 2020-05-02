@@ -12,6 +12,7 @@ namespace Data.Models
         public bool Bot { get; set; }
         public int Help { get; set; }
 
+        static public int MaxHelp = 99;
 #if DEBUG
         static public int InitHelp = 99;
 #else
