@@ -1,8 +1,10 @@
 ﻿function RefreshDom(opponentPlay) {
     if (IsBotTurn)
-        WaitPlayingBot(PlayerTurnId);
+        PlayingBot(PlayerTurnId);
     else if (PlayerTurnId != PlayerId)
-        WaitPlayingOpponent();
+        PlayingOpponent();
+    else
+        IsCanPlay = true;
     StopScheduleValidateChromino();
     RefreshOpponentChromino(opponentPlay);
     RefreshButtonNextGame();
@@ -13,7 +15,7 @@
     RefreshInfoPopup();
     ResizeGameArea();
     StopDraggable();
-    StartDraggable();
+    StartDraggable(); //prb
     if (IsGameFinish) {
         HideButtonPlayChromino();
         RefreshButtonNextGame();
@@ -245,10 +247,10 @@ function RefreshButtonsDrawSkip() {
 }
 
 function ShowButtonPlayChromino() {
-    $('#ButtonPlayChromino').show();
+    $('#ButtonPlayingChromino').show();
 }
 function HideButtonPlayChromino() {
-    $('#ButtonPlayChromino').hide();
+    $('#ButtonPlayingChromino').hide();
 }
 function ShowButtonChat() {
     if (!OpponentsAreBots)
@@ -295,4 +297,14 @@ function RefreshOpponentChromino(opponentPlay) {
     if (opponentPlay) {
         AnimateChromino(3, true, true);
     }
+}
+
+function ShowWorkInProgress() {
+    $('*').css('cursor', 'progress');
+    $('#Waiting').show();
+}
+
+function ShowWorkIsFinish() {
+    $('*').css('cursor', '');
+    $('#Waiting').hide();
 }

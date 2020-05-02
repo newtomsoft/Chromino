@@ -71,6 +71,8 @@ function CallbackSkipTurn(data) {
 }
 
 function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip) {
+    IsPlayingBackEnd = false;
+    ShowWorkIsFinish();
     if (data.nextPlayerId === undefined) {
         ErrorReturn(data.errorReturn);
     }
@@ -84,7 +86,7 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
     }
 }
 
-function OpponentHavePlayed(data, playerId) {
+function OpponentHavePlayed(data, playerId, isBot) {
     let name = Players.find(p => p.id == playerId).name;
     if (data.draw) {
         DecreaseInStack();
@@ -99,11 +101,9 @@ function OpponentHavePlayed(data, playerId) {
         AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.name);
         UpdateInHandNumber(playerId, -1, data.lastChrominoColors);
     }
+    if (isBot)
+        ShowWorkIsFinish();
     RefreshVar(data);
-    //if (PlayerTurnId == PlayerId) {
-    //    ShowButtonDrawChromino();
-    //    HideButtonSkipTurn();
-    //}
     RefreshDom(true);
 }
 
