@@ -72,7 +72,6 @@ function InitDom() {
             AnimateChromino(2, true);
         }
     });
-
     $(document).click(function () {
         StopDraggable();
         StartDraggable();
@@ -83,14 +82,12 @@ function InitDom() {
     $(window).resize(function () {
         ResizeGameArea();
     });
-    // désactivation du menu contextuel clic droit
-    window.oncontextmenu = function (event) {
+    window.oncontextmenu = function (event) {     // désactivation du menu contextuel clic droit
         event.preventDefault();
         event.stopPropagation();
     };
-    // touche entrer sur chat
     $('#ChatInput').on('keydown', function (e) {
-        if (e.which == 13) {
+        if (e.which == 13) {     // touche entrer sur chat
             AddChat();
         }
     });
@@ -187,7 +184,6 @@ function ShowSquare(squareId) {
     let squareBottom = $(parentBottomId + nthChild);
     let squareLeft = $(squareId).prev();
     let squareRight = $(squareId).next();
-
     if ($(squareLeft).hasClass("Free"))
         $(squareLeft).addClass("CloseRight");
     else
@@ -383,7 +379,6 @@ function SetAngleByClass(classChromino, rotate) {
 //***************************************//
 //********* fonctions GameArea  *********//
 //***************************************//
-
 function ResizeGameArea() {
     var documentWidth = $(document).width();
     var documentHeight = $(document).height();
@@ -425,16 +420,17 @@ function ResizeGameArea() {
 }
 
 function IsChrominoInGameArea(chromino) {
-    let offsetRight = 0.5 * SquareSize;
-    let offsetBottom = 0.5 * SquareSize;
-    let offsetLeft, offsetTop;
+    let offsetRight = 1.5 * SquareSize;
+    let offsetLeft, offsetTop, offsetBottom;
     if (GetOrientation(chromino) == "horizontal") {
-        offsetLeft = 2.5 * SquareSize;
-        offsetTop = 0.5 * SquareSize;
+        offsetLeft = 1.5 * SquareSize;
+        offsetTop = -0.5 * SquareSize;
+        offsetBottom = 1.5 * SquareSize;
     }
     else {
-        offsetLeft = 0.5 * SquareSize;
-        offsetTop = 2.5 * SquareSize;
+        offsetLeft = -0.5 * SquareSize;
+        offsetTop = 0.5 * SquareSize;
+        offsetBottom = 0.5 * SquareSize;
     }
     let heightGameArea = $('#GameArea').height();
     let widthGameArea = $('#GameArea').width();
@@ -448,7 +444,6 @@ function IsChrominoInGameArea(chromino) {
 //***************************************************//
 //********** gestion popups de la partie ************//
 //***************************************************//
-
 function ShowPopup(popup, hasCloseButton = true) {
     StopScheduleValidateChromino();
     $(popup).show();
@@ -470,7 +465,6 @@ function ClosePopup(popup) {
     $(popup).popup('hide');
 }
 
-
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
@@ -478,8 +472,12 @@ function ScheduleValidateChromino() {
     }, 4000);
 
 }
+
 function StopScheduleValidateChromino() {
-    clearTimeout(TimeoutValidateChromino);
+    if (TimeoutValidateChromino) {
+        clearTimeout(TimeoutValidateChromino);
+        TimeoutValidateChromino = 0;
+    }
 }
 
 function ShowTipFeature(isCheck, hasCloseButton) {
