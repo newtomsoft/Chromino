@@ -3,7 +3,7 @@
         WaitPlayingBot(PlayerTurnId);
     else if (PlayerTurnId != PlayerId)
         WaitPlayingOpponent();
-
+    StopScheduleValidateChromino();
     RefreshOpponentChromino(opponentPlay);
     RefreshButtonNextGame();
     RefreshButtonChat();
