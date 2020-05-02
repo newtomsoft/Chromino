@@ -147,6 +147,24 @@ namespace Data.DAL
             }
         }
 
+        public bool IncreaseHelp(int playerId)
+        {
+            Player player = (from p in Ctx.Players
+                             where p.Id == playerId
+                             select p).FirstOrDefault();
+
+            if (player.Help < Player.MaxHelp)
+            {
+                player.Help++;
+                Ctx.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public int Delete(IQueryable<Player> players)
         {
             Ctx.Players.RemoveRange(players);
