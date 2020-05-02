@@ -38,7 +38,7 @@
     </button>
     <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="@styleButtonDraw"></button>
     <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="@styleButtonSkip"></button>
-    <button id="ButtonPlayChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
+    <button id="ButtonPlayingChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
     <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="display:none"></button>
 </div>
@@ -99,7 +99,7 @@
 
 @section ScriptPreJs
 {
-<script>
+    <script>
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatAdd = '@Url.Action("Add", "Chat")';
@@ -165,7 +165,7 @@ var HistoryChrominos = new Array;
         move--;
     }
 }
-</script>
+    </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
@@ -187,4 +187,10 @@ var HistoryChrominos = new Array;
     }
     <br />
     <p id="InStack" class="minorInfo"></p>
+</div>
+<div id="Waiting" class="cssload-container-general" style="display:none">
+    <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_1"> </div></div>
+    <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_2"> </div></div>
+    <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_3"> </div></div>
+    <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_4"> </div></div>
 </div>

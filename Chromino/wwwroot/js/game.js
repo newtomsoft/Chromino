@@ -14,6 +14,8 @@ var TimeoutValidateChromino = null;
 var IndexMove = 0;
 var HelpIndexes = new Array;
 var Players;
+var IsCanPlay;
+var IsPlayingBackEnd;
 
 $(document).ready(function () {
     InitDom();
@@ -73,8 +75,10 @@ function InitDom() {
         }
     });
     $(document).click(function () {
-        StopDraggable();
-        StartDraggable();
+        if (!IsPlayingBackEnd) {
+            StopDraggable();
+            StartDraggable();
+        }
     });
     $(document).mouseup(function () {
         MagnetChromino();
@@ -217,14 +221,15 @@ function StartDraggable() {
                 SchedulePut();
                 StopScheduleValidateChromino();
             }).on("dragend", function () {
-                if (IsChrominoInGameArea(this) && PlayerId == PlayerTurnId && !IsGameFinish) {
+                if (IsChrominoInGameArea(this) && PlayerId == PlayerTurnId && IsCanPlay && !IsGameFinish) {
                     ShowButtonPlayChromino();
                     ScheduleValidateChromino();
                 }
                 else {
                     HideButtonPlayChromino();
                 }
-                $(this).css('cursor', 'grab');
+                if ($(this).css('cursor') == 'grabbing')
+                    $(this).css('cursor', 'grab');
                 LastChrominoMove = this;
                 OffsetLastChromino = $(this).offset();
                 MagnetChromino();
@@ -236,19 +241,22 @@ function StartDraggable() {
                 let offset = $(LastChrominoMove).offset();
                 if (ToPut && PositionLastChromino.left == offset.left && PositionLastChromino.top == offset.top) {
                     clearTimeout(TimeoutPut);
-                    PlayChromino();
+                    PlayingChromino();
                 }
                 ToPut = false;
             });
     }
 }
 
-function StopDraggable() {
+function StopDraggable(chromino) {
     if (Tips.find(x => x.elementId == "Hand") == undefined) {
         $(this).off("mouseup");
         $(this).off("mousedown");
         $(document).off("mousemove");
-        $('.handPlayerChromino').draggableTouch("disable");
+        if (chromino === undefined)
+            $('.handPlayerChromino').draggableTouch("disable");
+        else
+            $(chromino).draggableTouch("disable");
     }
 }
 
@@ -261,15 +269,17 @@ function ScheduleRotate() {
 }
 
 function SchedulePut() {
-    clearTimeout(TimeoutPut);
-    PositionLastChromino = $(LastChrominoMove).offset();
-    TimeoutPut = setTimeout(function () {
-        let position = $(LastChrominoMove).offset();
-        if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
-            ToPut = true;
-            ShowOkToPut();
-        }
-    }, 600);
+    if (PlayerTurnId == PlayerId && IsCanPlay) {
+        clearTimeout(TimeoutPut);
+        PositionLastChromino = $(LastChrominoMove).offset();
+        TimeoutPut = setTimeout(function () {
+            let position = $(LastChrominoMove).offset();
+            if (PositionLastChromino.left == position.left && PositionLastChromino.top == position.top) {
+                ToPut = true;
+                ShowOkToPut();
+            }
+        }, 600);
+    }
 }
 
 function ShowOkToPut() {
@@ -531,4 +541,5 @@ function ErrorReturn(playReturn) {
         }
         ShowPopup('#PopupError');
     }
+    IsCanPlay = true;
 }

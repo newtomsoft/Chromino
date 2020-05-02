@@ -73,18 +73,6 @@ function DrawChromino() {
     });
 }
 
-function WaitPlayingBot(botId) {
-    $('#PlayerHistoryPseudo').html("Le bot joue...").fadeIn();
-    if (!IsGameFinish) {
-        $.ajax({
-            url: UrlPlayBot,
-            type: 'POST',
-            data: { id: GameId, botId: botId },
-            success: function (data) { OpponentHavePlayed(data, botId); },
-        });
-    }
-}
-
 function End() {
     $.ajax({
         url: UrlEnd,
@@ -104,7 +92,20 @@ function GetPlayersInfos() {
     });
 }
 
-function WaitPlayingOpponent() {
+function PlayingBot(botId) {
+    if (!IsGameFinish) {
+        $('#PlayerHistoryPseudo').html("Le bot joue...").fadeIn();
+        ShowWorkInProgress();
+        $.ajax({
+            url: UrlPlayBot,
+            type: 'POST',
+            data: { id: GameId, botId: botId },
+            success: function (data) { OpponentHavePlayed(data, botId, true); },
+        });
+    }
+}
+
+function PlayingOpponent() {
     if (PlayersNumber != 1 && !IsBotTurn) {
         $.ajax({
             url: UrlWaitOpponentPlayed,
@@ -115,47 +116,49 @@ function WaitPlayingOpponent() {
     }
 }
 
-function PlayChromino() {
+function PlayingChromino() {
     ShowInfoPopup = false;
     HideButtonPlayChromino();
-    if (!IsGameFinish) {
-        if (LastChrominoMove != null) {
-            let offset = $(LastChrominoMove).offset();
-            let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
-            let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
-            let chrominoId = LastChrominoMove.id;
-            let orientation;
-            let flip;
-            switch (GetAngle(LastChrominoMove)) {
-                case 0:
-                    orientation = Horizontal;
-                    flip = false;
-                    break;
-                case 90:
-                    orientation = Vertical;
-                    flip = false;
-                    yIndex--;
-                    break;
-                case 180:
-                    orientation = Horizontal;
-                    flip = true;
-                    break;
-                case 270:
-                    orientation = Vertical;
-                    flip = true;
-                    yIndex--;
-                    break;
-                default:
-                    break;
-            }
-            let x = xIndex + XMin;
-            let y = yIndex + YMin;
-            $.ajax({
-                url: UrlPlay,
-                type: 'POST',
-                data: { gameId: GameId, chrominoId: chrominoId, x: x, y: y, orientation: orientation, flip: flip },
-                success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },
-            });
+    if (!IsGameFinish && LastChrominoMove != null) {
+        IsCanPlay = false;
+        StopDraggable(LastChrominoMove);
+        IsPlayingBackEnd = true;
+        ShowWorkInProgress();
+        let offset = $(LastChrominoMove).offset();
+        let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
+        let yIndex = Math.round((offset.top - GameAreaOffsetY) / SquareSize);
+        let chrominoId = LastChrominoMove.id;
+        let orientation;
+        let flip;
+        switch (GetAngle(LastChrominoMove)) {
+            case 0:
+                orientation = Horizontal;
+                flip = false;
+                break;
+            case 90:
+                orientation = Vertical;
+                flip = false;
+                yIndex--;
+                break;
+            case 180:
+                orientation = Horizontal;
+                flip = true;
+                break;
+            case 270:
+                orientation = Vertical;
+                flip = true;
+                yIndex--;
+                break;
+            default:
+                break;
         }
+        let x = xIndex + XMin;
+        let y = yIndex + YMin;
+        $.ajax({
+            url: UrlPlay,
+            type: 'POST',
+            data: { gameId: GameId, chrominoId: chrominoId, x: x, y: y, orientation: orientation, flip: flip },
+            success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },
+        });
     }
 }

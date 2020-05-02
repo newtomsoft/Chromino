@@ -302,7 +302,7 @@ namespace Batch
             };
             Tip play = new Tip
             {
-                DomElementId = "ButtonPlayChromino",
+                DomElementId = "ButtonPlayingChromino",
                 HeadPictureClass = "img-play",
                 Description = "<p>Cette icône permet de valider le chromino placé dans le jeu.</p><p>Il est également possible de le valider en appuyant sur celui-ci pendant une courte durée.</p>",
             };

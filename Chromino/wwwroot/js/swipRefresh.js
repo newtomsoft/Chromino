@@ -29,7 +29,7 @@ function TouchEnd() {
         YDiff = YEnd - YBegin;
         TimeDiff = new Date().getTime() - TimeStart;
         if (YDiff > 150 && Math.abs(XDiff) < 30 && TimeDiff < 150) {
-            $("body").append($('<div class="refresh"></div>'));
+            $("body").append($('<div id="Waiting"></div>'));
             location.reload();
         }
     }
