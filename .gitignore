@@ -1,7 +1,5 @@
 #min files
-*.min.css
-*.min.js
-*.min.html
+*.min.*
 
 #thumbnail games
 /Chromino/wwwroot/image/game
