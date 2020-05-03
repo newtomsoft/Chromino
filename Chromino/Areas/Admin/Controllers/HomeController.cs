@@ -11,7 +11,6 @@ namespace ChrominoApp.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
-        [HttpGet("{Admin}/Home")]
         public IActionResult Index()
         {
             return View();
