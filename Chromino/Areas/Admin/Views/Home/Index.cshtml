@@ -1,0 +1,10 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Admin</h1>
+
+<p><a asp-controller="Player" asp-action="Index" asp-area="Admin">Joueurs</a></p>
+<p><a asp-controller="Game" asp-action="Index" asp-area="Admin">Jeux</a></p>
