@@ -35,7 +35,7 @@ function CallbackHelp(data) {
         HelpNumber--;
     }
     else {
-        $('#PlayerHistoryPseudo').html("Pas d'emplacements possibles").fadeIn().delay(1000).fadeOut();
+        $('#InfoGame').html("Pas d'emplacements possibles").fadeIn().delay(1000).fadeOut();
     }
     RefreshHelp();
 }
@@ -62,7 +62,7 @@ function CallbackSkipTurn(data) {
     }
     else {
         RefreshButtonNextGame();
-        AddHistorySkipTurn("Vous");
+        AddHistorySkipTurn("Vous avez passé");
         IsBotTurn = data.isBot;
         PlayerTurnId = data.id;
         RefreshVar(data);
@@ -78,7 +78,7 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
     }
     else {
         HideButtonPlayChromino();
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous");
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous avez posé");
         RemoveChrominoInHand(chrominoId);
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
         RefreshVar(data);
@@ -87,18 +87,20 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
 }
 
 function OpponentHavePlayed(data, playerId, isBot) {
-    let name = Players.find(p => p.id == playerId).name;
+    $('#InfoGame').fadeOut();
+    let infoPlayerPlay = Players.find(p => p.id == playerId).name;
     if (data.draw) {
         DecreaseInStack();
         UpdateInHandNumber(playerId, 1);
+        infoPlayerPlay += " a pioché et"
     }
     if (data.skip) {
-        AddHistorySkipTurn(name);
+        AddHistorySkipTurn(infoPlayerPlay + " a passé");
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.name);
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoPlayerPlay + " a posé");
         UpdateInHandNumber(playerId, -1, data.lastChrominoColors);
     }
     if (isBot)

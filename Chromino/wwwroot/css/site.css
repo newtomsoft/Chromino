@@ -511,7 +511,7 @@ figcaption {
     transform: translate(-50%, 0);
 }
 
-#PlayerHistoryPseudo {
+#PlayerHistoryPseudo, #InfoGame {
     font-size: x-large;
     position: fixed;
     left: 50%;
@@ -848,7 +848,7 @@ figcaption {
         top: 60px;
     }
 
-    #PlayerHistoryPseudo {
+    #PlayerHistoryPseudo, #InfoGame {
         top: 90px;
     }
 }
@@ -865,7 +865,7 @@ figcaption {
         top: 5px;
     }
 
-    #PlayerHistoryPseudo {
+    #PlayerHistoryPseudo, #InfoGame {
         top: 35px;
     }
 }

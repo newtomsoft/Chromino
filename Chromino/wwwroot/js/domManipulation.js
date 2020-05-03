@@ -6,7 +6,8 @@
     else
         IsCanPlay = true;
     StopScheduleValidateChromino();
-    RefreshOpponentChromino(opponentPlay);
+    if (opponentPlay)
+        RefreshOpponentChromino();
     RefreshButtonNextGame();
     RefreshButtonChat();
     RefreshButtonMemo();
@@ -101,7 +102,7 @@ function AddChrominoInHand(chromino) {
     ResizeGameArea();
 }
 
-function AddChrominoInGame(chromino, playerName) {
+function AddChrominoInGame(chromino, infoPlayerPlay) {
     if (chromino.yIndex == GameAreaLinesNumber - 2 && chromino.orientation == Horizontal || chromino.yIndex == GameAreaLinesNumber - 4 && chromino.orientation == Vertical)
         AddGameLineBottom(1);
     else if (chromino.yIndex == GameAreaLinesNumber - 3 && chromino.orientation == Vertical)
@@ -141,13 +142,17 @@ function AddChrominoInGame(chromino, playerName) {
         }
         $(squareSelector).removeClass().addClass(classOpenSides + " " + classColor);
     }
-    HistoryChrominos.splice(0, 0, { playerName: playerName, square0: squaresName[0], square1: squaresName[1], square2: squaresName[2] });
+    AddHistoryPlay(infoPlayerPlay, squaresName);
     ShowLastChrominoPlayed();
     ResizeGameArea();
 }
 
-function AddHistorySkipTurn(playerName) {
-    HistoryChrominos.splice(0, 0, { playerName: playerName + (playerName == "Vous" ? " avez" : " a") + " passé" });
+function AddHistoryPlay(infoPlayerPlay, squaresName) {
+    HistoryChrominos.splice(0, 0, { infoPlayerPlay: infoPlayerPlay, square0: squaresName[0], square1: squaresName[1], square2: squaresName[2] });
+}
+
+function AddHistorySkipTurn(infoPlayerPlay) {
+    HistoryChrominos.splice(0, 0, { infoPlayerPlay: infoPlayerPlay });
 }
 
 function AddGameLineBottom(add) {
@@ -293,10 +298,8 @@ function RefreshHelp() {
     }
     RefreshButtonHelp();
 }
-function RefreshOpponentChromino(opponentPlay) {
-    if (opponentPlay) {
+function RefreshOpponentChromino() {
         AnimateChromino(3, true, true);
-    }
 }
 
 function ShowWorkInProgress() {

@@ -123,9 +123,10 @@ function AnimateChromino(loopNumber, history, historyReset) {
             AnimateSquare('#' + HistoryChrominos[index].square2);
         }
         if (history) {
+            $('#InfoGame').html("");
             $('#PlayerHistoryPseudo').css('opacity', '1');
             $('#PlayerHistoryPseudo').dequeue();
-            $('#PlayerHistoryPseudo').html(HistoryChrominos[index].playerName).fadeIn().delay(1000).fadeOut();
+            $('#PlayerHistoryPseudo').html(HistoryChrominos[index].infoPlayerPlay).fadeIn().delay(1000).fadeOut();
         }
     }
 }

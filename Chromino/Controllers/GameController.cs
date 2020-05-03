@@ -262,7 +262,7 @@ namespace Controllers
 
             int id = new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
             bool finish = GameDal.GetStatus(gameId).IsFinished();
-            bool isBot = PlayerDal.IsBot(id);
+            bool isBot = id != 0 ? PlayerDal.IsBot(id) : false;
             return new JsonResult(new { id, isBot, finish });
         }
 
@@ -353,7 +353,7 @@ namespace Controllers
             int nextPlayerId = playerTurnId;
             while (nextPlayerId == playerTurnId)
             {
-                Thread.Sleep(4000);
+                Thread.Sleep(4000); // todo en attendant utilisation SignalR
                 nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
             }
             int newChrominoNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerTurnId);
