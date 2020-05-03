@@ -50,6 +50,9 @@ namespace Tool
             {
                 offsetX = (int)Math.Ceiling((minColumnsDisplayed - columnsNumber) / 2.0);
                 columnsNumber += 2 * offsetX;
+            }
+            if (linesNumber < minLinesDisplayed)
+            {
                 offsetY = (int)Math.Ceiling((minLinesDisplayed - linesNumber) / 2.0);
                 linesNumber += 2 * offsetY;
             }
