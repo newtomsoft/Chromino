@@ -95,7 +95,8 @@ function GetPlayersInfos() {
 
 function PlayingBot(botId) {
     if (!IsGameFinish) {
-        $('#PlayerHistoryPseudo').html("Le bot joue...").fadeIn();
+        let infoBotPlaying = Players.find(p => p.id == botId).name + " joue";
+        $('#InfoGame').html(infoBotPlaying).fadeIn();
         ShowWorkInProgress();
         $.ajax({
             url: UrlPlayBot,

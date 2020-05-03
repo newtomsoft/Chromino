@@ -75,6 +75,7 @@ namespace ChrominoBI
         /// Indique que la partie est terminée si c'est au dernier joueur du tour de jouer, 
         /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
         /// </summary>
+        /// <returns>id du prochain joueur. 0 si partie terminée</returns>
         public int SkipTurn()
         {
             GamePlayerDal.SetSkip(GameId, PlayerId, true);
