@@ -56,6 +56,7 @@ function Help() {
 }
 
 function SkipTurn() {
+    HideButtonPlayChromino();
     $.ajax({
         url: UrlSkip,
         type: 'POST',

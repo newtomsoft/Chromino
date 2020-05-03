@@ -1,4 +1,4 @@
-#min fils
+#min files
 *.min.css
 *.min.js
 *.min.html
@@ -7,12 +7,9 @@
 /Chromino/wwwroot/image/game
 
 #env files
-/Chromino/appsettings.Production.json
-/Chromino/appsettings.Stage.json
-/Chromino/appsettings.Test.json
-/Batch/appsettings.Production.json
 /Chromino/appsettings.Staging.json
-
+/Chromino/appsettings.Production.json
+/Batch/appsettings.Production.json
 
 # User-specific files
 *.rsuser
@@ -40,8 +37,6 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
-# Uncomment if you have tasks that create the project's static files in wwwroot
-#wwwroot/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
