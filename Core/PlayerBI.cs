@@ -72,12 +72,16 @@ namespace ChrominoBI
 
         /// <summary>
         /// Passe le tour
-        /// Indique que la partie est terminée si c'est au dernier joueur du tour de jouer, 
+        /// Indique que la partie est terminée si un joueur a fini et qu'il n'y a plus possibilité de finir pour aucun autre joueur, 
         /// Indique que la partie est terminée s'il n'y a plus de chromino dans la pioche et que tous les joueurs ont passé
         /// </summary>
         /// <returns>id du prochain joueur. 0 si partie terminée</returns>
         public int SkipTurn()
         {
+            byte move = GameDal.Details(GameId).Move;
+            ChrominoInGame chrominoInGame = new ChrominoInGame { GameId = GameId, PlayerId = PlayerId, Move = move };
+            GameDal.IncreaseMove(GameId);
+            ChrominoInGameDal.Add(chrominoInGame);
             GamePlayerDal.SetSkip(GameId, PlayerId, true);
             if (ChrominoInGameDal.InStack(GameId) == 0 && GamePlayerDal.IsAllSkip(GameId) || (GamePlayerDal.IsSomePlayerWon(GameId) && (IsRoundLastPlayer() || !IsNextPlayersCanWin())))
             {
@@ -122,7 +126,7 @@ namespace ChrominoBI
         {
             int numberInHand = PlayerId == 0 ? 0 : ChrominoInHandDal.ChrominosNumber(GameId, PlayerId);
             List<Square> squaresInGame = SquareDal.List(GameId);
-            Chromino chromino = ChrominoDal.Details(chrominoInGame.ChrominoId);
+            Chromino chromino = ChrominoDal.Details((int)chrominoInGame.ChrominoId);
             ChrominoInGameBI chrominoInGameBI = new ChrominoInGameBI(Ctx, GameId, chrominoInGame);
             List<Coordinate> chrominoCoordinates = chrominoInGameBI.ChrominoCoordinates();
             if (!chrominoInGameBI.IsValidChriminoInGame(ref squaresInGame, out PlayReturn errorPlayReturn))
@@ -160,7 +164,7 @@ namespace ChrominoBI
             ChrominoInGameDal.Add(chrominoInGame);
             ChrominoInHandDal.DeleteInHand(GameId, chromino.Id);
             GameDal.IncreaseMove(GameId);
-            GoodPositionBI.RemovePlayedChromino(PlayerId, chrominoInGame.ChrominoId);
+            GoodPositionBI.RemovePlayedChromino(PlayerId, (int)chrominoInGame.ChrominoId);
             GoodPositionBI.RemoveAndUpdateAllPlayers();
 
             PlayReturn playreturn = PlayReturn.Ok;
@@ -168,7 +172,7 @@ namespace ChrominoBI
             {
                 numberInHand--;
                 GamePlayerDal.SetSkip(GameId, PlayerId, false);
-                int points = ChrominoDal.Details(chrominoInGame.ChrominoId).Points;
+                int points = ChrominoDal.Details((int)chrominoInGame.ChrominoId).Points;
                 GamePlayerDal.AddPoints(GameId, PlayerId, points);
                 if (GamePlayerDal.Players(GameId).Count > 1)
                     PlayerDal.AddPoints(PlayerId, points);
@@ -310,7 +314,7 @@ namespace ChrominoBI
         /// <returns></returns>
         private bool IsNextPlayersCanWin()
         {
-            foreach (int playerId in GamePlayerDal.NextPlayersId(GameId, PlayerId))
+            foreach (int playerId in GamePlayerDal.NextPlayersIdInTurn(GameId, PlayerId))
                 if (ChrominoInHandDal.ChrominosNumber(GameId, playerId) == 1)
                     return true;
             return false;

@@ -197,35 +197,56 @@ namespace Controllers
         [HttpPost]
         public IActionResult PlayBot(int id, int botId)
         {
-            PlayReturn playReturn = IsTurn(id, botId);
-            if(playReturn != PlayReturn.Ok)
-                return new JsonResult(new { errorReturn = playReturn.ToString() });
-            ChrominoInGame chrominoInGame;
-            BotBI botBI = new BotBI(Ctx, Env, id, botId);
-            bool draw = false;
-            do
+            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id; //todo : vérifier nextPlayerId si bot est en train de jouer
+            if (nextPlayerId != botId)
             {
-                playReturn = botBI.PlayBot(out chrominoInGame);
-                if (playReturn == PlayReturn.DrawChromino)
-                    draw = true;
-            }
-            while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
-
-            List<string> lastChrominoColors = ColorsLastChromino(id, botId);
-            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
-            bool finish = GameDal.GetStatus(id).IsFinished();
-            bool isBot = PlayerDal.IsBot(nextPlayerId);
-            if (chrominoInGame != null)
-            {
-                bool skip = false;
-                int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
-                List<string> colors = ColorsPlayedChromino(chrominoInGame.ChrominoId);
-                return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
+                bool isBot = PlayerDal.IsBot(nextPlayerId);
+                bool finish = GameDal.GetStatus(id).IsFinished();
+                ChrominoInGame chrominoInGame = ChrominoInGameDal.LatestPlayed(id, botId);
+                if (chrominoInGame.ChrominoId == null)
+                {
+                    bool skip = true; bool draw = true; // todo : draw pas forcement true en réalité.
+                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
+                }
+                else
+                {
+                    bool skip = false; bool draw = false; // todo : draw pas forcement false en réalité.
+                    List<string> lastChrominoColors = ColorsLastChromino(id, botId);
+                    int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
+                    List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
+                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
+                }
             }
             else
             {
-                bool skip = true;
-                return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
+                PlayReturn playReturn;
+                ChrominoInGame chrominoInGame;
+                BotBI botBI = new BotBI(Ctx, Env, id, botId);
+                bool draw = false;
+                do
+                {
+                    playReturn = botBI.PlayBot(out chrominoInGame);
+                    if (playReturn == PlayReturn.DrawChromino)
+                        draw = true;
+                }
+                while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
+
+                List<string> lastChrominoColors = ColorsLastChromino(id, botId);
+                nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
+                bool finish = GameDal.GetStatus(id).IsFinished();
+                bool isBot = PlayerDal.IsBot(nextPlayerId);
+                if (chrominoInGame != null)
+                {
+                    bool skip = false;
+                    int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
+                    List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
+                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
+                }
+                else
+                {
+                    bool skip = true;
+                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
+                }
             }
         }
 
@@ -351,11 +372,13 @@ namespace Controllers
         {
             int oldChrominoNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerTurnId);
             int nextPlayerId = playerTurnId;
-            while (nextPlayerId == playerTurnId)
+            bool isPlayerStillPlaying = true;
+            while (isPlayerStillPlaying)
             {
                 Thread.Sleep(4000); // todo en attendant utilisation SignalR
-                nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id;
+                isPlayerStillPlaying = GamePlayerDal.PlayerTurn(gameId).Id == playerTurnId;
             }
+            nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerTurnId)[0];
             int newChrominoNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerTurnId);
             bool draw = oldChrominoNumber <= newChrominoNumber;
             ChrominoInGame chrominoInGame = ChrominoInGameDal.LatestPlayed(gameId, playerTurnId);
@@ -365,7 +388,7 @@ namespace Controllers
             bool isBot = PlayerDal.IsBot(nextPlayerId);
             if (!skip)
             {
-                List<string> colors = ColorsPlayedChromino(chrominoInGame.ChrominoId);
+                List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
                 int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
                 return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
             }

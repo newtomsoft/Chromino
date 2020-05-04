@@ -138,7 +138,7 @@ namespace Data.DAL
         public int FromStack(int gameId, int playerId)
         {
             var chrominosId = Ctx.Chrominos.Select(c => c.Id);
-            var inGameIds = Ctx.ChrominosInGame.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
+            var inGameIds = Ctx.ChrominosInGame.Where(c => c.GameId == gameId && c.ChrominoId != null).Select(c => (int)c.ChrominoId);
             var inHandIds = Ctx.ChrominosInHand.Where(c => c.GameId == gameId).Select(c => c.ChrominoId);
             var candidatesId = chrominosId.Except(inGameIds).Except(inHandIds).ToList();
             int candidatesCount = candidatesId.Count;

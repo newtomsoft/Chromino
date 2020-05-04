@@ -26,16 +26,21 @@
 
 function RefreshInfoPopup() {
     if (IsGameFinish) {
-        if (Players.find(p => p.id == PlayerId).chrominosNumber != 0) {
-            html = "<h2>Vous avez perdu</h2><h3>Dommage</h3><br />";
-        }
-        else if (Players.findIndex(p => p.id != PlayerId && p.chrominosNumber == 0) != -1) {
-            html = "<h2>Victoire ex-æquo </h2><h3>Bravo</h3><br />";
+        if (Players.find(p => p.id == PlayerId) === undefined) {
+
         }
         else {
-            html = "<h2>Victoire</h2><h3>Bravo !</h3><br />";
+            if (Players.find(p => p.id == PlayerId).chrominosNumber != 0) {
+                html = "<h2>Vous avez perdu</h2><h3>Dommage</h3><br />";
+            }
+            else if (Players.findIndex(p => p.id != PlayerId && p.chrominosNumber == 0) != -1) {
+                html = "<h2>Victoire ex-æquo </h2><h3>Bravo</h3><br />";
+            }
+            else {
+                html = "<h2>Victoire</h2><h3>Bravo !</h3><br />";
+            }
+            $('#PopupInfoHead').html(html);
         }
-        $('#PopupInfoHead').html(html);
     }
     else {
         $('#PopupInfoHead').html(`<h3>${PlayerTurnText}</h3>`);

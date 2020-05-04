@@ -44,7 +44,7 @@ namespace Core
         {
             Orientation orientation = chrominoInGame.Orientation;
             Position position = new Position { Coordinate = new Coordinate(chrominoInGame.XPosition, chrominoInGame.YPosition), Orientation = orientation };
-            GoodPositionDal.Remove(GameId, playerId, new List<Position> { position }, chrominoInGame.ChrominoId);
+            GoodPositionDal.Remove(GameId, playerId, new List<Position> { position }, (int)chrominoInGame.ChrominoId);
         }
 
         public void Add(int playerId, int chrominoId)

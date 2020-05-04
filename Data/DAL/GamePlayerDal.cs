@@ -339,15 +339,6 @@ namespace Data.DAL
                                      select gp).FirstOrDefault();
 
             gamePlayer.PreviouslyPass = skip;
-
-            if (skip)
-            {
-                Game game = (from g in Ctx.Games
-                             where g.Id == gameId
-                             select g).FirstOrDefault();
-
-                game.Move++;
-            }
             Ctx.SaveChanges();
         }
 
@@ -414,18 +405,35 @@ namespace Data.DAL
         }
 
         /// <summary>
-        /// retourne la liste des joueurs à jouer après le joueur renseigné
+        /// retourne la liste des joueurs à jouer dans le tour après le joueur renseigné
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
         /// <param name="playerId">Id du joueur à renseigner</param>
         /// <returns></returns>
-        public List<int> NextPlayersId(int gameId, int playerId)
+        public List<int> NextPlayersIdInTurn(int gameId, int playerId)
         {
             int gamePlayerId = Details(gameId, playerId).Id;
 
             List<int> playersId = (from gp in Ctx.GamesPlayers
                                    where gp.GameId == gameId && gp.Id > gamePlayerId
                                    select gp.PlayerId).ToList();
+
+            return playersId;
+        }
+
+        /// <summary>
+        /// retourne la liste de tous joueurs à jouer après le joueur renseigné
+        /// </summary>
+        /// <param name="gameId">Id du jeu</param>
+        /// <param name="playerId">Id du joueur à renseigner</param>
+        /// <returns></returns>
+        public List<int> NextPlayersId(int gameId, int playerId)
+        {
+            List<int> playersId = NextPlayersIdInTurn(gameId, playerId);
+            int gamePlayerId = Details(gameId, playerId).Id;
+            playersId.AddRange((from gp in Ctx.GamesPlayers
+                                   where gp.GameId == gameId && gp.Id < gamePlayerId
+                                   select gp.PlayerId).ToList());
 
             return playersId;
         }

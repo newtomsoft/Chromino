@@ -97,10 +97,13 @@
         </div>
     }
 </div>
-
+@{ 
+    string haveDraw = Model.GamePlayer != null ? Model.GamePlayer.PreviouslyDraw.ToJs() : "false";
+}
 @section ScriptPreJs
 {
     <script>
+var HaveDraw = @haveDraw;
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatAdd = '@Url.Action("Add", "Chat")';
@@ -123,7 +126,6 @@ var IsBotTurn = @Model.PlayerTurn.Bot.ToJs();
 var PlayersNumber = @Model.Pseudos.Count;
 var GameId = @Model.Game.Id;
 var HelpNumber = @Model.Player.Help;
-var HaveDraw = @Model.GamePlayer.PreviouslyDraw.ToJs();
 var GameAreaLinesNumber = @Model.LinesNumber;
 var GameAreaColumnsNumber = @Model.ColumnsNumber;
 var XMin = @Model.XMin;
@@ -148,23 +150,50 @@ var HistoryChrominos = new Array;
     }
 
     byte move = (byte)(Model.Game.Move - 1);
-    for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count; iChromino++)
+
+    foreach (ChrominoPlayedVM chrominosPlayedVM in Model.ChrominosPlayedVM)
     {
+        string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
+        if (chrominosPlayedVM.ChrominoId == null)
+        {
+            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" : $"{currentPseudo} a passé";
+            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
+        }
+        else
+        {
+            string playerPlay = currentPseudo == "Vous" ? "Vous avez posé" : $"{currentPseudo} a posé";
+            string[] squares = new string[3];
+            for (int i = 0; i < 3; i++)
+            {
+                squares[i] = "Square_" + (chrominosPlayedVM.IndexesX[i] + chrominosPlayedVM.IndexesY[i] * Model.ColumnsNumber).ToString();
+            }
+            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPlay", square0: "@squares[0]", square1: "@squares[1]", square2: "@squares[2]" });
+        }
+        move--;
         if (move == 0)
             break;
-        while (move > Model.ChrominosPlayedVM[iChromino].Move)
-        {
-            string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
-            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" : $"{currentPseudo} a passé";
-            @:HistoryChrominos.push({ playerName: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
-            move--;
-        }
-        string[] squares = new string[3];
-        for (int i = 0; i < 3; i++)
-            squares[i] = "Square_" + (Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber).ToString();
-        @:HistoryChrominos.push({ infoPlayerPlay: "@Model.Pseudos[(move - 1) % Model.Pseudos.Count]", square0: "@squares[0]", square1: "@squares[1]", square2: "@squares[2]" });
-        move--;
     }
+
+    @*for (int iChromino = 0; iChromino < Model.ChrominosPlayedVM.Count && move !=0; iChromino++)
+    {
+        string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
+        if (Model.ChrominosPlayedVM[iChromino].ChrominoId == null)
+        {
+            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" : $"{currentPseudo} a passé";
+            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
+        }
+        else
+        {
+            string playerPlay = currentPseudo == "Vous" ? "Vous avez posé" : $"{currentPseudo} a posé";
+            string[] squares = new string[3];
+            for (int i = 0; i < 3; i++)
+            {
+                squares[i] = "Square_" + (Model.ChrominosPlayedVM[iChromino].IndexesX[i] + Model.ChrominosPlayedVM[iChromino].IndexesY[i] * Model.ColumnsNumber).ToString();
+            }
+            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPlay", square0: "@squares[0]", square1: "@squares[1]", square2: "@squares[2]" });
+        }
+        move--;
+    }*@
 }
     </script>
 }
