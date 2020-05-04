@@ -13,8 +13,7 @@
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
       "wwwroot/js/site.js",
-      "wwwroot/js/swipRefresh.js",
-      "wwwroot/lib/signalr/dist/browser/signalr.js"
+      "wwwroot/js/swipRefresh.js"
     ],
     "minify": {
       "enabled": true,
@@ -29,9 +28,9 @@
       "wwwroot/js/domManipulation.js",
       "wwwroot/js/ajaxCall.js",
       "wwwroot/js/ajaxCallback.js",
-      "wwwroot/js/jquery.popupoverlay.min.js",
-      "wwwroot/js/jquery.draggableTouch.js",
-      "wwwroot/lib/signalr/dist/browser/signalr.js"
+      "wwwroot/js/chat.js",
+      "wwwroot/js/jquery.popupoverlay.js",
+      "wwwroot/js/jquery.draggableTouch.js"
     ],
     "minify": {
       "enabled": true,

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Tool;
+using SignalR.Hubs;
 
 namespace ChrominoGame
 {
@@ -24,6 +25,7 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             string googleClientId = Configuration["apis:google:ClientId"];
             string googleClientSecret = Configuration["apis:google:ClientSecret"];
             if (googleClientId != null && googleClientSecret != null)
@@ -109,6 +111,7 @@ namespace ChrominoGame
                 endpoints.MapControllerRoute(
                    name: "default",
                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<HubChat>("/hubChat");
             });
         }
     }
