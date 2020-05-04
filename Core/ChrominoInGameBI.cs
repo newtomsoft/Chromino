@@ -59,7 +59,7 @@ namespace ChrominoBI
         /// <returns>true si le chromino est à une position valide</returns>
         public bool IsValidChriminoInGame(ref List<Square> squaresInGame, out PlayReturn playReturn)
         {
-            Chromino chromino = ChrominoDal.Details(ChrominoInGame.ChrominoId);
+            Chromino chromino = ChrominoDal.Details((int)ChrominoInGame.ChrominoId);
             playReturn = PlayReturn.Ok;
             if (ChrominoInGame.PlayerId == null)
                 return true;
@@ -91,7 +91,7 @@ namespace ChrominoBI
             int gameId = ChrominoInGame.GameId;
             int xOrigin = ChrominoInGame.XPosition;
             int yOrigin = ChrominoInGame.YPosition;
-            Chromino chromino = ChrominoDal.Details(ChrominoInGame.ChrominoId);
+            Chromino chromino = ChrominoDal.Details((int)ChrominoInGame.ChrominoId);
             List<Square> squares = new List<Square>() { new Square { GameId = gameId, X = xOrigin, Y = yOrigin, Color = chromino.FirstColor } };
             switch (ChrominoInGame.Orientation)
             {

@@ -3,7 +3,7 @@
     public enum TipName
     {
         HowValidateChromino = 1,
-        HowMoveChromino = 2,
+        HowMoveChromino,
         WhatIsHome,
         WhatIsInfo,
         WhatIsChat,
