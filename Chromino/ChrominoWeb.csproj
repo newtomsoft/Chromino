@@ -54,6 +54,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\ChrominoBI.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\SignalR\SignalR.csproj" />
     <ProjectReference Include="..\Tool\Tool.csproj" />
   </ItemGroup>
 

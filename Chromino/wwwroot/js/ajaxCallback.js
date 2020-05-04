@@ -8,6 +8,7 @@
 function CallbackAddChat(data) {
     $('#ChatPopupContent').val(data.chat);
     $('#ChatInput').val("");
+    NotifyChat();
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {
