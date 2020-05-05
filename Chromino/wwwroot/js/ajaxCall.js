@@ -23,26 +23,44 @@ function AddMemo() {
     });
 }
 
-function AddChat() {
-    let chatAdd = $('#ChatInput').val();
-    if (chatAdd != "") {
+function ChatAddMessage() {
+    let message = $('#ChatInput').val();
+    if (message != "") {
         $.ajax({
-            url: UrlChatAdd,
+            url: UrlChatPostMessage,
             type: 'POST',
-            data: { gameId: GameId, chat: chatAdd },
+            data: { gameId: GameId, message: message },
             success: function (data) { CallbackAddChat(data) },
         });
     }
 }
 
-function ReadChat() {
+function ChatGetMessages() {
     $.ajax({
-        url: UrlChatRead,
+        url: UrlChatGetMessages,
         type: 'POST',
-        data: { gameId: GameId },
-        success: function (data) { CallbackReadChat(data); }
+        data: { gameId: GameId, newMessages: false},
+        success: function (data) { CallbackChatGetMessages(data); }
     });
 }
+
+function ChatReadMessages() {
+    $("#NotifChat").text("0");
+    $("#NotifChat").hide();
+    $.ajax({
+        url: UrlChatGetMessages,
+        type: 'POST',
+        data: { gameId: GameId, newMessages: true },
+        success: function (data) { CallbackChatReadMessages(data); }
+    });
+}
+
+
+function SetLatestReadMessage() {
+    //todo
+    //date: new Date(Date.now()).toISOString() 
+}
+
 
 function Help() {
     if ($(".Possible").length == 0) {

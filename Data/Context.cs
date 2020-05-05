@@ -20,6 +20,7 @@ namespace Data
         public DbSet<Tip> Tips { get; set; }
         public DbSet<TipOff> TipsOff { get; set; }
         public DbSet<PlayError> PlayErrors { get; set; }
+        public DbSet<Chat> Chats { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {

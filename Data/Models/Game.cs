@@ -18,9 +18,5 @@ namespace Data.Models
         public GameStatus Status { get; set; }
         public DateTime PlayedDate { get; set; }
         public byte Move { get; set; }
-
-        [MaxLength(5000)]
-        [DisplayName("Discussion avec vos adversaires")]
-        public string Chat { get; set; }
     }
 }

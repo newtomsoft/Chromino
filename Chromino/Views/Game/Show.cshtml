@@ -10,11 +10,9 @@
     Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
     pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
     int memosNumbers = 0;
-    int notReadMessages = 0;
     if (Model.GamePlayer != null)
     {
         memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
-        notReadMessages = Model.GamePlayer.NotReadMessages;
     }
     string styleButtonSkip = "display:none";
     string styleButtonDraw = "display:none";
@@ -31,7 +29,7 @@
         <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
     </button>
     <button id="ButtonChat" class="doAction btn btn-toolbar img-chat" style="display:none">
-        <p id="NotifChat" class="notification notification-red" style="display:none">@notReadMessages</p>
+        <p id="NotifChat" class="notification notification-red" style="display:none"></p>
     </button>
     <button id="ButtonMemo" class="doAction btn btn-toolbar img-memo">
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
@@ -106,8 +104,9 @@
 var HaveDraw = @haveDraw;
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
-var UrlChatAdd = '@Url.Action("Add", "Chat")';
-var UrlChatRead = '@Url.Action("Read", "Chat")';
+var UrlChatPostMessage = '@Url.Action("PostMessage", "Chat")';
+var UrlChatGetMessages = '@Url.Action("GetMessages", "Chat")';
+var UrlChatSetLatestReadMessages = '@Url.Action("SetLatestReadMessage", "Chat")';
 var UrlPlay = '@Url.Action("Play")';
 var UrlSkip = '@Url.Action("SkipTurn")';
 var UrlDraw = '@Url.Action("DrawChromino")';
@@ -132,7 +131,6 @@ var XMin = @Model.XMin;
 var YMin = @Model.YMin;
 var Horizontal = @horizontal;
 var Vertical = @vertical;
-var NotReadMessages = @notReadMessages;
 var MemosNumber = @memosNumbers;
 var ShowInfoPopup = @showInfoPopup.ToJs();
 var PlayErrors = new Array;
