@@ -16,6 +16,8 @@ var HelpIndexes = new Array;
 var Players;
 var IsCanPlay;
 var IsPlayingBackEnd;
+var NotReadMessages; //todo
+var LatestReadMessage;
 
 $(document).ready(function () {
     InitDom();
@@ -27,7 +29,7 @@ function InitDom() {
     ShowButtonChat();
     RefreshButtonNextGame();
     $("#MemoAdd").click(AddMemo);
-    $("#ChatAdd").click(AddChat);
+    $("#ChatAdd").click(ChatAddMessage);
     $(".doAction").click(function () { Action(this.id); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
     HistoryChrominos.UpdateSquares = function (addNumber, columnsNumber, placeToAdd) {
@@ -92,9 +94,10 @@ function InitDom() {
     };
     $('#ChatInput').on('keydown', function (e) {
         if (e.which == 13) {     // touche entrer sur chat
-            AddChat();
+            ChatAddMessage();
         }
     });
+    ChatGetMessages();
     $(".emoji").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();
@@ -461,7 +464,7 @@ function ShowPopup(popup, hasCloseButton = true) {
     $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
     $.fn.popup.defaults.pagecontainer = '#page';
     if (popup == '#PopupChat') {
-        ReadChat();
+        ChatReadMessages();
         $('#ChatPopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);
