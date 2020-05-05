@@ -1,12 +1,20 @@
-﻿function CallbackReadChat(data) {
-    $('#ChatPopupContent').val(data.chat);
-    $('#ChatInput').val("");
-    $('#NotifChat').text("0");
-    $('#NotifChat').hide();
+﻿function CallbackChatGetMessages(data) {
+    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
+    if (data.newMessagesNumber > 0) {
+        $('#NotifChat').text(data.newMessagesNumber);
+        $('#NotifChat').show();
+    }
+    else {
+        $('#NotifChat').hide();
+    }
+}
+
+function CallbackChatReadMessages(data) {
+    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
 }
 
 function CallbackAddChat(data) {
-    $('#ChatPopupContent').val(data.chat);
+    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
 }
 

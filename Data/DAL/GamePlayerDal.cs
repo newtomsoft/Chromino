@@ -48,6 +48,26 @@ namespace Data.DAL
             return ids;
         }
 
+        public Dictionary<int, string> PlayersIdName(int gameId)
+        {
+            var result = (from gp in Ctx.GamesPlayers
+                          join p in Ctx.Players on gp.PlayerId equals p.Id
+                          where gp.GameId == gameId
+                          select new { id = p.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
+
+            return result;
+        }
+
+        public Dictionary<int, string> GamePlayersIdPlayerName(int gameId)
+        {
+            var result = (from gp in Ctx.GamesPlayers
+                          join p in Ctx.Players on gp.PlayerId equals p.Id
+                          where gp.GameId == gameId
+                          select new { id = gp.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
+
+            return result;
+        }
+
         public List<int> WinnersId(int gameId)
         {
             List<int> ids = (from gp in Ctx.GamesPlayers
@@ -72,7 +92,7 @@ namespace Data.DAL
             List<GamePlayer> gamePlayers = new List<GamePlayer>();
             foreach (Player player in players)
             {
-                GamePlayer gamePlayer = new GamePlayer { GameId = gameId, PlayerId = player.Id, NotReadMessages = 0 };
+                GamePlayer gamePlayer = new GamePlayer { GameId = gameId, PlayerId = player.Id };
                 gamePlayers.Add(gamePlayer);
             }
             Ctx.GamesPlayers.AddRange(gamePlayers);
@@ -193,16 +213,16 @@ namespace Data.DAL
             return games;
         }
 
-        public List<Game> GamesWithNotReadMessages(int playerId)
-        {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.NotReadMessages > 0
-                                orderby g.PlayedDate
-                                select g).AsNoTracking().ToList();
+        //public List<Game> GamesWithNotReadMessages(int playerId)
+        //{
+        //    List<Game> games = (from gp in Ctx.GamesPlayers
+        //                        join g in Ctx.Games on gp.GameId equals g.Id
+        //                        where gp.PlayerId == playerId && gp.NotReadMessages > 0
+        //                        orderby g.PlayedDate
+        //                        select g).AsNoTracking().ToList();
 
-            return games;
-        }
+        //    return games;
+        //}
 
         public int FirstIdMultiGameToPlay(int playerId)
         {
@@ -432,8 +452,8 @@ namespace Data.DAL
             List<int> playersId = NextPlayersIdInTurn(gameId, playerId);
             int gamePlayerId = Details(gameId, playerId).Id;
             playersId.AddRange((from gp in Ctx.GamesPlayers
-                                   where gp.GameId == gameId && gp.Id < gamePlayerId
-                                   select gp.PlayerId).ToList());
+                                where gp.GameId == gameId && gp.Id < gamePlayerId
+                                select gp.PlayerId).ToList());
 
             return playersId;
         }
@@ -486,6 +506,28 @@ namespace Data.DAL
                           select gp.GameId;
 
             return gamesId;
+        }
+
+        public DateTime GetLatestReadMessage(int gameId, int playerId)
+        {
+            var result = (from gp in Ctx.GamesPlayers
+                          where gp.GameId == gameId && gp.PlayerId == playerId
+                          select gp.LatestReadMessage).FirstOrDefault();
+
+            return result;
+        }
+
+        public void SetLatestReadMessage(int gameId, int playerId, DateTime date)
+        {
+            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
+                                     where gp.GameId == gameId && gp.PlayerId == playerId
+                                     select gp).FirstOrDefault();
+
+            if (gamePlayer != null)
+            {
+                gamePlayer.LatestReadMessage = date;
+                Ctx.SaveChanges();
+            }
         }
     }
 }

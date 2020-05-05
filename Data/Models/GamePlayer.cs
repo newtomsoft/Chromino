@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +23,7 @@ namespace Data.Models
         [DisplayName("Votre mémo")]
         public string Memo { get; set; }
 
-        public byte NotReadMessages { get; set; }
+        public DateTime LatestReadMessage { get; set; }
 
         public Game Game { get; set; }
         public Player Player { get; set; }

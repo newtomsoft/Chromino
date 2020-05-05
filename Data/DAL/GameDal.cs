@@ -111,47 +111,6 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public string UpdateChat(int gameId, string chat, int playerId)
-        {
-            Game game = (from g in Ctx.Games
-                         where g.Id == gameId
-                         select g).FirstOrDefault();
-
-            game.Chat += chat;
-
-            var gamesPlayers = from gp in Ctx.GamesPlayers
-                               where gp.GameId == gameId && gp.PlayerId != playerId
-                               select gp;
-
-            foreach (GamePlayer gamePlayer in gamesPlayers)
-                gamePlayer.NotReadMessages++;
-
-            Ctx.SaveChanges();
-            return game.Chat;
-        }
-        public string GetChat(int gameId)
-        {
-            string chat = (from g in Ctx.Games
-                           where g.Id == gameId
-                           select g.Chat).FirstOrDefault();
-
-            return chat;
-        }
-
-
-        public void SetChatRead(int gameId, int playerId)
-        {
-            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
-                                     where gp.GameId == gameId && gp.PlayerId == playerId
-                                     select gp).FirstOrDefault();
-
-            if (gamePlayer != null)
-            {
-                gamePlayer.NotReadMessages = 0;
-                Ctx.SaveChanges();
-            }
-        }
-
         public void IncreaseMove(int gameId)
         {
             Game game = (from games in Ctx.Games
