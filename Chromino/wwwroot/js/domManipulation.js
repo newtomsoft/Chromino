@@ -9,7 +9,6 @@
     if (opponentPlay)
         RefreshOpponentChromino();
     RefreshButtonNextGame();
-    RefreshButtonChat();
     RefreshButtonMemo();
     RefreshButtonsDrawSkip();
     RefreshHelp();
@@ -286,14 +285,7 @@ function RefreshButtonMemo() {
     else
         $('#NotifMemo').hide();
 }
-function RefreshButtonChat() {
-    if (NotReadMessages != 0) {
-        $('#NotifChat').text(NotReadMessages);
-        $('#NotifChat').show();
-    }
-    else
-        $('#NotifChat').hide();
-}
+
 function RefreshHelp() {
     $('.Square').removeClass('Possible');
     if (HelpIndexes.length > 0) {
