@@ -16,8 +16,6 @@ var HelpIndexes = new Array;
 var Players;
 var IsCanPlay;
 var IsPlayingBackEnd;
-var NotReadMessages; //todo
-var LatestReadMessage;
 
 $(document).ready(function () {
     InitDom();

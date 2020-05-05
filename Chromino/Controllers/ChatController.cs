@@ -48,9 +48,10 @@ namespace ChrominoApp.Controllers
         /// </summary>
         /// <param name="gameId">id de la partie</param>
         /// <param name="newMessages">true pour obtenir uniquement les messages non lus</param>
+        /// <param name="resetNotification">true pour remettre à 0 le compteur de nouveaux messages</param>
         /// <returns>Json avec chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
         [HttpPost]
-        public JsonResult GetMessages(int gameId, bool newMessages = false)
+        public JsonResult GetMessages(int gameId, bool newMessages = false, bool resetNotification = false)
         {
             DateTime now = DateTime.Now;
             DateTime dateLatestRead = GamePlayerDal.GetLatestReadMessage(gameId, PlayerId);
@@ -72,15 +73,14 @@ namespace ChrominoApp.Controllers
             foreach (Chat c in chats)
                 chat += $"{gamePlayerId_PlayerName[c.GamePlayerId]} ({c.Date.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {c.Message}\n";
             int newMessagesNumber;
-            if (newMessages)
-            {
+            if (resetNotification)
                 GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, now);
+            if (newMessages)
                 newMessagesNumber = chats.Count();
-            }
             else
-            {
                 newMessagesNumber = ChatDal.NewMessagesNumber(gameId, dateLatestRead);
-            }
+
+
             return new JsonResult(new { chat, newMessagesNumber });
         }
 

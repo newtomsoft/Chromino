@@ -30,16 +30,16 @@ function ChatAddMessage() {
             url: UrlChatPostMessage,
             type: 'POST',
             data: { gameId: GameId, message: message },
-            success: function (data) { CallbackAddChat(data) },
+            success: function (data) { CallbackAddMessage(data) },
         });
     }
 }
 
-function ChatGetMessages() {
+function ChatGetMessages(newMessages) {
     $.ajax({
         url: UrlChatGetMessages,
         type: 'POST',
-        data: { gameId: GameId, newMessages: false},
+        data: { gameId: GameId, newMessages: newMessages },
         success: function (data) { CallbackChatGetMessages(data); }
     });
 }
@@ -50,7 +50,7 @@ function ChatReadMessages() {
     $.ajax({
         url: UrlChatGetMessages,
         type: 'POST',
-        data: { gameId: GameId, newMessages: true },
+        data: { gameId: GameId, newMessages: true, resetNotification: true },
         success: function (data) { CallbackChatReadMessages(data); }
     });
 }

@@ -1,6 +1,6 @@
 ﻿function CallbackChatGetMessages(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
-    if (data.newMessagesNumber > 0) {
+    if (data.newMessagesNumber > 0 && !$("#PopupChat").is(":visible")) {
         $('#NotifChat').text(data.newMessagesNumber);
         $('#NotifChat').show();
     }
@@ -13,7 +13,7 @@ function CallbackChatReadMessages(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
 }
 
-function CallbackAddChat(data) {
+function CallbackAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
     NotifyChat();

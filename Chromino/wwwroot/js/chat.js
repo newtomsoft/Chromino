@@ -4,8 +4,10 @@
 $("#ButtonChat").hide();
 
 ConnectionHubChat.on("ReceiveMessage", function () {
-    NotReadMessages++;
-    RefreshButtonChat();
+    if ($("#PopupChat").is(":visible"))
+        ChatReadMessages();
+    else
+        ChatGetMessages(true);
 });
 
 ConnectionHubChat.start().then(function () {
