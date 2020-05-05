@@ -73,5 +73,7 @@ namespace Controllers
             }
             return listPictureGameVM;
         }
+
+        protected bool PlayerIsInGame(int gameId) => GamePlayerDal.Details(gameId, PlayerId) != null ? true : false;
     }
 }
