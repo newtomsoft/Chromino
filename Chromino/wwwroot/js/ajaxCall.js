@@ -114,7 +114,7 @@ function GetInfosAfterPlaying() {
     });
 }
 
-//TODO DETTE TECHNIQUE PREVOIR AUSSI lastChrominoColors
+//TODO DETTE TECHNIQUE
 var TESTnextPlayerId;
 var TESTisBot;
 var TESTlastChrominoColors;
