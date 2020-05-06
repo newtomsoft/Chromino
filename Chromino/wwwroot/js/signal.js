@@ -18,6 +18,16 @@ function CallSignalR() {
         OpponentChrominoDrawn(gameId);
     });
 
+    //BOT
+    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (gameId, chrominoPlayed) {
+        BotChrominoPlayed(gameId, chrominoPlayed);
+    });
+
+    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (gameId) {
+        BotTurnSkipped(gameId);
+    });
+
+
     ConnectionHubGame.start().then(function () {
         $("#ButtonChat").show();
     }).catch(function (err) {

@@ -26,5 +26,17 @@ namespace SignalR.Hubs
         {
             await Clients.Others.SendAsync("ReceiveChrominoDrawn", gameId);
         }
+
+        // BOT
+        public async Task SendBotChrominoPlayed(int gameId, object chrominoPlayed)
+        {
+            await Clients.Others.SendAsync("ReceiveBotChrominoPlayed", gameId, chrominoPlayed);
+        }
+
+        public async Task SendBotTurnSkipped(int gameId)
+        {
+            await Clients.Others.SendAsync("ReceiveBotTurnSkipped", gameId);
+        }
+
     }
 }
