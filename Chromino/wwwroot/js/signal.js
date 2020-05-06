@@ -6,16 +6,16 @@ function CallSignalR() {
         OpponentMessageSent(gameId);
     });
 
-    ConnectionHubGame.on("ReceiveChrominoPlayed", function (gameId, playerName, chrominoPlayed) {
-        OpponentChrominoPlayed(gameId, playerName, chrominoPlayed);
+    ConnectionHubGame.on("ReceiveChrominoPlayed", function (gameId, chrominoPlayed) {
+        OpponentChrominoPlayed(gameId, chrominoPlayed);
     });
 
-    ConnectionHubGame.on("ReceiveTurnSkipped", function (gameId, playerName) {
-        OpponentTurnSkipped(gameId, playerName);
+    ConnectionHubGame.on("ReceiveTurnSkipped", function (gameId) {
+        OpponentTurnSkipped(gameId);
     });
 
-    ConnectionHubGame.on("ReceiveChrominoDrawn", function (gameId, playerName) {
-        OpponentChrominoDrawn(gameId, playerName);
+    ConnectionHubGame.on("ReceiveChrominoDrawn", function (gameId) {
+        OpponentChrominoDrawn(gameId);
     });
 
     ConnectionHubGame.start().then(function () {

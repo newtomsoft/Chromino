@@ -7,29 +7,32 @@
         ChatGetMessages(true);
 }
 
-function OpponentChrominoPlayed(gameId, playerName, chrominoPlayed) {
+function OpponentChrominoPlayed(gameId, chrominoPlayed) {
     if (gameId != GameId)
         return;
     GetInfosAfterPlaying();
-    AddChrominoInGame(chrominoPlayed, playerName + " a posé");
+    AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
     let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
     RefreshVar(data);
     RefreshDom(true);
 }
 
-function OpponentChrominoDrawn(gameId, playerName) {
+function OpponentChrominoDrawn(gameId) {
     if (gameId != GameId)
         return;
     GetInfosAfterPlaying();
-    $('#InfoGame').html(playerName + " pioche...").fadeIn().delay(1000).fadeOut();
+    $('#InfoGame').html(PlayerTurnName + " pioche...").fadeIn().delay(1000).fadeOut();
+    DecreaseInStack();
+    UpdateInHandNumber(PlayerTurnId, 1);
     RefreshDom();
 }
 
-function OpponentTurnSkipped(gameId, playerName) {
+function OpponentTurnSkipped(gameId) {
     if (gameId != GameId)
         return;
     GetInfosAfterPlaying();
-    AddHistorySkipTurn(playerName + " a passé");
+    AddHistorySkipTurn(PlayerTurnName + " a passé");
     let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     RefreshVar(data);
     RefreshDom(true);
