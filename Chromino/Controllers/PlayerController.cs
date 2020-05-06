@@ -40,11 +40,11 @@ namespace Controllers
                     lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
                 }
                 string name = playerId == PlayerId ? "Vous" : PlayerDal.Name(playerId);
-                playersWithInfos.Add(new { id = playerId, name = name, chrominosNumber = chrominosNumber, lastChrominoColors = lastChrominoColors });
+                bool isBot = PlayerDal.IsBot(playerId);
+                playersWithInfos.Add(new { id = playerId, isBot, name, chrominosNumber, lastChrominoColors });
             }
             return new JsonResult(playersWithInfos);
         }
-
 
         public async Task<IActionResult> NoAccountAsync()
         {

@@ -21,3 +21,18 @@ function SendChrominoDrawn() {
         return console.error(err.toString());
     });
 };
+
+
+// BOT
+
+function SendBotChrominoPlayed(chrominoPlayed) {
+    ConnectionHubGame.invoke("SendBotChrominoPlayed", GameId, chrominoPlayed).catch(function (err) {
+        return console.error(err.toString());
+    });
+};
+
+function SendBotTurnSkipped() {
+    ConnectionHubGame.invoke("SendBotTurnSkipped", GameId).catch(function (err) {
+        return console.error(err.toString());
+    });
+};

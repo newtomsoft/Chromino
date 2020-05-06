@@ -93,12 +93,12 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
     else {
         HideButtonPlayChromino();
         let chrominoPlayed = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
-        let chrominoPlayedCopy = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
+        let chrominoPlayedClone = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
         AddChrominoInGame(chrominoPlayed, "Vous avez posé");
         RemoveChrominoInHand(chrominoId);
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
         if (!OpponentsAreBots && Players.length > 1)
-            SendChrominoPlayed(chrominoPlayedCopy);
+            SendChrominoPlayed(chrominoPlayedClone);
         RefreshVar(data);
         RefreshDom();
     }
@@ -114,12 +114,18 @@ function BotPlayed(data, botId) {
     }
     if (data.skip) {
         AddHistorySkipTurn(infoBotPlay + " a passé");
+        if (!OpponentsAreBots && Players.length > 1)
+            SendBotTurnSkipped();
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoBotPlay + " a posé");
+        let chrominoPlayed = { xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors };
+        AddChrominoInGame(chrominoPlayed, infoBotPlay + " a posé");
         UpdateInHandNumber(botId, -1, data.lastChrominoColors);
+        let chrominoPlayedClone = { xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors };
+        if (!OpponentsAreBots && Players.length > 1)
+            SendBotChrominoPlayed(chrominoPlayedClone);
     }
     ShowWorkIsFinish();
     RefreshVar(data);
