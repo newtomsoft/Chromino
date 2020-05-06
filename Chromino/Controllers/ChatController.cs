@@ -35,7 +35,7 @@ namespace ChrominoApp.Controllers
             {
                 GamePlayer gamePlayer = GamePlayerDal.Details(gameId, PlayerId);
                 ChatDal.Add(gamePlayer.Id, message);
-                string newMessage = $"{PlayerPseudo} ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {message}\n";
+                string newMessage = $"Vous ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {message}\n";
                 GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, DateTime.Now);
                 return new JsonResult(new { newMessage });
             }
@@ -67,6 +67,7 @@ namespace ChrominoApp.Controllers
                 dateMax = dateLatestRead;
             }
             Dictionary<int, string> gamePlayerId_PlayerName = GamePlayerDal.GamePlayersIdPlayerName(gameId);
+            gamePlayerId_PlayerName[GamePlayerDal.Details(gameId, PlayerId).Id] = "Vous";
             List<string> playersName = new List<string>();
             var chats = ChatDal.GetMessages(gameId, dateMin, dateMax);
             string chat = "";

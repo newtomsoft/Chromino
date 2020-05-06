@@ -1,6 +1,7 @@
-﻿function CallbackChatGetMessages(data) {
-    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
-    if (data.newMessagesNumber > 0 && !$("#PopupChat").is(":visible")) {
+﻿function CallbackChatGetMessages(data, newMessages) {
+    if (!newMessages)
+        $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
+    if (data.newMessagesNumber > 0) {
         $('#NotifChat').text(data.newMessagesNumber);
         $('#NotifChat').show();
     }
@@ -16,7 +17,7 @@ function CallbackChatReadMessages(data) {
 function CallbackAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
-    NotifyChat();
+    SendMessageSent();
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {
@@ -61,6 +62,8 @@ function CallbackDrawChromino(data) {
         UpdateInHandNumber(PlayerId, 1);
         StopDraggable();
         StartDraggable();
+        if (!OpponentsAreBots && Players.length > 1)
+            SendChrominoDrawn();
         RefreshDom();
     }
 }
@@ -74,6 +77,8 @@ function CallbackSkipTurn(data) {
         AddHistorySkipTurn("Vous avez passé");
         IsBotTurn = data.isBot;
         PlayerTurnId = data.id;
+        if (!OpponentsAreBots && Players.length > 1)
+            SendTurnSkipped();
         RefreshVar(data);
         RefreshDom();
     }
@@ -87,33 +92,36 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
     }
     else {
         HideButtonPlayChromino();
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous avez posé");
+        let chrominoPlayed = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
+        let chrominoPlayedCopy = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
+        AddChrominoInGame(chrominoPlayed, "Vous avez posé");
         RemoveChrominoInHand(chrominoId);
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
+        if (!OpponentsAreBots && Players.length > 1)
+            SendChrominoPlayed(chrominoPlayedCopy);
         RefreshVar(data);
         RefreshDom();
     }
 }
 
-function OpponentHavePlayed(data, playerId, isBot) {
+function BotPlayed(data, botId) {
     $('#InfoGame').fadeOut();
-    let infoPlayerPlay = Players.find(p => p.id == playerId).name;
+    let infoBotPlay = Players.find(p => p.id == botId).name;
     if (data.draw) {
         DecreaseInStack();
-        UpdateInHandNumber(playerId, 1);
-        infoPlayerPlay += " a pioché et"
+        UpdateInHandNumber(botId, 1);
+        infoBotPlay += " a pioché et"
     }
     if (data.skip) {
-        AddHistorySkipTurn(infoPlayerPlay + " a passé");
+        AddHistorySkipTurn(infoBotPlay + " a passé");
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
-        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoPlayerPlay + " a posé");
-        UpdateInHandNumber(playerId, -1, data.lastChrominoColors);
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoBotPlay + " a posé");
+        UpdateInHandNumber(botId, -1, data.lastChrominoColors);
     }
-    if (isBot)
-        ShowWorkIsFinish();
+    ShowWorkIsFinish();
     RefreshVar(data);
     RefreshDom(true);
 }
