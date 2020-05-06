@@ -37,3 +37,25 @@ function OpponentTurnSkipped(gameId) {
     RefreshVar(data);
     RefreshDom(true);
 }
+
+//BOT
+function BotChrominoPlayed(gameId, chrominoPlayed) {
+    if (gameId != GameId)
+        return;
+    GetInfosAfterPlaying();
+    AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
+    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
+    RefreshVar(data);
+    RefreshDom(true);
+}
+
+function BotTurnSkipped(gameId) {
+    if (gameId != GameId)
+        return;
+    GetInfosAfterPlaying();
+    AddHistorySkipTurn(PlayerTurnName + " a passé");
+    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    RefreshVar(data);
+    RefreshDom(true);
+}

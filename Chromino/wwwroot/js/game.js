@@ -546,3 +546,18 @@ function ErrorReturn(playReturn) {
     }
     IsCanPlay = true;
 }
+
+function HaveBotResponsability() {
+    let playerIndex = Players.findIndex(p => p.id == PlayerId);
+    let opponentIndex = Players.findIndex(p => p.id == PlayerTurnId);
+    let limitIndex = opponentIndex < playerIndex ? playerIndex : Players.length;
+    for (var i = opponentIndex; i < limitIndex; i++)
+        if (!Players[i].isBot)
+            return false;
+    if (opponentIndex > playerIndex) {
+        for (var i = 0; i < playerIndex; i++)
+            if (!Players[i].isBot)
+                return false;
+    }
+    return true;
+}

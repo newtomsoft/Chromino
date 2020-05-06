@@ -1,5 +1,5 @@
 ﻿function RefreshDom(opponentPlayed) {
-    if (IsBotTurn)
+    if (HaveBotResponsability())
         PlayingBot(PlayerTurnId);
     else
         IsCanPlay = true;
