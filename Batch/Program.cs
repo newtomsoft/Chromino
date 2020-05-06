@@ -31,6 +31,7 @@ namespace Batch
         {
             Methods = new Dictionary<string, Action>
             {
+                { "AddBots", AddBots },
                 { "AddTips", AddTips },
                 { "AddPlayErrors", AddPlayErrors },
                 { "DeleteGuests", DeleteGuests },
@@ -83,6 +84,34 @@ namespace Batch
             GoodPositionDal = new GoodPositionDal(Ctx);
             SquareDal = new SquareDal(Ctx);
         }
+
+        private static void AddBots()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Création des bots");
+            List<Player> bots = new List<Player>();
+            for (int i = 1; i <= 8; i++)
+            {
+                bots.Add(new Player { Bot = true, UserName = "Bot" + i });
+            }
+            foreach (var bot in bots)
+            {
+                int botId = (from b in Ctx.Players
+                             where b.UserName == bot.UserName
+                             select b.Id).FirstOrDefault();
+                if (botId == 0)
+                {
+                    Ctx.Players.Add(bot);
+                    Ctx.SaveChanges();
+                    Console.WriteLine($"  bot {bot.UserName} ajouté");
+                }
+                else
+                {
+                    Console.WriteLine($"  (bot {bot.UserName} déjà présent en base)");
+                }
+            }
+        }
+
         private static void DeleteGuests()
         {
             Console.WriteLine();
@@ -316,7 +345,6 @@ namespace Batch
             #endregion
             List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcome };
             AddTipsInDb(tips);
-
         }
 
         private static void AddTipsInDb(List<Tip> tips)

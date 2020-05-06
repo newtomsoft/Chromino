@@ -1,13 +1,11 @@
-﻿function RefreshDom(opponentPlay) {
+﻿function RefreshDom(opponentPlayed) {
     if (IsBotTurn)
         PlayingBot(PlayerTurnId);
-    else if (PlayerTurnId != PlayerId)
-        PlayingOpponent();
     else
         IsCanPlay = true;
     StopScheduleValidateChromino();
-    if (opponentPlay)
-        RefreshOpponentChromino();
+    if (opponentPlayed)
+        ShowHistoryLatestMove();
     RefreshButtonNextGame();
     RefreshButtonMemo();
     RefreshButtonsDrawSkip();
@@ -107,41 +105,42 @@ function AddChrominoInHand(chromino) {
 }
 
 function AddChrominoInGame(chromino, infoPlayerPlay) {
-    if (chromino.yIndex == GameAreaLinesNumber - 2 && chromino.orientation == Horizontal || chromino.yIndex == GameAreaLinesNumber - 4 && chromino.orientation == Vertical)
+    let chrominoWork = chromino;
+    if (chrominoWork.yIndex == GameAreaLinesNumber - 2 && chrominoWork.orientation == Horizontal || chrominoWork.yIndex == GameAreaLinesNumber - 4 && chrominoWork.orientation == Vertical)
         AddGameLineBottom(1);
-    else if (chromino.yIndex == GameAreaLinesNumber - 3 && chromino.orientation == Vertical)
+    else if (chrominoWork.yIndex == GameAreaLinesNumber - 3 && chrominoWork.orientation == Vertical)
         AddGameLineBottom(2);
-    else if (chromino.yIndex < 2) {
-        AddGameLineTop(2 - chromino.yIndex);
-        chromino.yIndex = 2;
+    else if (chrominoWork.yIndex < 2) {
+        AddGameLineTop(2 - chrominoWork.yIndex);
+        chrominoWork.yIndex = 2;
     }
-    if (chromino.xIndex == GameAreaColumnsNumber - 2 && chromino.orientation == Vertical || chromino.xIndex == GameAreaColumnsNumber - 4 && chromino.orientation == Horizontal)
+    if (chrominoWork.xIndex == GameAreaColumnsNumber - 2 && chrominoWork.orientation == Vertical || chrominoWork.xIndex == GameAreaColumnsNumber - 4 && chrominoWork.orientation == Horizontal)
         AddGameColumnRight(1);
-    else if (chromino.xIndex == GameAreaColumnsNumber - 3 && chromino.orientation == Horizontal)
+    else if (chrominoWork.xIndex == GameAreaColumnsNumber - 3 && chrominoWork.orientation == Horizontal)
         AddGameColumnRight(2);
-    else if (chromino.xIndex < 2) {
-        AddGameColumnLeft(2 - chromino.xIndex);
-        chromino.xIndex = 2;
+    else if (chrominoWork.xIndex < 2) {
+        AddGameColumnLeft(2 - chrominoWork.xIndex);
+        chrominoWork.xIndex = 2;
     }
     let squaresName = new Array;
-    offset = chromino.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
+    offset = chrominoWork.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
     for (var iSquare = 0; iSquare < 3; iSquare++) {
-        index = chromino.xIndex + offset.x * iSquare + (chromino.yIndex + offset.y * iSquare) * GameAreaColumnsNumber;
+        index = chrominoWork.xIndex + offset.x * iSquare + (chrominoWork.yIndex + offset.y * iSquare) * GameAreaColumnsNumber;
         squareName = "Square_" + index;
         squaresName.push(squareName);
         squareSelector = "#" + squareName;
         switch (iSquare) {
             case 0:
-                classColor = chromino.flip ? chromino.colors[2] : chromino.colors[0];
-                classOpenSides = chromino.orientation == Horizontal ? "Square OpenRight" : "Square OpenBottom";
+                classColor = chrominoWork.flip ? chrominoWork.colors[2] : chrominoWork.colors[0];
+                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenRight" : "Square OpenBottom";
                 break;
             case 1:
-                classColor = chromino.colors[1];
-                classOpenSides = chromino.orientation == Horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
+                classColor = chrominoWork.colors[1];
+                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
                 break;
             case 2:
-                classColor = chromino.flip ? chromino.colors[0] : chromino.colors[2];
-                classOpenSides = chromino.orientation == Horizontal ? "Square OpenLeft" : "Square OpenTop";
+                classColor = chrominoWork.flip ? chrominoWork.colors[0] : chrominoWork.colors[2];
+                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenLeft" : "Square OpenTop";
                 break;
         }
         $(squareSelector).removeClass().addClass(classOpenSides + " " + classColor);
@@ -295,7 +294,7 @@ function RefreshHelp() {
     }
     RefreshButtonHelp();
 }
-function RefreshOpponentChromino() {
+function ShowHistoryLatestMove() {
         AnimateChromino(3, true, true);
 }
 

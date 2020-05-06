@@ -40,7 +40,7 @@ function ChatGetMessages(newMessages) {
         url: UrlChatGetMessages,
         type: 'POST',
         data: { gameId: GameId, newMessages: newMessages },
-        success: function (data) { CallbackChatGetMessages(data); }
+        success: function (data) { CallbackChatGetMessages(data, newMessages); }
     });
 }
 
@@ -54,13 +54,6 @@ function ChatReadMessages() {
         success: function (data) { CallbackChatReadMessages(data); }
     });
 }
-
-
-function SetLatestReadMessage() {
-    //todo
-    //date: new Date(Date.now()).toISOString() 
-}
-
 
 function Help() {
     if ($(".Possible").length == 0) {
@@ -111,6 +104,30 @@ function GetPlayersInfos() {
     });
 }
 
+function GetInfosAfterPlaying() {
+    $.ajax({
+        url: UrlGetInfosAfterPlaying,
+        type: 'POST',
+        async: false,
+        data: { gameId: GameId, playerId: PlayerTurnId },
+        success: function (data) { TEST(data); },
+    });
+}
+
+//TODO DETTE TECHNIQUE PREVOIR AUSSI lastChrominoColors
+var TESTnextPlayerId;
+var TESTisBot;
+var TESTlastChrominoColors;
+var TESTfinish;
+function TEST(data) {
+    TESTnextPlayerId = data.nextPlayerId;
+    TESTisBot = data.isBot;
+    TESTlastChrominoColors = data.lastChrominoColors;
+    TESTfinish = data.finish;
+}
+// !TODO DETTE TECHNIQUE
+
+
 function PlayingBot(botId) {
     if (!IsGameFinish) {
         let infoBotPlaying = Players.find(p => p.id == botId).name + " joue";
@@ -120,18 +137,7 @@ function PlayingBot(botId) {
             url: UrlPlayBot,
             type: 'POST',
             data: { id: GameId, botId: botId },
-            success: function (data) { OpponentHavePlayed(data, botId, true); },
-        });
-    }
-}
-
-function PlayingOpponent() {
-    if (PlayersNumber != 1 && !IsBotTurn) {
-        $.ajax({
-            url: UrlWaitOpponentPlayed,
-            type: 'POST',
-            data: { gameId: GameId, playerTurnId: PlayerTurnId },
-            success: function (data) { OpponentHavePlayed(data, PlayerTurnId); },
+            success: function (data) { BotPlayed(data, botId); },
         });
     }
 }

@@ -19,6 +19,7 @@ var IsPlayingBackEnd;
 
 $(document).ready(function () {
     InitDom();
+    CallSignalR();
     RefreshDom();
 });
 
@@ -95,7 +96,7 @@ function InitDom() {
             ChatAddMessage();
         }
     });
-    ChatGetMessages();
+    ChatGetMessages(false);
     $(".emoji").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();

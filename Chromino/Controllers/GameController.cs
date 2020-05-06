@@ -362,40 +362,19 @@ namespace Controllers
         }
 
         /// <summary>
-        /// indique si un joueur a joué et donne les infos 
+        /// donne les infos du joueur venant de poser un chromino 
         /// </summary>
         /// <param name="gameId">id du jeu</param>
-        /// <param name="playerTurnId">id du joueur dont c'est le tour à l'appel</param>
+        /// <param name="playerId">id du joueur qui vient de jouer</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult WaitOpponentPlayed(int gameId, int playerTurnId)
+        public JsonResult GetInfosAfterPlaying(int gameId, int playerId)
         {
-            int oldChrominoNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerTurnId);
-            int nextPlayerId = playerTurnId;
-            bool isPlayerStillPlaying = true;
-            while (isPlayerStillPlaying)
-            {
-                Thread.Sleep(4000); // todo en attendant utilisation SignalR
-                isPlayerStillPlaying = GamePlayerDal.PlayerTurn(gameId).Id == playerTurnId;
-            }
-            nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerTurnId)[0];
-            int newChrominoNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerTurnId);
-            bool draw = oldChrominoNumber <= newChrominoNumber;
-            ChrominoInGame chrominoInGame = ChrominoInGameDal.LatestPlayed(gameId, playerTurnId);
-            List<string> lastChrominoColors = ColorsLastChromino(gameId, playerTurnId);
+            int nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerId)[0];
+            List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);
             bool finish = GameDal.GetStatus(gameId).IsFinished();
-            bool skip = GamePlayerDal.IsSkip(gameId, playerTurnId);
             bool isBot = PlayerDal.IsBot(nextPlayerId);
-            if (!skip)
-            {
-                List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
-                int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
-                return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
-            }
-            else
-            {
-                return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
-            }
+            return new JsonResult(new { nextPlayerId, isBot, lastChrominoColors, finish });
         }
 
 

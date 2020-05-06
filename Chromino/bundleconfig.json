@@ -28,7 +28,9 @@
       "wwwroot/js/domManipulation.js",
       "wwwroot/js/ajaxCall.js",
       "wwwroot/js/ajaxCallback.js",
-      "wwwroot/js/chat.js",
+      "wwwroot/js/signal.js",
+      "wwwroot/js/signalSend.js",
+      "wwwroot/js/signalReceive.js",
       "wwwroot/js/jquery.popupoverlay.js",
       "wwwroot/js/jquery.draggableTouch.js"
     ],

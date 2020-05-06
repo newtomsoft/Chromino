@@ -19,7 +19,7 @@
     const int horizontal = (int)Orientation.Horizontal;
     const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
-
+    string haveDraw = Model.GamePlayer != null ? Model.GamePlayer.PreviouslyDraw.ToJs() : "false";
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
@@ -50,8 +50,8 @@
 <div id="GameArea">
     @for (int j = 0; j < Model.LinesNumber; j++)
     {
-        <div id="Line_@j" class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
+    <div id="Line_@j" class="gameLineArea">
+        @for (int i = 0; i < Model.ColumnsNumber; i++)
             {
                 int index = i + j * Model.ColumnsNumber;
                 ColorCh color = Model.Squares[index].Color;
@@ -66,7 +66,7 @@
                     string doAction = "";
                     if (color == ColorCh.Cameleon)
                         doAction = "doAction";
-                    <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
+        <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
                 }
                 else
                 {
@@ -76,32 +76,28 @@
                     if (j < Model.LinesNumber - 1 && Model.Squares[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
                     if (i > 0 && Model.Squares[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
                     if (j > 0 && Model.Squares[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
-                    <div id="Square_@index" class="@classCloseEdge @classColor"></div>
+        <div id="Square_@index" class="@classCloseEdge @classColor"></div>
                 }
             }
-        </div>
+    </div>
     }
 </div>
 <div id="Hand" class="doAction">
     @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {
-        <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
-            @for (int i = 0; i < 3; i++)
+    <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
+        @for (int i = 0; i < 3; i++)
             {
                 ColorCh color = chrominoVM.Squares[i].Color;
                 string classColor = color.ToString();
-                <div class="Square @classColor"></div>
+        <div class="Square @classColor"></div>
             }
-        </div>
+    </div>
     }
 </div>
-@{ 
-    string haveDraw = Model.GamePlayer != null ? Model.GamePlayer.PreviouslyDraw.ToJs() : "false";
-}
-@section ScriptPreJs
+@section ScriptJs
 {
-<script>
-var HaveDraw = @haveDraw;
+    <script>
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatPostMessage = '@Url.Action("PostMessage", "Chat")';
@@ -114,10 +110,12 @@ var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
 var UrlEnd = '@Url.Action("End")';
 var UrlPlayersIdChrominosNumber = '@Url.Action("IdsChrominosNumber", "Player")';
-var UrlWaitOpponentPlayed = '@Url.Action("WaitOpponentPlayed")';
+var UrlGetInfosAfterPlaying = '@Url.Action("GetInfosAfterPlaying")';
 var IsGameFinish = @Model.Game.Status.IsFinished().ToJs();
 var InStack = @Model.ChrominosInStack;
 var PlayerId = @Model.Player.Id;
+var PlayerName = '@Model.Player.UserName';
+var HaveDraw = @haveDraw;
 var PlayerTurnId = @Model.PlayerTurn.Id;
 var PlayerTurnName = "@Model.PlayerTurn.UserName";
 var OpponentsAreBots = @Model.OpponentsAreBots.ToJs();
@@ -171,7 +169,7 @@ var HistoryChrominos = new Array;
             break;
     }
 }
-</script>
+    </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
@@ -180,7 +178,7 @@ var HistoryChrominos = new Array;
         <input name="playersName" value="@Model.Player.UserName" />
         @foreach (var pseudo_chromino in pseudosExceptCurrentPlayer_Chrominos)
         {
-            <input name="playersName" value="@pseudo_chromino.Key" />
+        <input name="playersName" value="@pseudo_chromino.Key" />
         }
     </form>
     <div id="Askrematch" style="display:none">
@@ -189,7 +187,7 @@ var HistoryChrominos = new Array;
     </div>
     @foreach (var pseudoId in Model.PseudosIds)
     {
-        <div id="Player_@pseudoId.Value"></div>
+    <div id="Player_@pseudoId.Value"></div>
     }
     <br />
     <p id="InStack" class="minorInfo"></p>

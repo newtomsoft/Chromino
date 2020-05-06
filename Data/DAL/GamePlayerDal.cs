@@ -442,7 +442,7 @@ namespace Data.DAL
         }
 
         /// <summary>
-        /// retourne la liste de tous joueurs à jouer après le joueur renseigné
+        /// retourne la liste de tous les joueurs à jouer après le joueur renseigné
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
         /// <param name="playerId">Id du joueur à renseigner</param>
