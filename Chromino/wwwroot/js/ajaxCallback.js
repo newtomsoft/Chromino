@@ -142,9 +142,9 @@ function DecreaseInStack() {
     RefreshInStack();
 }
 
-function UpdateInHandNumber(playerId, step, lastChrominoColors) {
+function UpdateInHandNumber(playerId, value, lastChrominoColors) {
     let player = Players.find(p => p.id == playerId);
-    player.chrominosNumber += step;
+    player.chrominosNumber += value;
     if (player.chrominosNumber <= 1) {
         player.lastChrominoColors = lastChrominoColors;
         if (player.name != "Vous")

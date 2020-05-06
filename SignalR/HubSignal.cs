@@ -12,19 +12,19 @@ namespace SignalR.Hubs
             await Clients.Others.SendAsync("ReceiveMessageSent", gameId);
         }
 
-        public async Task SendChrominoPlayed(int gameId, string playerName, object chrominoPlayed)
+        public async Task SendChrominoPlayed(int gameId, object chrominoPlayed)
         {
-            await Clients.Others.SendAsync("ReceiveChrominoPlayed", gameId, playerName, chrominoPlayed );
+            await Clients.Others.SendAsync("ReceiveChrominoPlayed", gameId, chrominoPlayed );
         }
 
-        public async Task SendTurnSkipped(int gameId, string playerName)
+        public async Task SendTurnSkipped(int gameId)
         {
-            await Clients.Others.SendAsync("ReceiveTurnSkipped", gameId, playerName);
+            await Clients.Others.SendAsync("ReceiveTurnSkipped", gameId);
         }
 
-        public async Task SendChrominoDrawn(int gameId, string playerName)
+        public async Task SendChrominoDrawn(int gameId)
         {
-            await Clients.Others.SendAsync("ReceiveChrominoDrawn", gameId, playerName);
+            await Clients.Others.SendAsync("ReceiveChrominoDrawn", gameId);
         }
     }
 }
