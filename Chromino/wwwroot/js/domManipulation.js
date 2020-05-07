@@ -1,8 +1,6 @@
 ﻿function RefreshDom(opponentPlayed) {
     if (HaveBotResponsability())
-        PlayingBot(PlayerTurnId);
-    else
-        IsCanPlay = true;
+        PlayingBot(PlayerTurn.id);
     StopScheduleValidateChromino();
     if (opponentPlayed)
         ShowHistoryLatestMove();
@@ -40,10 +38,10 @@ function RefreshInfoPopup() {
         }
     }
     else {
-        $('#PopupInfoHead').html(`<h3>${PlayerTurnText}</h3>`);
+        $('#PopupInfoHead').html(`<h3>${PlayerTurn.Text}</h3>`);
     }
     RefreshInStack();
-    if (ShowInfoPopup && PlayerTurnId == PlayerId || IsGameFinish)
+    if (ShowInfoPopup && PlayerTurn.id == PlayerId || IsGameFinish)
         ShowPopup('#PopupInfo');
 }
 
@@ -229,7 +227,7 @@ function RemoveChrominoInHand(chrominoId) {
     $('#' + chrominoId).remove();
 }
 function RefreshButtonNextGame() {
-    if (!OpponentsAreBots && !IsBotTurn && PlayerId != PlayerTurnId)
+    if (!OpponentsAllBots && !PlayerTurn.isBot && PlayerId != PlayerTurn.id)
         $('#ButtonNextGame').show();
     else
         $('#ButtonNextGame').hide();
@@ -240,7 +238,7 @@ function RefreshButtonsDrawSkip() {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
-    else if (PlayerTurnId != PlayerId) {
+    else if (PlayerTurn.id != PlayerId) {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
@@ -261,7 +259,7 @@ function HideButtonPlayChromino() {
     $('#ButtonPlayingChromino').hide();
 }
 function ShowButtonChat() {
-    if (!OpponentsAreBots)
+    if (!OpponentsAllBots)
         $('#ButtonChat').show();
 }
 function HideButtonChat() {
@@ -299,7 +297,7 @@ function ShowHistoryLatestMove() {
 }
 
 function ShowWorkInProgress() {
-    $('*').css('cursor', 'progress');
+    $('*').css('cursor', 'wait');
     $('#Waiting').show();
 }
 

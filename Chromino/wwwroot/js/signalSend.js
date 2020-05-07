@@ -22,17 +22,14 @@ function SendChrominoDrawn() {
     });
 };
 
-
-// BOT
-
-function SendBotChrominoPlayed(chrominoPlayed) {
-    ConnectionHubGame.invoke("SendBotChrominoPlayed", GameId, chrominoPlayed).catch(function (err) {
+function SendBotChrominoPlayed(chrominoPlayed, isDrawn) {
+    ConnectionHubGame.invoke("SendBotChrominoPlayed", GameId, chrominoPlayed, isDrawn).catch(function (err) {
         return console.error(err.toString());
     });
 };
 
-function SendBotTurnSkipped() {
-    ConnectionHubGame.invoke("SendBotTurnSkipped", GameId).catch(function (err) {
+function SendBotTurnSkipped(isDrawn) {
+    ConnectionHubGame.invoke("SendBotTurnSkipped", GameId, isDrawn).catch(function (err) {
         return console.error(err.toString());
     });
 };

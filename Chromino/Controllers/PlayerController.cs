@@ -62,7 +62,8 @@ namespace Controllers
                 }
                 playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
             }
-            return new JsonResult(playersInfos);
+            bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
+            return new JsonResult(new { playersInfos, opponentsAllBots } );
         }
 
         [Authorize]
