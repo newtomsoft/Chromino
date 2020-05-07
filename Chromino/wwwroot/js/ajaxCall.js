@@ -96,7 +96,7 @@ function End() {
 
 function GetPlayersInfos() {
     $.ajax({
-        url: UrlPlayersIdChrominosNumber,
+        url: UrlPlayersInfos,
         type: 'POST',
         async: false,
         data: { gameId: GameId },
@@ -116,12 +116,10 @@ function GetInfosAfterPlaying() {
 
 //TODO DETTE TECHNIQUE
 var TESTnextPlayerId;
-var TESTisBot;
 var TESTlastChrominoColors;
 var TESTfinish;
 function TEST(data) {
     TESTnextPlayerId = data.nextPlayerId;
-    TESTisBot = data.isBot;
     TESTlastChrominoColors = data.lastChrominoColors;
     TESTfinish = data.finish;
 }
@@ -137,7 +135,7 @@ function PlayingBot(botId) {
             url: UrlPlayBot,
             type: 'POST',
             data: { id: GameId, botId: botId },
-            success: function (data) { BotPlayed(data, botId); },
+            success: function (data) { CallbackBotPlayed(data, botId); },
         });
     }
 }

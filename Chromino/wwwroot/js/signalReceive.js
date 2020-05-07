@@ -12,7 +12,7 @@ function OpponentChrominoPlayed(gameId, chrominoPlayed) {
         return;
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
     RefreshVar(data);
     RefreshDom(true);
@@ -33,7 +33,7 @@ function OpponentTurnSkipped(gameId) {
         return;
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurnName + " a passé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     RefreshVar(data);
     RefreshDom(true);
 }
@@ -44,7 +44,7 @@ function BotChrominoPlayed(gameId, chrominoPlayed) {
         return;
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
     RefreshVar(data);
     RefreshDom(true);
@@ -55,7 +55,7 @@ function BotTurnSkipped(gameId) {
         return;
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurnName + " a passé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     RefreshVar(data);
     RefreshDom(true);
 }

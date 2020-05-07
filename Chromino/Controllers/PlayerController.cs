@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.DAL;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -27,25 +28,10 @@ namespace Controllers
             ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
         }
 
-        public JsonResult IdsChrominosNumber(int gameId)
-        {
-            List<Object> playersWithInfos = new List<Object>();
-            foreach (int playerId in GamePlayerDal.PlayersId(gameId))
-            {
-                int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, playerId);
-                string[] lastChrominoColors = new string[] { "", "", "" };
-                if (chrominosNumber == 1)
-                {
-                    Chromino c = ChrominoInHandDal.FirstChromino(gameId, playerId);
-                    lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
-                }
-                string name = playerId == PlayerId ? "Vous" : PlayerDal.Name(playerId);
-                bool isBot = PlayerDal.IsBot(playerId);
-                playersWithInfos.Add(new { id = playerId, isBot, name, chrominosNumber, lastChrominoColors });
-            }
-            return new JsonResult(playersWithInfos);
-        }
-
+        /// <summary>
+        /// Creation d'un joueur anonyme et connexion
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> NoAccountAsync()
         {
             string guestName = "invit";
@@ -59,6 +45,27 @@ namespace Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize]
+        public JsonResult PlayersInfos(int gameId)
+        {
+            List<Object> playersInfos = new List<Object>();
+            foreach (int id in GamePlayerDal.PlayersId(gameId))
+            {
+                int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, id);
+                string[] lastChrominoColors = new string[] { "", "", "" };
+                string name = id == PlayerId ? "Vous" : PlayerDal.Name(id);
+                bool isBot = PlayerDal.IsBot(id);
+                if (chrominosNumber == 1)
+                {
+                    Chromino c = ChrominoInHandDal.FirstChromino(gameId, id);
+                    lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
+                }
+                playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
+            }
+            return new JsonResult(playersInfos);
+        }
+
+        [Authorize]
         public IActionResult Delete()
         {
             var gamesIdToDelete = GamePlayerDal.GamesId(PlayerId);
