@@ -100,7 +100,7 @@ function GetPlayersInfos() {
         type: 'POST',
         async: false,
         data: { gameId: GameId },
-        success: function (data) { Players = data; },
+        success: function (data) { CallbackGetPlayersInfos(data); },
     });
 }
 
@@ -109,7 +109,7 @@ function GetInfosAfterPlaying() {
         url: UrlGetInfosAfterPlaying,
         type: 'POST',
         async: false,
-        data: { gameId: GameId, playerId: PlayerTurnId },
+        data: { gameId: GameId, playerId: PlayerTurn.id },
         success: function (data) { TEST(data); },
     });
 }
@@ -144,9 +144,8 @@ function PlayingChromino() {
     ShowInfoPopup = false;
     HideButtonPlayChromino();
     if (!IsGameFinish && LastChrominoMove != null) {
-        IsCanPlay = false;
-        StopDraggable(LastChrominoMove);
         IsPlayingBackEnd = true;
+        StopDraggable(LastChrominoMove);
         ShowWorkInProgress();
         let offset = $(LastChrominoMove).offset();
         let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);

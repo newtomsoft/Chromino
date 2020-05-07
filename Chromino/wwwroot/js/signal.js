@@ -18,13 +18,12 @@ function CallSignalR() {
         OpponentChrominoDrawn(gameId);
     });
 
-    //BOT
-    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (gameId, chrominoPlayed) {
-        BotChrominoPlayed(gameId, chrominoPlayed);
+    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (gameId, chrominoPlayed, isDrawn) {
+        BotChrominoPlayed(gameId, chrominoPlayed, isDrawn);
     });
 
-    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (gameId) {
-        BotTurnSkipped(gameId);
+    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (gameId, isDrawn) {
+        BotTurnSkipped(gameId, isDrawn);
     });
 
 

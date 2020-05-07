@@ -62,7 +62,7 @@ function CallbackDrawChromino(data) {
         UpdateInHandNumber(PlayerId, 1);
         StopDraggable();
         StartDraggable();
-        if (!OpponentsAreBots && Players.length > 1)
+        if (!OpponentsAllBots && Players.length > 1)
             SendChrominoDrawn();
         RefreshDom();
     }
@@ -75,7 +75,7 @@ function CallbackSkipTurn(data) {
     else {
         RefreshButtonNextGame();
         AddHistorySkipTurn("Vous avez passé");
-        if (!OpponentsAreBots && Players.length > 1)
+        if (!OpponentsAllBots && Players.length > 1)
             SendTurnSkipped();
         RefreshVar(data);
         RefreshDom();
@@ -93,7 +93,7 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
         AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous avez posé");
         RemoveChrominoInHand(chrominoId);
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
-        if (!OpponentsAreBots && Players.length > 1)
+        if (!OpponentsAllBots && Players.length > 1)
             SendChrominoPlayed({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors });
         RefreshVar(data);
         RefreshDom();
@@ -110,16 +110,16 @@ function CallbackBotPlayed(data, botId) {
     }
     if (data.skip) {
         AddHistorySkipTurn(infoBotPlay + " a passé");
-        if (!OpponentsAreBots && Players.length > 1)
-            SendBotTurnSkipped();
+        if (!OpponentsAllBots && Players.length > 1)
+            SendBotTurnSkipped(data.draw);
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
         AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoBotPlay + " a posé");
         UpdateInHandNumber(botId, -1, data.lastChrominoColors);
-        if (!OpponentsAreBots && Players.length > 1)
-            SendBotChrominoPlayed({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors });
+        if (!OpponentsAllBots && Players.length > 1)
+            SendBotChrominoPlayed({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.draw);
     }
     ShowWorkIsFinish();
     RefreshVar(data);
@@ -127,7 +127,7 @@ function CallbackBotPlayed(data, botId) {
 }
 
 function CallbackEnd(data) {
-    if (OpponentsAreBots) {
+    if (OpponentsAllBots) {
         $("#Askrematch-text").html("Rejouer ?");
         $("#Askrematch").show();
     }
@@ -137,12 +137,17 @@ function CallbackEnd(data) {
     }
 }
 
+function CallbackGetPlayersInfos(data) {
+    Players = data.playersInfos;
+    OpponentsAllBots = data.opponentsAllBots;
+}
+
 function DecreaseInStack() {
     InStack--;
     RefreshInStack();
 }
 
-function UpdateInHandNumber(playerId, value, lastChrominoColors) {
+function UpdateInHandNumber(playerId, value, lastChrominoColors = undefined) {
     let player = Players.find(p => p.id == playerId);
     player.chrominosNumber += value;
     if (player.chrominosNumber <= 1) {
@@ -158,10 +163,7 @@ function RefreshVar(data) {
         if (data.finish !== undefined) IsGameFinish = data.finish;
         ChangePlayerTurn();
     }
-    IsBotTurn = Players.find(p => p.id == PlayerTurnId).isBot;
-    PlayerTurnName = Players.find(p => p.id == PlayerTurnId).name;
-    PlayerTurnText = PlayerTurnName == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurnName} de jouer`;
-    if (PlayerTurnId != PlayerId)
+    if (PlayerTurn.id != PlayerId)
         HaveDraw = false;
     if (IsGameFinish) {
         ShowInfoPopup = true;
@@ -170,7 +172,10 @@ function RefreshVar(data) {
 }
 
 function ChangePlayerTurn() {
-    let index = Players.findIndex(p => p.id == PlayerTurnId);
+    let index = Players.findIndex(p => p.id == PlayerTurn.id);
     let newIndex = index + 1 < Players.length ? index + 1 : 0;
-    PlayerTurnId = Players[newIndex].id;
+    PlayerTurn.id = Players[newIndex].id;
+    PlayerTurn.isBot = Players[newIndex].isBot;
+    PlayerTurn.name = Players[newIndex].name;
+    PlayerTurn.Text = PlayerTurn.name == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurn.name} de jouer`;
 }
