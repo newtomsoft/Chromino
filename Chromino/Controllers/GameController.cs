@@ -183,8 +183,8 @@ namespace Controllers
             {
                 List<string> lastChrominoColors = ColorsLastChromino(gameId, PlayerId);
                 List<string> colors = ColorsPlayedChromino(chrominoId);
-                int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id; var isBot = PlayerDal.IsBot(nextPlayerId); bool finish = GameDal.IsFinished(gameId);
-                return new JsonResult(new { nextPlayerId, isBot, colors, lastChrominoColors, finish });
+                int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id; bool finish = GameDal.IsFinished(gameId);
+                return new JsonResult(new { nextPlayerId, colors, lastChrominoColors, finish });
             }
         }
 
@@ -197,56 +197,32 @@ namespace Controllers
         [HttpPost]
         public IActionResult PlayBot(int id, int botId)
         {
-            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id; //todo : vérifier nextPlayerId si bot est en train de jouer
-            if (nextPlayerId != botId)
+            PlayReturn playReturn;
+            ChrominoInGame chrominoInGame;
+            BotBI botBI = new BotBI(Ctx, Env, id, botId);
+            bool draw = false;
+            do
             {
-                bool isBot = PlayerDal.IsBot(nextPlayerId);
-                bool finish = GameDal.GetStatus(id).IsFinished();
-                ChrominoInGame chrominoInGame = ChrominoInGameDal.LatestPlayed(id, botId);
-                if (chrominoInGame.ChrominoId == null)
-                {
-                    bool skip = true; bool draw = true; // todo : draw pas forcement true en réalité.
-                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
-                }
-                else
-                {
-                    bool skip = false; bool draw = false; // todo : draw pas forcement false en réalité.
-                    List<string> lastChrominoColors = ColorsLastChromino(id, botId);
-                    int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
-                    List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
-                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
-                }
+                playReturn = botBI.PlayBot(out chrominoInGame);
+                if (playReturn == PlayReturn.DrawChromino)
+                    draw = true;
+            }
+            while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
+
+            List<string> lastChrominoColors = ColorsLastChromino(id, botId);
+            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
+            bool finish = GameDal.GetStatus(id).IsFinished();
+            if (chrominoInGame != null)
+            {
+                bool skip = false;
+                int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
+                List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
+                return new JsonResult(new { skip, draw, nextPlayerId, x, y, orientation, flip, colors, lastChrominoColors, finish });
             }
             else
             {
-                PlayReturn playReturn;
-                ChrominoInGame chrominoInGame;
-                BotBI botBI = new BotBI(Ctx, Env, id, botId);
-                bool draw = false;
-                do
-                {
-                    playReturn = botBI.PlayBot(out chrominoInGame);
-                    if (playReturn == PlayReturn.DrawChromino)
-                        draw = true;
-                }
-                while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
-
-                List<string> lastChrominoColors = ColorsLastChromino(id, botId);
-                nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
-                bool finish = GameDal.GetStatus(id).IsFinished();
-                bool isBot = PlayerDal.IsBot(nextPlayerId);
-                if (chrominoInGame != null)
-                {
-                    bool skip = false;
-                    int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
-                    List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
-                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, x, y, orientation, flip, colors, lastChrominoColors, finish });
-                }
-                else
-                {
-                    bool skip = true;
-                    return new JsonResult(new { skip, draw, nextPlayerId, isBot, finish });
-                }
+                bool skip = true;
+                return new JsonResult(new { skip, draw, nextPlayerId, finish });
             }
         }
 
@@ -283,8 +259,7 @@ namespace Controllers
 
             int id = new PlayerBI(Ctx, Env, gameId, PlayerId).SkipTurn();
             bool finish = GameDal.GetStatus(gameId).IsFinished();
-            bool isBot = id != 0 ? PlayerDal.IsBot(id) : false;
-            return new JsonResult(new { id, isBot, finish });
+            return new JsonResult(new { id, finish });
         }
 
         /// <summary>
@@ -373,8 +348,7 @@ namespace Controllers
             int nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerId)[0];
             List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);
             bool finish = GameDal.GetStatus(gameId).IsFinished();
-            bool isBot = PlayerDal.IsBot(nextPlayerId);
-            return new JsonResult(new { nextPlayerId, isBot, lastChrominoColors, finish });
+            return new JsonResult(new { nextPlayerId, lastChrominoColors, finish });
         }
 
 

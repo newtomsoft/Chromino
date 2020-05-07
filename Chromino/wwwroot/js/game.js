@@ -550,12 +550,17 @@ function ErrorReturn(playReturn) {
 function HaveBotResponsability() {
     let playerIndex = Players.findIndex(p => p.id == PlayerId);
     let opponentIndex = Players.findIndex(p => p.id == PlayerTurnId);
-    let limitIndex = opponentIndex < playerIndex ? playerIndex : Players.length;
-    for (var i = opponentIndex; i < limitIndex; i++)
-        if (!Players[i].isBot)
-            return false;
-    if (opponentIndex > playerIndex) {
-        for (var i = 0; i < playerIndex; i++)
+
+    if (playerIndex < opponentIndex) {
+        for (var i = playerIndex + 1; i <= opponentIndex; i++)
+            if (!Players[i].isBot)
+                return false;
+    }
+    else {
+        for (var i = playerIndex + 1; i < Players.length; i++)
+            if (!Players[i].isBot)
+                return false;
+        for (var i = 0; i <= opponentIndex; i++)
             if (!Players[i].isBot)
                 return false;
     }
