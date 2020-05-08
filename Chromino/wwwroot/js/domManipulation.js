@@ -1,8 +1,6 @@
 ﻿function RefreshDom(opponentPlayed) {
     if (HaveBotResponsability())
-        PlayingBot(PlayerTurnId);
-    else
-        IsCanPlay = true;
+        PlayingBot(PlayerTurn.id);
     StopScheduleValidateChromino();
     if (opponentPlayed)
         ShowHistoryLatestMove();
@@ -13,7 +11,7 @@
     RefreshInfoPopup();
     ResizeGameArea();
     StopDraggable();
-    StartDraggable(); //prb
+    StartDraggable();
     if (IsGameFinish) {
         HideButtonPlayChromino();
         RefreshButtonNextGame();
@@ -23,10 +21,7 @@
 
 function RefreshInfoPopup() {
     if (IsGameFinish) {
-        if (Players.find(p => p.id == PlayerId) === undefined) {
-
-        }
-        else {
+        if (Players.find(p => p.id == PlayerId) !== undefined) {
             if (Players.find(p => p.id == PlayerId).chrominosNumber != 0) {
                 html = "<h2>Vous avez perdu</h2><h3>Dommage</h3><br />";
             }
@@ -40,10 +35,11 @@ function RefreshInfoPopup() {
         }
     }
     else {
-        $('#PopupInfoHead').html(`<h3>${PlayerTurnText}</h3>`);
+        let infoHead = PlayerTurn.id == PlayerId ? "C'est à vous de jouer" : `C'est à ${PlayerTurn.name} de jouer`;
+        $('#PopupInfoHead').html(`<h3>${infoHead}</h3>`);
     }
     RefreshInStack();
-    if (ShowInfoPopup && PlayerTurnId == PlayerId || IsGameFinish)
+    if (ShowInfoPopup && PlayerTurn.id == PlayerId || IsGameFinish)
         ShowPopup('#PopupInfo');
 }
 
@@ -62,7 +58,7 @@ function RefreshInStack() {
 }
 
 function UpdateInHandNumberDom(player) {
-    let playerHave = player.name == "Vous" ? "Vous avez" : player.name + " a";
+    let playerHave = player.id == PlayerId ? "Vous avez" : player.name + " a";
     $('#Player_' + player.id).removeClass();
     switch (player.chrominosNumber) {
         case 0:
@@ -229,7 +225,7 @@ function RemoveChrominoInHand(chrominoId) {
     $('#' + chrominoId).remove();
 }
 function RefreshButtonNextGame() {
-    if (!OpponentsAreBots && !IsBotTurn && PlayerId != PlayerTurnId)
+    if (!OpponentsAllBots && !PlayerTurn.isBot && PlayerId != PlayerTurn.id)
         $('#ButtonNextGame').show();
     else
         $('#ButtonNextGame').hide();
@@ -240,7 +236,7 @@ function RefreshButtonsDrawSkip() {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
-    else if (PlayerTurnId != PlayerId) {
+    else if (PlayerTurn.id != PlayerId) {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
@@ -261,7 +257,7 @@ function HideButtonPlayChromino() {
     $('#ButtonPlayingChromino').hide();
 }
 function ShowButtonChat() {
-    if (!OpponentsAreBots)
+    if (!OpponentsAllBots)
         $('#ButtonChat').show();
 }
 function HideButtonChat() {
@@ -295,11 +291,11 @@ function RefreshHelp() {
     RefreshButtonHelp();
 }
 function ShowHistoryLatestMove() {
-        AnimateChromino(3, true, true);
+    AnimateChromino(3, true, true);
 }
 
 function ShowWorkInProgress() {
-    $('*').css('cursor', 'progress');
+    $('*').css('cursor', 'wait');
     $('#Waiting').show();
 }
 

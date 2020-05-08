@@ -7,36 +7,19 @@ namespace SignalR.Hubs
     [Authorize]
     public class HubSignal : Hub
     {
-        public async Task SendMessageSent(int gameId)
-        {
-            await Clients.Others.SendAsync("ReceiveMessageSent", gameId);
-        }
+        public async Task AddToGroup(string guid) => await Groups.AddToGroupAsync(Context.ConnectionId, guid);
 
-        public async Task SendChrominoPlayed(int gameId, object chrominoPlayed)
-        {
-            await Clients.Others.SendAsync("ReceiveChrominoPlayed", gameId, chrominoPlayed );
-        }
+        public async Task SendMessageSent(string guid) => await Clients.OthersInGroup(guid).SendAsync("ReceiveMessageSent");
 
-        public async Task SendTurnSkipped(int gameId)
-        {
-            await Clients.Others.SendAsync("ReceiveTurnSkipped", gameId);
-        }
+        public async Task SendChrominoPlayed(string guid, object chrominoPlayed) => await Clients.OthersInGroup(guid).SendAsync("ReceiveChrominoPlayed", chrominoPlayed);
 
-        public async Task SendChrominoDrawn(int gameId)
-        {
-            await Clients.Others.SendAsync("ReceiveChrominoDrawn", gameId);
-        }
+        public async Task SendTurnSkipped(string guid) => await Clients.OthersInGroup(guid).SendAsync("ReceiveTurnSkipped");
 
-        // BOT
-        public async Task SendBotChrominoPlayed(int gameId, object chrominoPlayed)
-        {
-            await Clients.Others.SendAsync("ReceiveBotChrominoPlayed", gameId, chrominoPlayed);
-        }
+        public async Task SendChrominoDrawn(string guid) => await Clients.OthersInGroup(guid).SendAsync("ReceiveChrominoDrawn");
 
-        public async Task SendBotTurnSkipped(int gameId)
-        {
-            await Clients.Others.SendAsync("ReceiveBotTurnSkipped", gameId);
-        }
+        public async Task SendBotChrominoPlayed(string guid, object chrominoPlayed, bool isDrawn) => await Clients.OthersInGroup(guid).SendAsync("ReceiveBotChrominoPlayed", chrominoPlayed, isDrawn);
+
+        public async Task SendBotTurnSkipped(string guid, bool isDrawn) => await Clients.OthersInGroup(guid).SendAsync("ReceiveBotTurnSkipped", isDrawn);
 
     }
 }

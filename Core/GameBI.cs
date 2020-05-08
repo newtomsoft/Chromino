@@ -133,32 +133,23 @@ namespace Data.Core
                 else
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
 
-                bool askRematch = false;
                 if (GameDal.IsFinished(GameId) && !GamePlayerDal.IsViewFinished(GameId, playerId))
                 {
                     PlayerBI playerBI = new PlayerBI(Ctx, Env, GameId, playerId);
                     if (GamePlayerDal.GetWon(GameId, playerId) != true)
-                    {
                         playerBI.LooseGame(playerId);
-                        if (GamePlayerDal.IsAllLoosersViewFinished(GameId))
-                            askRematch = true;
-                    }
                     else if (GamePlayerDal.WinnersId(GameId).Count > 1) // draw game
                         playerBI.WinGame(playerId, true);
                     else // only 1 winner
                         playerBI.WinGame(playerId);
                 }
-                GamePlayer gamePlayerTurn = GamePlayerDal.Details(GameId, playerTurn.Id);
                 GamePlayer gamePlayer = GamePlayerDal.Details(GameId, playerId);
                 List<Square> squares = SquareDal.List(GameId);
-                List<int> botsId = PlayerDal.BotsId();
                 List<ChrominoInGame> chrominosInGamePlayed = ChrominoInGameDal.List(GameId);
                 Game game = GameDal.Details(GameId);
-                bool opponenentsAreBots = GamePlayerDal.IsAllBots(GameId, playerId);
-                List<GoodPosition> goodPositions = GoodPositionDal.RootListByPriority(GameId, playerId); //todo virer
                 List<Tip> tips = TipDal.ListOn(playerId);
                 List<PlayError> playErrors = PlayErrorDal.List();
-                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayerTurn, gamePlayer, botsId, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, opponenentsAreBots, goodPositions, tips, askRematch, playErrors);
+                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayer, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, tips, playErrors);
                 return gameVM;
             }
             else return null;

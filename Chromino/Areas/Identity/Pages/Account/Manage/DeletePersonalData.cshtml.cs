@@ -68,7 +68,7 @@ namespace ChrominoApp.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-            return RedirectToAction("Delete", "Player");
+            return RedirectToAction("Delete", "Player", new { area = "" });
         }
     }
 }

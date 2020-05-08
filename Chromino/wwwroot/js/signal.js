@@ -1,36 +1,33 @@
 ﻿var ConnectionHubGame;
 function CallSignalR() {
-    ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubChat").withAutomaticReconnect().build();
+    ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
+    ConnectionHubGame.start().then(function () {
+        SendAddToGroup(Guid);
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });;
 
     ConnectionHubGame.on("ReceiveMessageSent", function (gameId) {
         OpponentMessageSent(gameId);
     });
 
-    ConnectionHubGame.on("ReceiveChrominoPlayed", function (gameId, chrominoPlayed) {
-        OpponentChrominoPlayed(gameId, chrominoPlayed);
+    ConnectionHubGame.on("ReceiveChrominoPlayed", function (chrominoPlayed) {
+        OpponentChrominoPlayed(chrominoPlayed);
     });
 
-    ConnectionHubGame.on("ReceiveTurnSkipped", function (gameId) {
-        OpponentTurnSkipped(gameId);
+    ConnectionHubGame.on("ReceiveTurnSkipped", function () {
+        OpponentTurnSkipped();
     });
 
-    ConnectionHubGame.on("ReceiveChrominoDrawn", function (gameId) {
-        OpponentChrominoDrawn(gameId);
+    ConnectionHubGame.on("ReceiveChrominoDrawn", function () {
+        OpponentChrominoDrawn();
     });
 
-    //BOT
-    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (gameId, chrominoPlayed) {
-        BotChrominoPlayed(gameId, chrominoPlayed);
+    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (chrominoPlayed, isDrawn) {
+        BotChrominoPlayed(chrominoPlayed, isDrawn);
     });
 
-    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (gameId) {
-        BotTurnSkipped(gameId);
-    });
-
-
-    ConnectionHubGame.start().then(function () {
-        $("#ButtonChat").show();
-    }).catch(function (err) {
-        return console.error(err.toString());
+    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (isDrawn) {
+        BotTurnSkipped(isDrawn);
     });
 }

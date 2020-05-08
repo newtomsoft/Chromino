@@ -1,4 +1,5 @@
-﻿var TimeoutPut = null;
+﻿var Guid;
+var TimeoutPut = null;
 var ToPut = false;
 var PositionLastChromino;
 var TimeoutRotate = null;
@@ -14,8 +15,8 @@ var TimeoutValidateChromino = null;
 var IndexMove = 0;
 var HelpIndexes = new Array;
 var Players;
-var IsCanPlay;
 var IsPlayingBackEnd;
+var OpponentsAllBots;
 
 $(document).ready(function () {
     InitDom();
@@ -224,7 +225,7 @@ function StartDraggable() {
                 SchedulePut();
                 StopScheduleValidateChromino();
             }).on("dragend", function () {
-                if (IsChrominoInGameArea(this) && PlayerId == PlayerTurnId && IsCanPlay && !IsGameFinish) {
+                if (IsChrominoInGameArea(this) && PlayerId == PlayerTurn.id && !IsPlayingBackEnd && !IsGameFinish) {
                     ShowButtonPlayChromino();
                     ScheduleValidateChromino();
                 }
@@ -272,7 +273,7 @@ function ScheduleRotate() {
 }
 
 function SchedulePut() {
-    if (PlayerTurnId == PlayerId && IsCanPlay) {
+    if (PlayerTurn.id == PlayerId && !IsPlayingBackEnd) {
         clearTimeout(TimeoutPut);
         PositionLastChromino = $(LastChrominoMove).offset();
         TimeoutPut = setTimeout(function () {
@@ -544,18 +545,23 @@ function ErrorReturn(playReturn) {
         }
         ShowPopup('#PopupError');
     }
-    IsCanPlay = true;
+    IsPlayingBackEnd = false;
 }
 
 function HaveBotResponsability() {
     let playerIndex = Players.findIndex(p => p.id == PlayerId);
-    let opponentIndex = Players.findIndex(p => p.id == PlayerTurnId);
-    let limitIndex = opponentIndex < playerIndex ? playerIndex : Players.length;
-    for (var i = opponentIndex; i < limitIndex; i++)
-        if (!Players[i].isBot)
-            return false;
-    if (opponentIndex > playerIndex) {
-        for (var i = 0; i < playerIndex; i++)
+    let opponentIndex = Players.findIndex(p => p.id == PlayerTurn.id);
+
+    if (playerIndex < opponentIndex) {
+        for (var i = playerIndex + 1; i <= opponentIndex; i++)
+            if (!Players[i].isBot)
+                return false;
+    }
+    else {
+        for (var i = playerIndex + 1; i < Players.length; i++)
+            if (!Players[i].isBot)
+                return false;
+        for (var i = 0; i <= opponentIndex; i++)
             if (!Players[i].isBot)
                 return false;
     }

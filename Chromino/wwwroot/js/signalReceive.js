@@ -1,61 +1,56 @@
-﻿function OpponentMessageSent(gameId) {
-    if (gameId != GameId)
-        return;
+﻿function OpponentMessageSent() {
     if ($("#PopupChat").is(":visible"))
         ChatReadMessages();
     else
         ChatGetMessages(true);
 }
 
-function OpponentChrominoPlayed(gameId, chrominoPlayed) {
-    if (gameId != GameId)
-        return;
+function OpponentChrominoPlayed(chrominoPlayed) {
     GetInfosAfterPlaying();
-    AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
-    UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
+    AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    UpdateInHandNumber(PlayerTurn.id, -1, TESTlastChrominoColors);
     RefreshVar(data);
     RefreshDom(true);
 }
 
-function OpponentChrominoDrawn(gameId) {
-    if (gameId != GameId)
-        return;
+function OpponentChrominoDrawn() {
     GetInfosAfterPlaying();
-    $('#InfoGame').html(PlayerTurnName + " pioche...").fadeIn().delay(1000).fadeOut();
+    $('#InfoGame').html(PlayerTurn.name + " pioche...").fadeIn().delay(1000).fadeOut();
     DecreaseInStack();
-    UpdateInHandNumber(PlayerTurnId, 1);
+    UpdateInHandNumber(PlayerTurn.id, 1);
     RefreshDom();
 }
 
-function OpponentTurnSkipped(gameId) {
-    if (gameId != GameId)
-        return;
+function OpponentTurnSkipped() {
     GetInfosAfterPlaying();
-    AddHistorySkipTurn(PlayerTurnName + " a passé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    AddHistorySkipTurn(PlayerTurn.name + " a passé");
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     RefreshVar(data);
     RefreshDom(true);
 }
 
-//BOT
-function BotChrominoPlayed(gameId, chrominoPlayed) {
-    if (gameId != GameId)
-        return;
+function BotChrominoPlayed(chrominoPlayed, isDrawn) {
     GetInfosAfterPlaying();
-    AddChrominoInGame(chrominoPlayed, PlayerTurnName + " a posé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
-    UpdateInHandNumber(PlayerTurnId, -1, TESTlastChrominoColors);
+    AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    if (isDrawn)
+        DecreaseInStack();
+    else
+        UpdateInHandNumber(PlayerTurn.id, -1, TESTlastChrominoColors);
+
     RefreshVar(data);
     RefreshDom(true);
 }
 
-function BotTurnSkipped(gameId) {
-    if (gameId != GameId)
-        return;
+function BotTurnSkipped(isDrawn) {
     GetInfosAfterPlaying();
-    AddHistorySkipTurn(PlayerTurnName + " a passé");
-    let data = { isBot: TESTisBot, finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    AddHistorySkipTurn(PlayerTurn.name + " a passé");
+    if (isDrawn) {
+        DecreaseInStack();
+        UpdateInHandNumber(PlayerTurn.id, 1);
+    }
+    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
     RefreshVar(data);
     RefreshDom(true);
 }
