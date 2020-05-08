@@ -47,29 +47,6 @@ namespace Controllers
         }
 
         [Authorize]
-        public JsonResult PlayersInfos(int gameId)
-        {
-            List<Object> playersInfos = new List<Object>();
-            foreach (int id in GamePlayerDal.PlayersId(gameId))
-            {
-                int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, id);
-                string[] lastChrominoColors = new string[] { "", "", "" };
-                Player player = PlayerDal.Details(id);
-                string name = player.UserName;
-                bool isBot = player.Bot;
-                if (chrominosNumber == 1)
-                {
-                    Chromino c = ChrominoInHandDal.FirstChromino(gameId, id);
-                    lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
-                }
-                playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
-            }
-            bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
-            string guid = GameDal.Details(gameId).Guid;
-            return new JsonResult(new { playersInfos, opponentsAllBots, guid } );
-        }
-
-        [Authorize]
         public IActionResult Delete()
         {
             var gamesIdToDelete = GamePlayerDal.GamesId(PlayerId);

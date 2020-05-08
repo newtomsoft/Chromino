@@ -94,13 +94,13 @@ function End() {
     });
 }
 
-function GetPlayersInfos() {
+function GetGameInfos(){
     $.ajax({
-        url: UrlPlayersInfos,
+        url: UrlGameInfos,
         type: 'POST',
         async: false,
         data: { gameId: GameId },
-        success: function (data) { CallbackGetPlayersInfos(data); },
+        success: function (data) { CallbackGameInfos(data); },
     });
 }
 

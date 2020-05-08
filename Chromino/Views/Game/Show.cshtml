@@ -7,15 +7,11 @@
     const string classFree = "Free";
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
-    Dictionary<string, int> pseudosExceptCurrentPlayer_Chrominos = new Dictionary<string, int>(Model.PseudosChrominos);
-    pseudosExceptCurrentPlayer_Chrominos.Remove("Vous");
     int memosNumbers = 0;
     if (Model.GamePlayer != null)
     {
         memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
     }
-    string styleButtonSkip = "display:none";
-    string styleButtonDraw = "display:none";
     const int horizontal = (int)Orientation.Horizontal;
     const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
@@ -34,8 +30,8 @@
     <button id="ButtonMemo" class="doAction btn btn-toolbar img-memo">
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
     </button>
-    <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="@styleButtonDraw"></button>
-    <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="@styleButtonSkip"></button>
+    <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="display:none"></button>
+    <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="display:none"></button>
     <button id="ButtonPlayingChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
     <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="display:none"></button>
@@ -97,7 +93,7 @@
 </div>
 @section ScriptJs
 {
-    <script>
+<script>
 var UrlTipOff = '@Url.Action("Off", "Tip")';
 var UrlMemoAdd = '@Url.Action("Add", "Memo")';
 var UrlChatPostMessage = '@Url.Action("PostMessage", "Chat")';
@@ -109,7 +105,7 @@ var UrlDraw = '@Url.Action("DrawChromino")';
 var UrlPlayBot = '@Url.Action("PlayBot")';
 var UrlHelp = '@Url.Action("Help")';
 var UrlEnd = '@Url.Action("End")';
-var UrlPlayersInfos = '@Url.Action("PlayersInfos", "Player")';
+var UrlGameInfos = '@Url.Action("Infos")';
 var UrlGetInfosAfterPlaying = '@Url.Action("GetInfosAfterPlaying")';
 var IsGameFinish = @Model.Game.Status.IsFinished().ToJs();
 var InStack = @Model.ChrominosInStack;

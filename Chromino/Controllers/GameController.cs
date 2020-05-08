@@ -299,6 +299,31 @@ namespace Controllers
             return View();
         }
 
+        public async Task<JsonResult> Infos(int gameId)
+        {
+            Player thisPlayer = PlayerDal.Details(PlayerId);
+            bool isAdmin = await UserManager.IsInRoleAsync(thisPlayer, "Admin").ConfigureAwait(true);
+            GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
+            string guid = GameDal.Details(gameId).Guid;
+            bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
+            List<object> playersInfos = new List<object>();
+            foreach (int id in GamePlayerDal.PlayersId(gameId))
+            {
+                int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, id);
+                string[] lastChrominoColors = new string[] { "", "", "" };
+                Player player = PlayerDal.Details(id);
+                string name = player.UserName;
+                bool isBot = player.Bot;
+                if (chrominosNumber == 1)
+                {
+                    Chromino c = ChrominoInHandDal.FirstChromino(gameId, id);
+                    lastChrominoColors = new string[] { c.FirstColor.ToString(), c.SecondColor.ToString(), c.ThirdColor.ToString() };
+                }
+                playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
+            }
+            return new JsonResult(new { gameVM, guid, opponentsAllBots, playersInfos, });
+        }
+
         /// <summary>
         /// Cloture de la partie
         /// </summary>
