@@ -182,7 +182,7 @@ function AddGameLineTop(add) {
         GameAreaLinesNumber++;
         YMin--;
     }
-    HistoryChrominos.UpdateSquares(add, GameAreaColumnsNumber, 'top');
+    UpdateSquares(add, GameAreaColumnsNumber, 'top');
 }
 
 function AddGameColumnLeft(add) {
@@ -200,7 +200,7 @@ function AddGameColumnLeft(add) {
         GameAreaColumnsNumber++;
         XMin--;
     }
-    HistoryChrominos.UpdateSquares(add, oldColumnsNumber, 'left');
+    UpdateSquares(add, oldColumnsNumber, 'left');
 }
 
 function AddGameColumnRight(add) {
@@ -217,8 +217,7 @@ function AddGameColumnRight(add) {
         });
         GameAreaColumnsNumber++;
     }
-
-    HistoryChrominos.UpdateSquares(add, oldColumnsNumber, 'right');
+    UpdateSquares(add, oldColumnsNumber, 'right');
 }
 
 function RemoveChrominoInHand(chrominoId) {
@@ -303,3 +302,25 @@ function ShowWorkIsFinish() {
     $('*').css('cursor', '');
     $('#Waiting').hide();
 }
+
+function UpdateSquares(addNumber, columnsNumber, placeToAdd) {
+    HistoryChrominos.forEach(function (item) {
+        if (item.square0 !== undefined) {
+            for (i = 0; i < 3; i++) {
+                squareProp = "square" + i;
+                oldNumber = parseInt(item[squareProp].replace("Square_", ""));
+                switch (placeToAdd) {
+                    case 'top':
+                        item[squareProp] = "Square_" + (oldNumber + addNumber * columnsNumber);
+                        break;
+                    case 'right':
+                        item[squareProp] = "Square_" + (oldNumber + addNumber * Math.floor(oldNumber / columnsNumber));
+                        break;
+                    case 'left':
+                        item[squareProp] = "Square_" + (oldNumber + addNumber * (1 + Math.floor(oldNumber / columnsNumber)));
+                        break;
+                }
+            }
+        }
+    });
+};

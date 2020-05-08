@@ -1,4 +1,10 @@
-﻿function CallbackChatGetMessages(data, newMessages) {
+﻿function CallbackGameInfos(data) {
+    OpponentsAllBots = data.opponentsAllBots;
+    Guid = data.guid;
+    Players = data.playersInfos;
+}
+
+function CallbackChatGetMessages(data, newMessages) {
     if (!newMessages)
         $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
     if (data.newMessagesNumber > 0) {
@@ -138,12 +144,6 @@ function CallbackEnd(data) {
         $("#Askrematch-text").html("Prendre votre revanche ?");
         $("#Askrematch").show();
     }
-}
-
-function CallbackGetPlayersInfos(data) {
-    Players = data.playersInfos;
-    OpponentsAllBots = data.opponentsAllBots;
-    Guid = data.guid;
 }
 
 function DecreaseInStack() {
