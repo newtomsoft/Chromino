@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class TryChat1 : Migration
+    public partial class ChangeChat : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

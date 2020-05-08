@@ -17,7 +17,7 @@ function CallbackChatReadMessages(data) {
 function CallbackAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
-    SendMessageSent();
+    SendMessageSent(Guid);
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {
@@ -62,7 +62,7 @@ function CallbackDrawChromino(data) {
         UpdateInHandNumber(PlayerId, 1);
         StopDraggable();
         StartDraggable();
-        if (!OpponentsAreBots && Players.length > 1)
+        if (!OpponentsAllBots && Players.length > 1)
             SendChrominoDrawn();
         RefreshDom();
     }
@@ -70,14 +70,12 @@ function CallbackDrawChromino(data) {
 
 function CallbackSkipTurn(data) {
     if (data.id === undefined) {
-        ErrorReturn(player.errorReturn);
+        ErrorReturn(data.errorReturn);
     }
     else {
         RefreshButtonNextGame();
         AddHistorySkipTurn("Vous avez passé");
-        IsBotTurn = data.isBot;
-        PlayerTurnId = data.id;
-        if (!OpponentsAreBots && Players.length > 1)
+        if (!OpponentsAllBots && Players.length > 1)
             SendTurnSkipped();
         RefreshVar(data);
         RefreshDom();
@@ -92,19 +90,17 @@ function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, fli
     }
     else {
         HideButtonPlayChromino();
-        let chrominoPlayed = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
-        let chrominoPlayedClone = { xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors };
-        AddChrominoInGame(chrominoPlayed, "Vous avez posé");
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors }, "Vous avez posé");
         RemoveChrominoInHand(chrominoId);
         UpdateInHandNumber(PlayerId, -1, data.lastChrominoColors);
-        if (!OpponentsAreBots && Players.length > 1)
-            SendChrominoPlayed(chrominoPlayedClone);
+        if (!OpponentsAllBots && Players.length > 1)
+            SendChrominoPlayed({ xIndex: xIndex, yIndex: yIndex, orientation: orientation, flip: flip, colors: data.colors });
         RefreshVar(data);
         RefreshDom();
     }
 }
 
-function BotPlayed(data, botId) {
+function CallbackBotPlayed(data, botId) {
     $('#InfoGame').fadeOut();
     let infoBotPlay = Players.find(p => p.id == botId).name;
     if (data.draw) {
@@ -114,18 +110,16 @@ function BotPlayed(data, botId) {
     }
     if (data.skip) {
         AddHistorySkipTurn(infoBotPlay + " a passé");
-        if (!OpponentsAreBots && Players.length > 1)
-            SendBotTurnSkipped();
+        if (!OpponentsAllBots && Players.length > 1)
+            SendBotTurnSkipped(data.draw);
     }
     else {
         let xIndex = data.x - XMin;
         let yIndex = data.y - YMin;
-        let chrominoPlayed = { xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors };
-        AddChrominoInGame(chrominoPlayed, infoBotPlay + " a posé");
+        AddChrominoInGame({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, infoBotPlay + " a posé");
         UpdateInHandNumber(botId, -1, data.lastChrominoColors);
-        let chrominoPlayedClone = { xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors };
-        if (!OpponentsAreBots && Players.length > 1)
-            SendBotChrominoPlayed(chrominoPlayedClone);
+        if (!OpponentsAllBots && Players.length > 1)
+            SendBotChrominoPlayed({ xIndex: xIndex, yIndex: yIndex, orientation: data.orientation, flip: data.flip, colors: data.colors }, data.draw);
     }
     ShowWorkIsFinish();
     RefreshVar(data);
@@ -133,7 +127,10 @@ function BotPlayed(data, botId) {
 }
 
 function CallbackEnd(data) {
-    if (OpponentsAreBots) {
+    let toAdd = '';
+    Players.forEach(e => toAdd += `<input name="playersName" value="${e.name}" />`);
+    $(toAdd).appendTo('#FormRematch');
+    if (OpponentsAllBots) {
         $("#Askrematch-text").html("Rejouer ?");
         $("#Askrematch").show();
     }
@@ -143,17 +140,23 @@ function CallbackEnd(data) {
     }
 }
 
+function CallbackGetPlayersInfos(data) {
+    Players = data.playersInfos;
+    OpponentsAllBots = data.opponentsAllBots;
+    Guid = data.guid;
+}
+
 function DecreaseInStack() {
     InStack--;
     RefreshInStack();
 }
 
-function UpdateInHandNumber(playerId, value, lastChrominoColors) {
+function UpdateInHandNumber(playerId, value, lastChrominoColors = undefined) {
     let player = Players.find(p => p.id == playerId);
     player.chrominosNumber += value;
     if (player.chrominosNumber <= 1) {
         player.lastChrominoColors = lastChrominoColors;
-        if (player.name != "Vous")
+        if (player.id != PlayerId)
             ShowInfoPopup = true;
     }
     UpdateInHandNumberDom(player);
@@ -161,16 +164,21 @@ function UpdateInHandNumber(playerId, value, lastChrominoColors) {
 
 function RefreshVar(data) {
     if (data !== undefined) {
-        if (data.isBot !== undefined) IsBotTurn = data.isBot;
         if (data.finish !== undefined) IsGameFinish = data.finish;
-        if (data.nextPlayerId !== undefined) PlayerTurnId = data.nextPlayerId;
+        ChangePlayerTurn();
     }
-    PlayerTurnName = Players.find(p => p.id == PlayerTurnId).name;
-    PlayerTurnText = PlayerTurnName == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurnName} de jouer`;
-    if (PlayerTurnId != PlayerId)
+    if (PlayerTurn.id != PlayerId)
         HaveDraw = false;
     if (IsGameFinish) {
         ShowInfoPopup = true;
         End();
     }
+}
+
+function ChangePlayerTurn() {
+    let index = Players.findIndex(p => p.id == PlayerTurn.id);
+    let newIndex = index + 1 < Players.length ? index + 1 : 0;
+    PlayerTurn.id = Players[newIndex].id;
+    PlayerTurn.isBot = Players[newIndex].isBot;
+    PlayerTurn.name = Players[newIndex].name;
 }

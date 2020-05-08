@@ -24,27 +24,19 @@ namespace Data.ViewModel
         public List<ChrominoVM> PlayerChrominosVM { get; set; }
         public Player PlayerTurn { get; set; }
         public Game Game { get; set; }
-        public GamePlayer GamePlayerTurn { get; set; }
         public GamePlayer GamePlayer { get; set; }
-        public List<int> BotsId { get; set; }
         public List<ChrominoPlayedVM> ChrominosPlayedVM { get; set; }
         public List<string> Pseudos { get; set; }
-        public bool OpponentsAreBots { get; set; }
-        public List<PossiblesChrominoVM> PossiblesChrominosVM { get; set; }
         public List<Tip> Tips { get; set; }
-        public bool AskRematch { get; set; }
         public List<PlayError> PlayErrors { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayerTurn, GamePlayer gamePlayer, List<int> botsId, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, bool opponenentsAreBots, List<GoodPosition> goodPositions, List<Tip> tipsOn, bool askRematch, List<PlayError> playErrors)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayer, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, List<Tip> tipsOn, List<PlayError> playErrors)
         {
             Player = player;
-            OpponentsAreBots = opponenentsAreBots;
             Game = game;
             PlayerTurn = playerTurn;
-            GamePlayerTurn = gamePlayerTurn;
             GamePlayer = gamePlayer;
             ChrominosInStack = chrominosInStackNumber;
-            BotsId = botsId;
             XMin = squares.Select(g => g.X).Min() - 2; // +- 2 pour marge permettant de poser un chromino sur un bord
             XMax = squares.Select(g => g.X).Max() + 2;
             YMin = squares.Select(g => g.Y).Min() - 2;
@@ -86,7 +78,6 @@ namespace Data.ViewModel
             }
 
             Tips = tipsOn;
-            AskRematch = askRematch;
             PlayErrors = playErrors;
         }
 

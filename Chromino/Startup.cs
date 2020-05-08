@@ -111,7 +111,7 @@ namespace ChrominoGame
                 endpoints.MapControllerRoute(
                    name: "default",
                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapHub<HubSignal>("/hubChat");
+                endpoints.MapHub<HubSignal>("/hubGame");
             });
         }
     }

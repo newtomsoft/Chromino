@@ -96,11 +96,11 @@ function End() {
 
 function GetPlayersInfos() {
     $.ajax({
-        url: UrlPlayersIdChrominosNumber,
+        url: UrlPlayersInfos,
         type: 'POST',
         async: false,
         data: { gameId: GameId },
-        success: function (data) { Players = data; },
+        success: function (data) { CallbackGetPlayersInfos(data); },
     });
 }
 
@@ -109,19 +109,17 @@ function GetInfosAfterPlaying() {
         url: UrlGetInfosAfterPlaying,
         type: 'POST',
         async: false,
-        data: { gameId: GameId, playerId: PlayerTurnId },
+        data: { gameId: GameId, playerId: PlayerTurn.id },
         success: function (data) { TEST(data); },
     });
 }
 
 //TODO DETTE TECHNIQUE
 var TESTnextPlayerId;
-var TESTisBot;
 var TESTlastChrominoColors;
 var TESTfinish;
 function TEST(data) {
     TESTnextPlayerId = data.nextPlayerId;
-    TESTisBot = data.isBot;
     TESTlastChrominoColors = data.lastChrominoColors;
     TESTfinish = data.finish;
 }
@@ -137,7 +135,7 @@ function PlayingBot(botId) {
             url: UrlPlayBot,
             type: 'POST',
             data: { id: GameId, botId: botId },
-            success: function (data) { BotPlayed(data, botId); },
+            success: function (data) { CallbackBotPlayed(data, botId); },
         });
     }
 }
@@ -146,9 +144,8 @@ function PlayingChromino() {
     ShowInfoPopup = false;
     HideButtonPlayChromino();
     if (!IsGameFinish && LastChrominoMove != null) {
-        IsCanPlay = false;
-        StopDraggable(LastChrominoMove);
         IsPlayingBackEnd = true;
+        StopDraggable(LastChrominoMove);
         ShowWorkInProgress();
         let offset = $(LastChrominoMove).offset();
         let xIndex = Math.round((offset.left - GameAreaOffsetX) / SquareSize);
