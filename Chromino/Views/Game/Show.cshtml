@@ -113,8 +113,7 @@ var UrlPlayersInfos = '@Url.Action("PlayersInfos", "Player")';
 var UrlGetInfosAfterPlaying = '@Url.Action("GetInfosAfterPlaying")';
 var IsGameFinish = @Model.Game.Status.IsFinished().ToJs();
 var InStack = @Model.ChrominosInStack;
-var PlayerId = @Model.Player.Id;
-var PlayerName = '@Model.Player.UserName';
+var PlayerId = @Model.Player.Id ;
 var HaveDraw = @haveDraw;
 var PlayerTurn = { id:@Model.PlayerTurn.Id, name: "@Model.PlayerTurn.UserName", isBot:@Model.PlayerTurn.Bot.ToJs() };
 var PlayersNumber = @Model.Pseudos.Count;
@@ -172,11 +171,6 @@ var HistoryChrominos = new Array;
     <div class="div-head img-infogame" title="information"></div>
     <div id="PopupInfoHead"></div>
     <form id="FormRematch" asp-action="Rematch" hidden>
-        <input name="playersName" value="@Model.Player.UserName" />
-        @foreach (var pseudo_chromino in pseudosExceptCurrentPlayer_Chrominos)
-        {
-            <input name="playersName" value="@pseudo_chromino.Key" />
-        }
     </form>
     <div id="Askrematch" style="display:none">
         <div id="Askrematch-text" class="askrematch"></div>

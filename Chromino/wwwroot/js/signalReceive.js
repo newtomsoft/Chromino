@@ -1,15 +1,11 @@
-﻿function OpponentMessageSent(gameId) {
-    if (gameId != GameId)
-        return;
+﻿function OpponentMessageSent() {
     if ($("#PopupChat").is(":visible"))
         ChatReadMessages();
     else
         ChatGetMessages(true);
 }
 
-function OpponentChrominoPlayed(gameId, chrominoPlayed) {
-    if (gameId != GameId)
-        return;
+function OpponentChrominoPlayed(chrominoPlayed) {
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
     let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
@@ -18,9 +14,7 @@ function OpponentChrominoPlayed(gameId, chrominoPlayed) {
     RefreshDom(true);
 }
 
-function OpponentChrominoDrawn(gameId) {
-    if (gameId != GameId)
-        return;
+function OpponentChrominoDrawn() {
     GetInfosAfterPlaying();
     $('#InfoGame').html(PlayerTurn.name + " pioche...").fadeIn().delay(1000).fadeOut();
     DecreaseInStack();
@@ -28,10 +22,7 @@ function OpponentChrominoDrawn(gameId) {
     RefreshDom();
 }
 
-function OpponentTurnSkipped(gameId) {
-    if (gameId != GameId)
-        return;
-    // TODO : pioche ??
+function OpponentTurnSkipped() {
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurn.name + " a passé");
     let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
@@ -39,9 +30,7 @@ function OpponentTurnSkipped(gameId) {
     RefreshDom(true);
 }
 
-function BotChrominoPlayed(gameId, chrominoPlayed, isDrawn) {
-    if (gameId != GameId)
-        return;
+function BotChrominoPlayed(chrominoPlayed, isDrawn) {
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
     let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
@@ -54,9 +43,7 @@ function BotChrominoPlayed(gameId, chrominoPlayed, isDrawn) {
     RefreshDom(true);
 }
 
-function BotTurnSkipped(gameId, isDrawn) {
-    if (gameId != GameId)
-        return;
+function BotTurnSkipped(isDrawn) {
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurn.name + " a passé");
     if (isDrawn) {

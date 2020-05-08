@@ -11,7 +11,7 @@
     RefreshInfoPopup();
     ResizeGameArea();
     StopDraggable();
-    StartDraggable(); //prb
+    StartDraggable();
     if (IsGameFinish) {
         HideButtonPlayChromino();
         RefreshButtonNextGame();
@@ -21,10 +21,7 @@
 
 function RefreshInfoPopup() {
     if (IsGameFinish) {
-        if (Players.find(p => p.id == PlayerId) === undefined) {
-
-        }
-        else {
+        if (Players.find(p => p.id == PlayerId) !== undefined) {
             if (Players.find(p => p.id == PlayerId).chrominosNumber != 0) {
                 html = "<h2>Vous avez perdu</h2><h3>Dommage</h3><br />";
             }
@@ -38,7 +35,8 @@ function RefreshInfoPopup() {
         }
     }
     else {
-        $('#PopupInfoHead').html(`<h3>${PlayerTurn.Text}</h3>`);
+        let infoHead = PlayerTurn.id == PlayerId ? "C'est à vous de jouer" : `C'est à ${PlayerTurn.name} de jouer`;
+        $('#PopupInfoHead').html(`<h3>${infoHead}</h3>`);
     }
     RefreshInStack();
     if (ShowInfoPopup && PlayerTurn.id == PlayerId || IsGameFinish)
@@ -60,7 +58,7 @@ function RefreshInStack() {
 }
 
 function UpdateInHandNumberDom(player) {
-    let playerHave = player.name == "Vous" ? "Vous avez" : player.name + " a";
+    let playerHave = player.id == PlayerId ? "Vous avez" : player.name + " a";
     $('#Player_' + player.id).removeClass();
     switch (player.chrominosNumber) {
         case 0:
@@ -293,7 +291,7 @@ function RefreshHelp() {
     RefreshButtonHelp();
 }
 function ShowHistoryLatestMove() {
-        AnimateChromino(3, true, true);
+    AnimateChromino(3, true, true);
 }
 
 function ShowWorkInProgress() {

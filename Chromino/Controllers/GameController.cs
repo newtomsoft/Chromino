@@ -146,7 +146,6 @@ namespace Controllers
         {
             if (id == 0)
                 return RedirectToAction("GameNotFound");
-
             Player player = PlayerDal.Details(PlayerId);
             bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
             GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin);
@@ -350,7 +349,6 @@ namespace Controllers
             bool finish = GameDal.GetStatus(gameId).IsFinished();
             return new JsonResult(new { nextPlayerId, lastChrominoColors, finish });
         }
-
 
         private void CreateGame(List<Player> players, out int gameId)
         {
