@@ -17,7 +17,7 @@ function CallbackChatReadMessages(data) {
 function CallbackAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
-    SendMessageSent();
+    SendMessageSent(Guid);
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {
@@ -127,6 +127,9 @@ function CallbackBotPlayed(data, botId) {
 }
 
 function CallbackEnd(data) {
+    let toAdd = '';
+    Players.forEach(e => toAdd += `<input name="playersName" value="${e.name}" />`);
+    $(toAdd).appendTo('#FormRematch');
     if (OpponentsAllBots) {
         $("#Askrematch-text").html("Rejouer ?");
         $("#Askrematch").show();
@@ -140,6 +143,7 @@ function CallbackEnd(data) {
 function CallbackGetPlayersInfos(data) {
     Players = data.playersInfos;
     OpponentsAllBots = data.opponentsAllBots;
+    Guid = data.guid;
 }
 
 function DecreaseInStack() {
@@ -152,7 +156,7 @@ function UpdateInHandNumber(playerId, value, lastChrominoColors = undefined) {
     player.chrominosNumber += value;
     if (player.chrominosNumber <= 1) {
         player.lastChrominoColors = lastChrominoColors;
-        if (player.name != "Vous")
+        if (player.id != PlayerId)
             ShowInfoPopup = true;
     }
     UpdateInHandNumberDom(player);
@@ -177,5 +181,4 @@ function ChangePlayerTurn() {
     PlayerTurn.id = Players[newIndex].id;
     PlayerTurn.isBot = Players[newIndex].isBot;
     PlayerTurn.name = Players[newIndex].name;
-    PlayerTurn.Text = PlayerTurn.name == "Vous" ? "C'est à vous de jouer" : `C'est à ${PlayerTurn.name} de jouer`;
 }

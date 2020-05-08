@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200505085457_TryChat1")]
-    partial class TryChat1
+    [Migration("20200507211251_ChangeChat")]
+    partial class ChangeChat
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

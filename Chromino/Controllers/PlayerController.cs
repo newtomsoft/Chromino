@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -53,8 +54,9 @@ namespace Controllers
             {
                 int chrominosNumber = ChrominoInHandDal.ChrominosNumber(gameId, id);
                 string[] lastChrominoColors = new string[] { "", "", "" };
-                string name = id == PlayerId ? "Vous" : PlayerDal.Name(id);
-                bool isBot = PlayerDal.IsBot(id);
+                Player player = PlayerDal.Details(id);
+                string name = player.UserName;
+                bool isBot = player.Bot;
                 if (chrominosNumber == 1)
                 {
                     Chromino c = ChrominoInHandDal.FirstChromino(gameId, id);
@@ -63,7 +65,8 @@ namespace Controllers
                 playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
             }
             bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
-            return new JsonResult(new { playersInfos, opponentsAllBots } );
+            string guid = GameDal.Details(gameId).Guid;
+            return new JsonResult(new { playersInfos, opponentsAllBots, guid } );
         }
 
         [Authorize]

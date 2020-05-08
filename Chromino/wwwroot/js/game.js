@@ -1,4 +1,5 @@
-﻿var TimeoutPut = null;
+﻿var Guid;
+var TimeoutPut = null;
 var ToPut = false;
 var PositionLastChromino;
 var TimeoutRotate = null;
