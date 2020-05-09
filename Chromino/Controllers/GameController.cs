@@ -364,7 +364,7 @@ namespace Controllers
         /// <param name="playerId">id du joueur qui vient de jouer</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult GetInfosAfterPlaying(int gameId, int playerId)
+        public JsonResult InfosAfterPlaying(int gameId, int playerId)
         {
             int nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerId)[0];
             List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);

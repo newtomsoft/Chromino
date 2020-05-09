@@ -4,7 +4,7 @@ function TipClosePopup(popup, checkBox) {
         if ($('input[name=dontShowAllTips]').is(':checked'))
             dontShowAllTips = true;
         $.ajax({
-            url: UrlTipOff,
+            url: '/Tip/Off',
             type: 'POST',
             data: { gameId: GameId, tipId: Tip.id, dontShowAllTips: dontShowAllTips },
             success: function () { CallbackTipClosePopup(dontShowAllTips) },
@@ -16,7 +16,7 @@ function TipClosePopup(popup, checkBox) {
 function AddMemo() {
     let memoContent = $('#MemoContent').val();
     $.ajax({
-        url: UrlMemoAdd,
+        url: '/Memo/Add',
         type: 'POST',
         data: { gameId: GameId, memo: memoContent },
         success: function (data) { CallbackAddMemo(data) },
@@ -27,7 +27,7 @@ function ChatAddMessage() {
     let message = $('#ChatInput').val();
     if (message != "") {
         $.ajax({
-            url: UrlChatPostMessage,
+            url: '/Chat/PostMessage',
             type: 'POST',
             data: { gameId: GameId, message: message },
             success: function (data) { CallbackAddMessage(data) },
@@ -58,7 +58,7 @@ function ChatReadMessages() {
 function Help() {
     if ($(".Possible").length == 0) {
         $.ajax({
-            url: UrlHelp,
+            url: '/Game/Help',
             type: 'POST',
             data: { gameId: GameId },
             success: function (data) { CallbackHelp(data); }
@@ -69,7 +69,7 @@ function Help() {
 function SkipTurn() {
     HideButtonPlayChromino();
     $.ajax({
-        url: UrlSkip,
+        url: '/Game/SkipTurn',
         type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackSkipTurn(data); },
@@ -78,7 +78,7 @@ function SkipTurn() {
 
 function DrawChromino() {
     $.ajax({
-        url: UrlDraw,
+        url: '/Game/DrawChromino',
         type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackDrawChromino(data); },
@@ -87,7 +87,7 @@ function DrawChromino() {
 
 function End() {
     $.ajax({
-        url: UrlEnd,
+        url: '/Game/End',
         type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackEnd(data); },
@@ -96,7 +96,7 @@ function End() {
 
 function GetGameInfos(){
     $.ajax({
-        url: UrlGameInfos,
+        url: '/Game/Infos',
         type: 'POST',
         async: false,
         data: { gameId: GameId },
@@ -106,7 +106,7 @@ function GetGameInfos(){
 
 function GetInfosAfterPlaying() {
     $.ajax({
-        url: UrlGetInfosAfterPlaying,
+        url: '/Game/InfosAfterPlaying',
         type: 'POST',
         async: false,
         data: { gameId: GameId, playerId: PlayerTurn.id },
@@ -132,7 +132,7 @@ function PlayingBot(botId) {
         $('#InfoGame').html(infoBotPlaying).fadeIn();
         ShowWorkInProgress();
         $.ajax({
-            url: UrlPlayBot,
+            url: '/Game/PlayBot',
             type: 'POST',
             data: { id: GameId, botId: botId },
             success: function (data) { CallbackBotPlayed(data, botId); },
@@ -178,7 +178,7 @@ function PlayingChromino() {
         let x = xIndex + XMin;
         let y = yIndex + YMin;
         $.ajax({
-            url: UrlPlay,
+            url: '/Game/Play',
             type: 'POST',
             data: { gameId: GameId, chrominoId: chrominoId, x: x, y: y, orientation: orientation, flip: flip },
             success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },

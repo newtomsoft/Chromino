@@ -37,8 +37,6 @@
     }
 }
 
-
-
 function CallbackChatGetMessages(data, newMessages) {
     if (!newMessages)
         $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
