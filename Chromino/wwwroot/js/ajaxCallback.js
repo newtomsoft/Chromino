@@ -13,7 +13,7 @@
     PlayersNumber = data.gameVM.pseudos.length;
     HelpNumber = data.gameVM.player.help;
     IsGameFinish = data.gameVM.isGameFinish;
-    HaveDrew = data.gameVM.haveDrew;
+    HaveDrawn = data.gameVM.haveDrew;
     MemosNumber = data.gameVM.memosNumber;
     data.gameVM.playErrors.forEach(pe => PlayErrors.push({ name: pe.name, description: pe.description, illustrationPictureClass: pe.illustrationPictureClass, illustrationPictureCaption: pe.illustrationPictureCaption }));
     data.gameVM.tips.forEach(tip => Tips.push({ id: tip.id, elementId: tip.domElementId, headPictureClass: tip.headPictureClass, description: tip.description, illustrationPictureClass: tip.illustrationPictureClass }));
@@ -94,7 +94,7 @@ function CallbackDrawChromino(data) {
         ErrorReturn(data.errorReturn);
     }
     else {
-        HaveDrew = true;
+        HaveDrawn = true;
         ShowInfoPopup = false;
         AddChrominoInHand(data);
         DecreaseInStack();
@@ -124,7 +124,7 @@ function CallbackSkipTurn(data) {
 function CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip) {
     IsPlayingBackEnd = false;
     ShowWorkIsFinish();
-    if (data.nextPlayerId === undefined) {
+    if (data.errorReturn !== undefined) {
         ErrorReturn(data.errorReturn);
     }
     else {
@@ -201,7 +201,7 @@ function RefreshVar(data) {
         ChangePlayerTurn();
     }
     if (PlayerTurn.id != PlayerId)
-        HaveDrew = false;
+        HaveDrawn = false;
     if (IsGameFinish) {
         ShowInfoPopup = true;
         End();

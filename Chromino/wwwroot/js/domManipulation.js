@@ -239,7 +239,7 @@ function RefreshButtonsDrawSkip() {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
-    else if (InStack > 0 && (!HaveDrew || PlayersNumber == 1)) {
+    else if (InStack > 0 && (!HaveDrawn || PlayersNumber == 1)) {
         $('#ButtonDrawChromino').show();
         $('#ButtonSkipTurn').hide();
     }
