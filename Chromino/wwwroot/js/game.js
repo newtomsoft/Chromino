@@ -1,16 +1,5 @@
-﻿const UrlTipOff = '/Tip/Off';
-const UrlMemoAdd = '/Memo/Add';
-const UrlChatPostMessage = '/Chat/PostMessage';
-const UrlChatGetMessages = '/Chat/GetMessages';
+﻿const UrlChatGetMessages = '/Chat/GetMessages';
 const UrlChatSetLatestReadMessages = '/Chat/SetLatestReadMessage';
-const UrlPlay = '/Game/Play';
-const UrlSkip = '/Game/SkipTurn';
-const UrlDraw = '/Game/DrawChromino';
-const UrlPlayBot = '/Game/PlayBot';
-const UrlHelp = '/Game/Help';
-const UrlEnd = '/Game/End';
-const UrlGameInfos = '/Game/Infos';
-const UrlGetInfosAfterPlaying = '/Game/GetInfosAfterPlaying';
 var Guid;
 var Orientation;
 var GameAreaLinesNumber;
