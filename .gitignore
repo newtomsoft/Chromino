@@ -344,3 +344,7 @@ ASALocalRun/
 healthchecksdb
 
 /Batch/appsettings.Staging.json
+/Chromino/wwwroot/js/game.min.js
+/Chromino/wwwroot/js/site.min.js
+/Chromino/wwwroot/css/site.min.css
+/Chromino/wwwroot/css/wait.min.css
