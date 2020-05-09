@@ -5,7 +5,7 @@ function CallSignalR() {
         SendAddToGroup(Guid);
     }).catch(function (err) {
         return console.error(err.toString());
-    });;
+    });
 
     ConnectionHubGame.on("ReceiveMessageSent", function (gameId) {
         OpponentMessageSent(gameId);
