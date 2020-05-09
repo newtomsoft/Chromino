@@ -10,7 +10,7 @@ var PlayerTurn;
 var PlayersNumber;
 var HelpNumber;
 var IsGameFinish;
-var HaveDrew;
+var HaveDrawn;
 var MemosNumber;
 var TimeoutPut = null;
 var ToPut = false;

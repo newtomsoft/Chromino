@@ -181,8 +181,8 @@ namespace Controllers
             {
                 List<string> lastChrominoColors = ColorsLastChromino(gameId, PlayerId);
                 List<string> colors = ColorsPlayedChromino(chrominoId);
-                int nextPlayerId = GamePlayerDal.PlayerTurn(gameId).Id; bool finish = GameDal.IsFinished(gameId);
-                return new JsonResult(new { nextPlayerId, colors, lastChrominoColors, finish });
+                bool finish = GameDal.IsFinished(gameId);
+                return new JsonResult(new { colors, lastChrominoColors, finish });
             }
         }
 
@@ -208,19 +208,18 @@ namespace Controllers
             while (playReturn.IsError() || playReturn == PlayReturn.DrawChromino);
 
             List<string> lastChrominoColors = ColorsLastChromino(id, botId);
-            int nextPlayerId = GamePlayerDal.PlayerTurn(id).Id;
             bool finish = GameDal.GetStatus(id).IsFinished();
             if (chrominoInGame != null)
             {
                 bool skip = false;
                 int x = chrominoInGame.XPosition; int y = chrominoInGame.YPosition; Orientation orientation = chrominoInGame.Orientation; bool flip = chrominoInGame.Flip;
                 List<string> colors = ColorsPlayedChromino((int)chrominoInGame.ChrominoId);
-                return new JsonResult(new { skip, draw, nextPlayerId, x, y, orientation, flip, colors, lastChrominoColors, finish });
+                return new JsonResult(new { skip, draw, x, y, orientation, flip, colors, lastChrominoColors, finish });
             }
             else
             {
                 bool skip = true;
-                return new JsonResult(new { skip, draw, nextPlayerId, finish });
+                return new JsonResult(new { skip, draw, finish });
             }
         }
 
@@ -366,10 +365,9 @@ namespace Controllers
         [HttpPost]
         public JsonResult InfosAfterPlaying(int gameId, int playerId)
         {
-            int nextPlayerId = GamePlayerDal.NextPlayersId(gameId, playerId)[0];
             List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);
             bool finish = GameDal.GetStatus(gameId).IsFinished();
-            return new JsonResult(new { nextPlayerId, lastChrominoColors, finish });
+            return new JsonResult(new { lastChrominoColors, finish });
         }
 
         private void CreateGame(List<Player> players, out int gameId)

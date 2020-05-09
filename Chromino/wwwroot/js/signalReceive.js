@@ -8,7 +8,7 @@
 function OpponentChrominoPlayed(chrominoPlayed) {
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
-    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish }
     UpdateInHandNumber(PlayerTurn.id, -1, TESTlastChrominoColors);
     RefreshVar(data);
     RefreshDom(true);
@@ -25,7 +25,7 @@ function OpponentChrominoDrawn() {
 function OpponentTurnSkipped() {
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurn.name + " a passé");
-    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish }
     RefreshVar(data);
     RefreshDom(true);
 }
@@ -33,7 +33,7 @@ function OpponentTurnSkipped() {
 function BotChrominoPlayed(chrominoPlayed, isDrawn) {
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
-    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish }
     if (isDrawn)
         DecreaseInStack();
     else
@@ -50,7 +50,7 @@ function BotTurnSkipped(isDrawn) {
         DecreaseInStack();
         UpdateInHandNumber(PlayerTurn.id, 1);
     }
-    let data = { finish: TESTfinish, nextPlayerId: TESTnextPlayerId }
+    let data = { finish: TESTfinish }
     RefreshVar(data);
     RefreshDom(true);
 }

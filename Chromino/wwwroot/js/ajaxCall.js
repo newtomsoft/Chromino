@@ -115,11 +115,9 @@ function GetInfosAfterPlaying() {
 }
 
 //TODO DETTE TECHNIQUE
-var TESTnextPlayerId;
 var TESTlastChrominoColors;
 var TESTfinish;
 function TEST(data) {
-    TESTnextPlayerId = data.nextPlayerId;
     TESTlastChrominoColors = data.lastChrominoColors;
     TESTfinish = data.finish;
 }
