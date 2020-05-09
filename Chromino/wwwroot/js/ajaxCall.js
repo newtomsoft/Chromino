@@ -155,20 +155,20 @@ function PlayingChromino() {
         let flip;
         switch (GetAngle(LastChrominoMove)) {
             case 0:
-                orientation = Horizontal;
+                orientation = Orientation.horizontal;
                 flip = false;
                 break;
             case 90:
-                orientation = Vertical;
+                orientation = Orientation.vertical;
                 flip = false;
                 yIndex--;
                 break;
             case 180:
-                orientation = Horizontal;
+                orientation = Orientation.horizontal;
                 flip = true;
                 break;
             case 270:
-                orientation = Vertical;
+                orientation = Orientation.vertical;
                 flip = true;
                 yIndex--;
                 break;

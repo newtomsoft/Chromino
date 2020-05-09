@@ -1,6 +1,5 @@
 ﻿using Data.Enumeration;
 using Data.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,11 +24,16 @@ namespace Data.ViewModel
         public List<string> Pseudos { get; set; }
         public List<Tip> Tips { get; set; }
         public List<PlayError> PlayErrors { get; set; }
+        public bool IsGameFinish { get; set; }
+        public bool HaveDrew { get; set; }
+        public int MemosNumber { get; set; }
 
         public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayer, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, List<Tip> tipsOn, List<PlayError> playErrors)
         {
+
             Player = player;
             Game = game;
+            IsGameFinish = Game.Status.IsFinished();
             PlayerTurn = playerTurn;
             GamePlayer = gamePlayer;
             ChrominosInStack = chrominosInStackNumber;
@@ -68,9 +72,10 @@ namespace Data.ViewModel
                 PseudosIds.Remove(Player.UserName);
                 PseudosIds["Vous"] = value;
             }
-
             Tips = tipsOn;
             PlayErrors = playErrors;
+            HaveDrew = GamePlayer != null ? GamePlayer.PreviouslyDraw : false;
+            MemosNumber = GamePlayer?.Memo?.Count(x => x == '\n') + 1 ?? 0;
         }
 
         private int IndexGridState(int x, int y) => y * ColumnsNumber + x - (YMin * ColumnsNumber + XMin);

@@ -7,22 +7,14 @@
     const string classFree = "Free";
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
-    int memosNumbers = 0;
-    if (Model.GamePlayer != null)
-    {
-        memosNumbers = Model.GamePlayer.Memo == null ? 0 : Model.GamePlayer.Memo.Count(x => x == '\n') + 1;
-    }
-    const int horizontal = (int)Orientation.Horizontal;
-    const int vertical = (int)Orientation.Vertical;
     bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
-    string haveDraw = Model.GamePlayer != null ? Model.GamePlayer.PreviouslyDraw.ToJs() : "false";
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
     <button id="ButtonHome" class="doAction btn btn-toolbar img-home"></button>
     <button id="ButtonInfo" class="doAction btn btn-toolbar img-infogame"></button>
     <button id="ButtonHelp" class="doAction btn btn-toolbar img-helpPlay" style="display:none">
-        <p id="HelpNumber" class="notification notification-green">@Model.Player.Help</p>
+        <p id="HelpNumber" class="notification notification-green"></p>
     </button>
     <button id="ButtonChat" class="doAction btn btn-toolbar img-chat" style="display:none">
         <p id="NotifChat" class="notification notification-red" style="display:none"></p>
@@ -46,8 +38,8 @@
 <div id="GameArea">
     @for (int j = 0; j < Model.LinesNumber; j++)
     {
-        <div id="Line_@j" class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
+    <div id="Line_@j" class="gameLineArea">
+        @for (int i = 0; i < Model.ColumnsNumber; i++)
             {
                 int index = i + j * Model.ColumnsNumber;
                 ColorCh color = Model.Squares[index].Color;
@@ -62,7 +54,7 @@
                     string doAction = "";
                     if (color == ColorCh.Cameleon)
                         doAction = "doAction";
-                    <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
+        <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
                 }
                 else
                 {
@@ -72,95 +64,30 @@
                     if (j < Model.LinesNumber - 1 && Model.Squares[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
                     if (i > 0 && Model.Squares[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
                     if (j > 0 && Model.Squares[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
-                    <div id="Square_@index" class="@classCloseEdge @classColor"></div>
+        <div id="Square_@index" class="@classCloseEdge @classColor"></div>
                 }
             }
-        </div>
+    </div>
     }
 </div>
 <div id="Hand" class="doAction">
     @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {
-        <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
-            @for (int i = 0; i < 3; i++)
+    <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
+        @for (int i = 0; i < 3; i++)
             {
                 ColorCh color = chrominoVM.Squares[i].Color;
                 string classColor = color.ToString();
-                <div class="Square @classColor"></div>
+        <div class="Square @classColor"></div>
             }
-        </div>
+    </div>
     }
 </div>
 @section ScriptJs
 {
-<script>
-var UrlTipOff = '@Url.Action("Off", "Tip")';
-var UrlMemoAdd = '@Url.Action("Add", "Memo")';
-var UrlChatPostMessage = '@Url.Action("PostMessage", "Chat")';
-var UrlChatGetMessages = '@Url.Action("GetMessages", "Chat")';
-var UrlChatSetLatestReadMessages = '@Url.Action("SetLatestReadMessage", "Chat")';
-var UrlPlay = '@Url.Action("Play")';
-var UrlSkip = '@Url.Action("SkipTurn")';
-var UrlDraw = '@Url.Action("DrawChromino")';
-var UrlPlayBot = '@Url.Action("PlayBot")';
-var UrlHelp = '@Url.Action("Help")';
-var UrlEnd = '@Url.Action("End")';
-var UrlGameInfos = '@Url.Action("Infos")';
-var UrlGetInfosAfterPlaying = '@Url.Action("GetInfosAfterPlaying")';
-var IsGameFinish = @Model.Game.Status.IsFinished().ToJs();
-var InStack = @Model.ChrominosInStack;
-var PlayerId = @Model.Player.Id ;
-var HaveDraw = @haveDraw;
-var PlayerTurn = { id:@Model.PlayerTurn.Id, name: "@Model.PlayerTurn.UserName", isBot:@Model.PlayerTurn.Bot.ToJs() };
-var PlayersNumber = @Model.Pseudos.Count;
-var GameId = @Model.Game.Id;
-var HelpNumber = @Model.Player.Help;
-var GameAreaLinesNumber = @Model.LinesNumber;
-var GameAreaColumnsNumber = @Model.ColumnsNumber;
-var XMin = @Model.XMin;
-var YMin = @Model.YMin;
-var Horizontal = @horizontal;
-var Vertical = @vertical;
-var MemosNumber = @memosNumbers;
-var ShowInfoPopup = @showInfoPopup.ToJs();
-var PlayErrors = new Array;
-var Tips = new Array;
-var HistoryChrominos = new Array;
-@{
-    foreach (PlayError playError in Model.PlayErrors)
-    {
-        @:PlayErrors.push({ name: "@playError.Name", description: "@Html.Raw(playError.Description)", illustrationPictureClass: "@playError.IllustrationPictureClass", illustrationPictureCaption: "@playError.IllustrationPictureCaption" });
-    }
-
-    foreach (Tip tip in Model.Tips)
-    {
-        @:Tips.push({ id: "@tip.Id", elementId: "@tip.DomElementId", headPictureClass:"@tip.HeadPictureClass", description: "@Html.Raw(tip.Description)", illustrationPictureClass: "@tip.IllustrationPictureClass" });
-    }
-
-    byte move = (byte)(Model.Game.Move - 1);
-    foreach (ChrominoPlayedVM chrominosPlayedVM in Model.ChrominosPlayedVM)
-    {
-        string currentPseudo = Model.Pseudos[(move - 1) % Model.Pseudos.Count];
-        if (chrominosPlayedVM.ChrominoId == null)
-        {
-            string playerPass = currentPseudo == "Vous" ? "Vous avez passé" : $"{currentPseudo} a passé";
-            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPass", square0: "Na", square1: "Na", square2: "Na"});
-        }
-        else
-        {
-            string playerPlay = currentPseudo == "Vous" ? "Vous avez posé" : $"{currentPseudo} a posé";
-            string[] squares = new string[3];
-            for (int i = 0; i < 3; i++)
-            {
-                squares[i] = "Square_" + (chrominosPlayedVM.IndexesX[i] + chrominosPlayedVM.IndexesY[i] * Model.ColumnsNumber).ToString();
-            }
-            @:HistoryChrominos.push({ infoPlayerPlay: "@playerPlay", square0: "@squares[0]", square1: "@squares[1]", square2: "@squares[2]" });
-        }
-        move--;
-        if (move == 0)
-            break;
-    }
-}
+    <script>
+    const GameId = @Model.Game.Id;
+    var ShowInfoPopup = @showInfoPopup.ToJs();
     </script>
 }
 <div id="PopupInfo" class="popup" style="display:none">
@@ -174,7 +101,7 @@ var HistoryChrominos = new Array;
     </div>
     @foreach (var pseudoId in Model.PseudosIds)
     {
-        <div id="Player_@pseudoId.Value"></div>
+    <div id="Player_@pseudoId.Value"></div>
     }
     <br />
     <p id="InStack" class="minorInfo"></p>
