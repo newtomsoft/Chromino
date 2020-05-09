@@ -35,23 +35,12 @@ function ChatAddMessage() {
     }
 }
 
-function ChatGetMessages(newMessages) {
+function ChatGetMessages(onlyNewMessages, show) {
     $.ajax({
-        url: UrlChatGetMessages,
+        url: '/Chat/GetMessages',
         type: 'POST',
-        data: { gameId: GameId, newMessages: newMessages },
-        success: function (data) { CallbackChatGetMessages(data, newMessages); }
-    });
-}
-
-function ChatReadMessages() {
-    $("#NotifChat").text("0");
-    $("#NotifChat").hide();
-    $.ajax({
-        url: UrlChatGetMessages,
-        type: 'POST',
-        data: { gameId: GameId, newMessages: true, resetNotification: true },
-        success: function (data) { CallbackChatReadMessages(data); }
+        data: { gameId: GameId, onlyNewMessages: onlyNewMessages, show: show },
+        success: function (data) { CallbackChatGetMessages(data, onlyNewMessages, show); }
     });
 }
 
@@ -94,7 +83,7 @@ function End() {
     });
 }
 
-function GetGameInfos(){
+function GetGameInfos() {
     $.ajax({
         url: '/Game/Infos',
         type: 'POST',

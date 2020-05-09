@@ -37,20 +37,17 @@
     }
 }
 
-function CallbackChatGetMessages(data, newMessages) {
-    if (!newMessages)
+function CallbackChatGetMessages(data, onlyNewMessages, show) {
+    if (show || !onlyNewMessages)
         $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
-    if (data.newMessagesNumber > 0) {
+    if (show || data.newMessagesNumber == 0) {
+        $("#NotifChat").text("0");
+        $("#NotifChat").hide();
+    }
+    else {
         $('#NotifChat').text(data.newMessagesNumber);
         $('#NotifChat').show();
     }
-    else {
-        $('#NotifChat').hide();
-    }
-}
-
-function CallbackChatReadMessages(data) {
-    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
 }
 
 function CallbackAddMessage(data) {
