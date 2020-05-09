@@ -1,5 +1,8 @@
 #min files
-*.min.*
+/Chromino/wwwroot/js/game/game.min.js
+/Chromino/wwwroot/js/nogame/site.min.js
+/Chromino/wwwroot/css/site.min.css
+/Chromino/wwwroot/css/wait.min.css
 
 #thumbnail games
 /Chromino/wwwroot/image/game
@@ -8,6 +11,7 @@
 /Chromino/appsettings.Staging.json
 /Chromino/appsettings.Production.json
 /Batch/appsettings.Production.json
+/Batch/appsettings.Staging.json
 
 # User-specific files
 *.rsuser
@@ -343,8 +347,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-/Batch/appsettings.Staging.json
-/Chromino/wwwroot/js/game.min.js
-/Chromino/wwwroot/js/site.min.js
-/Chromino/wwwroot/css/site.min.css
-/Chromino/wwwroot/css/wait.min.css
+
