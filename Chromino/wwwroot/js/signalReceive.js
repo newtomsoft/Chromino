@@ -1,6 +1,6 @@
 ﻿function OpponentMessageSent() {
     if ($("#PopupChat").is(":visible"))
-        ChatReadMessages();
+        ChatGetMessages(true, true);
     else
         ChatGetMessages(true);
 }

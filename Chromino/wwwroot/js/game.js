@@ -1,6 +1,4 @@
-﻿const UrlChatGetMessages = '/Chat/GetMessages';
-const UrlChatSetLatestReadMessages = '/Chat/SetLatestReadMessage';
-var Guid;
+﻿var Guid;
 var Orientation;
 var GameAreaLinesNumber;
 var GameAreaColumnsNumber;
@@ -461,7 +459,7 @@ function ShowPopup(popup, hasCloseButton = true) {
     $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
     $.fn.popup.defaults.pagecontainer = '#page';
     if (popup == '#PopupChat') {
-        ChatReadMessages();
+        ChatGetMessages(true, true);
         $('#ChatPopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);

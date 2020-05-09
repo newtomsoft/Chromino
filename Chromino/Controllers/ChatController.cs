@@ -47,55 +47,26 @@ namespace ChrominoApp.Controllers
         /// récupère dans le json de sortie les messages de la partie avec formattage
         /// </summary>
         /// <param name="gameId">id de la partie</param>
-        /// <param name="newMessages">true pour obtenir uniquement les messages non lus</param>
+        /// <param name="onlyNewMessages">true pour obtenir uniquement les messages non lus</param>
         /// <param name="resetNotification">true pour remettre à 0 le compteur de nouveaux messages</param>
-        /// <returns>Json avec chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
+        /// <returns>chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
         [HttpPost]
-        public JsonResult GetMessages(int gameId, bool newMessages = false, bool resetNotification = false)
+        public JsonResult GetMessages(int gameId, bool onlyNewMessages, bool show)
         {
             DateTime now = DateTime.Now;
             DateTime dateLatestRead = GamePlayerDal.GetLatestReadMessage(gameId, PlayerId);
-            DateTime dateMin, dateMax;
-            if (newMessages)
-            {
-                dateMin = dateLatestRead;
-                dateMax = DateTime.MaxValue;
-            }
-            else
-            {
-                dateMin = DateTime.MinValue;
-                dateMax = dateLatestRead;
-            }
+            DateTime dateMin = onlyNewMessages ? dateLatestRead : DateTime.MinValue;
+            DateTime dateMax = onlyNewMessages ? DateTime.MaxValue : dateLatestRead;
+            List<Chat> chats = ChatDal.GetMessages(gameId, dateMin, dateMax);
+            int newMessagesNumber = onlyNewMessages ? chats.Count() : ChatDal.NewMessagesNumber(gameId, dateLatestRead);
             Dictionary<int, string> gamePlayerId_PlayerName = GamePlayerDal.GamePlayersIdPlayerName(gameId);
             gamePlayerId_PlayerName[GamePlayerDal.Details(gameId, PlayerId).Id] = "Vous";
-            List<string> playersName = new List<string>();
-            var chats = ChatDal.GetMessages(gameId, dateMin, dateMax);
             string chat = "";
             foreach (Chat c in chats)
                 chat += $"{gamePlayerId_PlayerName[c.GamePlayerId]} ({c.Date.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {c.Message}\n";
-            int newMessagesNumber;
-            if (resetNotification)
+            if (show)
                 GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, now);
-            if (newMessages)
-                newMessagesNumber = chats.Count();
-            else
-                newMessagesNumber = ChatDal.NewMessagesNumber(gameId, dateLatestRead);
-
-
             return new JsonResult(new { chat, newMessagesNumber });
-        }
-
-        /// <summary>
-        /// indique que les message à la date actuelle ont été lus
-        /// </summary>
-        /// <param name="gameId"></param>
-        [HttpPost]
-        public void SetLatestReadMessage(int gameId)
-        {
-            if (PlayerIsInGame(gameId))
-            {
-                GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, DateTime.Now);
-            }
         }
     }
 }
