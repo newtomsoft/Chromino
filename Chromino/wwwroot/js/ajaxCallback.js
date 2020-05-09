@@ -1,8 +1,43 @@
 ﻿function CallbackGameInfos(data) {
     OpponentsAllBots = data.opponentsAllBots;
-    Guid = data.guid;
+    Orientation = { horizontal: data.horizontal, vertical: data.vertical };
     Players = data.playersInfos;
+    XMin = data.gameVM.xMin;
+    YMin = data.gameVM.yMin;
+    Guid = data.gameVM.game.guid;
+    GameAreaLinesNumber = data.gameVM.linesNumber;
+    GameAreaColumnsNumber = data.gameVM.columnsNumber;
+    InStack = data.gameVM.chrominosInStack;
+    PlayerId = data.gameVM.player.id;
+    PlayerTurn = { id: data.gameVM.playerTurn.id, name: data.gameVM.playerTurn.userName, isBot: data.gameVM.playerTurn.bot };
+    PlayersNumber = data.gameVM.pseudos.length;
+    HelpNumber = data.gameVM.player.help;
+    IsGameFinish = data.gameVM.isGameFinish;
+    HaveDrew = data.gameVM.haveDrew;
+    MemosNumber = data.gameVM.memosNumber;
+    data.gameVM.playErrors.forEach(pe => PlayErrors.push({ name: pe.name, description: pe.description, illustrationPictureClass: pe.illustrationPictureClass, illustrationPictureCaption: pe.illustrationPictureCaption }));
+    data.gameVM.tips.forEach(tip => Tips.push({ id: tip.id, elementId: tip.domElementId, headPictureClass: tip.headPictureClass, description: tip.description, illustrationPictureClass: tip.illustrationPictureClass }));
+    let move = data.gameVM.game.move - 1;
+    for (let icp = 0; icp < data.gameVM.chrominosPlayedVM.length; icp++) {
+        let currentPseudo = data.gameVM.pseudos[(move - 1) % data.gameVM.pseudos.length];
+        if (data.gameVM.chrominosPlayedVM[icp].chrominoId == null) {
+            let playerPass = currentPseudo == "Vous" ? "Vous avez passé" : `${currentPseudo} a passé`;
+            HistoryChrominos.push({ infoPlayerPlay: playerPass, square0: "Na", square1: "Na", square2: "Na" });
+        }
+        else {
+            let playerPlay = currentPseudo == "Vous" ? "Vous avez posé" : `${currentPseudo} a posé`;
+            let squares = new Array;
+            for (let i = 0; i < 3; i++)
+                squares.push("Square_" + (data.gameVM.chrominosPlayedVM[icp].indexesX[i] + data.gameVM.chrominosPlayedVM[icp].indexesY[i] * data.gameVM.columnsNumber));
+            HistoryChrominos.push({ infoPlayerPlay: playerPlay, square0: squares[0], square1: squares[1], square2: squares[2] });
+        }
+        move--;
+        if (move == 0)
+            break;
+    }
 }
+
+
 
 function CallbackChatGetMessages(data, newMessages) {
     if (!newMessages)
@@ -61,7 +96,7 @@ function CallbackDrawChromino(data) {
         ErrorReturn(data.errorReturn);
     }
     else {
-        HaveDraw = true;
+        HaveDrew = true;
         ShowInfoPopup = false;
         AddChrominoInHand(data);
         DecreaseInStack();
@@ -168,7 +203,7 @@ function RefreshVar(data) {
         ChangePlayerTurn();
     }
     if (PlayerTurn.id != PlayerId)
-        HaveDraw = false;
+        HaveDrew = false;
     if (IsGameFinish) {
         ShowInfoPopup = true;
         End();

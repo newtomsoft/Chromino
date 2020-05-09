@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Tool;
 
@@ -301,10 +300,11 @@ namespace Controllers
 
         public async Task<JsonResult> Infos(int gameId)
         {
+            const int horizontal = (int)Orientation.Horizontal;
+            const int vertical = (int)Orientation.Vertical;
+
             Player thisPlayer = PlayerDal.Details(PlayerId);
             bool isAdmin = await UserManager.IsInRoleAsync(thisPlayer, "Admin").ConfigureAwait(true);
-            GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
-            string guid = GameDal.Details(gameId).Guid;
             bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
             List<object> playersInfos = new List<object>();
             foreach (int id in GamePlayerDal.PlayersId(gameId))
@@ -321,7 +321,8 @@ namespace Controllers
                 }
                 playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
             }
-            return new JsonResult(new { gameVM, guid, opponentsAllBots, playersInfos, });
+            GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
+            return new JsonResult(new { gameVM, opponentsAllBots, playersInfos, horizontal, vertical });
         }
 
         /// <summary>
@@ -334,7 +335,6 @@ namespace Controllers
         {
             if (GameDal.IsFinished(gameId) && !GamePlayerDal.IsViewFinished(gameId, PlayerId))
             {
-                bool askRematch = GamePlayerDal.IsAllBots(gameId, PlayerId);
                 PlayerBI playerBI = new PlayerBI(Ctx, Env, gameId, PlayerId);
                 if (GamePlayerDal.GetWon(gameId, PlayerId) != true)
                 {
@@ -347,13 +347,10 @@ namespace Controllers
                 {
                     playerBI.WinGame(PlayerId, true);
                     return new JsonResult(null);
-                    //return new JsonResult(new { returnOk = playerBI.WinGame(PlayerId, true), askRematch }); // todo return null possible ?
-
                 }
                 else // only 1 winner
                 {
                     playerBI.WinGame(PlayerId);
-                    //return new JsonResult(new { returnOk = playerBI.WinGame(PlayerId), askRematch });
                     return new JsonResult(null);
                 }
             }

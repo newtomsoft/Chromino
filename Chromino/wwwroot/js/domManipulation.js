@@ -102,24 +102,24 @@ function AddChrominoInHand(chromino) {
 
 function AddChrominoInGame(chromino, infoPlayerPlay) {
     let chrominoWork = chromino;
-    if (chrominoWork.yIndex == GameAreaLinesNumber - 2 && chrominoWork.orientation == Horizontal || chrominoWork.yIndex == GameAreaLinesNumber - 4 && chrominoWork.orientation == Vertical)
+    if (chrominoWork.yIndex == GameAreaLinesNumber - 2 && chrominoWork.orientation == Orientation.horizontal || chrominoWork.yIndex == GameAreaLinesNumber - 4 && chrominoWork.orientation == Orientation.vertical)
         AddGameLineBottom(1);
-    else if (chrominoWork.yIndex == GameAreaLinesNumber - 3 && chrominoWork.orientation == Vertical)
+    else if (chrominoWork.yIndex == GameAreaLinesNumber - 3 && chrominoWork.orientation == Orientation.vertical)
         AddGameLineBottom(2);
     else if (chrominoWork.yIndex < 2) {
         AddGameLineTop(2 - chrominoWork.yIndex);
         chrominoWork.yIndex = 2;
     }
-    if (chrominoWork.xIndex == GameAreaColumnsNumber - 2 && chrominoWork.orientation == Vertical || chrominoWork.xIndex == GameAreaColumnsNumber - 4 && chrominoWork.orientation == Horizontal)
+    if (chrominoWork.xIndex == GameAreaColumnsNumber - 2 && chrominoWork.orientation == Orientation.vertical || chrominoWork.xIndex == GameAreaColumnsNumber - 4 && chrominoWork.orientation == Orientation.horizontal)
         AddGameColumnRight(1);
-    else if (chrominoWork.xIndex == GameAreaColumnsNumber - 3 && chrominoWork.orientation == Horizontal)
+    else if (chrominoWork.xIndex == GameAreaColumnsNumber - 3 && chrominoWork.orientation == Orientation.horizontal)
         AddGameColumnRight(2);
     else if (chrominoWork.xIndex < 2) {
         AddGameColumnLeft(2 - chrominoWork.xIndex);
         chrominoWork.xIndex = 2;
     }
     let squaresName = new Array;
-    offset = chrominoWork.orientation == Horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
+    offset = chrominoWork.orientation == Orientation.horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 };
     for (var iSquare = 0; iSquare < 3; iSquare++) {
         index = chrominoWork.xIndex + offset.x * iSquare + (chrominoWork.yIndex + offset.y * iSquare) * GameAreaColumnsNumber;
         squareName = "Square_" + index;
@@ -128,15 +128,15 @@ function AddChrominoInGame(chromino, infoPlayerPlay) {
         switch (iSquare) {
             case 0:
                 classColor = chrominoWork.flip ? chrominoWork.colors[2] : chrominoWork.colors[0];
-                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenRight" : "Square OpenBottom";
+                classOpenSides = chrominoWork.orientation == Orientation.horizontal ? "Square OpenRight" : "Square OpenBottom";
                 break;
             case 1:
                 classColor = chrominoWork.colors[1];
-                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
+                classOpenSides = chrominoWork.orientation == Orientation.horizontal ? "Square OpenRightLeft" : "Square OpenBottomTop";
                 break;
             case 2:
                 classColor = chrominoWork.flip ? chrominoWork.colors[0] : chrominoWork.colors[2];
-                classOpenSides = chrominoWork.orientation == Horizontal ? "Square OpenLeft" : "Square OpenTop";
+                classOpenSides = chrominoWork.orientation == Orientation.horizontal ? "Square OpenLeft" : "Square OpenTop";
                 break;
         }
         $(squareSelector).removeClass().addClass(classOpenSides + " " + classColor);
@@ -239,7 +239,7 @@ function RefreshButtonsDrawSkip() {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
-    else if (InStack > 0 && (!HaveDraw || PlayersNumber == 1)) {
+    else if (InStack > 0 && (!HaveDrew || PlayersNumber == 1)) {
         $('#ButtonDrawChromino').show();
         $('#ButtonSkipTurn').hide();
     }
