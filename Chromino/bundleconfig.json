@@ -10,10 +10,10 @@
     }
   },
   {
-    "outputFileName": "wwwroot/js/site.min.js",
+    "outputFileName": "wwwroot/js/nogame/site.min.js",
     "inputFiles": [
-      "wwwroot/js/site.js",
-      "wwwroot/js/swipRefresh.js"
+      "wwwroot/js/nogame/site.js",
+      "wwwroot/js/nogame/swipRefresh.js"
     ],
     "minify": {
       "enabled": true,
@@ -22,17 +22,17 @@
     "sourceMap": false
   },
   {
-    "outputFileName": "wwwroot/js/game.min.js",
+    "outputFileName": "wwwroot/js/game/game.min.js",
     "inputFiles": [
-      "wwwroot/js/game.js",
-      "wwwroot/js/domManipulation.js",
-      "wwwroot/js/ajaxCall.js",
-      "wwwroot/js/ajaxCallback.js",
-      "wwwroot/js/signal.js",
-      "wwwroot/js/signalSend.js",
-      "wwwroot/js/signalReceive.js",
-      "wwwroot/js/jquery.popupoverlay.js",
-      "wwwroot/js/jquery.draggableTouch.js"
+      "wwwroot/js/game/game.js",
+      "wwwroot/js/game/domManipulation.js",
+      "wwwroot/js/game/ajaxCall.js",
+      "wwwroot/js/game/ajaxCallback.js",
+      "wwwroot/js/game/signal.js",
+      "wwwroot/js/game/signalSend.js",
+      "wwwroot/js/game/signalReceive.js",
+      "wwwroot/js/game/jquery.popupoverlay.js",
+      "wwwroot/js/game/jquery.draggableTouch.js"
     ],
     "minify": {
       "enabled": true,
