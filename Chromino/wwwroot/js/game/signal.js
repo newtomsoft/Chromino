@@ -2,13 +2,13 @@
 function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
     ConnectionHubGame.start().then(function () {
-        SendAddToGroup(Guid);
+        SendAddToGroup();
     }).catch(function (err) {
         return console.error(err.toString());
     });;
 
-    ConnectionHubGame.on("ReceiveMessageSent", function (gameId) {
-        OpponentMessageSent(gameId);
+    ConnectionHubGame.on("ReceiveMessageSent", function () {
+        OpponentMessageSent();
     });
 
     ConnectionHubGame.on("ReceiveChrominoPlayed", function (chrominoPlayed) {

@@ -70,7 +70,6 @@ namespace ChrominoApp.Controllers
         /// Page des parties en cours (tour d'un adversaire)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Player")]
         public IActionResult InProgress()
         {
             return View(MakePicturesGameVM(GamePlayerDal.GamesWaitTurn(PlayerId), true));
@@ -83,6 +82,13 @@ namespace ChrominoApp.Controllers
         public IActionResult SingleFinished()
         {
             return View(MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId)));
+        }
+
+        [HttpGet]
+        public IActionResult Guids(int gameId)
+        {
+            var guids = GameDal.ListGuids(PlayerId);
+            return new JsonResult(new { guids });
         }
     }
 }

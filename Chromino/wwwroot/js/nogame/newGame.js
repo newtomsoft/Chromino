@@ -1,6 +1,4 @@
-﻿$(document).ready(function () {
-
-    // Action New events
+﻿function AddFeatureNewGame() {
     $('#addPlayer').click(function () {
         AddPlayer();
         ActionBotsNumber("decrease");
@@ -10,12 +8,8 @@
         ActionBotsNumber("increase");
     });
     ShowPlayers();
-});
+}
 
-
-//****************************************//
-//********* fonctions New player *********//
-//****************************************//
 function AddPlayer() {
     if ($('#groupPlayer3').is(':hidden')) {
         $('#player3').prop('required', true);

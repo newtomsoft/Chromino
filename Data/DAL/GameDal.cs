@@ -58,6 +58,17 @@ namespace Data.DAL
             return games;
         }
 
+        public List<string> ListGuids(int playerId)
+        {
+            var guids = (from g in Ctx.Games
+                         join gp in Ctx.GamesPlayers on g.Id equals gp.GameId
+                         join p in Ctx.Players on gp.PlayerId equals p.Id
+                         where p.Id == playerId
+                         select g.Guid).ToList();
+
+            return guids;
+        }
+
         public List<Game> ListInProgress()
         {
 

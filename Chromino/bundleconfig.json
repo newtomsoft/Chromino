@@ -10,9 +10,10 @@
     }
   },
   {
-    "outputFileName": "wwwroot/js/nogame/site.min.js",
+    "outputFileName": "wwwroot/js/nogame/page.min.js",
     "inputFiles": [
-      "wwwroot/js/nogame/site.js",
+      "wwwroot/js/nogame/page.js",
+      "wwwroot/js/nogame/newGame.js",
       "wwwroot/js/nogame/swipRefresh.js"
     ],
     "minify": {
