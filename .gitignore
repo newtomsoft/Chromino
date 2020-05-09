@@ -1,8 +1,9 @@
 #min files
 /Chromino/wwwroot/js/game/game.min.js
-/Chromino/wwwroot/js/nogame/site.min.js
+/Chromino/wwwroot/js/nogame/page.min.js
 /Chromino/wwwroot/css/site.min.css
 /Chromino/wwwroot/css/wait.min.css
+
 
 #thumbnail games
 /Chromino/wwwroot/image/game
@@ -348,3 +349,4 @@ ASALocalRun/
 healthchecksdb
 
 
+/Chromino/wwwroot/js/nogame/page.min.js
