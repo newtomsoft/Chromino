@@ -1,9 +1,6 @@
 #min files
-/Chromino/wwwroot/js/game/game.min.js
-/Chromino/wwwroot/js/nogame/page.min.js
-/Chromino/wwwroot/css/site.min.css
-/Chromino/wwwroot/css/wait.min.css
-
+*.min.js
+*.min.css
 
 #thumbnail games
 /Chromino/wwwroot/image/game
@@ -347,6 +344,3 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-
-
-/Chromino/wwwroot/js/nogame/page.min.js
