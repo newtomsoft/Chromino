@@ -1,11 +1,20 @@
-﻿function OpponentMessageSent() {
+﻿function ReceivePlayersInGame(newPlayersId) {
+    Players.forEach(player => player.connected = false);
+    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].connected = true);
+}
+
+function OpponentMessageSent(guid) {
+    if (guid != Guid)
+        return;
     if ($("#PopupChat").is(":visible"))
         ChatGetMessages(true, true);
     else
         ChatGetMessages(true);
 }
 
-function OpponentChrominoPlayed(chrominoPlayed) {
+function OpponentChrominoPlayed(guid, chrominoPlayed) {
+    if (guid != Guid)
+        return;
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
     let data = { finish: TESTfinish }
@@ -14,7 +23,9 @@ function OpponentChrominoPlayed(chrominoPlayed) {
     RefreshDom(true);
 }
 
-function OpponentChrominoDrawn() {
+function OpponentChrominoDrawn(guid) {
+    if (guid != Guid)
+        return;
     GetInfosAfterPlaying();
     $('#InfoGame').html(PlayerTurn.name + " pioche...").fadeIn().delay(1000).fadeOut();
     DecreaseInStack();
@@ -22,7 +33,9 @@ function OpponentChrominoDrawn() {
     RefreshDom();
 }
 
-function OpponentTurnSkipped() {
+function OpponentTurnSkipped(guid) {
+    if (guid != Guid)
+        return;
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurn.name + " a passé");
     let data = { finish: TESTfinish }
@@ -30,7 +43,9 @@ function OpponentTurnSkipped() {
     RefreshDom(true);
 }
 
-function BotChrominoPlayed(chrominoPlayed, isDrawn) {
+function BotChrominoPlayed(guid, chrominoPlayed, isDrawn) {
+    if (guid != Guid)
+        return;
     GetInfosAfterPlaying();
     AddChrominoInGame(chrominoPlayed, PlayerTurn.name + " a posé");
     let data = { finish: TESTfinish }
@@ -43,7 +58,9 @@ function BotChrominoPlayed(chrominoPlayed, isDrawn) {
     RefreshDom(true);
 }
 
-function BotTurnSkipped(isDrawn) {
+function BotTurnSkipped(guid, isDrawn) {
+    if (guid != Guid)
+        return;
     GetInfosAfterPlaying();
     AddHistorySkipTurn(PlayerTurn.name + " a passé");
     if (isDrawn) {
