@@ -107,6 +107,10 @@ a {
     background-image: url('/image/button/HumanSingle.svg');
 }
 
+.img-withunreadmessages {
+    background-image: url('/image/button/HumanVsHumanMessages.svg');
+}
+
 .img-statistics {
     background-image: url('/image/button/Stats.svg');
 }

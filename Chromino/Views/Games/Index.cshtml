@@ -10,27 +10,38 @@
     string playerName = guest ? "joueur sans compte" : UserManager.GetUserName(User);
     string classAvailable = guest ? "not-available" : "";
 }
-
+@section Scripts
+{
+    <script>
+        var IndexGamesLoad = true;
+    </script>
+}
 <div class="text-center">
     <h2>Bienvenue @playerName</h2>
 </div>
 
 <div class="icones-link">
     <a class="icone-link @classAvailable" asp-action="AgainstFriends">
-        <div class="btn btn-homepage img-humanvshuman "></div>
+        <div class="btn btn-homepage img-humanvshuman ">
+            <p id="AgainstFriendsNumber" class="notification notification-green"></p>
+        </div>
         <div>Parties multijoueurs</div>
     </a>
     <a class="icone-link" asp-action="AgainstBots">
         <div class="btn btn-homepage img-humanvsbot"></div>
         <div>Parties contre ordinateur</div>
     </a>
-    <a class="icone-link" asp-action="SingleGame">
-        <div class="btn btn-homepage img-humansingle"></div>
-        <div>Entrainement</div>
+    <a class="icone-link @classAvailable" asp-action="WithUnreadMessages">
+        <div class="btn btn-homepage img-withunreadmessages"></div>
+        <div>Parties avec messages non lus</div>
     </a>
     <a class="icone-link @classAvailable" asp-action="InProgress">
         <div class="btn btn-homepage img-inprogress"></div>
         <div>Parties en attente</div>
+    </a>
+    <a class="icone-link" asp-action="SingleGame">
+        <div class="btn btn-homepage img-humansingle"></div>
+        <div>Entrainement</div>
     </a>
     <a class="icone-link @classAvailable" asp-action="Index" asp-controller="Statistics">
         <div class="btn btn-homepage img-statistics"></div>

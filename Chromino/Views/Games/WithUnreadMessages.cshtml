@@ -1,7 +1,7 @@
 ﻿@using  Data.ViewModel
 @model List<PictureGameVM>
 @{
-    ViewData["Title"] = "Single games";
+    ViewData["Title"] = "Games with unread messages";
     int gamesNumber = Model.Count;
 }
 
@@ -10,21 +10,18 @@
 @switch (gamesNumber)
 {
     case 0:
-        <p><b>Vous n'avez aucune partie solo terminée</b></p>
+        <p>Vous n'avez pas de parties avec messages non lus</p>
         break;
     case 1:
-        <h3>Vous avez 1 partie solo terminée</h3>
+        <h3>Vous avez 1 partie avec messages non lus</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
     default:
-        <h3>Vous avez @gamesNumber parties solo terminées</h3>
+        <h3>Vous avez @gamesNumber parties avec messages non lus</h3>
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
 <br />
-<p>
-    <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
-</p>
 <p>
     <a asp-controller="Games" asp-action="Index">Retour</a>
 </p>

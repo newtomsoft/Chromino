@@ -1,19 +1,23 @@
-﻿$(document).ready(function () {
+﻿var Guids;
+var GamesAgainstFriendsNumber;
+var GamesAgainstBotsNumber;
+var GamesWithUnreadMessagesNumber;
+var GamesSinglesNumber;
+var GamesFinishWithFriendsNumber;
+var GamesFinishWithBotdNumber;
+
+$(document).ready(function () {
     AddFeatureNewGame();
     GetGuids();
+    if (IndexGamesLoad)
+        GetGames();
 });
 
-var Guids;
-
-function GetGuids() {
-    $.ajax({
-        url: '/Games/Guids',
-        type: 'GET',
-        success: function (data) { CallbackGetGuids(data); },
-    });
-}
-
-function CallbackGetGuids(data) {
-    Guids = data.guids;
-    CallSignalR();
+function GetGames() {
+    AgainstFriends();
+    AgainstBots();
+    WithUnreadMessages();
+    Singles();
+    FinishWithFriends();
+    FinishWithBotd();
 }

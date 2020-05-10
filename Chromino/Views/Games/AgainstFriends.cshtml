@@ -7,8 +7,6 @@
 @{
     ViewData["Title"] = "Games to play";
     int gamesNumber = Model.Count;
-    //int gamesWithNotReadMessages = (TempData["GamesWithNotReadMessages"] as List<PictureGameVM>).Count;
-
     string[] players = TempData["Players"] as String[];
     if (players == null)
         players = new string[7];
@@ -47,20 +45,6 @@
         <partial name="_ThumbnailPartial" model="Model" />
         break;
 }
-
-@*@switch (gamesWithNotReadMessages)
-    {
-        case 0:
-            break;
-        case 1:
-            <h3>Vous avez 1 partie avec messages non lus</h3>
-            <partial name="_ThumbnailPartial" model='TempData["GamesWithNotReadMessages"]' />
-            break;
-        default:
-            <h3>Vous avez @gamesNumber parties avec messages non lus</h3>
-            <partial name="_ThumbnailPartial" model='TempData["GamesWithNotReadMessages"]' />
-            break;
-    }*@
 
 <h3 id="newgame">Commencer une nouvelle partie</h3>
 @if (TempData["Errors"] != null)

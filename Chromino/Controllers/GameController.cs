@@ -165,7 +165,7 @@ namespace Controllers
         /// <param name="flip">true si le chromino est tourné de 180°</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
+        public IActionResult Play(int gameId, int chrominoId, int x, int y, Orientation orientation, bool flip)
         {
             PlayReturn playReturn = IsTurn(gameId, PlayerId);
             if (playReturn != PlayReturn.Ok)
@@ -229,7 +229,7 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult DrawChromino(int gameId)
+        public IActionResult DrawChromino(int gameId)
         {
             if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
                 return new JsonResult(new { errorReturn = PlayReturn.NotPlayerTurn.ToString() });
@@ -297,7 +297,7 @@ namespace Controllers
             return View();
         }
 
-        public async Task<JsonResult> Infos(int gameId)
+        public async Task<IActionResult> Infos(int gameId)
         {
             const int horizontal = (int)Orientation.Horizontal;
             const int vertical = (int)Orientation.Vertical;
@@ -330,7 +330,7 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult End(int gameId)
+        public IActionResult End(int gameId)
         {
             if (GameDal.IsFinished(gameId) && !GamePlayerDal.IsViewFinished(gameId, PlayerId))
             {
@@ -363,7 +363,7 @@ namespace Controllers
         /// <param name="playerId">id du joueur qui vient de jouer</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult InfosAfterPlaying(int gameId, int playerId)
+        public IActionResult InfosAfterPlaying(int gameId, int playerId)
         {
             List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);
             bool finish = GameDal.GetStatus(gameId).IsFinished();

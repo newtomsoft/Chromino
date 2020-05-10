@@ -213,16 +213,19 @@ namespace Data.DAL
             return games;
         }
 
-        //public List<Game> GamesWithNotReadMessages(int playerId)
-        //{
-        //    List<Game> games = (from gp in Ctx.GamesPlayers
-        //                        join g in Ctx.Games on gp.GameId equals g.Id
-        //                        where gp.PlayerId == playerId && gp.NotReadMessages > 0
-        //                        orderby g.PlayedDate
-        //                        select g).AsNoTracking().ToList();
+        public List<Game> GamesWithNotReadMessages(int playerId)
+        {
 
-        //    return games;
-        //}
+            var games = (from c in Ctx.Chats
+                         join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
+                         join game in Ctx.Games on gp.GameId equals game.Id
+                         join gp2 in Ctx.GamesPlayers on game.Id equals gp2.GameId
+                         join p in Ctx.Players on gp2.PlayerId equals p.Id
+                         where p.Id == playerId && c.Date > gp2.LatestReadMessage
+                         select game).Distinct().ToList();
+
+            return games;
+        }
 
         public int FirstIdMultiGameToPlay(int playerId)
         {

@@ -14,7 +14,12 @@
     "inputFiles": [
       "wwwroot/js/nogame/page.js",
       "wwwroot/js/nogame/newGame.js",
-      "wwwroot/js/nogame/swipRefresh.js"
+      "wwwroot/js/nogame/swipRefresh.js",
+      "wwwroot/js/nogame/ajaxCall.js",
+      "wwwroot/js/nogame/ajaxCallback.js",
+      "wwwroot/js/nogame/signal.js",
+      "wwwroot/js/nogame/signalSend.js",
+      "wwwroot/js/nogame/signalReceive.js"
     ],
     "minify": {
       "enabled": true,

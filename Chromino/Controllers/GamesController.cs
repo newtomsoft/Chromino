@@ -30,7 +30,6 @@ namespace ChrominoApp.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
-            //TempData["GamesWithNotReadMessages"] = MakePicturesGameVM(GamePlayerDal.GamesWithNotReadMessages(PlayerId));
             return View();
         }
 
@@ -42,6 +41,12 @@ namespace ChrominoApp.Controllers
         public IActionResult AgainstFriends()
         {
             return View(MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true));
+        }
+
+        public IActionResult AgainstFriendsAjax()
+        {
+            var picturesGame = MakePicturesGameVM(GamePlayerDal.MultiGamesAgainstAtLeast1HumanToPlay(PlayerId), true);
+            return new JsonResult(new { picturesGame });
         }
 
         /// <summary>
@@ -82,6 +87,15 @@ namespace ChrominoApp.Controllers
         public IActionResult SingleFinished()
         {
             return View(MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId)));
+        }
+
+        /// <summary>
+        /// Page des parties avec messages non lus
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult WithUnreadMessages()
+        {
+            return View(MakePicturesGameVM(GamePlayerDal.GamesWithNotReadMessages(PlayerId)));
         }
 
         [HttpGet]
