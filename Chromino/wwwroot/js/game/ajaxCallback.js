@@ -1,16 +1,25 @@
 ﻿function CallbackGameInfos(data) {
     OpponentsAllBots = data.opponentsAllBots;
     Orientation = { horizontal: data.horizontal, vertical: data.vertical };
+    PlayerId = data.gameVM.player.id;
+    PlayerTurn = { id: data.gameVM.playerTurn.id, name: data.gameVM.playerTurn.userName, isBot: data.gameVM.playerTurn.bot };
+    PlayersNumber = data.gameVM.pseudos.length;
     Players = data.playersInfos;
+    HumansId = new Array;
+    HumansOpponentsId = new Array;
+    for (let i = 0; i < Players.length; i++) {
+        if (!Players[i].isBot)
+            HumansId.push(Players[i].id.toString());
+        if (!Players[i].isBot && Players[i].id != PlayerId)
+            HumansOpponentsId.push(Players[i].id.toString());
+    }
     XMin = data.gameVM.xMin;
     YMin = data.gameVM.yMin;
     Guid = data.gameVM.game.guid;
     GameAreaLinesNumber = data.gameVM.linesNumber;
     GameAreaColumnsNumber = data.gameVM.columnsNumber;
     InStack = data.gameVM.chrominosInStack;
-    PlayerId = data.gameVM.player.id;
-    PlayerTurn = { id: data.gameVM.playerTurn.id, name: data.gameVM.playerTurn.userName, isBot: data.gameVM.playerTurn.bot };
-    PlayersNumber = data.gameVM.pseudos.length;
+
     HelpNumber = data.gameVM.player.help;
     IsGameFinish = data.gameVM.isGameFinish;
     HaveDrawn = data.gameVM.haveDrew;
@@ -53,7 +62,7 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
 function CallbackAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
-    SendMessageSent(Guid);
+    SendMessageSent(Guid, Players);
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {

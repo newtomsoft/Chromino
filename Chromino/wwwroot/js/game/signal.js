@@ -1,33 +1,36 @@
 ﻿var ConnectionHubGame;
 function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
-    ConnectionHubGame.start().then(function () {
-        SendAddToGroup(Guid);
-    }).catch(function (err) {
-        return console.error(err.toString());
-    });;
+    ConnectionHubGame.start()
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
 
-    ConnectionHubGame.on("ReceiveMessageSent", function (gameId) {
-        OpponentMessageSent(gameId);
+    ConnectionHubGame.on("ReceivePlayersInGame", function (newPlayersId) {
+        ReceivePlayersInGame(newPlayersId);
     });
 
-    ConnectionHubGame.on("ReceiveChrominoPlayed", function (chrominoPlayed) {
-        OpponentChrominoPlayed(chrominoPlayed);
+    ConnectionHubGame.on("ReceiveMessageSent", function (guid) {
+        OpponentMessageSent(guid);
     });
 
-    ConnectionHubGame.on("ReceiveTurnSkipped", function () {
-        OpponentTurnSkipped();
+    ConnectionHubGame.on("ReceiveChrominoPlayed", function (guid, chrominoPlayed) {
+        OpponentChrominoPlayed(guid, chrominoPlayed);
     });
 
-    ConnectionHubGame.on("ReceiveChrominoDrawn", function () {
-        OpponentChrominoDrawn();
+    ConnectionHubGame.on("ReceiveTurnSkipped", function (guid) {
+        OpponentTurnSkipped(guid);
     });
 
-    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (chrominoPlayed, isDrawn) {
-        BotChrominoPlayed(chrominoPlayed, isDrawn);
+    ConnectionHubGame.on("ReceiveChrominoDrawn", function (guid) {
+        OpponentChrominoDrawn(guid);
     });
 
-    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (isDrawn) {
-        BotTurnSkipped(isDrawn);
+    ConnectionHubGame.on("ReceiveBotChrominoPlayed", function (guid, chrominoPlayed, isDrawn) {
+        BotChrominoPlayed(guid, chrominoPlayed, isDrawn);
+    });
+
+    ConnectionHubGame.on("ReceiveBotTurnSkipped", function (guid, isDrawn) {
+        BotTurnSkipped(guid, isDrawn);
     });
 }

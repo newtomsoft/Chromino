@@ -3,9 +3,6 @@ var Orientation;
 var GameAreaLinesNumber;
 var GameAreaColumnsNumber;
 var InStack;
-var PlayerId;
-var PlayerTurn;
-var PlayersNumber;
 var HelpNumber;
 var IsGameFinish;
 var HaveDrawn;
@@ -25,7 +22,12 @@ var Tip;
 var TimeoutValidateChromino = null;
 var IndexMove = 0;
 var HelpIndexes = new Array;
+var PlayerId;
+var PlayerTurn;
+var PlayersNumber;
 var Players;
+var HumansId;
+var HumansOpponentsId;
 var IsPlayingBackEnd;
 var OpponentsAllBots;
 var XMin;
@@ -42,11 +44,14 @@ $(document).ready(function () {
 
 function InitDom() {
     GetGameInfos();
+    SendAddToGame();
     ShowButtonChat();
     RefreshButtonNextGame();
+    $(window).on("unload", function () { SendRemoveFromGame(); });
     $("#MemoAdd").click(AddMemo);
     $("#ChatAdd").click(ChatAddMessage);
     $(".doAction").click(function () { Action(this.id); });
+    $(".doLogoutGame").click(function () { SendLogoutGame(); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
     Action("Welcome");
     RefreshVar();
