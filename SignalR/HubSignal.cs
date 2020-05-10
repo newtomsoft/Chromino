@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SignalR.Hubs
@@ -15,6 +16,7 @@ namespace SignalR.Hubs
         public override Task OnConnectedAsync()
         {
             (PlayersLogged ??= new List<int>()).Add(int.Parse(Context.UserIdentifier));
+            Clients.All.SendAsync("ReceivePlayersLogged", PlayersLogged.ToHashSet().ToList());
             return base.OnConnectedAsync();
         }
 
@@ -24,7 +26,9 @@ namespace SignalR.Hubs
             while (PlayersLogged.Remove(id)) ;
             if (PlayersInGame != null)
                 foreach (var guid_ids in PlayersInGame)
-                    while (guid_ids.Value.Remove(id)) ;
+                    while (guid_ids.Value.Remove(id))
+                        Clients.Group(guid_ids.Key).SendAsync("ReceivePlayersInGame", PlayersInGame[guid_ids.Key].ToHashSet().ToList());
+          
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -35,21 +39,18 @@ namespace SignalR.Hubs
         /// <returns></returns>
         public async Task SendAddToGame(string guid)
         {
-            //((PlayersInGame ??= new Dictionary<string, List<int>>())[guid] ??= new List<int>()).Add(int.Parse(Context.UserIdentifier));
-            if (PlayersInGame == null)
-                PlayersInGame = new Dictionary<string, List<int>>();
+            PlayersInGame ??= new Dictionary<string, List<int>>();
             if (!PlayersInGame.ContainsKey(guid))
                 PlayersInGame.Add(guid, new List<int>());
             PlayersInGame[guid].Add(int.Parse(Context.UserIdentifier));
-
             await Groups.AddToGroupAsync(Context.ConnectionId, guid);
-            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid]);
+            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid].ToHashSet().ToList());
         }
 
         public async Task SendRemoveFromGame(string guid)
         {
             PlayersInGame[guid].Remove(int.Parse(Context.UserIdentifier));
-            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid]);
+            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid].ToHashSet().ToList());
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, guid);
         }
 

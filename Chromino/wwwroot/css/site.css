@@ -244,6 +244,13 @@ a {
     background-image: url('/image/example/LastTurnCameleon.svg');
 }
 
+.online {
+    color: green;
+}
+
+.offline {
+    color: black;
+}
 
 #ErrorText1 {
 }

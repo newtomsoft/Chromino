@@ -19,7 +19,6 @@
     GameAreaLinesNumber = data.gameVM.linesNumber;
     GameAreaColumnsNumber = data.gameVM.columnsNumber;
     InStack = data.gameVM.chrominosInStack;
-
     HelpNumber = data.gameVM.player.help;
     IsGameFinish = data.gameVM.isGameFinish;
     HaveDrawn = data.gameVM.haveDrew;

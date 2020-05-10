@@ -1,6 +1,13 @@
 ﻿function ReceivePlayersInGame(newPlayersId) {
-    Players.forEach(player => player.connected = false);
-    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].connected = true);
+    Players.forEach(player => player.ongame = false);
+    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
+    RefreshColorsPlayers();
+}
+
+function ReceivePlayersLogged(newPlayersId) {
+    Players.forEach(player => player.online = false);
+    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
+    RefreshPlayersLogged();
 }
 
 function OpponentMessageSent(guid) {
@@ -53,7 +60,6 @@ function BotChrominoPlayed(guid, chrominoPlayed, isDrawn) {
         DecreaseInStack();
     else
         UpdateInHandNumber(PlayerTurn.id, -1, TESTlastChrominoColors);
-
     RefreshVar(data);
     RefreshDom(true);
 }

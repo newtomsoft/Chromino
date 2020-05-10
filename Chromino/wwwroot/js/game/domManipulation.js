@@ -324,3 +324,25 @@ function UpdateSquares(addNumber, columnsNumber, placeToAdd) {
         }
     });
 };
+
+function RefreshColorsPlayers() {
+    Players.forEach(p => RefreshColorPlayer(p.id, p.ongame));
+}
+
+function RefreshColorPlayer(id, ongame) {
+    if (ongame)
+        $("#Player_" + id).removeClass("offline").addClass("online");
+    else
+        $("#Player_" + id).removeClass("online").addClass("offline");
+}
+
+function RefreshPlayersLogged() {
+    $("#TestPlayersLogged").text("");
+    Players.forEach(p => RefreshPlayerLogged(p.name, p.online));
+}
+
+function RefreshPlayerLogged(name, online) {
+    if (online) {
+        $("#TestPlayersLogged").text($("#TestPlayersLogged").text() + name + ", ");
+    }
+}

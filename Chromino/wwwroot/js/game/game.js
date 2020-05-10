@@ -38,7 +38,7 @@ var HistoryChrominos = new Array;
 
 $(document).ready(function () {
     InitDom();
-    CallSignalR();
+    CallSignalR(Guid);
     RefreshDom();
 });
 
@@ -550,7 +550,6 @@ function ErrorReturn(playReturn) {
 function HaveBotResponsability() {
     let playerIndex = Players.findIndex(p => p.id == PlayerId);
     let opponentIndex = Players.findIndex(p => p.id == PlayerTurn.id);
-
     if (playerIndex < opponentIndex) {
         for (var i = playerIndex + 1; i <= opponentIndex; i++)
             if (!Players[i].isBot)

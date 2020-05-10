@@ -1,11 +1,15 @@
 ﻿var ConnectionHubGame;
-function CallSignalR() {
+function CallSignalR(guid) {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
     ConnectionHubGame.start()
-        .then(function () { if (Guid !== undefined) SendAddToGame(); })
+        .then(function () { if (guid !== undefined) SendAddToGame(); })
         .catch(function (err) {
             return console.error(err.toString());
         });
+
+    ConnectionHubGame.on("ReceivePlayersLogged", function (newPlayersId) {
+        ReceivePlayersLogged(newPlayersId);
+    });
 
     ConnectionHubGame.on("ReceivePlayersInGame", function (newPlayersId) {
         ReceivePlayersInGame(newPlayersId);
