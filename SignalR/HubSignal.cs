@@ -24,6 +24,7 @@ namespace SignalR.Hubs
         {
             int id = int.Parse(Context.UserIdentifier);
             while (PlayersLogged.Remove(id)) ;
+            Clients.All.SendAsync("ReceivePlayersLogged", PlayersLogged.ToHashSet().ToList());
             if (PlayersInGame != null)
                 foreach (var guid_ids in PlayersInGame)
                     while (guid_ids.Value.Remove(id))
