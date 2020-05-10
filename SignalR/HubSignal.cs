@@ -20,7 +20,11 @@ namespace SignalR.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            PlayersLogged.Remove(int.Parse(Context.UserIdentifier));
+            int id = int.Parse(Context.UserIdentifier);
+            while (PlayersLogged.Remove(id)) ;
+            if (PlayersInGame != null)
+                foreach (var guid_ids in PlayersInGame)
+                    while (guid_ids.Value.Remove(id)) ;
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -31,7 +35,13 @@ namespace SignalR.Hubs
         /// <returns></returns>
         public async Task SendAddToGame(string guid)
         {
-            ((PlayersInGame ??= new Dictionary<string, List<int>>())[guid] ??= new List<int>()).Add(int.Parse(Context.UserIdentifier));
+            //((PlayersInGame ??= new Dictionary<string, List<int>>())[guid] ??= new List<int>()).Add(int.Parse(Context.UserIdentifier));
+            if (PlayersInGame == null)
+                PlayersInGame = new Dictionary<string, List<int>>();
+            if (!PlayersInGame.ContainsKey(guid))
+                PlayersInGame.Add(guid, new List<int>());
+            PlayersInGame[guid].Add(int.Parse(Context.UserIdentifier));
+
             await Groups.AddToGroupAsync(Context.ConnectionId, guid);
             await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid]);
         }
@@ -39,8 +49,8 @@ namespace SignalR.Hubs
         public async Task SendRemoveFromGame(string guid)
         {
             PlayersInGame[guid].Remove(int.Parse(Context.UserIdentifier));
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, guid);
             await Clients.Group(guid).SendAsync("ReceivePlayersInGame", PlayersInGame[guid]);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, guid);
         }
 
         public async Task SendMessageSent(string guid, List<string> playersId)

@@ -2,6 +2,7 @@
 function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
     ConnectionHubGame.start()
+        .then(function () { if (Guid !== undefined) SendAddToGame(); })
         .catch(function (err) {
             return console.error(err.toString());
         });

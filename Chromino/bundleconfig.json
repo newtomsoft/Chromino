@@ -17,9 +17,9 @@
       "wwwroot/js/nogame/swipRefresh.js",
       "wwwroot/js/nogame/ajaxCall.js",
       "wwwroot/js/nogame/ajaxCallback.js",
-      "wwwroot/js/nogame/signal.js",
-      "wwwroot/js/nogame/signalSend.js",
-      "wwwroot/js/nogame/signalReceive.js"
+      "wwwroot/js/game/signal.js",
+      "wwwroot/js/game/signalSend.js",
+      "wwwroot/js/game/signalReceive.js"
     ],
     "minify": {
       "enabled": true,

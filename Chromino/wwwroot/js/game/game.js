@@ -44,7 +44,6 @@ $(document).ready(function () {
 
 function InitDom() {
     GetGameInfos();
-    SendAddToGame();
     ShowButtonChat();
     RefreshButtonNextGame();
     $(window).on("unload", function () { SendRemoveFromGame(); });

@@ -9,6 +9,7 @@ var GamesFinishWithBotdNumber;
 $(document).ready(function () {
     AddFeatureNewGame();
     GetGuids();
+    CallSignalR();
     if (IndexGamesLoad)
         GetGames();
 });
