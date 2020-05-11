@@ -252,6 +252,34 @@ a {
     color: black;
 }
 
+#Players-status {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    display: flex;
+}
+
+.player-status {
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
+    line-height: 18px;
+    margin: 2px;
+}
+
+.player-status-ongame {
+    background-color: green;
+}
+
+.player-status-online {
+    background-color: yellowgreen;
+}
+
+.player-status-offline {
+    background-color: red;
+}
+
+
 #ErrorText1 {
 }
 
@@ -855,6 +883,10 @@ figcaption {
         width: 100%;
     }
 
+    #Players-status {
+        flex-direction: column;
+    }
+
     #HistoryChrominos {
         top: 60px;
     }
@@ -870,6 +902,10 @@ figcaption {
         left: 0px;
         width: 100px;
         height: 100%;
+    }
+
+    #Players-status {
+        flex-direction: row;
     }
 
     #HistoryChrominos {
