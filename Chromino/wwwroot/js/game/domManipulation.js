@@ -367,3 +367,12 @@ function RefreshPlayerStatus(player) {
         }
     }
 }
+
+function MakePlayersStatusIndicators() {
+    HumansOpponentsId.forEach(id => MakePlayerStatusIndicator(id));
+}
+
+function MakePlayerStatusIndicator(id) {
+    let toAdd = `<button id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage" class="btn"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></button>`;
+    $(toAdd).appendTo('#PlayersStatus');
+}

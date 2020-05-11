@@ -47,36 +47,12 @@ function InitDom() {
     GetGameInfos();
     ShowButtonChat();
     RefreshButtonNextGame();
-    $(window).on("unload", function () { SendRemoveFromGame(); });
-    $("#MemoAdd").click(MemoAdd);
-    $("#ChatAdd").click(ChatAddMessage);
-    $("[run]:not([tip])").click(function () { DoAction(this.attributes['run'].value); });
-    $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
-    $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
-    $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
     DoAction("Welcome");
     RefreshVar();
     Players.forEach(function (player) {
         UpdateInHandNumberDom(player);
     });
     RefreshInfoPopup();
-    $("#ButtonPreviousChromino").click(function () {
-        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
-            if (IndexMove < HistoryChrominos.length - 1) {
-                IndexMove++;
-            }
-            AnimateChromino(2, true);
-            HideChrominosPlayed();
-        }
-    });
-    $("#ButtonNextChromino").click(function () {
-        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
-            if (IndexMove > 0) {
-                IndexMove--;
-            }
-            AnimateChromino(2, true);
-        }
-    });
     $(document).click(function () {
         if (!IsPlayingBackEnd) {
             StopDraggable();
@@ -108,6 +84,31 @@ function InitDom() {
         $('#ChatInput').val(textBefore + $(this).html() + textAfter);
         $('#ChatInput').focus();
     });
+    MakePlayersStatusIndicators();
+    $(window).on("unload", function () { SendRemoveFromGame(); });
+    $("#ButtonPreviousChromino").click(function () {
+        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
+            if (IndexMove < HistoryChrominos.length - 1) {
+                IndexMove++;
+            }
+            AnimateChromino(2, true);
+            HideChrominosPlayed();
+        }
+    });
+    $("#ButtonNextChromino").click(function () {
+        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
+            if (IndexMove > 0) {
+                IndexMove--;
+            }
+            AnimateChromino(2, true);
+        }
+    });
+    $("#MemoAdd").click(MemoAdd);
+    $("#ChatAdd").click(ChatAddMessage);
+    $("[run]:not([tip])").click(function () { DoAction(this.attributes['run'].value); });
+    $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
+    $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
+    $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
 }
 
 //***************************************************//
@@ -460,7 +461,7 @@ function IsChrominoInGameArea(chromino) {
 //***************************************************//
 //********** gestion popups de la partie ************//
 //***************************************************//
-function ShowPopup(popup, hasCloseButton = true) {
+function ShowPopup(popup, hasCloseButton = true, argsTab) {
     StopScheduleValidateChromino();
     $(popup).show();
     $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
@@ -475,7 +476,7 @@ function ShowPopup(popup, hasCloseButton = true) {
         }, 50);
     }
     else if (popup == '#PopupPrivateMessage') {
-        ChatGetMessages(true, true);
+        PrivateMessageGetMessages(true, true, argsTab[0]);
         $('#PrivateMessagePopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);
@@ -531,9 +532,9 @@ function DoAction(actionWithArgs) {
     let form = "#Form" + functionName;
     let popup = "#Popup" + functionName;
     if (typeof window[functionName] === "function")
-        window[functionName]();
+        window[functionName](actionWithArgsTab);
     else if ($(popup).length)
-        ShowPopup(popup);
+        ShowPopup(popup, true, actionWithArgsTab);
     else if ($(form).length)
         $(form).submit();
 }

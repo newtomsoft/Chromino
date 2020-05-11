@@ -52,6 +52,16 @@ function ChatGetMessages(onlyNewMessages, show) {
     });
 }
 
+function PrivateMessageGetMessages(onlyNewMessages, show, opponentId) {
+    $.ajax({
+        url: '/Chat/GetMessages', //TODO changer
+        type: 'POST',
+        data: { gameId: GameId, opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
+        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show); } // changer ?
+    });
+}
+
+
 function Help() {
     if ($(".Possible").length == 0) {
         $.ajax({

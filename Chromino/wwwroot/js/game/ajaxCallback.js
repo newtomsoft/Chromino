@@ -13,6 +13,7 @@
         if (!Players[i].isBot && Players[i].id != PlayerId)
             HumansOpponentsId.push(Players[i].id.toString());
     }
+
     XMin = data.gameVM.xMin;
     YMin = data.gameVM.yMin;
     Guid = data.gameVM.game.guid;
