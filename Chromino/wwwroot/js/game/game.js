@@ -50,16 +50,18 @@ function InitDom() {
     $(window).on("unload", function () { SendRemoveFromGame(); });
     $("#MemoAdd").click(MemoAdd);
     $("#ChatAdd").click(ChatAddMessage);
-    $(".doAction").click(function () { Action(this.id); });
+    $("[run]:not([tip])").click(function () { DoAction(this.attributes['run'].value); });
+    $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
+    $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
-    Action("Welcome");
+    DoAction("Welcome");
     RefreshVar();
     Players.forEach(function (player) {
         UpdateInHandNumberDom(player);
     });
     RefreshInfoPopup();
     $("#ButtonPreviousChromino").click(function () {
-        if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
+        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
             if (IndexMove < HistoryChrominos.length - 1) {
                 IndexMove++;
             }
@@ -68,7 +70,7 @@ function InitDom() {
         }
     });
     $("#ButtonNextChromino").click(function () {
-        if (Tips.find(x => x.elementId == "HistoryChrominos") == undefined) {
+        if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
             if (IndexMove > 0) {
                 IndexMove--;
             }
@@ -215,7 +217,7 @@ function ShowSquare(squareId) {
 //** gestion déplacements / rotation des chrominos **//
 //***************************************************//
 function StartDraggable() {
-    if (Tips.find(x => x.elementId == "Hand") == undefined) {
+    if (Tips.find(x => x.name == "Hand") == undefined) {
         $(".handPlayerChromino").draggableTouch()
             .on("dragstart", function () {
                 $(this).css('cursor', 'grabbing');
@@ -253,7 +255,7 @@ function StartDraggable() {
 }
 
 function StopDraggable(chromino) {
-    if (Tips.find(x => x.elementId == "Hand") == undefined) {
+    if (Tips.find(x => x.name == "Hand") == undefined) {
         $(this).off("mouseup");
         $(this).off("mousedown");
         $(document).off("mousemove");
@@ -471,7 +473,15 @@ function ShowPopup(popup, hasCloseButton = true) {
         timeoutScroll = setTimeout(function () {
             $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
         }, 50);
-
+    }
+    else if (popup == '#PopupPrivateMessage') {
+        ChatGetMessages(true, true);
+        $('#PrivateMessagePopupContent').scrollTop(300);
+        let timeoutScroll;
+        clearTimeout(timeoutScroll);
+        timeoutScroll = setTimeout(function () {
+            $('#PrivateMessagePopupContent').scrollTop($('#PrivateMessagePopupContent')[0].scrollHeight);
+        }, 50);
     }
 }
 
@@ -482,7 +492,7 @@ function ClosePopup(popup) {
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
-        Action("ValidateChromino");
+        DoAction("ValidateChromino");
     }, 4000);
 
 }
@@ -514,19 +524,29 @@ function ShowTipFeature(isCheck, hasCloseButton) {
     ShowPopup('#TipPopup', hasCloseButton);
 }
 
-function Action(elementId) {
-    Tip = Tips.find(x => x.elementId == elementId);
-    let functionName = elementId.replace("Button", "");
+function DoAction(actionWithArgs) {
+    let actionWithArgsTab = actionWithArgs.split(" ");
+    let functionName = actionWithArgsTab[0];
+    actionWithArgsTab.shift();
     let form = "#Form" + functionName;
     let popup = "#Popup" + functionName;
-    if (Tip != undefined)
-        ShowTipFeature(true, false);
-    else if (typeof window[functionName] === "function")
+    if (typeof window[functionName] === "function")
         window[functionName]();
     else if ($(popup).length)
         ShowPopup(popup);
     else if ($(form).length)
         $(form).submit();
+}
+
+function ShowTip(tip) {
+    Tip = Tips.find(x => x.name == tip);
+    if (Tip != undefined) {
+        ShowTipFeature(true, false);
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 function ErrorReturn(playReturn) {

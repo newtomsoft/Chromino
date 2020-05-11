@@ -37,7 +37,7 @@ namespace Data.DAL
             var tipsoff = from t in Ctx.Tips
                           join toff in Ctx.TipsOff on t.Id equals toff.TipId
                           where toff.PlayerId == playerId
-                          select t.DomElementId;
+                          select t.Name;
 
             return Names().Except(tipsoff).ToList();
         }
@@ -76,7 +76,7 @@ namespace Data.DAL
         private IQueryable<string> Names()
         {
             var results = from t in Ctx.Tips
-                          select t.DomElementId;
+                          select t.Name;
 
             return results;
         }

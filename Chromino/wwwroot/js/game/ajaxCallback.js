@@ -24,7 +24,7 @@
     HaveDrawn = data.gameVM.haveDrew;
     MemosNumber = data.gameVM.memosNumber;
     data.gameVM.playErrors.forEach(pe => PlayErrors.push({ name: pe.name, description: pe.description, illustrationPictureClass: pe.illustrationPictureClass, illustrationPictureCaption: pe.illustrationPictureCaption }));
-    data.gameVM.tips.forEach(tip => Tips.push({ id: tip.id, elementId: tip.domElementId, headPictureClass: tip.headPictureClass, description: tip.description, illustrationPictureClass: tip.illustrationPictureClass }));
+    data.gameVM.tips.forEach(tip => Tips.push({ id: tip.id, name: tip.name, headPictureClass: tip.headPictureClass, description: tip.description, illustrationPictureClass: tip.illustrationPictureClass }));
     let move = data.gameVM.game.move - 1;
     for (let icp = 0; icp < data.gameVM.chrominosPlayedVM.length; icp++) {
         let currentPseudo = data.gameVM.pseudos[(move - 1) % data.gameVM.pseudos.length];

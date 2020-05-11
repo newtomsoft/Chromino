@@ -18,25 +18,25 @@
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>
-    <button id="ButtonHome" class="doAction btn btn-toolbar img-home"></button>
-    <button id="ButtonInfo" class="doAction btn btn-toolbar img-infogame"></button>
-    <button id="ButtonHelp" class="doAction btn btn-toolbar img-helpPlay" style="display:none">
+    <button id="ButtonHome" run="Home" tip="Home" class="btn btn-toolbar img-home"></button>
+    <button id="ButtonInfo" run="Info" tip="Info" class="btn btn-toolbar img-infogame"></button>
+    <button id="ButtonHelp" run="Help" tip="Help" class="btn btn-toolbar img-helpPlay" style="display:none">
         <p id="HelpNumber" class="notification notification-green"></p>
     </button>
-    <button id="ButtonChat" class="doAction btn btn-toolbar img-chat" style="display:none">
+    <button id="ButtonChat" run="Chat" tip="Chat" class="btn btn-toolbar img-chat" style="display:none">
         <p id="NotifChat" class="notification notification-red" style="display:none"></p>
     </button>
-    <button id="ButtonMemo" class="doAction btn btn-toolbar img-memo">
+    <button id="ButtonMemo" run="Memo" tip="Memo" class="btn btn-toolbar img-memo">
         <p id="NotifMemo" class="notification notification-green" style="display:none"></p>
     </button>
-    <button id="ButtonDrawChromino" class="doAction btn btn-toolbar img-draw" style="display:none"></button>
-    <button id="ButtonSkipTurn" class="doAction btn btn-toolbar img-skip" style="display:none"></button>
-    <button id="ButtonPlayingChromino" class="doAction btn btn-toolbar img-play" style="display:none"></button>
+    <button id="ButtonDrawChromino" run="DrawChromino" tip="DrawChromino" class="btn btn-toolbar img-draw" style="display:none"></button>
+    <button id="ButtonSkipTurn" run="SkipTurn" tip="SkipTurn" class="btn btn-toolbar img-skip" style="display:none"></button>
+    <button id="ButtonPlayingChromino" run="PlayingChromino" tip="PlayChromino" class="btn btn-toolbar img-play" style="display:none"></button>
     <form id="FormNextGame" asp-action="ShowNextToPlay" style="display:none"></form>
-    <button id="ButtonNextGame" class="doAction btn btn-toolbar img-nextgame" style="display:none"></button>
+    <button id="ButtonNextGame" run="NextGame" tip="NextGame" class="btn btn-toolbar img-nextgame" style="display:none"></button>
 </div>
 <br>
-<div id="HistoryChrominos" class="doAction">
+<div id="HistoryChrominos" run="HistoryChrominos" tip="HistoryChrominos">
     <button id="ButtonPreviousChromino" class="btn btn-historyChromino img-previousChromino"></button>
     <button id="ButtonNextChromino" class="btn btn-historyChromino img-nextChromino"></button>
 </div>
@@ -58,10 +58,8 @@
                     if (Model.Squares[index].OpenLeft) classOpenSides += "Left";
                     if (Model.Squares[index].OpenTop) classOpenSides += "Top";
                     string classColor = color.ToString();
-                    string doAction = "";
-                    if (color == ColorCh.Cameleon)
-                        doAction = "doAction";
-                    <div id="Square_@index" class="@doAction @classOpenSides @classColor"></div>
+                    string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
+                    <div id="Square_@index" @tip class="@classOpenSides @classColor"></div>
                 }
                 else
                 {
@@ -77,15 +75,16 @@
         </div>
     }
 </div>
-<div id="Hand" class="doAction">
+<div id="Hand" tip="Hand">
     @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {
         <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
             @for (int i = 0; i < 3; i++)
             {
                 ColorCh color = chrominoVM.Squares[i].Color;
+                string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
                 string classColor = color.ToString();
-                <div class="Square @classColor"></div>
+                <div @tip class="Square @classColor"></div>
             }
         </div>
     }

@@ -258,86 +258,86 @@ namespace Batch
             #region tips
             Tip welcome = new Tip
             {
-                DomElementId = "Welcome",
+                Name = "Welcome",
                 HeadPictureClass = "",
                 Description = " <p>Bienvenue dans ce jeu.<p><p>Vous devez accoler vos chrominos contre d'autres en assurant au moins 2 contacts entre des carrés de mêmes couleurs.</p><p>En cliquant la 1ère fois sur un élement du jeu, une aide spécifique vous guidera.</p><p>Bons jeux !</p>",
                 IllustrationPictureClass = "img-okko",
             };
             Tip validateChromino = new Tip
             {
-                DomElementId = "ValidateChromino",
+                Name = "ValidateChromino",
                 HeadPictureClass = "img-infogame",
                 Description = "<p>Vous avez posé un chromino dans le jeu sans le valider.</p><p> Pensez à le valider en appuyant sur le bouton<button class='btn btn-toolbar img-play' onclick='PlayChromino()'></button></p><p>Ou en appuyant sur le chromino jusqu'au flash.</p>",
             };
             Tip home = new Tip
             {
-                DomElementId = "ButtonHome",
+                Name = "Home",
                 HeadPictureClass = "img-home",
                 Description = "<p>Cette icône permet de retourner à la page d’accueil.</p>",
             };
             Tip info = new Tip
             {
-                DomElementId = "ButtonInfo",
+                Name = "Info",
                 HeadPictureClass = "img-infogame",
                 Description = "<p>Cette icône ouvre une fenêtre qui indique les informations essentielles de la partie : </p><li>L'ordre aléatoire des joueurs.</li><li>Le nombre de chrominos par joueur.</li><li>Le nombre de chrominos de la pioche.</li><br/><p>A noter que lorsqu’il ne reste qu’un chromino à un joueur, celui-ci sera visible dans cette fenêtre.</p>",
             };
             Tip help = new Tip
             {
-                DomElementId = "ButtonHelp",
+                Name = "Help",
                 HeadPictureClass = "img-helpPlay",
                 Description = "<p>Cette icône permet de connaître les emplacements possibles des chrominos.</p><p>Ils sont symbolisés par une couleur.</p><p>Un numéro indique le nombre d'aides restant. </p><p>Ce nombre augmente de 3 par victoire, 2 par victoire ex-æquo, et d'1 par défaite.</p><p>A utiliser donc avec parcimonie.</p>",
             };
             Tip chat = new Tip
             {
-                DomElementId = "ButtonChat",
+                Name = "Chat",
                 HeadPictureClass = "img-chat",
                 Description = "<p>Cette icône ouvre une fenêtre de chat.</p><p>Un numéro indique la réception de nouveaux messages.</p>",
             };
             Tip memo = new Tip
             {
-                DomElementId = "ButtonMemo",
+                Name = "Memo",
                 HeadPictureClass = "img-memo",
                 Description = "<p>Cette icône ouvre un bloc note permettant de noter les chrominos des adversaires pour les bloquer le moment venu.</p><p>Un numéro apparaît lorsqu'une ou plusieurs notes est inscrite dans celui-ci.</p>",
             };
             Tip next = new Tip
             {
-                DomElementId = "ButtonNextGame",
+                Name = "NextGame",
                 HeadPictureClass = "img-nextgame",
                 Description = "<p>Cette icône permet de passer à la partie suivante.</p><p>Idéal pour jouer plusieurs parties les unes après les autres sans repasser par l'accueil.</p>",
             };
             Tip draw = new Tip
             {
-                DomElementId = "ButtonDrawChromino",
+                Name = "DrawChromino",
                 HeadPictureClass = "img-draw",
                 Description = "<p>Cette icône permet de piocher lorsqu'on ne peut pas (ou qu'on ne veut pas) placer de chromino dans le jeu.</p>",
             };
             Tip skip = new Tip
             {
-                DomElementId = "ButtonSkipTurn",
+                Name = "SkipTurn",
                 HeadPictureClass = "img-skip",
                 Description = "<p>Cette icône permet de passer son tour si le chromino pioché ne peut pas être placé (ou qu'on ne veut pas le poser)</p>",
             };
             Tip handChrominos = new Tip
             {
-                DomElementId = "Hand",
+                Name = "Hand",
                 HeadPictureClass = "img-hand",
                 Description = "<p>Pour remporter la partie, les chrominos de votre main doivent tous être posés dans le jeu à des positions valides.</p><p>Pour déplacer un chromino, appuyer dessus tout en maintenant la pression et relacher à l'endroit voulu.<p><p>Pour faire pivoter un chromino de 90°, appuyer brièvement dessus.<p>",
             };
             Tip history = new Tip
             {
-                DomElementId = "HistoryChrominos",
+                Name = "HistoryChrominos",
                 HeadPictureClass = "img-previous-next",
                 Description = "<p>Ces icônes permettent de voir l'enchaînement des chrominos posés dans le jeu.</p><p>Cela s'avère pratique lorsque l’on joue à plusieurs ou avec des pauses.</p>",
             };
             Tip play = new Tip
             {
-                DomElementId = "ButtonPlayingChromino",
+                Name = "PlayChromino",
                 HeadPictureClass = "img-play",
                 Description = "<p>Cette icône permet de valider le chromino placé dans le jeu.</p><p>Il est également possible de le valider en appuyant sur celui-ci pendant une courte durée.</p>",
             };
             Tip cameleon = new Tip
             {
-                DomElementId = "Cameleon",
+                Name = "Cameleon",
                 HeadPictureClass = "img-cameleon",
                 Description = "<p>Ce chromino \\\"caméléon\\\" a un joker en son centre.</p><p>Ce joker peut être accolé à n'importe quelle couleur d'un autre chromino comme sur l'exemple ci-dessous.</p>",
                 IllustrationPictureClass = "img-playcameleon",
@@ -352,17 +352,17 @@ namespace Batch
             foreach (var tip in tips)
             {
                 int tipId = (from t in Ctx.Tips
-                             where t.DomElementId == tip.DomElementId
+                             where t.Name == tip.Name
                              select t.Id).FirstOrDefault();
                 if (tipId == 0)
                 {
                     Ctx.Tips.Add(tip);
                     Ctx.SaveChanges();
-                    Console.WriteLine($"  tip {tip.DomElementId} ajouté");
+                    Console.WriteLine($"  tip {tip.Name} ajouté");
                 }
                 else
                 {
-                    Console.WriteLine($"  (tip {tip.DomElementId} déjà présent en base)");
+                    Console.WriteLine($"  (tip {tip.Name} déjà présent en base)");
                 }
             }
         }
