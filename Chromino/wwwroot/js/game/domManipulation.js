@@ -352,7 +352,7 @@ function RefreshPlayersStatus() {
 }
 
 function RefreshPlayerStatus(player) {
-    if (player.id != PlayerId) {
+    if (player.id != PlayerId && !player.isBot) {
         if (player.ongame) {
             $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-ongame");
             $("#InfoPlayerStatus_" + player.id).text(player.name + " est connecté sur la partie");
