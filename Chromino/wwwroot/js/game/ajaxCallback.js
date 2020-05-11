@@ -71,7 +71,7 @@ function CallbackTipClosePopup(dontShowAllTips) {
         Tips.splice(Tips.findIndex(x => x.id == Tip.id), 1);
 }
 
-function CallbackAddMemo(data) {
+function CallbackMemoAdd(data) {
     ClosePopup("#PopupMemo");
     if (data.memosNumber != 0) {
         $('#NotifMemo').text(data.memosNumber);
@@ -81,6 +81,10 @@ function CallbackAddMemo(data) {
         $('#NotifMemo').text(0);
         $('#NotifMemo').hide();
     }
+}
+
+function CallbackMemoGet(data) {
+    $('#MemoContent').val(data.memo);
 }
 
 function CallbackHelp(data) {

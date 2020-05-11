@@ -13,13 +13,21 @@ function TipClosePopup(popup, checkBox) {
     ClosePopup(popup);
 }
 
-function AddMemo() {
+function MemoAdd() {
     let memoContent = $('#MemoContent').val();
     $.ajax({
         url: '/Memo/Add',
         type: 'POST',
         data: { gameId: GameId, memo: memoContent },
-        success: function (data) { CallbackAddMemo(data) },
+        success: function (data) { CallbackMemoAdd(data) },
+    });
+}
+
+function MemoGet() {
+    $.ajax({
+        url: '/Memo/Get',
+        data: { gameId: GameId },
+        success: function (data) { CallbackMemoGet(data) },
     });
 }
 

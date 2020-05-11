@@ -480,6 +480,13 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
+        public string GetMemo(int gameId, int playerId)
+        {
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.Memo).FirstOrDefault();
+        }
+
         public int Delete(IQueryable<int> gamesIdToDelete)
         {
             var result = from gp in Ctx.GamesPlayers

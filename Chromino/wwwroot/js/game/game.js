@@ -6,6 +6,7 @@ var InStack;
 var HelpNumber;
 var IsGameFinish;
 var HaveDrawn;
+var Memo;
 var MemosNumber;
 var TimeoutPut = null;
 var ToPut = false;
@@ -47,10 +48,9 @@ function InitDom() {
     ShowButtonChat();
     RefreshButtonNextGame();
     $(window).on("unload", function () { SendRemoveFromGame(); });
-    $("#MemoAdd").click(AddMemo);
+    $("#MemoAdd").click(MemoAdd);
     $("#ChatAdd").click(ChatAddMessage);
     $(".doAction").click(function () { Action(this.id); });
-    $(".doLogoutGame").click(function () { SendLogoutGame(); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
     Action("Welcome");
     RefreshVar();
@@ -96,6 +96,7 @@ function InitDom() {
             ChatAddMessage();
         }
     });
+    MemoGet();
     ChatGetMessages(false);
     $(".emoji").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");

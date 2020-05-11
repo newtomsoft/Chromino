@@ -27,5 +27,13 @@ namespace ChrominoApp.Controllers
             GamePlayerDal.ChangeMemo(gameId, PlayerId, memo);
             return new JsonResult(new { memosNumber = memo?.Count(x => x == '\n') + 1 ?? 0 });
         }
+
+        [HttpGet]
+        public JsonResult Get(int gameId)
+        {
+            string memo = GamePlayerDal.GetMemo(gameId, PlayerId);
+            return new JsonResult(new { memo });
+        }
+
     }
 }
