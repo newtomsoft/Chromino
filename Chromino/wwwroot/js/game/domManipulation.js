@@ -346,3 +346,24 @@ function RefreshPlayerLogged(name, online) {
         $("#TestPlayersLogged").text($("#TestPlayersLogged").text() + name + ", ");
     }
 }
+
+function RefreshPlayersStatus() {
+    Players.forEach(p => RefreshPlayerStatus(p));
+}
+
+function RefreshPlayerStatus(player) {
+    if (player.id != PlayerId) {
+        if (player.ongame) {
+            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-ongame");
+            $("#InfoPlayerStatus_" + player.id).text(player.name + " est connecté sur la partie");
+        }
+        else if (player.online) {
+            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-online");
+            $("#InfoPlayerStatus_" + player.id).text(player.name + " est connecté sur le site");
+        }
+        else {
+            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-offline");
+            $("#InfoPlayerStatus_" + player.id).text(player.name + " n'est pas connecté");
+        }
+    }
+}

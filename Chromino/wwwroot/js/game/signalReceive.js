@@ -2,12 +2,14 @@
     Players.forEach(player => player.ongame = false);
     newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
     RefreshColorsPlayers();
+    RefreshPlayersStatus();
 }
 
 function ReceivePlayersLogged(newPlayersId) {
     Players.forEach(player => player.online = false);
     newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
     RefreshPlayersLogged();
+    RefreshPlayersStatus();
 }
 
 function OpponentMessageSent(guid) {
