@@ -1,16 +1,16 @@
-﻿<div id="PopupPrivateMessage" class="popup popup-memochat" style="display:none">
+﻿<div id="PopupPrivateMessage" penpalid="" class="popup popup-memochat" style="display:none">
     <div class="div-head img-chat" title="chat"></div>
     <div>
         <textarea id="PrivateMessagePopupContent" class="form-control" rows="10" disabled></textarea>
         <div class="form-group">
             <input id="PrivateMessageInput" name="chat" class="form-control" placeholder="Ajouter un message" required />
             <div class="emojis">
-                <span class="emoji">🖐️</span><span class="emoji">👍</span><span class="emoji">👎</span><span class="emoji">😀</span><span class="emoji">😇</span><span class="emoji">😎</span><span class="emoji">😁</span><span class="emoji">😜</span><span class="emoji">😂</span>
+                <span class="emoji emoji-privatemessage">🖐️</span><span class="emoji emoji-privatemessage">👍</span><span class="emoji emoji-privatemessage">👎</span><span class="emoji emoji-privatemessage">😀</span><span class="emoji emoji-privatemessage">😇</span><span class="emoji emoji-privatemessage">😎</span><span class="emoji emoji-privatemessage">😁</span><span class="emoji emoji-privatemessage">😜</span><span class="emoji emoji-privatemessage">😂</span>
             </div>
             <div class="emojis">
-                <span class="emoji">😉</span><span class="emoji">😘</span><span class="emoji">😍</span><span class="emoji">😕</span><span class="emoji">😡</span><span class="emoji">😱</span><span class="emoji">😤</span><span class="emoji">😢</span><span class="emoji">😭</span>
+                <span class="emoji emoji-privatemessage">😉</span><span class="emoji emoji-privatemessage">😘</span><span class="emoji emoji-privatemessage">😍</span><span class="emoji emoji-privatemessage">😕</span><span class="emoji emoji-privatemessage">😡</span><span class="emoji emoji-privatemessage">😱</span><span class="emoji emoji-privatemessage">😤</span><span class="emoji emoji-privatemessage">😢</span><span class="emoji emoji-privatemessage">😭</span>
             </div>
-            <button id="PrivateMessageAdd" class="btn btn-primary">Envoyer</button>
+            <button id="PrivateMessageAdd" class="btn btn-primary" recipientId="">Envoyer</button>
         </div>
     </div>
 </div>

@@ -455,7 +455,32 @@ namespace Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("PrivateMessages");
+                    b.ToTable("PrivatesMessages");
+                });
+
+            modelBuilder.Entity("Data.Models.PrivateMessageLatestRead", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("LatestRead")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("PrivatesMessagesLatestRead");
                 });
 
             modelBuilder.Entity("Data.Models.Square", b =>
@@ -805,6 +830,21 @@ namespace Data.Migrations
                 });
 
             modelBuilder.Entity("Data.Models.PrivateMessage", b =>
+                {
+                    b.HasOne("Data.Models.Player", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Models.Player", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Models.PrivateMessageLatestRead", b =>
                 {
                     b.HasOne("Data.Models.Player", "Recipient")
                         .WithMany()

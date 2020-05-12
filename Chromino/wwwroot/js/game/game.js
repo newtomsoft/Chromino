@@ -28,6 +28,7 @@ var PlayerTurn;
 var PlayersNumber;
 var Players;
 var HumansId;
+var PenpalId;
 var HumansOpponentsId;
 var IsPlayingBackEnd;
 var OpponentsAllBots;
@@ -74,15 +75,28 @@ function InitDom() {
             ChatAddMessage();
         }
     });
+    $('#PrivateMessageInput').on('keydown', function (e) {
+        if (e.which == 13) {     // touche entrer sur private message
+            PrivateMessageAddMessage();
+        }
+    });
     MemoGet();
     ChatGetMessages(false);
-    $(".emoji").click(function () {
+    $(".emoji-chat").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();
         let textBefore = text.substring(0, selectionStart);
         let textAfter = text.substring(selectionStart, text.length);
         $('#ChatInput').val(textBefore + $(this).html() + textAfter);
         $('#ChatInput').focus();
+    });
+    $(".emoji-privatemessage").click(function () {
+        let selectionStart = $('#PrivateMessageInput').prop("selectionStart");
+        let text = $('#PrivateMessageInput').val();
+        let textBefore = text.substring(0, selectionStart);
+        let textAfter = text.substring(selectionStart, text.length);
+        $('#PrivateMessageInput').val(textBefore + $(this).html() + textAfter);
+        $('#PrivateMessageInput').focus();
     });
     MakePlayersStatusIndicators();
     $(window).on("unload", function () { SendRemoveFromGame(); });
@@ -105,6 +119,7 @@ function InitDom() {
     });
     $("#MemoAdd").click(MemoAdd);
     $("#ChatAdd").click(ChatAddMessage);
+    $("#PrivateMessageAdd").click(function () { PrivateMessageAddMessage(this.attributes['recipientId'].value); });
     $("[run]:not([tip])").click(function () { DoAction(this.attributes['run'].value); });
     $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
     $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
@@ -458,38 +473,6 @@ function IsChrominoInGameArea(chromino) {
         return false;
 }
 
-//***************************************************//
-//********** gestion popups de la partie ************//
-//***************************************************//
-function ShowPopup(popup, hasCloseButton = true, argsTab) {
-    StopScheduleValidateChromino();
-    $(popup).show();
-    $(popup).popup({ closebutton: hasCloseButton, autoopen: true, transition: 'all 0.4s' });
-    $.fn.popup.defaults.pagecontainer = '#page';
-    if (popup == '#PopupChat') {
-        ChatGetMessages(true, true);
-        $('#ChatPopupContent').scrollTop(300);
-        let timeoutScroll;
-        clearTimeout(timeoutScroll);
-        timeoutScroll = setTimeout(function () {
-            $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
-        }, 50);
-    }
-    else if (popup == '#PopupPrivateMessage') {
-        PrivateMessageGetMessages(true, true, argsTab[0]);
-        $('#PrivateMessagePopupContent').scrollTop(300);
-        let timeoutScroll;
-        clearTimeout(timeoutScroll);
-        timeoutScroll = setTimeout(function () {
-            $('#PrivateMessagePopupContent').scrollTop($('#PrivateMessagePopupContent')[0].scrollHeight);
-        }, 50);
-    }
-}
-
-function ClosePopup(popup) {
-    $(popup).popup('hide');
-}
-
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
@@ -564,7 +547,7 @@ function ErrorReturn(playReturn) {
             $('#ErrorIllustration').hide();
             $('#ErrorIllustrationCaption').hide();
         }
-        ShowPopup('#PopupError');
+        ShowPopup('#PopupError', true);
     }
     IsPlayingBackEnd = false;
 }

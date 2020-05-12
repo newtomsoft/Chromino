@@ -38,7 +38,7 @@ function ChatAddMessage() {
             url: '/Chat/PostMessage',
             type: 'POST',
             data: { gameId: GameId, message: message },
-            success: function (data) { CallbackAddMessage(data) },
+            success: function (data) { CallbackChatAddMessage(data) },
         });
     }
 }
@@ -54,11 +54,23 @@ function ChatGetMessages(onlyNewMessages, show) {
 
 function PrivateMessageGetMessages(onlyNewMessages, show, opponentId) {
     $.ajax({
-        url: '/Chat/GetMessages', //TODO changer
+        url: '/PrivateMessage/GetMessages',
         type: 'POST',
-        data: { gameId: GameId, opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
-        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show); } // changer ?
+        data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
+        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, opponentId); }
     });
+}
+
+function PrivateMessageAddMessage(recipientId) {
+    let message = $('#PrivateMessageInput').val();
+    if (message != "") {
+        $.ajax({
+            url: '/PrivateMessage/PostMessage',
+            type: 'POST',
+            data: { recipientId: recipientId, message: message },
+            success: function (data) { CallbackPrivateMessageAddMessage(data) },
+        });
+    }
 }
 
 

@@ -12,7 +12,7 @@ function ReceivePlayersLogged(newPlayersId) {
     RefreshPlayersStatus();
 }
 
-function OpponentMessageSent(guid) {
+function ReceiveChatMessageSent(guid) {
     if (guid != Guid)
         return;
     if ($("#PopupChat").is(":visible"))
@@ -20,6 +20,14 @@ function OpponentMessageSent(guid) {
     else
         ChatGetMessages(true);
 }
+
+function ReceivePrivateMessageMessageSent(senderId) {
+    if ( $(`#PopupPrivateMessage[penpalid='${ senderId }']`).is(":visible"))
+        PrivateMessageGetMessages(true, true, senderId);
+    else
+        PrivateMessageGetMessages(true, false, senderId);
+}
+
 
 function OpponentChrominoPlayed(guid, chrominoPlayed) {
     if (guid != Guid)

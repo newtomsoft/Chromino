@@ -63,7 +63,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\doc\" />
     <Folder Include="wwwroot\image\game\" />
-    <Folder Include="wwwroot\js\common\" />
   </ItemGroup>
 
   <ItemGroup>

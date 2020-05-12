@@ -15,8 +15,12 @@ function CallSignalR(guid) {
         ReceivePlayersInGame(newPlayersId);
     });
 
-    ConnectionHubGame.on("ReceiveMessageSent", function (guid) {
-        OpponentMessageSent(guid);
+    ConnectionHubGame.on("ReceiveChatMessageSent", function (guid) {
+        ReceiveChatMessageSent(guid);
+    });
+
+    ConnectionHubGame.on("ReceivePrivateMessageMessageSent", function (senderId) {
+        ReceivePrivateMessageMessageSent(senderId);
     });
 
     ConnectionHubGame.on("ReceiveChrominoPlayed", function (guid, chrominoPlayed) {

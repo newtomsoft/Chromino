@@ -59,10 +59,29 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
     }
 }
 
-function CallbackAddMessage(data) {
+function CallbackChatAddMessage(data) {
     $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
     $('#ChatInput').val("");
-    SendMessageSent(Guid, Players);
+    SendChatMessageSent(Guid, Players);
+}
+
+function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, opponentId) {
+    if (show || !onlyNewMessages)
+        $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.message);
+    if (show || data.newMessagesNumber == 0) {
+        $("#NotifPrivateMessage").text("0");
+        $("#NotifPrivateMessage").hide();
+    }
+    else {
+        $('#NotifPrivateMessage').text(data.newMessagesNumber);
+        $('#NotifPrivateMessage').show();
+    }
+}
+
+function CallbackPrivateMessageAddMessage(data) {
+    $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.newMessage);
+    $('#PrivateMessageInput').val("");
+    SendPrivateMessageSent($('#PrivateMessageAdd').attr("recipientId"));
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {

@@ -6,8 +6,12 @@ function SendRemoveFromGame() {
     ConnectionHubGame.invoke("SendRemoveFromGame", Guid).catch(function (err) { return console.error(err.toString()); });
 };
 
-function SendMessageSent() {
-    ConnectionHubGame.invoke("SendMessageSent", Guid, HumansId).catch(function (err) { return console.error(err.toString()); });
+function SendChatMessageSent() {
+    ConnectionHubGame.invoke("SendChatMessageSent", Guid, HumansId).catch(function (err) { return console.error(err.toString()); });
+};
+
+function SendPrivateMessageSent(recipientId) {
+    ConnectionHubGame.invoke("SendPrivateMessageSent", recipientId).catch(function (err) { return console.error(err.toString()); });
 };
 
 function SendChrominoPlayed(chrominoPlayed) {

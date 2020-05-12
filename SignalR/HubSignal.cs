@@ -55,10 +55,10 @@ namespace SignalR.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, guid);
         }
 
-        public async Task SendMessageSent(string guid, List<string> playersId)
-        {
-            await Clients.Users(playersId).SendAsync("ReceiveMessageSent", guid);
-        }
+        public async Task SendPrivateMessageSent(string playerId) => await Clients.Users(playerId).SendAsync("ReceivePrivateMessageMessageSent", int.Parse(Context.UserIdentifier));
+
+        public async Task SendChatMessageSent(string guid, List<string> playersId) => await Clients.Users(playersId).SendAsync("ReceiveChatMessageSent", guid);
+
         public async Task SendChrominoPlayed(string guid, List<string> playersId, object chrominoPlayed) => await Clients.Users(playersId).SendAsync("ReceiveChrominoPlayed", guid, chrominoPlayed);
 
         public async Task SendTurnSkipped(string guid, List<string> playersId) => await Clients.Users(playersId).SendAsync("ReceiveTurnSkipped", guid);

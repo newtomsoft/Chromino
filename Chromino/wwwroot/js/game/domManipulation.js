@@ -40,7 +40,7 @@ function RefreshInfoPopup() {
     }
     RefreshInStack();
     if (ShowInfoPopup && PlayerTurn.id == PlayerId || IsGameFinish)
-        ShowPopup('#PopupInfo');
+        ShowPopup('#PopupInfo', true);
 }
 
 function RefreshInStack() {

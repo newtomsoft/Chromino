@@ -440,11 +440,6 @@ a {
     background-position: center center;
 }
 
-/*#ChatPopupContent {
-    width: 400px;
-    max-width: 100%;
-}*/
-
 .emojis {
     display: flex;
     justify-content: space-between;
