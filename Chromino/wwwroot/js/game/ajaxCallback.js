@@ -65,7 +65,7 @@ function CallbackChatAddMessage(data) {
     SendChatMessageSent(Guid, Players);
 }
 
-function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, opponentId) {
+function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show) {
     if (show || !onlyNewMessages)
         $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.message);
     if (show || data.newMessagesNumber == 0) {

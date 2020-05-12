@@ -28,7 +28,7 @@ var PlayerTurn;
 var PlayersNumber;
 var Players;
 var HumansId;
-var PenpalId;
+var Penpal;
 var HumansOpponentsId;
 var IsPlayingBackEnd;
 var OpponentsAllBots;

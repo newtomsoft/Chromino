@@ -373,6 +373,6 @@ function MakePlayersStatusIndicators() {
 }
 
 function MakePlayerStatusIndicator(id) {
-    let toAdd = `<button id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage" class="btn"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></button>`;
+    let toAdd = `<button id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></button>`;
     $(toAdd).appendTo('#PlayersStatus');
 }

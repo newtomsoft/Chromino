@@ -37,16 +37,6 @@ namespace Data.DAL
             Ctx.SaveChanges();
         }
 
-        public Chat Details(int id)
-        {
-            throw new NotImplementedException();
-            var result = (from c in Ctx.Chats
-                          where c.Id == id
-                          select c).FirstOrDefault();
-
-            return result;
-        }
-
         public void Add(int playerId, int opponentId, string message)
         {
             PrivateMessage pm = new PrivateMessage { SenderId = playerId, RecipientId = opponentId, Date = DateTime.Now, Message = message };

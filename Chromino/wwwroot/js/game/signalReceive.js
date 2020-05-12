@@ -3,6 +3,7 @@
     newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
     RefreshColorsPlayers();
     RefreshPlayersStatus();
+    RefreshPopupPrivateMessage();
 }
 
 function ReceivePlayersLogged(newPlayersId) {
@@ -10,6 +11,7 @@ function ReceivePlayersLogged(newPlayersId) {
     newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
     RefreshPlayersLogged();
     RefreshPlayersStatus();
+    RefreshPopupPrivateMessage();
 }
 
 function ReceiveChatMessageSent(guid) {

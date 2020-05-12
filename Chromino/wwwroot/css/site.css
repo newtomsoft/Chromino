@@ -289,19 +289,33 @@ a {
         display: block;
     }
 
-.player-status-ongame {
+.player-status-ongame, .penpal-status-ongame {
     background-color: green;
 }
 
-.player-status-online {
+.player-status-online, .penpal-status-online {
     background-color: yellowgreen;
 }
 
-.player-status-offline {
+.player-status-offline, .penpal-status-offline {
     background-color: red;
 }
 
+#PenpalInfos {
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    font-size: larger;
+}
 
+.penpal-status {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    line-height: 12px;
+    margin: 1px;
+}
 
 #ErrorText1 {
 }

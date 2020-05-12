@@ -13,12 +13,14 @@
         }, 50);
     }
     else if (popup == '#PopupPrivateMessage') {
-        let penpalId = argsTab[0];
-        let onlyNewMessage = PenpalId === penpalId ? true : false;
-        PenpalId = penpalId;
-        $('#PrivateMessageAdd').attr("recipientId", penpalId);
-        $('#PopupPrivateMessage').attr("penpalid", penpalId);
-        PrivateMessageGetMessages(onlyNewMessage, true, penpalId);
+        let penpal = Players.find(p => p.id == argsTab[0]);
+        let onlyNewMessage = Penpal === penpal ? true : false;
+        Penpal = penpal;
+        $('#PrivateMessageAdd').attr("recipientId", penpal.id);
+        $('#PopupPrivateMessage').attr("penpalid", penpal.id);
+        $('#PrivateMessagePenpalName').text(penpal.name);
+        RefreshPopupPrivateMessage();
+        PrivateMessageGetMessages(onlyNewMessage, true, penpal.id);
         $('#PrivateMessagePopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);
@@ -30,4 +32,13 @@
 
 function ClosePopup(popup) {
     $(popup).popup('hide');
+}
+
+function RefreshPopupPrivateMessage() {
+    if (Penpal.ongame)
+        $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-ongame");
+    else if (Penpal.online)
+        $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-online");
+    else
+        $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-offline");
 }

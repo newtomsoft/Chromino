@@ -57,7 +57,7 @@ function PrivateMessageGetMessages(onlyNewMessages, show, opponentId) {
         url: '/PrivateMessage/GetMessages',
         type: 'POST',
         data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
-        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, opponentId); }
+        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show); }
     });
 }
 
