@@ -14,13 +14,18 @@
     }
     else if (popup == '#PopupPrivateMessage') {
         let penpal = Players.find(p => p.id == argsTab[0]);
-        let onlyNewMessage = Penpal === penpal ? true : false;
+        let onlyNewMessage = false;
+        let reset = true;
+        if (Penpal === penpal) {
+            onlyNewMessage = true;
+            reset = false;
+        }
         Penpal = penpal;
         $('#PrivateMessageAdd').attr("recipientId", penpal.id);
         $('#PopupPrivateMessage').attr("penpalid", penpal.id);
         $('#PrivateMessagePenpalName').text(penpal.name);
         RefreshPopupPrivateMessage();
-        PrivateMessageGetMessages(onlyNewMessage, true, penpal.id);
+        PrivateMessageGetMessages(onlyNewMessage, true, penpal.id, reset);
         $('#PrivateMessagePopupContent').scrollTop(300);
         let timeoutScroll;
         clearTimeout(timeoutScroll);

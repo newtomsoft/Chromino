@@ -10,37 +10,19 @@
     }
   },
   {
-    "outputFileName": "wwwroot/js/nogame/page.min.js",
+    "outputFileName": "wwwroot/js/game.min.js",
     "inputFiles": [
-      "wwwroot/js/nogame/page.js",
-      "wwwroot/js/commun/popup.js",
-      "wwwroot/js/nogame/newGame.js",
-      "wwwroot/js/nogame/swipRefresh.js",
-      "wwwroot/js/nogame/ajaxCall.js",
-      "wwwroot/js/nogame/ajaxCallback.js",
-      "wwwroot/js/game/signal.js",
-      "wwwroot/js/game/signalSend.js",
-      "wwwroot/js/game/signalReceive.js"
-    ],
-    "minify": {
-      "enabled": true,
-      "renameLocals": true
-    },
-    "sourceMap": false
-  },
-  {
-    "outputFileName": "wwwroot/js/game/game.min.js",
-    "inputFiles": [
-      "wwwroot/js/game/game.js",
-      "wwwroot/js/commun/popup.js",
-      "wwwroot/js/game/domManipulation.js",
-      "wwwroot/js/game/ajaxCall.js",
-      "wwwroot/js/game/ajaxCallback.js",
-      "wwwroot/js/game/signal.js",
-      "wwwroot/js/game/signalSend.js",
-      "wwwroot/js/game/signalReceive.js",
-      "wwwroot/js/game/jquery.popupoverlay.js",
-      "wwwroot/js/game/jquery.draggableTouch.js"
+      "wwwroot/js/game.js",
+      "wwwroot/js/newGame.js",
+      "wwwroot/js/popup.js",
+      "wwwroot/js/domManipulation.js",
+      "wwwroot/js/ajaxCall.js",
+      "wwwroot/js/ajaxCallback.js",
+      "wwwroot/js/signal.js",
+      "wwwroot/js/signalSend.js",
+      "wwwroot/js/signalReceive.js",
+      "wwwroot/js/jquery.popupoverlay.js",
+      "wwwroot/js/jquery.draggableTouch.js"
     ],
     "minify": {
       "enabled": true,

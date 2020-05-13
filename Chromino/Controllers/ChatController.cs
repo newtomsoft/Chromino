@@ -29,7 +29,7 @@ namespace ChrominoApp.Controllers
         /// <param name="message"></param>
         /// <returns>message formatté pour affichage</returns>
         [HttpPost]
-        public JsonResult PostMessage(int gameId, string message)
+        public IActionResult PostMessage(int gameId, string message)
         {
             if (PlayerIsInGame(gameId))
             {
@@ -48,10 +48,10 @@ namespace ChrominoApp.Controllers
         /// </summary>
         /// <param name="gameId">id de la partie</param>
         /// <param name="onlyNewMessages">true pour obtenir uniquement les messages non lus</param>
-        /// <param name="resetNotification">true pour remettre à 0 le compteur de nouveaux messages</param>
+        /// <param name="show">true pour remettre à 0 le compteur de nouveaux messages</param>
         /// <returns>chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
         [HttpPost]
-        public JsonResult GetMessages(int gameId, bool onlyNewMessages, bool show)
+        public IActionResult GetMessages(int gameId, bool onlyNewMessages, bool show)
         {
             DateTime now = DateTime.Now;
             DateTime dateLatestRead = GamePlayerDal.GetLatestReadMessage(gameId, PlayerId);

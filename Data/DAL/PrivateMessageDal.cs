@@ -15,7 +15,7 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public DateTime GetLatestReadMessage(int recipientId, int senderId)
+        public DateTime GetDateLatestReadMessage(int recipientId, int senderId)
         {
             DateTime result = (from pm in Ctx.PrivatesMessagesLatestRead
                                where pm.RecipientId == recipientId && pm.SenderId == senderId
@@ -24,7 +24,7 @@ namespace Data.DAL
             return result;
         }
 
-        public void SetLatestReadMessage(int recipientId, int senderId, DateTime date)
+        public void SetDateLatestReadMessage(int recipientId, int senderId, DateTime date)
         {
             var privateMessageLatestRead = (from pm in Ctx.PrivatesMessagesLatestRead
                                             where pm.RecipientId == recipientId && pm.SenderId == senderId
@@ -58,6 +58,16 @@ namespace Data.DAL
             var result = (from pm in Ctx.PrivatesMessages
                           where (pm.RecipientId == player1Id && pm.SenderId == player2Id || pm.RecipientId == player2Id && pm.SenderId == player1Id) && pm.Date > dateMin
                           select pm).Count();
+
+            return result;
+        }
+        public Dictionary<int, int> GetUnreadMessagesSenders(int playerId)
+        {
+            Dictionary<int, int> result = (from pm in Ctx.PrivatesMessages
+                                           join lr in Ctx.PrivatesMessagesLatestRead on pm.RecipientId equals lr.RecipientId
+                                           where pm.RecipientId == playerId && pm.SenderId == lr.SenderId && pm.Date > lr.LatestRead
+                                           group pm by pm.SenderId into g
+                                           select new { SenderId = g.Key, MessagesNumber = g.Count() }).ToDictionary(x => x.SenderId, x => x.MessagesNumber);
 
             return result;
         }

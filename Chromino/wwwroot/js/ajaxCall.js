@@ -52,12 +52,12 @@ function ChatGetMessages(onlyNewMessages, show) {
     });
 }
 
-function PrivateMessageGetMessages(onlyNewMessages, show, opponentId) {
+function PrivateMessageGetMessages(onlyNewMessages, show, opponentId, reset) {
     $.ajax({
         url: '/PrivateMessage/GetMessages',
         type: 'POST',
         data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
-        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show); }
+        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset); }
     });
 }
 
@@ -72,7 +72,6 @@ function PrivateMessageAddMessage(recipientId) {
         });
     }
 }
-
 
 function Help() {
     if ($(".Possible").length == 0) {
@@ -201,4 +200,25 @@ function PlayingChromino() {
             success: function (data) { CallbackPlayChromino(data, chrominoId, xIndex, yIndex, orientation, flip); },
         });
     }
+}
+
+function GetGuids() {
+    $.ajax({
+        url: '/Games/Guids',
+        success: function (data) { CallbackGetGuids(data); },
+    });
+}
+
+function AgainstFriends() {
+    $.ajax({
+        url: '/Games/AgainstFriendsAjax',
+        success: function (data) { CallbackAgainstFriends(data); }
+    });
+}
+
+function UnreadMessagesSenders() {
+    $.ajax({
+        url: '/Social/Index',
+        success: function (data) { CallbackUnreadMessagesSenders(data) },
+    });
 }

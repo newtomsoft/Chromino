@@ -1,14 +1,14 @@
-﻿function ReceivePlayersInGame(newPlayersId) {
+﻿function ReceivePlayersInGame(playersId) {
     Players.forEach(player => player.ongame = false);
-    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
+    playersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
     RefreshColorsPlayers();
     RefreshPlayersStatus();
     RefreshPopupPrivateMessage();
 }
 
-function ReceivePlayersLogged(newPlayersId) {
+function ReceivePlayersLogged(playersId) {
     Players.forEach(player => player.online = false);
-    newPlayersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
+    playersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
     RefreshPlayersLogged();
     RefreshPlayersStatus();
     RefreshPopupPrivateMessage();
@@ -25,9 +25,9 @@ function ReceiveChatMessageSent(guid) {
 
 function ReceivePrivateMessageMessageSent(senderId) {
     if ( $(`#PopupPrivateMessage[penpalid='${ senderId }']`).is(":visible"))
-        PrivateMessageGetMessages(true, true, senderId);
+        PrivateMessageGetMessages(true, true, senderId, false);
     else
-        PrivateMessageGetMessages(true, false, senderId);
+        PrivateMessageGetMessages(true, false, senderId, false);
 }
 
 

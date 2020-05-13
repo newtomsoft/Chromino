@@ -38,10 +38,25 @@ var PlayErrors = new Array;
 var Tips = new Array;
 var HistoryChrominos = new Array;
 
+//check
+var Guids;
+var GamesAgainstFriendsNumber;
+var GamesAgainstBotsNumber;
+var GamesWithUnreadMessagesNumber;
+var GamesSinglesNumber;
+var GamesFinishWithFriendsNumber;
+var GamesFinishWithBotdNumber;
+var IndexGamesLoad = true;
+
 $(document).ready(function () {
+    AddFeatureNewGame(); // todo desactiver quand pas nécessaire
+    GetGuids(); // idem
     InitDom();
     CallSignalR(Guid);
     RefreshDom();
+    UnreadMessagesSenders(); //temp
+    if (IndexGamesLoad)
+        GetGames();
 });
 
 function InitDom() {
@@ -124,6 +139,15 @@ function InitDom() {
     $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
     $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
+}
+
+function GetGames() {
+    AgainstFriends();
+    AgainstBots();
+    WithUnreadMessages();
+    Singles();
+    FinishWithFriends();
+    FinishWithBotd();
 }
 
 //***************************************************//

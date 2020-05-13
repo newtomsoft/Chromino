@@ -33,27 +33,25 @@ namespace ChrominoApp.Controllers
         {
             PrivateMessageDal.Add(PlayerId, recipientId, message);
             string newMessage = $"Vous ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {message}\n";
-            PrivateMessageDal.SetLatestReadMessage(PlayerId, recipientId, DateTime.Now);
+            PrivateMessageDal.SetDateLatestReadMessage(PlayerId, recipientId, DateTime.Now);
             return new JsonResult(new { newMessage });
         }
 
         /// <summary>
-        /// récupère dans le json de sortie les messages de la partie avec formattage
+        /// récupère dans le json de sortie les messages privés avec formattage
         /// </summary>
         /// <param name="opponentId">id de l'adversaire avec qui s'échange les messages privés</param>
         /// <param name="onlyNewMessages">true pour obtenir uniquement les messages non lus</param>
         /// <param name="show">true pour remettre à 0 le compteur de nouveaux messages</param>
-        /// <returns>chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
+        /// <returns>message: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
         [HttpPost]
         public JsonResult GetMessages(int opponentId, bool onlyNewMessages, bool show)
         {
             DateTime now = DateTime.Now;
-            DateTime dateLatestRead = PrivateMessageDal.GetLatestReadMessage(PlayerId, opponentId);
+            DateTime dateLatestRead = PrivateMessageDal.GetDateLatestReadMessage(PlayerId, opponentId);
             DateTime dateMin = onlyNewMessages ? dateLatestRead : DateTime.MinValue;
-            DateTime dateMax = onlyNewMessages ? DateTime.MaxValue : dateLatestRead;
-            List<PrivateMessage> privatesMessages = PrivateMessageDal.GetMessages(PlayerId, opponentId, dateMin, dateMax);
+            List<PrivateMessage> privatesMessages = PrivateMessageDal.GetMessages(PlayerId, opponentId, dateMin, DateTime.MaxValue);
             int newMessagesNumber = onlyNewMessages ? privatesMessages.Count() : PrivateMessageDal.NewMessagesNumber(PlayerId, opponentId, dateLatestRead);
-
             string playerName = "Vous";
             string opponentName = PlayerDal.Name(opponentId);
             Dictionary<int, string> playerId_PlayerName = new Dictionary<int, string>();
@@ -63,7 +61,7 @@ namespace ChrominoApp.Controllers
             foreach (PrivateMessage pm in privatesMessages)
                 message += $"{playerId_PlayerName[pm.SenderId]} ({pm.Date.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {pm.Message}\n";
             if (show)
-                PrivateMessageDal.SetLatestReadMessage(PlayerId, opponentId, now);
+                PrivateMessageDal.SetDateLatestReadMessage(PlayerId, opponentId, now);
             return new JsonResult(new { message, newMessagesNumber });
         }
     }

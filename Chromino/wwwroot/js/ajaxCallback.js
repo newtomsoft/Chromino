@@ -65,7 +65,9 @@ function CallbackChatAddMessage(data) {
     SendChatMessageSent(Guid, Players);
 }
 
-function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show) {
+function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
+    if (reset)
+        $('#PrivateMessagePopupContent').val("");
     if (show || !onlyNewMessages)
         $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.message);
     if (show || data.newMessagesNumber == 0) {
@@ -243,4 +245,22 @@ function ChangePlayerTurn() {
     PlayerTurn.id = Players[newIndex].id;
     PlayerTurn.isBot = Players[newIndex].isBot;
     PlayerTurn.name = Players[newIndex].name;
+}
+
+//todo check
+function CallbackGetGuids(data) {
+    Guids = data.guids;
+}
+//todo check
+function CallbackAgainstFriends(data) {
+    ShowGamesAgainstFriendsNumber(data.picturesGame.length);
+}
+//todo check
+function ShowGamesAgainstFriendsNumber(number) {
+    $("#AgainstFriendsNumber").text(number);
+    $("#AgainstFriendsNumber").show();
+}
+
+function CallbackUnreadMessagesSenders(data) {
+    let toto = data.unreadMessagesSenders;
 }

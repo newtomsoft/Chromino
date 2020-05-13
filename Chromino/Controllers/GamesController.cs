@@ -89,15 +89,6 @@ namespace ChrominoApp.Controllers
             return View(MakePicturesGameVM(GamePlayerDal.SingleGamesFinished(PlayerId)));
         }
 
-        /// <summary>
-        /// Page des parties avec messages non lus
-        /// </summary>
-        /// <returns></returns>
-        public IActionResult WithUnreadMessages()
-        {
-            return View(MakePicturesGameVM(GamePlayerDal.GamesWithNotReadMessages(PlayerId)));
-        }
-
         [HttpGet]
         public IActionResult Guids(int gameId)
         {
