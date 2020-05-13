@@ -523,7 +523,7 @@ function ShowTipFeature(isCheck, hasCloseButton) {
     }
     $('#TipHtml').html(Tip.description);
     $('#TipDontShowAgain').prop('checked', isCheck);
-    if (Tip.illustrationPictureClass !== null) {
+    if (Tip.illustrationPictureClass != "") {
         $('#TipIllustration').removeClass().addClass("illustration " + Tip.illustrationPictureClass);
         $('#TipIllustration').show();
     }
