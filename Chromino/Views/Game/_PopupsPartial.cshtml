@@ -13,19 +13,48 @@
         <button id="MemoAdd" class="btn btn-primary">Enregistrer</button>
     </div>
 </div>
-<div id="PopupChat" class="popup popup-memochat" style="display:none">
-    <div class="div-head img-chat" title="chat"></div>
-    <div>
-        <textarea id="ChatPopupContent" class="form-control" rows="10" disabled></textarea>
+<div id="PopupChat" penpalid="" class="popup popup-memochat" style="display:none">
+    <ul>
+        <li><a run="SwitchToChat" class="selected" href="#">Messages de la partie</a></li>
+        <li><a run="SwitchToPrivateMessage" href="#">Messages privés</a></li>
+    </ul>
+    <div id="ChatDiv">
+        <div class="div-head img-chat" title="chat"></div>
+        <div>
+            <div id="ChatPopupContent"></div>
+            <div class="form-group">
+                <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+                <div class="emojis">
+                    <span class="emoji emoji-chat">🖐️</span><span class="emoji emoji-chat">👍</span><span class="emoji emoji-chat">👎</span><span class="emoji emoji-chat">😀</span><span class="emoji emoji-chat">😇</span><span class="emoji emoji-chat">😎</span><span class="emoji emoji-chat">😁</span><span class="emoji emoji-chat">😜</span><span class="emoji emoji-chat">😂</span>
+                </div>
+                <div class="emojis">
+                    <span class="emoji emoji-chat">😉</span><span class="emoji emoji-chat">😘</span><span class="emoji emoji-chat">😍</span><span class="emoji emoji-chat">😕</span><span class="emoji emoji-chat">😡</span><span class="emoji emoji-chat">😱</span><span class="emoji emoji-chat">😤</span><span class="emoji emoji-chat">😢</span><span class="emoji emoji-chat">😭</span>
+                </div>
+                <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
+            </div>
+        </div>
+    </div>
+    <div id="PrivateMessageDiv" style="display:none">
+        <div id="PenpalInfos">
+            <span id="PrivateMessagePenpalName"></span>
+            <span id="PrivateMessagePenpalStatus"></span>
+        </div>
+        <div class="div-head img-chat" title="private message"></div>
+        <div id="PenpalsList">
+            <div run="test 0">Toto</div>
+            <div run="test 1">Popo</div>
+            <div run="test 2">Momo</div>
+        </div>
+        <div id="PrivateMessagePopupContent" style="display:none"></div>
         <div class="form-group">
-            <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+            <input id="PrivateMessageInput" name="chat" class="form-control" placeholder="Ajouter un message" required />
             <div class="emojis">
-                <span class="emoji emoji-chat">🖐️</span><span class="emoji emoji-chat">👍</span><span class="emoji emoji-chat">👎</span><span class="emoji emoji-chat">😀</span><span class="emoji emoji-chat">😇</span><span class="emoji emoji-chat">😎</span><span class="emoji emoji-chat">😁</span><span class="emoji emoji-chat">😜</span><span class="emoji emoji-chat">😂</span>
+                <span class="emoji emoji-privatemessage">🖐️</span><span class="emoji emoji-privatemessage">👍</span><span class="emoji emoji-privatemessage">👎</span><span class="emoji emoji-privatemessage">😀</span><span class="emoji emoji-privatemessage">😇</span><span class="emoji emoji-privatemessage">😎</span><span class="emoji emoji-privatemessage">😁</span><span class="emoji emoji-privatemessage">😜</span><span class="emoji emoji-privatemessage">😂</span>
             </div>
             <div class="emojis">
-                <span class="emoji emoji-chat">😉</span><span class="emoji emoji-chat">😘</span><span class="emoji emoji-chat">😍</span><span class="emoji emoji-chat">😕</span><span class="emoji emoji-chat">😡</span><span class="emoji emoji-chat">😱</span><span class="emoji emoji-chat">😤</span><span class="emoji emoji-chat">😢</span><span class="emoji emoji-chat">😭</span>
+                <span class="emoji emoji-privatemessage">😉</span><span class="emoji emoji-privatemessage">😘</span><span class="emoji emoji-privatemessage">😍</span><span class="emoji emoji-privatemessage">😕</span><span class="emoji emoji-privatemessage">😡</span><span class="emoji emoji-privatemessage">😱</span><span class="emoji emoji-privatemessage">😤</span><span class="emoji emoji-privatemessage">😢</span><span class="emoji emoji-privatemessage">😭</span>
             </div>
-            <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
+            <button id="PrivateMessageAdd" class="btn btn-primary" recipientId="">Envoyer</button>
         </div>
     </div>
 </div>

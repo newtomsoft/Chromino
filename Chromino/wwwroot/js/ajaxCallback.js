@@ -47,8 +47,16 @@
 }
 
 function CallbackChatGetMessages(data, onlyNewMessages, show) {
+    let formattedMessages = "";
+    for (const message of data.messages) {
+        formattedMessages += '<div>';
+        formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
+        formattedMessages += `<span class="messagedate">(${message.date})</span>`;
+        formattedMessages += `<span class="message">${message.message}</span>`;
+        formattedMessages += '</div>';
+    }
     if (show || !onlyNewMessages)
-        $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.chat);
+        $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessages);
     if (show || data.newMessagesNumber == 0) {
         $("#NotifChat").text("0");
         $("#NotifChat").hide();
@@ -60,16 +68,21 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
 }
 
 function CallbackChatAddMessage(data) {
-    $('#ChatPopupContent').val($('#ChatPopupContent').val() + data.newMessage);
+    let formattedMessage = '<div>';
+    formattedMessage += `<span class="messageplayername">${data.message.playerName}</span>`;
+    formattedMessage += `<span class="messagedate">(${data.message.date})</span>`;
+    formattedMessage += `<span class="message">${data.message.message}</span>`;
+    formattedMessage += '</div>';
+    $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessage);
     $('#ChatInput').val("");
     SendChatMessageSent(Guid, Players);
 }
 
 function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
     if (reset)
-        $('#PrivateMessagePopupContent').val("");
+        $('#PrivateMessagePopupContent').html("");
     if (show || !onlyNewMessages)
-        $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.message);
+        $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').val() + data.message);
     if (show || data.newMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
         $("#NotifPrivateMessage").hide();
@@ -81,7 +94,7 @@ function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
 }
 
 function CallbackPrivateMessageAddMessage(data) {
-    $('#PrivateMessagePopupContent').val($('#PrivateMessagePopupContent').val() + data.newMessage);
+    $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').val() + data.newMessage);
     $('#PrivateMessageInput').val("");
     SendPrivateMessageSent($('#PrivateMessageAdd').attr("recipientId"));
 }

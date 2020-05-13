@@ -279,7 +279,7 @@ namespace Batch
             {
                 Name = "Info",
                 HeadPictureClass = "img-infogame",
-                Description = "<p>Cette icône ouvre une fenêtre qui indique les informations essentielles de la partie : </p><li>L'ordre aléatoire des joueurs.</li><li>Le nombre de chrominos par joueur.</li><li>Le nombre de chrominos de la pioche.</li><br/><p>A noter que lorsqu’il ne reste qu’un chromino à un joueur, celui-ci sera visible dans cette fenêtre.</p>",
+                Description = "<p>Cette icône ouvre une fenêtre qui indique les informations essentielles de la partie : </p><li>L'ordre aléatoire des joueurs.</li><li>Le nombre de chrominos par joueur.</li><li>Le nombre de chrominos de la pioche.</li><br/><p>Les points autour de l’icône symbolisent les joueurs et leur statut (en ligne sur la partie, en ligne, hors ligne)</p><p>A noter que lorsqu’il ne reste qu’un chromino à un joueur, celui-ci sera visible dans cette fenêtre.</p>",
             };
             Tip help = new Tip
             {
@@ -351,7 +351,7 @@ namespace Batch
         {
             foreach (var tip in tips)
             {
-                int tipId = (from t in Ctx.Tips
+                var tipId = (from t in Ctx.Tips
                              where t.Name == tip.Name
                              select t.Id).FirstOrDefault();
                 if (tipId == 0)
@@ -362,7 +362,14 @@ namespace Batch
                 }
                 else
                 {
-                    Console.WriteLine($"  (tip {tip.Name} déjà présent en base)");
+                    Console.WriteLine($"  tip {tip.Name} déjà présent en base, MAJ...");
+                    tip.Id = tipId;
+                    Ctx.Tips.Update(tip);
+                    int change = Ctx.SaveChanges();
+                    if (change == 1)
+                        Console.WriteLine($"  tip {tip.Name} modifié");
+                    else
+                        Console.WriteLine($"  (tip {tip.Name} inchangé)");
                 }
             }
         }

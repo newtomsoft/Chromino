@@ -27,7 +27,7 @@ namespace ChrominoApp.Controllers
         /// </summary>
         /// <param name="gameId"></param>
         /// <param name="message"></param>
-        /// <returns>message formatté pour affichage</returns>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult PostMessage(int gameId, string message)
         {
@@ -35,9 +35,14 @@ namespace ChrominoApp.Controllers
             {
                 GamePlayer gamePlayer = GamePlayerDal.Details(gameId, PlayerId);
                 ChatDal.Add(gamePlayer.Id, message);
-                string newMessage = $"Vous ({DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {message}\n";
+                var newMessage = new
+                {
+                    playerName = "Vous",
+                    date = DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h'),
+                    message = message
+                };
                 GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, DateTime.Now);
-                return new JsonResult(new { newMessage });
+                return new JsonResult(new { message = newMessage });
             }
             else
                 return null;
@@ -49,7 +54,7 @@ namespace ChrominoApp.Controllers
         /// <param name="gameId">id de la partie</param>
         /// <param name="onlyNewMessages">true pour obtenir uniquement les messages non lus</param>
         /// <param name="show">true pour remettre à 0 le compteur de nouveaux messages</param>
-        /// <returns>chat: messages formattés, newMessagesNumber: nombre de messages non lus</returns>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult GetMessages(int gameId, bool onlyNewMessages, bool show)
         {
@@ -64,9 +69,17 @@ namespace ChrominoApp.Controllers
             string chat = "";
             foreach (Chat c in chats)
                 chat += $"{gamePlayerId_PlayerName[c.GamePlayerId]} ({c.Date.ToString("dd/MM HH:mm").Replace(':', 'h')}) : {c.Message}\n";
+
+            var messages = from c in chats
+                           select new
+                           {
+                               playerName = gamePlayerId_PlayerName[c.GamePlayerId],
+                               date = c.Date.ToString("dd/MM HH:mm").Replace(':', 'h'),
+                               message = c.Message
+                           };
             if (show)
                 GamePlayerDal.SetLatestReadMessage(gameId, PlayerId, now);
-            return new JsonResult(new { chat, newMessagesNumber });
+            return new JsonResult(new { messages, newMessagesNumber });
         }
     }
 }

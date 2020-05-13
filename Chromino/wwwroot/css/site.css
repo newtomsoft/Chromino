@@ -59,6 +59,67 @@ a {
     max-height: 95%;
 }
 
+#PopupChat ul {
+    font: normal 14px arial, sans, sans-serif;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 26px;
+}
+
+    #PopupChat ul li {
+        display: inline;
+        float: left;
+        height: 24px;
+        min-width: 80px;
+        text-align: center;
+        padding: 0;
+        margin: 1px 0px 0px 0px;
+    }
+
+        #PopupChat ul li a {
+            float: left;
+            color: #666;
+            text-decoration: none;
+            padding: 4px;
+            text-align: center;
+            background-color: #eee;
+            min-width: 80px;
+        }
+
+            #PopupChat ul li a.selected {
+                color: #000;
+                font-weight: bold;
+                background-color: #fff;
+            }
+
+#PenpalsList, #PrivateMessagePopupContent, #ChatPopupContent {
+    height: 254px;
+    background-color: whitesmoke;
+    font-size: smaller;
+    overflow-y: auto;
+}
+
+.messageplayername {
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+.messagedate {
+    font-weight: lighter;
+    font-size: smaller;
+}
+
+.message {
+    margin-left: 2px;
+    font-weight: normal;
+}
+
+
+textarea { /*todo : supprimer*/
+    resize: none;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;

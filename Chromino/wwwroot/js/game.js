@@ -595,3 +595,21 @@ function HaveBotResponsability() {
     }
     return true;
 }
+
+function SwitchToPrivateMessage() {
+    $('#ChatDiv').hide();
+    $('#PrivateMessageDiv').show();
+    $('#PenpalsList').show();
+    $('#PrivateMessagePopupContent').hide();
+}
+
+function SwitchToChat() {
+    $('#PrivateMessageDiv').hide();
+    $('#ChatDiv').show();
+}
+
+function test(penpalIdTab) {
+    let penpalId = penpalIdTab[0];
+    $('#PenpalsList').hide();
+    $('#PrivateMessagePopupContent').show();
+}
