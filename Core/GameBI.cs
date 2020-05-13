@@ -14,36 +14,19 @@ namespace Data.Core
 {
     public partial class GameBI
     {
+        private readonly IWebHostEnvironment Env;
         /// <summary>
         /// DbContext du jeu
         /// </summary>
         private Context Ctx { get; }
-
-        /// <summary>
-        /// variables d'environnement
-        /// </summary>
-        private readonly IWebHostEnvironment Env;
-
-        /// <summary>
-        /// Id du jeu
-        /// </summary>
         private int GameId { get; set; }
-
-        /// <summary>
-        /// Liste des joueurs du jeu
-        /// </summary>
         public List<Player> Players { get; set; }
 
         /// <summary>
         /// List des GamePlayer du jeu (jointure entre Game et Player)
         /// </summary>
         public List<GamePlayer> GamePlayers { get; set; }
-
         private GoodPositionBI GoodPositionBI { get; set; }
-
-        /// <summary>
-        /// les différentes Dal utilisées du context 
-        /// </summary>
         private ChrominoInGameDal ChrominoInGameDal { get; }
         private ChrominoInHandDal ChrominoInHandDal { get; }
         private ChrominoDal ChrominoDal { get; }
@@ -121,12 +104,6 @@ namespace Data.Core
                 foreach (var pseudoChromino in pseudosChrominos)
                     pseudosIds.Add(pseudoChromino.Key, PlayerDal.Details(pseudoChromino.Key).Id);
 
-                Dictionary<string, Chromino> pseudos_lastChrominos = new Dictionary<string, Chromino>();
-                foreach (var pseudo_chromino in pseudosChrominos)
-                {
-                    if (pseudo_chromino.Value == 1)
-                        pseudos_lastChrominos.Add(pseudo_chromino.Key, ChrominoInHandDal.FirstChromino(GameId, GamePlayerDal.PlayerId(GameId, pseudo_chromino.Key)));
-                }
                 List<Chromino> playerChrominos;
                 if (!GamePlayerDal.IsPlayerIdIn(GameId, playerId)) // si le joueur n'est pas dans la partie, il regarde la main du joueur dont c'est le tour de jouer
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerTurn.Id);
@@ -149,7 +126,7 @@ namespace Data.Core
                 Game game = GameDal.Details(GameId);
                 List<Tip> tips = TipDal.ListOn(playerId);
                 List<PlayError> playErrors = PlayErrorDal.List();
-                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayer, pseudos_lastChrominos, chrominosInGamePlayed, pseudos, tips, playErrors);
+                GameVM gameVM = new GameVM(game, player, squares, chrominosInStackNumber, pseudosChrominos, pseudosIds, playerChrominos, playerTurn, gamePlayer, chrominosInGamePlayed, pseudos, tips, playErrors);
                 return gameVM;
             }
             else return null;
