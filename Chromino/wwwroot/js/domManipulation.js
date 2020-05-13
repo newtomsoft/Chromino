@@ -58,16 +58,19 @@ function RefreshInStack() {
 }
 
 function UpdateInHandNumberDom(player) {
-    let playerHave = player.id == PlayerId ? "Vous avez" : player.name + " a";
+    let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
+    let playerName = player.id == PlayerId ? "Vous" : player.name;
+    let playerWithStatus = player.id != PlayerId && !player.isBot ? `<span run='PrivateMessage ${player.id}'> ${playerName}${spanPlayerId}</span>` : playerName;
+    let have = player.id == PlayerId ? "avez" : " a";
     $('#Player_' + player.id).removeClass();
     switch (player.chrominosNumber) {
         case 0:
             $('#Player_' + player.id).addClass("winner");
-            $('#Player_' + player.id).html(`${playerHave} terminé`);
+            $('#Player_' + player.id).html(`${playerWithStatus} ${have} terminé`);
             break;
         case 1:
             $('#Player_' + player.id).addClass("opponentLastChromino");
-            let divToAdd = playerHave + '&nbsp';
+            let divToAdd = `${playerWithStatus} ${have} &nbsp`;
             for (let i = 0; i < 3; i++) {
                 let classOpenSides;
                 switch (i) {
@@ -86,7 +89,7 @@ function UpdateInHandNumberDom(player) {
             $('#Player_' + player.id).html(divToAdd);
             break;
         default:
-            $('#Player_' + player.id).html(`${playerHave} ${player.chrominosNumber} chrominos en main`);
+            $('#Player_' + player.id).html(`${playerWithStatus} ${have} ${player.chrominosNumber} chrominos en main`);
             break
     }
 }
@@ -326,14 +329,21 @@ function UpdateSquares(addNumber, columnsNumber, placeToAdd) {
 };
 
 function RefreshColorsPlayers() {
-    Players.forEach(p => RefreshColorPlayer(p.id, p.ongame));
+    Players.forEach(player => RefreshColorPlayer(player));
 }
 
-function RefreshColorPlayer(id, ongame) {
-    if (ongame)
-        $("#Player_" + id).removeClass("offline").addClass("online");
-    else
-        $("#Player_" + id).removeClass("online").addClass("offline");
+function RefreshColorPlayer(player) {
+    if (!player.isBot && player.id != PlayerId) {
+        if (player.ongame) {
+            $(`[player-id='${player.id}']`).removeClass("penpal-status-offline penpal-status-online").addClass("penpal-status-ongame");
+        }
+        else if (player.online) {
+            $(`[player-id='${player.id}']`).removeClass("penpal-status-offline penpal-status-ongame").addClass("penpal-status-online");
+        }
+        else {
+            $(`[player-id='${player.id}']`).removeClass("penpal-status-online penpal-status-ongame").addClass("penpal-status-offline");
+        }
+    }
 }
 
 function RefreshPlayersLogged() {
@@ -373,6 +383,6 @@ function MakePlayersStatusIndicators() {
 }
 
 function MakePlayerStatusIndicator(id) {
-    let toAdd = `<button id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></button>`;
+    let toAdd = `<span id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></span>`;
     $(toAdd).appendTo('#PlayersStatus');
 }

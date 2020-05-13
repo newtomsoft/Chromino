@@ -132,6 +132,7 @@ function InitDom() {
             AnimateChromino(2, true);
         }
     });
+    $('[run]').css('cursor', 'pointer');
     $("#MemoAdd").click(MemoAdd);
     $("#ChatAdd").click(ChatAddMessage);
     $("#PrivateMessageAdd").click(function () { PrivateMessageAddMessage(this.attributes['recipientId'].value); });
