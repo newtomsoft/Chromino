@@ -212,7 +212,6 @@ textarea {
 }
 
 .btn-toolbar {
-    position: relative;
     flex-shrink: 1;
     height: 50px;
     width: 50px;
@@ -318,75 +317,42 @@ textarea {
     color: black;
 }
 
+#PlayersStatus {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    display: flex;
+}
+
 .player-status {
-    position: absolute;
-    width: 11px;
-    height: 11px;
-    border-radius: 11px;
-    line-height: 11px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
+    line-height: 18px;
+    margin: 2px;
 }
 
-.player-status-0 {
-    top: -4px;
-    left: -4px;
-}
+    .player-status span {
+        display: none;
+        color: #fff;
+        background: rgba(51,51,51,0.75);
+        padding: 5px;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        width: 220px;
+        height: 50px;
+        text-align: center;
+        position: relative;
+        left: -200px;
+        top: -50px;
+        z-index: 10;
+    }
 
-.player-status-1 {
-    top: -4px;
-    right: 38%;
-}
-
-.player-status-2 {
-    top: -4px;
-    right: -4px;
-}
-
-.player-status-3 {
-    top: 38%;
-    right: -4px;
-}
-
-.player-status-4 {
-    bottom: -4px;
-    right: -4px;
-}
-
-.player-status-5 {
-    bottom: -4px;
-    right: 38%;
-}
-
-.player-status-6 {
-    bottom: -4px;
-    left: -4px;
-}
-
-.player-status-7 {
-    top: 38%;
-    left: -4px;
-}
-
-
-.player-status span {
-    display: none;
-    color: #fff;
-    background: rgba(51,51,51,0.75);
-    padding: 5px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    width: 200px;
-    height: 40px;
-    text-align: center;
-    position: relative;
-    right: -15px;
-    bottom: -15px;
-    z-index: 10;
-}
-
-.player-status:hover span {
-    display: block;
-}
+    .player-status:hover span {
+        display: block;
+    }
 
 .player-status-ongame, .penpal-status-ongame {
     background-color: green;
@@ -398,14 +364,6 @@ textarea {
 
 .player-status-offline, .penpal-status-offline {
     background-color: red;
-}
-
-.player-status-bot, .penpal-status-bot {
-    background-color: darkslategrey;
-}
-
-.player-status-thisplayer, .penpal-status-thisplayer {
-    background-color: dodgerblue;
 }
 
 #PenpalInfos {

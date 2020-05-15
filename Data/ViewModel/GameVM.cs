@@ -28,9 +28,8 @@ namespace Data.ViewModel
         public bool HaveDrew { get; set; }
         public int MemosNumber { get; set; }
 
-        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayer, Dictionary<string, Chromino> pseudos_lastChrominos, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, List<Tip> tipsOn, List<PlayError> playErrors)
+        public GameVM(Game game, Player player, List<Square> squares, int chrominosInStackNumber, Dictionary<string, int> pseudosChrominos, Dictionary<string, int> pseudosIds, List<Chromino> playerChrominos, Player playerTurn, GamePlayer gamePlayer, List<ChrominoInGame> chrominosInGamePlayed, List<string> pseudos, List<Tip> tipsOn, List<PlayError> playErrors)
         {
-
             Player = player;
             Game = game;
             IsGameFinish = Game.Status.IsFinished();
