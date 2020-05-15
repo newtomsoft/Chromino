@@ -18,16 +18,16 @@ function ReceiveChatMessageSent(guid) {
     if (guid != Guid)
         return;
     if ($('#ChatPopupContent').is(":visible"))
-        ChatGetMessages(true, true);
+        GetChatMessages(true, true);
     else
-        ChatGetMessages(true);
+        GetChatMessages(true);
 }
 
 function ReceivePrivateMessageMessageSent(senderId) {
-    if ($('#PrivateMessagePopupContent').is(":visible") && $("#PrivateMessageAdd")[0].attributes['recipientId'].value == senderId)
-        PrivateMessageGetMessages(true, true, senderId, false);
+    if ($('#PrivateMessagePopupContent').is(":visible") && $("#PrivateMessageAdd").attr('recipientId') == senderId)
+        GetPrivateMessageMessages(true, true, senderId, false);
     else
-        PrivateMessageGetMessages(true, false, senderId, false);
+        GetPrivateMessageMessages(true, false, senderId, false);
 }
 
 function OpponentChrominoPlayed(guid, chrominoPlayed) {

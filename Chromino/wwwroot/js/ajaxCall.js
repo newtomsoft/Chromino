@@ -55,22 +55,28 @@ function ChatAddMessage(recipientId) {
     }
 }
 
-function ChatGetMessages(onlyNewMessages, show) {
-    console.log("ChatGetMessages");
+function GetChatMessages(onlyNewMessages, show) {
     $.ajax({
         url: '/Chat/GetMessages',
         type: 'POST',
         data: { gameId: GameId, onlyNewMessages: onlyNewMessages, show: show },
-        success: function (data) { CallbackChatGetMessages(data, onlyNewMessages, show); }
+        success: function (data) { CallbackGetChatMessages(data, onlyNewMessages, show); }
     });
 }
 
-function PrivateMessageGetMessages(onlyNewMessages, show, opponentId, reset) {
+function GetPrivateMessageMessages(onlyNewMessages, show, opponentId, reset) {
     $.ajax({
         url: '/Chat/GetPrivatesMessages',
         type: 'POST',
         data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
-        success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset); }
+        success: function (data) { CallbackGetPrivateMessageMessages(data, opponentId, show, reset); }
+    });
+}
+
+function GetNewPrivatesMessagesNumber(){
+    $.ajax({
+        url: '/Chat/GetNewPrivatesMessagesNumber',
+        success: function (data) { CallbackGetNewPrivatesMessagesNumber(data); }
     });
 }
 

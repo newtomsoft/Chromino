@@ -16,21 +16,17 @@ namespace Data.DAL
 
         public List<Player> List()
         {
-            var result = (from players in Ctx.Players
-                          select players).ToList();
-
-            return result;
+            return (from players in Ctx.Players
+                    select players).ToList();
         }
 
         public object ListIdsNames()
         {
-            var result = (from p in Ctx.Players
-                          join ur in Ctx.UserRoles on p.Id equals ur.UserId
-                          join r in Ctx.Roles on ur.RoleId equals r.Id
-                          where !p.Bot && r.Name != "Guest" && r.Name != "Bot"
-                          select new { id=p.Id, name=p.UserName }).ToList();
-
-            return result;
+            return (from p in Ctx.Players
+                    join ur in Ctx.UserRoles on p.Id equals ur.UserId
+                    join r in Ctx.Roles on ur.RoleId equals r.Id
+                    where !p.Bot && r.Name != "Guest" && r.Name != "Bot"
+                    select new { id = p.Id, name = p.UserName }).ToList();
         }
 
         public IQueryable<Player> ListGuestWithOldGames(TimeSpan lifeTime, out IQueryable<int> gamesId)
@@ -67,28 +63,22 @@ namespace Data.DAL
 
         public Player Details(int id)
         {
-            Player player = (from p in Ctx.Players
-                             where p.Id == id
-                             select p).FirstOrDefault();
-
-            return player;
+            return (from p in Ctx.Players
+                    where p.Id == id
+                    select p).FirstOrDefault();
         }
 
         public Player Details(string pseudo)
         {
-            Player player = (from p in Ctx.Players
-                             where p.UserName == pseudo
-                             select p).FirstOrDefault();
-
-            return player;
+            return (from p in Ctx.Players
+                    where p.UserName == pseudo
+                    select p).FirstOrDefault();
         }
         public string Name(int id)
         {
-            string pseudo = (from p in Ctx.Players
-                             where p.Id == id
-                             select p.UserName).FirstOrDefault();
-
-            return pseudo;
+            return (from p in Ctx.Players
+                    where p.Id == id
+                    select p.UserName).FirstOrDefault();
         }
 
         public void AddPoints(int playerId, int points)
@@ -133,11 +123,9 @@ namespace Data.DAL
 
         public List<int> BotsId()
         {
-            List<int> botsId = (from p in Ctx.Players
-                                where p.Bot
-                                select p.Id).ToList();
-
-            return botsId;
+            return (from p in Ctx.Players
+                    where p.Bot
+                    select p.Id).ToList();
         }
 
         public bool DecreaseHelp(int playerId)

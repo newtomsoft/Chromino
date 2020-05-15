@@ -17,11 +17,9 @@ namespace Data.DAL
 
         public DateTime GetDateLatestReadMessage(int senderId, int recipientId)
         {
-            DateTime result = (from pm in Ctx.PrivatesMessagesLatestRead
-                               where pm.RecipientId == recipientId && pm.SenderId == senderId
-                               select pm.LatestRead).FirstOrDefault();
-
-            return result;
+            return (from pm in Ctx.PrivatesMessagesLatestRead
+                    where pm.RecipientId == recipientId && pm.SenderId == senderId
+                    select pm.LatestRead).FirstOrDefault();
         }
 
         public void SetDateLatestReadMessage(int senderId, int recipientId, DateTime date)
@@ -46,30 +44,31 @@ namespace Data.DAL
 
         public List<PrivateMessage> GetMessages(int player1Id, int player2Id, DateTime dateMin, DateTime dateMax)
         {
-            var result = (from pm in Ctx.PrivatesMessages
-                          where (pm.RecipientId == player1Id && pm.SenderId == player2Id || pm.RecipientId == player2Id && pm.SenderId == player1Id) && pm.Date > dateMin && pm.Date <= dateMax
-                          select pm).ToList();
-
-            return result;
+            return (from pm in Ctx.PrivatesMessages
+                    where (pm.RecipientId == player1Id && pm.SenderId == player2Id || pm.RecipientId == player2Id && pm.SenderId == player1Id) && pm.Date > dateMin && pm.Date <= dateMax
+                    select pm).ToList();
         }
 
         public int NewMessagesNumber(int player1Id, int player2Id, DateTime dateMin)
         {
-            var result = (from pm in Ctx.PrivatesMessages
-                          where (pm.RecipientId == player1Id && pm.SenderId == player2Id || pm.RecipientId == player2Id && pm.SenderId == player1Id) && pm.Date > dateMin
-                          select pm).Count();
-
-            return result;
+            return (from pm in Ctx.PrivatesMessages
+                    where (pm.RecipientId == player1Id && pm.SenderId == player2Id || pm.RecipientId == player2Id && pm.SenderId == player1Id || player2Id == 0 && (pm.RecipientId == player1Id || pm.SenderId == player1Id)) && pm.Date > dateMin
+                    select pm).Count();
         }
         public Dictionary<int, int> GetSendersIdUnreadMessagesNumber(int playerId)
         {
-            Dictionary<int, int> result = (from pm in Ctx.PrivatesMessages
-                                           join lr in Ctx.PrivatesMessagesLatestRead on pm.RecipientId equals lr.RecipientId
-                                           where pm.RecipientId == playerId && pm.SenderId == lr.SenderId && pm.Date > lr.LatestRead
-                                           group pm by pm.SenderId into g
-                                           select new { SenderId = g.Key, MessagesNumber = g.Count() }).ToDictionary(x => x.SenderId, x => x.MessagesNumber);
+            return (from pm in Ctx.PrivatesMessages
+                    join lr in Ctx.PrivatesMessagesLatestRead on pm.RecipientId equals lr.RecipientId
+                    where pm.RecipientId == playerId && pm.SenderId == lr.SenderId && pm.Date > lr.LatestRead
+                    group pm by pm.SenderId into g
+                    select new { SenderId = g.Key, MessagesNumber = g.Count() }).ToDictionary(x => x.SenderId, x => x.MessagesNumber);
+        }
 
-            return result;
+        public Dictionary<int, DateTime> GetLatestReadMessageRecipientsId_Dates(int playerId)
+        {
+            return (from pm in Ctx.PrivatesMessagesLatestRead
+                    where pm.RecipientId == playerId
+                    select new { pm.SenderId, pm.LatestRead }).ToDictionary(x => x.SenderId, x => x.LatestRead);
         }
     }
 }

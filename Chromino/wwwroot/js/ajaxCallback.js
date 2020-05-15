@@ -46,7 +46,7 @@
     }
 }
 
-function CallbackChatGetMessages(data, onlyNewMessages, show) {
+function CallbackGetChatMessages(data, onlyNewMessages, show) {
     let formattedMessages = "";
     for (const message of data.messages) {
         formattedMessages += '<div>';
@@ -68,26 +68,62 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
     }
 }
 
-function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
+function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
     let formattedMessages = "";
-    for (const message of data.messages) {
-        formattedMessages += '<div>';
-        formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
-        formattedMessages += `<span class="messagedate">(${message.date})</span>`;
-        formattedMessages += `<span class="message">${message.message}</span>`;
-        formattedMessages += '</div>';
-    }
-    if (reset)
-        $('#PrivateMessagePopupContent').html("");
-    if (show || !onlyNewMessages)
+    if (show) {
+        for (const message of data.messages) {
+            formattedMessages += '<div>';
+            formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
+            formattedMessages += `<span class="messagedate">(${message.date})</span>`;
+            formattedMessages += `<span class="message">${message.message}</span>`;
+            formattedMessages += '</div>';
+        }
+        if (reset)
+            $('#PrivateMessagePopupContent').html("");
         $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').html() + formattedMessages);
-    ScrollPrivateMessage();
+        ScrollPrivateMessage();
+    }
+    let index = UnreadPrivateMessagesNumber.findIndex(x => x.senderId == opponentId);
+    UnreadPrivateMessagesNumber[index].number = data.newMessagesNumber;
+    let unreadPrivateMessagesNumber = 0;
+    for (const n of UnreadPrivateMessagesNumber) {
+        unreadPrivateMessagesNumber += n.number;
+    }
+    // notif sur joueur
     if (show || data.newMessagesNumber == 0) {
+        UnreadPrivateMessagesNumber[index].number = 0;
+        unreadPrivateMessagesNumber -= data.newMessagesNumber;
+        // todo : notif messages sur ce joueur = 0
+        //$("#NotifChat").text("0");
+        //$("#NotifChat").hide();
+    }
+    else {
+        // afficher notif sur ce joueur
+
+    }
+    if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
         $("#NotifPrivateMessage").hide();
     }
     else {
-        $('#NotifPrivateMessage').text(data.newMessagesNumber);
+        $("#NotifPrivateMessage").text(unreadPrivateMessagesNumber);
+        $("#NotifPrivateMessage").show();
+    }
+}
+
+
+function CallbackGetNewPrivatesMessagesNumber(data) {
+    let unreadPrivateMessagesNumber = 0;
+    for (const e of data) {
+        UnreadPrivateMessagesNumber.push({ senderId: e.sendersId, number: e.newMessagesNumber });
+        unreadPrivateMessagesNumber += e.newMessagesNumber;
+    }
+    if (unreadPrivateMessagesNumber == 0) {
+        $("#NotifPrivateMessage").text("0");
+        $("#NotifPrivateMessage").hide();
+    }
+    else {
+        $('#NotifPrivateMessage').text(unreadPrivateMessagesNumber);
         $('#NotifPrivateMessage').show();
     }
 }

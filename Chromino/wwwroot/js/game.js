@@ -8,6 +8,7 @@ var IsGameFinish;
 var HaveDrawn;
 var Memo;
 var MemosNumber;
+var UnreadPrivateMessagesNumber = new Array;
 var TimeoutPut = null;
 var ToPut = false;
 var PositionLastChromino;
@@ -67,9 +68,7 @@ function InitDom() {
     RefreshButtonNextGame();
     DoAction("Welcome");
     RefreshVar();
-    Players.forEach(function (player) {
-        UpdateInHandNumberDom(player);
-    });
+    Players.forEach(function (player) { UpdateInHandNumberDom(player); });
     RefreshInfoPopup();
     $(document).click(function () {
         if (!IsPlayingBackEnd) {
@@ -77,18 +76,15 @@ function InitDom() {
             StartDraggable();
         }
     });
-    $(document).mouseup(function () {
-        MagnetChromino();
-    });
-    $(window).resize(function () {
-        ResizeGameArea();
-    });
-    window.oncontextmenu = function (event) {     // désactivation du menu contextuel clic droit
+    $(document).mouseup(function () { MagnetChromino(); });
+    $(window).resize(function () { ResizeGameArea(); });
+    window.oncontextmenu = function (event) { // désactivation du menu contextuel clic droit
         event.preventDefault();
         event.stopPropagation();
     };
     MemoGet();
-    ChatGetMessages(false);
+    GetChatMessages(false);
+    GetNewPrivatesMessagesNumber();
     $(".emoji-chat").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();
@@ -126,7 +122,7 @@ function InitDom() {
     });
     UpdateClickRun();
     $('#ChatInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
-    $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($("#PrivateMessageAdd")[0].attributes['recipientId'].value); } });
+    $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($("#PrivateMessageAdd").attr('recipientId')); } });
     $("#MemoAdd").click(MemoAdd);
     $("#ChatAdd").click(function () { ChatAddMessage(); });
     $("#PrivateMessageAdd").click(function () { ChatAddMessage(this.attributes['recipientId'].value); });

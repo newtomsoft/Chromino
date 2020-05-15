@@ -49,7 +49,7 @@ function SelectPrivateMessageTab(penpalId) {
     $('#PopupChat').attr("penpalid", penpal.id);
     $('#PrivateMessagePenpalName').text(penpal.name);
     RefreshPenpalTitleInPopupPrivateMessage();
-    PrivateMessageGetMessages(onlyNewMessage, true, penpal.id, reset);
+    GetPrivateMessageMessages(onlyNewMessage, true, penpal.id, reset);
     ScrollPrivateMessage();
 }
 
@@ -71,7 +71,7 @@ function SwitchToChat() {
     $('#ChatDiv').show();
     $('#PrivateMessageTab').removeClass('selected');
     $('#ChatTab').addClass('selected');
-    ChatGetMessages(true, true);
+    GetChatMessages(true, true);
 }
 
 function SelectPenpal(penpalIdTab) {

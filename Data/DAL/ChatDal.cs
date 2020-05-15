@@ -16,11 +16,9 @@ namespace Data.DAL
 
         public Chat Details(int id)
         {
-            var result = (from c in Ctx.Chats
-                          where c.Id == id
-                          select c).FirstOrDefault();
-
-            return result;
+            return (from c in Ctx.Chats
+                    where c.Id == id
+                    select c).FirstOrDefault();
         }
 
         public void Add(int gamePlayerId, string message)
@@ -32,22 +30,18 @@ namespace Data.DAL
 
         public List<Chat> GetMessages(int gameId, DateTime dateMin, DateTime dateMax)
         {
-            var result = (from c in Ctx.Chats
-                          join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
-                          where gp.GameId == gameId && c.Date > dateMin && c.Date <= dateMax
-                          select c).ToList();
-
-            return result;
+            return (from c in Ctx.Chats
+                    join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
+                    where gp.GameId == gameId && c.Date > dateMin && c.Date <= dateMax
+                    select c).ToList();
         }
 
         public int NewMessagesNumber(int gameId, DateTime dateMin)
         {
-            var result = (from c in Ctx.Chats
-                          join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
-                          where gp.GameId == gameId && c.Date > dateMin 
-                          select c).Count();
-
-            return result;
+            return (from c in Ctx.Chats
+                    join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
+                    where gp.GameId == gameId && c.Date > dateMin
+                    select c).Count();
         }
     }
 }

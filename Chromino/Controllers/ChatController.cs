@@ -110,5 +110,25 @@ namespace ChrominoApp.Controllers
                 PrivateMessageDal.SetDateLatestReadMessage(opponentId, PlayerId, now);
             return new JsonResult(new { messages, newMessagesNumber });
         }
+
+        public JsonResult GetNewPrivatesMessagesNumber()
+        {
+            Dictionary<int, DateTime> recipientsId_dates = PrivateMessageDal.GetLatestReadMessageRecipientsId_Dates(PlayerId);
+            var sendersId_newMessagesNumber = new Dictionary<int, int>();
+            foreach (var recipientId_date in recipientsId_dates)
+            {
+                int opponentId = recipientId_date.Key;
+                DateTime dateLatestRead = recipientId_date.Value;
+                sendersId_newMessagesNumber.Add(opponentId, PrivateMessageDal.NewMessagesNumber(PlayerId, opponentId, dateLatestRead));
+            }
+            var data = (from c in sendersId_newMessagesNumber
+                        select new
+                        {
+                            sendersId = c.Key,
+                            newMessagesNumber = c.Value,
+                        }).ToList();
+
+            return new JsonResult(data);
+        }
     }
 }

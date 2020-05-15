@@ -334,15 +334,12 @@ function RefreshColorsPlayers() {
 
 function RefreshColorPlayer(player) {
     if (!player.isBot && player.id != PlayerId) {
-        if (player.ongame) {
+        if (player.ongame)
             $(`[player-id='${player.id}']`).removeClass("penpal-status-offline penpal-status-online").addClass("penpal-status-ongame");
-        }
-        else if (player.online) {
+        else if (player.online)
             $(`[player-id='${player.id}']`).removeClass("penpal-status-offline penpal-status-ongame").addClass("penpal-status-online");
-        }
-        else {
+        else
             $(`[player-id='${player.id}']`).removeClass("penpal-status-online penpal-status-ongame").addClass("penpal-status-offline");
-        }
     }
 }
 
