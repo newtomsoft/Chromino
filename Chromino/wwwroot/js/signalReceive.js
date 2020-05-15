@@ -10,7 +10,7 @@
     RefreshColorsPlayers();
     RefreshPlayersOnline();
     RefreshPlayersStatusIndicator();
-    RefreshPopupPrivateMessage();
+    RefreshPenpalTitleInPopupPrivateMessage();
 }
 
 

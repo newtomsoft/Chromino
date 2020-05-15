@@ -18,8 +18,10 @@ function ClosePopup(popup) {
     $(popup).popup('hide');
 }
 
-function RefreshPopupPrivateMessage() {
-    if (Penpal.ongame)
+function RefreshPenpalTitleInPopupPrivateMessage(reset) {
+    if (reset === true)
+        $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status");
+    else if (Penpal.ongame)
         $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-ongame");
     else if (Penpal.online)
         $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-online");
@@ -46,12 +48,15 @@ function SelectPrivateMessageTab(penpalId) {
     $('#PrivateMessageAdd').attr("recipientId", penpal.id);
     $('#PopupChat').attr("penpalid", penpal.id);
     $('#PrivateMessagePenpalName').text(penpal.name);
-    RefreshPopupPrivateMessage();
+    RefreshPenpalTitleInPopupPrivateMessage();
     PrivateMessageGetMessages(onlyNewMessage, true, penpal.id, reset);
     ScrollPrivateMessage();
 }
 
 function SwitchToPrivateMessage() {
+    $('#PrivateMessagePenpalName').html("");
+    $('#PrivateMessagePenpalStatus').html("");
+    RefreshPenpalTitleInPopupPrivateMessage(true);
     RefreshPenpalsList();
     $('#ChatDiv').hide();
     $('#PrivateMessageDiv').show();
@@ -81,8 +86,10 @@ function RefreshPenpalsList() {
 }
 
 function RefreshPenpalList(player) {
-    let toAdd = `<div class="selectPenpal" run="SelectPenpal ${player.id}">${player.name}</div>`;
+    let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
+    let toAdd = `<div class="selectPenpal"><span run='Chat ${player.id}'> ${player.name}${spanPlayerId}</span></div>`;
     $(toAdd).appendTo('#PenpalsList');
+    RefreshColorPlayer(player);
 }
 
 function ScrollChat() {
