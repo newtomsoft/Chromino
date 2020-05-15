@@ -389,7 +389,7 @@ textarea {
 }
 
 .player-status-ongame, .penpal-status-ongame {
-    background-color: green;
+    background-color: var(--color-green);
 }
 
 .player-status-online, .penpal-status-online {
@@ -405,7 +405,7 @@ textarea {
 }
 
 .player-status-thisplayer, .penpal-status-thisplayer {
-    background-color: dodgerblue;
+    background-color: var(--color-blue);
 }
 
 #PenpalInfos {
@@ -441,9 +441,9 @@ textarea {
 
 .notification {
     color: white;
-    position: relative;
+    /*position: relative;
     top: 18px;
-    left: 25px;
+    left: 25px;*/
     width: 18px;
     height: 18px;
     border-radius: 18px;
@@ -451,12 +451,28 @@ textarea {
     text-align: center;
 }
 
+.notification-right-bottom {
+    position: absolute;
+    top: 69%;
+    left: 69%;
+}
+
+.notification-middle-bottom {
+    position: absolute;
+    top: 69%;
+    left: 32%;
+}
+
 .notification-red {
-    background-color: red;
+    background-color: var(--color-red);
 }
 
 .notification-green {
-    background-color: green;
+    background-color: var(--color-green);
+}
+
+.notification-blue {
+    background-color: var(--color-blue);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -718,24 +734,34 @@ figcaption {
     flex-shrink: 0;
 }
 
+:root {
+    --color-blue: #3AC2EE;
+    --color-green: #4CAE44;
+    --color-purple: #571B6D;
+    --color-red: #FA2C2E;
+    --color-yellow: #FFEB47;
+    --color-free: white;
+    --color-possible: palegreen;
+}
+
 .Blue {
-    background-color: #3AC2EE;
+    background-color: var(--color-blue);
 }
 
 .Green {
-    background-color: #4CAE44;
+    background-color: var(--color-green);
 }
 
 .Purple {
-    background-color: #571B6D;
+    background-color: var(--color-purple);
 }
 
 .Red {
-    background-color: #FA2C2E;
+    background-color: var(--color-red);
 }
 
 .Yellow {
-    background-color: #FFEB47;
+    background-color: var(--color-yellow);
 }
 
 .Cameleon {
@@ -744,12 +770,12 @@ figcaption {
 }
 
 .Free {
-    background-color: white;
+    background-color: var(--color-free);
     background-image: none;
 }
 
 .Possible {
-    background-color: palegreen;
+    background-color: var(--color-possible);
 }
 
 .OpenRight {
