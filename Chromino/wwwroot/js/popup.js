@@ -67,7 +67,6 @@ function SwitchToChat() {
     $('#PrivateMessageTab').removeClass('selected');
     $('#ChatTab').addClass('selected');
     ChatGetMessages(true, true);
-    ScrollChat();
 }
 
 function SelectPenpal(penpalIdTab) {
@@ -87,11 +86,11 @@ function RefreshPenpalList(player) {
 }
 
 function ScrollChat() {
-    console.log("ScrollChat");
-    $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
+    if ($('#ChatPopupContent').is(":visible"))
+        $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
 }
 
 function ScrollPrivateMessage() {
-    console.log("ScrollPrivateMessage");
-    $('#PrivateMessagePopupContent').scrollTop($('#PrivateMessagePopupContent')[0].scrollHeight);
+    if ($('#PrivateMessagePopupContent').is(':visible'))
+        $('#PrivateMessagePopupContent').scrollTop($('#PrivateMessagePopupContent')[0].scrollHeight);
 }

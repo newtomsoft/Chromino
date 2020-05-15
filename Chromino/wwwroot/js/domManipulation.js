@@ -364,25 +364,33 @@ function RefreshPlayersStatusIndicator() {
 function RefreshPlayerStatus(player) {
     if (player.id != PlayerId && !player.isBot) {
         if (player.ongame) {
-            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-ongame");
+            $("#PlayerStatus_" + player.id).removeClass("player-status-offline player-status-online").addClass("player-status-ongame");
             $("#InfoPlayerStatus_" + player.id).text(player.name + " est connecté sur la partie");
         }
         else if (player.online) {
-            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-online");
+            $("#PlayerStatus_" + player.id).removeClass("player-status-offline player-status-ongame").addClass("player-status-online");
             $("#InfoPlayerStatus_" + player.id).text(player.name + " est connecté sur le site");
         }
         else {
-            $("#PlayerStatus_" + player.id).removeClass().addClass("player-status player-status-offline");
+            $("#PlayerStatus_" + player.id).removeClass("player-status-ongame player-status-online").addClass("player-status player-status-offline");
             $("#InfoPlayerStatus_" + player.id).text(player.name + " n'est pas connecté");
         }
+    }
+    else if (player.id == PlayerId) {
+        $("#PlayerStatus_" + player.id).removeClass("player-status-thisplayer").addClass("player-status-thisplayer");
+        $("#InfoPlayerStatus_" + player.id).text("Vous");
+    }
+    else {
+        $("#PlayerStatus_" + player.id).removeClass("player-status-bot").addClass("player-status-bot");
+        $("#InfoPlayerStatus_" + player.id).text(player.name + " (toujours en ligne)");
     }
 }
 
 function MakePlayersStatusIndicators() {
-    HumansOpponentsId.forEach(id => MakePlayerStatusIndicator(id));
+    Players.forEach(MakePlayerStatusIndicator);
 }
 
-function MakePlayerStatusIndicator(id) {
-    let toAdd = `<span id="PlayerStatus_${id}" run="PrivateMessage ${id}" tip="PrivateMessage"><span id="InfoPlayerStatus_${id}" class="info-player-status"></span></span>`;
-    $(toAdd).appendTo('#PlayersStatus');
+function MakePlayerStatusIndicator(player, index) {
+    let toAdd = `<span id="PlayerStatus_${player.id}" tip="PrivateMessage" class="player-status player-status-${index}"><span id="InfoPlayerStatus_${player.id}" class="info-player-status"></span></span>`;
+    $(toAdd).appendTo('#ButtonInfo');
 }

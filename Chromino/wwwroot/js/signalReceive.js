@@ -21,7 +21,6 @@ function ReceiveChatMessageSent(guid) {
         ChatGetMessages(true, true);
     else
         ChatGetMessages(true);
-    ScrollChat()
 }
 
 function ReceivePrivateMessageMessageSent(senderId) {
@@ -29,7 +28,6 @@ function ReceivePrivateMessageMessageSent(senderId) {
         PrivateMessageGetMessages(true, true, senderId, false);
     else
         PrivateMessageGetMessages(true, false, senderId, false);
-    ScrollPrivateMessage();
 }
 
 function OpponentChrominoPlayed(guid, chrominoPlayed) {
