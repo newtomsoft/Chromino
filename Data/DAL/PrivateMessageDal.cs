@@ -15,7 +15,7 @@ namespace Data.DAL
             Ctx = context;
         }
 
-        public DateTime GetDateLatestReadMessage(int recipientId, int senderId)
+        public DateTime GetDateLatestReadMessage(int senderId, int recipientId)
         {
             DateTime result = (from pm in Ctx.PrivatesMessagesLatestRead
                                where pm.RecipientId == recipientId && pm.SenderId == senderId
@@ -24,7 +24,7 @@ namespace Data.DAL
             return result;
         }
 
-        public void SetDateLatestReadMessage(int recipientId, int senderId, DateTime date)
+        public void SetDateLatestReadMessage(int senderId, int recipientId, DateTime date)
         {
             var privateMessageLatestRead = (from pm in Ctx.PrivatesMessagesLatestRead
                                             where pm.RecipientId == recipientId && pm.SenderId == senderId
@@ -61,7 +61,7 @@ namespace Data.DAL
 
             return result;
         }
-        public Dictionary<int, int> GetUnreadMessagesSenders(int playerId)
+        public Dictionary<int, int> GetSendersIdUnreadMessagesNumber(int playerId)
         {
             Dictionary<int, int> result = (from pm in Ctx.PrivatesMessages
                                            join lr in Ctx.PrivatesMessagesLatestRead on pm.RecipientId equals lr.RecipientId

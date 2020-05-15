@@ -22,6 +22,17 @@ namespace Data.DAL
             return result;
         }
 
+        public object ListIdsNames()
+        {
+            var result = (from p in Ctx.Players
+                          join ur in Ctx.UserRoles on p.Id equals ur.UserId
+                          join r in Ctx.Roles on ur.RoleId equals r.Id
+                          where !p.Bot && r.Name != "Guest" && r.Name != "Bot"
+                          select new { id=p.Id, name=p.UserName }).ToList();
+
+            return result;
+        }
+
         public IQueryable<Player> ListGuestWithOldGames(TimeSpan lifeTime, out IQueryable<int> gamesId)
         {
             DateTime ToCompare = DateTime.Now - lifeTime;

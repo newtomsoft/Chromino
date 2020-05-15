@@ -8,11 +8,11 @@ function CallSignalR(guid) {
         });
 
     ConnectionHubGame.on("ReceivePlayersLogged", function (newPlayersId) {
-        ReceivePlayersLogged(newPlayersId);
+        ReceivePlayersStatus('online', newPlayersId);
     });
 
     ConnectionHubGame.on("ReceivePlayersInGame", function (newPlayersId) {
-        ReceivePlayersInGame(newPlayersId);
+        ReceivePlayersStatus('ongame', newPlayersId);
     });
 
     ConnectionHubGame.on("ReceiveChatMessageSent", function (guid) {

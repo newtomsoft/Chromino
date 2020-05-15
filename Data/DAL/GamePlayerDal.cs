@@ -527,7 +527,7 @@ namespace Data.DAL
             return result;
         }
 
-        public void SetLatestReadMessage(int gameId, int playerId, DateTime date)
+        public void SetDateLatestReadMessage(int playerId, int gameId, DateTime date)
         {
             GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
                                      where gp.GameId == gameId && gp.PlayerId == playerId

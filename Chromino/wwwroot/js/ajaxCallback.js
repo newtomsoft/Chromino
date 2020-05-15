@@ -57,6 +57,7 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
     }
     if (show || !onlyNewMessages)
         $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessages);
+    ScrollChat();
     if (show || data.newMessagesNumber == 0) {
         $("#NotifChat").text("0");
         $("#NotifChat").hide();
@@ -67,22 +68,20 @@ function CallbackChatGetMessages(data, onlyNewMessages, show) {
     }
 }
 
-function CallbackChatAddMessage(data) {
-    let formattedMessage = '<div>';
-    formattedMessage += `<span class="messageplayername">${data.message.playerName}</span>`;
-    formattedMessage += `<span class="messagedate">(${data.message.date})</span>`;
-    formattedMessage += `<span class="message">${data.message.message}</span>`;
-    formattedMessage += '</div>';
-    $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessage);
-    $('#ChatInput').val("");
-    SendChatMessageSent(Guid, Players);
-}
-
 function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
+    let formattedMessages = "";
+    for (const message of data.messages) {
+        formattedMessages += '<div>';
+        formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
+        formattedMessages += `<span class="messagedate">(${message.date})</span>`;
+        formattedMessages += `<span class="message">${message.message}</span>`;
+        formattedMessages += '</div>';
+    }
     if (reset)
         $('#PrivateMessagePopupContent').html("");
     if (show || !onlyNewMessages)
-        $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').val() + data.message);
+        $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').html() + formattedMessages);
+    ScrollPrivateMessage();
     if (show || data.newMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
         $("#NotifPrivateMessage").hide();
@@ -93,10 +92,25 @@ function CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset) {
     }
 }
 
-function CallbackPrivateMessageAddMessage(data) {
-    $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').val() + data.newMessage);
+function CallbackChatAddMessage(data, type) {
+    let formattedMessage = '<div>';
+    formattedMessage += `<span class="messageplayername">${data.message.playerName}</span>`;
+    formattedMessage += `<span class="messagedate">(${data.message.date})</span>`;
+    formattedMessage += `<span class="message">${data.message.message}</span>`;
+    formattedMessage += '</div>';
+    $('#ChatInput').val("");
     $('#PrivateMessageInput').val("");
-    SendPrivateMessageSent($('#PrivateMessageAdd').attr("recipientId"));
+
+    if (type == 'chatGame') {
+        $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessage);
+        ScrollChat();
+        SendChatMessageSent(Guid, Players);
+    }
+    else {
+        $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').html() + formattedMessage);
+        ScrollPrivateMessage();
+        SendPrivateMessageSent($('#PrivateMessageAdd').attr("recipientId"));
+    }
 }
 
 function CallbackTipClosePopup(dontShowAllTips) {
@@ -274,6 +288,14 @@ function ShowGamesAgainstFriendsNumber(number) {
     $("#AgainstFriendsNumber").show();
 }
 
-function CallbackUnreadMessagesSenders(data) {
+function CallbackSendersIdUnreadMessagesNumber(data) {
     let toto = data.unreadMessagesSenders;
+}
+
+function CallbackGetPlayersIdNames(data) {
+    HumansAll = new Array;
+    for (const player of data.players) {
+        if (player.id != PlayerId)
+            HumansAll.push({ id: player.id, name: player.name })
+    }
 }

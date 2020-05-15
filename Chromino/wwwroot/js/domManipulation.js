@@ -60,7 +60,7 @@ function RefreshInStack() {
 function UpdateInHandNumberDom(player) {
     let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
     let playerName = player.id == PlayerId ? "Vous" : player.name;
-    let playerWithStatus = player.id != PlayerId && !player.isBot ? `<span run='PrivateMessage ${player.id}'> ${playerName}${spanPlayerId}</span>` : playerName;
+    let playerWithStatus = player.id != PlayerId && !player.isBot ? `<span run='Chat ${player.id}'> ${playerName}${spanPlayerId}</span>` : playerName;
     let have = player.id == PlayerId ? "avez" : " a";
     $('#Player_' + player.id).removeClass();
     switch (player.chrominosNumber) {
@@ -346,18 +346,18 @@ function RefreshColorPlayer(player) {
     }
 }
 
-function RefreshPlayersLogged() {
+function RefreshPlayersOnline() {
     $("#TestPlayersLogged").text("");
-    Players.forEach(p => RefreshPlayerLogged(p.name, p.online));
+    Players.forEach(p => RefreshPlayerOnline(p.name, p.online));
 }
 
-function RefreshPlayerLogged(name, online) {
+function RefreshPlayerOnline(name, online) {
     if (online) {
         $("#TestPlayersLogged").text($("#TestPlayersLogged").text() + name + ", ");
     }
 }
 
-function RefreshPlayersStatus() {
+function RefreshPlayersStatusIndicator() {
     Players.forEach(p => RefreshPlayerStatus(p));
 }
 

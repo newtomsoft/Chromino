@@ -23,11 +23,13 @@ namespace ChrominoApp.Controllers
             PrivateMessageDal = new PrivateMessageDal(Ctx);
         }
 
-        public IActionResult Index(int gameId)
+        public IActionResult GetSendersIdUnreadMessagesNumber(int gameId)
         {
-            var unreadMessagesSendersTemp = PrivateMessageDal.GetUnreadMessagesSenders(PlayerId);
-            string unreadMessagesSenders = JsonConvert.SerializeObject(unreadMessagesSendersTemp);
-            return new JsonResult(new { unreadMessagesSenders });
+            var sendersId_UnreadMessagesNumber = PrivateMessageDal.GetSendersIdUnreadMessagesNumber(PlayerId);
+            var unreadMessageNumber = new List<object>();
+            foreach (var senderId_UnreadMessagesNumber in sendersId_UnreadMessagesNumber)
+                unreadMessageNumber.Add(new { senderId_UnreadMessagesNumber.Key, senderId_UnreadMessagesNumber.Value });
+            return new JsonResult(new { unreadMessageNumber });
         }
 
         /// <summary>

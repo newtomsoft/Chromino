@@ -27,6 +27,7 @@ var PlayerId;
 var PlayerTurn;
 var PlayersNumber;
 var Players;
+var HumansAll;
 var HumansId;
 var Penpal;
 var HumansOpponentsId;
@@ -54,7 +55,8 @@ $(document).ready(function () {
     InitDom();
     CallSignalR(Guid);
     RefreshDom();
-    UnreadMessagesSenders(); //temp
+    SendersIdUnreadMessagesNumber(); //temp
+    GetPlayersIdNames(); //temp
     if (IndexGamesLoad)
         GetGames();
 });
@@ -85,16 +87,6 @@ function InitDom() {
         event.preventDefault();
         event.stopPropagation();
     };
-    $('#ChatInput').on('keydown', function (e) {
-        if (e.which == 13) {     // touche entrer sur chat
-            ChatAddMessage();
-        }
-    });
-    $('#PrivateMessageInput').on('keydown', function (e) {
-        if (e.which == 13) {     // touche entrer sur private message
-            PrivateMessageAddMessage();
-        }
-    });
     MemoGet();
     ChatGetMessages(false);
     $(".emoji-chat").click(function () {
@@ -132,23 +124,29 @@ function InitDom() {
             AnimateChromino(2, true);
         }
     });
-    $('[run]').css('cursor', 'pointer');
+    UpdateClickRun();
+    $('#ChatInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
+    $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($("#PrivateMessageAdd")[0].attributes['recipientId'].value); } });
     $("#MemoAdd").click(MemoAdd);
-    $("#ChatAdd").click(ChatAddMessage);
-    $("#PrivateMessageAdd").click(function () { PrivateMessageAddMessage(this.attributes['recipientId'].value); });
-    $("[run]:not([tip])").click(function () { DoAction(this.attributes['run'].value); });
+    $("#ChatAdd").click(function () { ChatAddMessage(); });
+    $("#PrivateMessageAdd").click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
     $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
-    $("[run][tip]").click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
 }
 
+function UpdateClickRun() {
+    $('[run]').css('cursor', 'pointer');
+    $('[run]:not([tip])').click(function () { DoAction(this.attributes['run'].value); });
+    $('[run][tip]').click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
+}
+
 function GetGames() {
-    AgainstFriends();
-    AgainstBots();
-    WithUnreadMessages();
-    Singles();
-    FinishWithFriends();
-    FinishWithBotd();
+    //AgainstFriends();
+    //AgainstBots();
+    //WithUnreadMessages();
+    //Singles();
+    //FinishWithFriends();
+    //FinishWithBotd();
 }
 
 //***************************************************//
@@ -594,22 +592,4 @@ function HaveBotResponsability() {
                 return false;
     }
     return true;
-}
-
-function SwitchToPrivateMessage() {
-    $('#ChatDiv').hide();
-    $('#PrivateMessageDiv').show();
-    $('#PenpalsList').show();
-    $('#PrivateMessagePopupContent').hide();
-}
-
-function SwitchToChat() {
-    $('#PrivateMessageDiv').hide();
-    $('#ChatDiv').show();
-}
-
-function test(penpalIdTab) {
-    let penpalId = penpalIdTab[0];
-    $('#PenpalsList').hide();
-    $('#PrivateMessagePopupContent').show();
 }

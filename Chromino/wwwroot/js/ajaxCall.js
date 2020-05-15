@@ -31,19 +31,32 @@ function MemoGet() {
     });
 }
 
-function ChatAddMessage() {
-    let message = $('#ChatInput').val();
+function ChatAddMessage(recipientId) {
+    let type;
+    let message;
+    let id;
+    if (recipientId === undefined) {
+        type = 'chatGame';
+        id = GameId;
+        message = $('#ChatInput').val();
+    }
+    else {
+        type = 'private';
+        id = recipientId,
+        message = $('#PrivateMessageInput').val();
+    }
     if (message != "") {
         $.ajax({
             url: '/Chat/PostMessage',
             type: 'POST',
-            data: { gameId: GameId, message: message },
-            success: function (data) { CallbackChatAddMessage(data) },
+            data: { type: type, id: id, message: message },
+            success: function (data) { CallbackChatAddMessage(data, type) },
         });
     }
 }
 
 function ChatGetMessages(onlyNewMessages, show) {
+    console.log("ChatGetMessages");
     $.ajax({
         url: '/Chat/GetMessages',
         type: 'POST',
@@ -54,23 +67,11 @@ function ChatGetMessages(onlyNewMessages, show) {
 
 function PrivateMessageGetMessages(onlyNewMessages, show, opponentId, reset) {
     $.ajax({
-        url: '/PrivateMessage/GetMessages',
+        url: '/Chat/GetPrivatesMessages',
         type: 'POST',
         data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
         success: function (data) { CallbackPrivateMessageGetMessages(data, onlyNewMessages, show, reset); }
     });
-}
-
-function PrivateMessageAddMessage(recipientId) {
-    let message = $('#PrivateMessageInput').val();
-    if (message != "") {
-        $.ajax({
-            url: '/PrivateMessage/PostMessage',
-            type: 'POST',
-            data: { recipientId: recipientId, message: message },
-            success: function (data) { CallbackPrivateMessageAddMessage(data) },
-        });
-    }
 }
 
 function Help() {
@@ -216,9 +217,16 @@ function AgainstFriends() {
     });
 }
 
-function UnreadMessagesSenders() {
+function SendersIdUnreadMessagesNumber() {
     $.ajax({
-        url: '/Social/Index',
-        success: function (data) { CallbackUnreadMessagesSenders(data) },
+        url: '/Social/GetSendersIdUnreadMessagesNumber',
+        success: function (data) { CallbackSendersIdUnreadMessagesNumber(data) },
+    });
+}
+
+function GetPlayersIdNames() {
+    $.ajax({
+        url: '/Player/IdsNames',
+        success: function (data) { CallbackGetPlayersIdNames(data) },
     });
 }

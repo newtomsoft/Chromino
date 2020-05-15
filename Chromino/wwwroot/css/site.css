@@ -101,8 +101,8 @@ a {
 }
 
 .messageplayername {
-    font-weight: bold;
     margin-right: 2px;
+    font-weight: bold;
 }
 
 .messagedate {
@@ -116,7 +116,7 @@ a {
 }
 
 
-textarea { /*todo : supprimer*/
+textarea {
     resize: none;
 }
 

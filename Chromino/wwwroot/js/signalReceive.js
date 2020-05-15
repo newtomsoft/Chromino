@@ -1,35 +1,36 @@
-﻿function ReceivePlayersInGame(playersId) {
-    Players.forEach(player => player.ongame = false);
-    playersId.forEach(id => Players[Players.findIndex(p => p.id == id)].ongame = true);
+﻿function ReceivePlayersStatus(status, playersId) {
+    Players.forEach(player => player[status] = false);
+    playersId.forEach(id => Players[Players.findIndex(p => p.id == id)][status] = true);
+    HumansAll.forEach(h => h[status] = false);
+    for (const id of playersId) {
+        index = HumansAll.findIndex(h => h.id == id);
+        if (index != -1)
+            HumansAll[index][status] = true;
+    }
     RefreshColorsPlayers();
-    RefreshPlayersStatus();
+    RefreshPlayersOnline();
+    RefreshPlayersStatusIndicator();
     RefreshPopupPrivateMessage();
 }
 
-function ReceivePlayersLogged(playersId) {
-    Players.forEach(player => player.online = false);
-    playersId.forEach(id => Players[Players.findIndex(p => p.id == id)].online = true);
-    RefreshPlayersLogged();
-    RefreshPlayersStatus();
-    RefreshPopupPrivateMessage();
-}
 
 function ReceiveChatMessageSent(guid) {
     if (guid != Guid)
         return;
-    if ($("#PopupChat").is(":visible"))
+    if ($('#ChatPopupContent').is(":visible"))
         ChatGetMessages(true, true);
     else
         ChatGetMessages(true);
+    ScrollChat()
 }
 
 function ReceivePrivateMessageMessageSent(senderId) {
-    if ( $(`#PopupPrivateMessage[penpalid='${ senderId }']`).is(":visible"))
+    if ($('#PrivateMessagePopupContent').is(":visible") && $("#PrivateMessageAdd")[0].attributes['recipientId'].value == senderId)
         PrivateMessageGetMessages(true, true, senderId, false);
     else
         PrivateMessageGetMessages(true, false, senderId, false);
+    ScrollPrivateMessage();
 }
-
 
 function OpponentChrominoPlayed(guid, chrominoPlayed) {
     if (guid != Guid)

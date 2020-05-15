@@ -15,8 +15,8 @@
 </div>
 <div id="PopupChat" penpalid="" class="popup popup-memochat" style="display:none">
     <ul>
-        <li><a run="SwitchToChat" class="selected" href="#">Messages de la partie</a></li>
-        <li><a run="SwitchToPrivateMessage" href="#">Messages privés</a></li>
+        <li><a id="ChatTab" run="SwitchToChat" class="selected" href="#">Messages de la partie</a></li>
+        <li><a id="PrivateMessageTab" run="SwitchToPrivateMessage" href="#">Messages privés</a></li>
     </ul>
     <div id="ChatDiv">
         <div class="div-head img-chat" title="chat"></div>
@@ -41,9 +41,6 @@
         </div>
         <div class="div-head img-chat" title="private message"></div>
         <div id="PenpalsList">
-            <div run="test 0">Toto</div>
-            <div run="test 1">Popo</div>
-            <div run="test 2">Momo</div>
         </div>
         <div id="PrivateMessagePopupContent" style="display:none"></div>
         <div class="form-group">
