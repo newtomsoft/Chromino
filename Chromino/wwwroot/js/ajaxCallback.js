@@ -112,9 +112,9 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
 
 function CallbackGetNewPrivatesMessagesNumber(data) {
     let unreadPrivateMessagesNumber = 0;
-    for (let element of data) {
-        UnreadPrivatesMessagesNumber.push({ senderId: element.sendersId, number: element.newMessagesNumber });
-        unreadPrivateMessagesNumber += element.newMessagesNumber;
+    for (const e of data) {
+        UnreadPrivatesMessagesNumber.push({ senderId: e.sendersId, number: e.newMessagesNumber });
+        unreadPrivateMessagesNumber += e.newMessagesNumber;
     }
     if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
