@@ -12,17 +12,18 @@
   {
     "outputFileName": "wwwroot/js/game.min.js",
     "inputFiles": [
+      "wwwroot/js/jquery.draggableTouch.js",
+      "wwwroot/js/jquery.popupoverlay.js",
       "wwwroot/js/game.js",
-      "wwwroot/js/newGame.js",
       "wwwroot/js/popup.js",
+      "wwwroot/js/swipRefresh.js",
+      "wwwroot/js/newGame.js",
       "wwwroot/js/domManipulation.js",
       "wwwroot/js/ajaxCall.js",
       "wwwroot/js/ajaxCallback.js",
       "wwwroot/js/signal.js",
       "wwwroot/js/signalSend.js",
-      "wwwroot/js/signalReceive.js",
-      "wwwroot/js/jquery.popupoverlay.js",
-      "wwwroot/js/jquery.draggableTouch.js"
+      "wwwroot/js/signalReceive.js"
     ],
     "minify": {
       "enabled": true,

@@ -48,11 +48,11 @@
 
 function CallbackGetChatMessages(data, onlyNewMessages, show) {
     let formattedMessages = "";
-    for (const message of data.messages) {
+    for (const e of data.messages) {
         formattedMessages += '<div>';
-        formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
-        formattedMessages += `<span class="messagedate">(${message.date})</span>`;
-        formattedMessages += `<span class="message">${message.message}</span>`;
+        formattedMessages += `<span class="messageplayername">${e.playerName}</span>`;
+        formattedMessages += `<span class="messagedate">(${e.date})</span>`;
+        formattedMessages += `<span class="message">${e.message}</span>`;
         formattedMessages += '</div>';
     }
     if (show || !onlyNewMessages)
@@ -71,11 +71,11 @@ function CallbackGetChatMessages(data, onlyNewMessages, show) {
 function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
     let formattedMessages = "";
     if (show) {
-        for (const message of data.messages) {
+        for (const e of data.messages) {
             formattedMessages += '<div>';
-            formattedMessages += `<span class="messageplayername">${message.playerName}</span>`;
-            formattedMessages += `<span class="messagedate">(${message.date})</span>`;
-            formattedMessages += `<span class="message">${message.message}</span>`;
+            formattedMessages += `<span class="messageplayername">${e.playerName}</span>`;
+            formattedMessages += `<span class="messagedate">(${e.date})</span>`;
+            formattedMessages += `<span class="message">${e.message}</span>`;
             formattedMessages += '</div>';
         }
         if (reset)
@@ -86,20 +86,19 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
     let index = UnreadPrivateMessagesNumber.findIndex(x => x.senderId == opponentId);
     UnreadPrivateMessagesNumber[index].number = data.newMessagesNumber;
     let unreadPrivateMessagesNumber = 0;
-    for (const n of UnreadPrivateMessagesNumber) {
-        unreadPrivateMessagesNumber += n.number;
+    for (const e of UnreadPrivateMessagesNumber) {
+        unreadPrivateMessagesNumber += e.number;
     }
-    // notif sur joueur
     if (show || data.newMessagesNumber == 0) {
         UnreadPrivateMessagesNumber[index].number = 0;
         unreadPrivateMessagesNumber -= data.newMessagesNumber;
-        // todo : notif messages sur ce joueur = 0
-        //$("#NotifChat").text("0");
-        //$("#NotifChat").hide();
+        $(`#Penpal_${opponentId}`).children('.unread-messages').html("");
+    }
+    else if (data.newMessagesNumber == 1) {
+        $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (1 message non lus)`);
     }
     else {
-        // afficher notif sur ce joueur
-
+        $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (${data.newMessagesNumber} message non lus)`);
     }
     if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
@@ -324,9 +323,9 @@ function ShowGamesAgainstFriendsNumber(number) {
     $("#AgainstFriendsNumber").show();
 }
 
-function CallbackSendersIdUnreadMessagesNumber(data) {
-    let toto = data.unreadMessagesSenders;
-}
+//function CallbackSendersIdUnreadMessagesNumber(data) {
+//    let toto = data.unreadMessagesSenders;
+//}
 
 function CallbackGetPlayersIdNames(data) {
     HumansAll = new Array;
@@ -334,4 +333,5 @@ function CallbackGetPlayersIdNames(data) {
         if (player.id != PlayerId)
             HumansAll.push({ id: player.id, name: player.name })
     }
+    MakePenpalsList();
 }

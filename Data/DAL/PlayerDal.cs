@@ -20,12 +20,12 @@ namespace Data.DAL
                     select players).ToList();
         }
 
-        public object ListIdsNames()
+        public object HumansIdsNames()
         {
             return (from p in Ctx.Players
                     join ur in Ctx.UserRoles on p.Id equals ur.UserId
                     join r in Ctx.Roles on ur.RoleId equals r.Id
-                    where !p.Bot && r.Name != "Guest" && r.Name != "Bot"
+                    where !p.Bot && r.Name != "Guest" && r.Name != "Bot" //todo supprimer Bot de Player et défnir role
                     select new { id = p.Id, name = p.UserName }).ToList();
         }
 

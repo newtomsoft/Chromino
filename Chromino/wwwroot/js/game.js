@@ -56,7 +56,7 @@ $(document).ready(function () {
     InitDom();
     CallSignalR(Guid);
     RefreshDom();
-    SendersIdUnreadMessagesNumber(); //temp
+    //SendersIdUnreadMessagesNumber();
     GetPlayersIdNames(); //temp
     if (IndexGamesLoad)
         GetGames();
@@ -84,7 +84,13 @@ function InitDom() {
     };
     MemoGet();
     GetChatMessages(false);
-    GetNewPrivatesMessagesNumber();
+    GetNewPrivatesMessagesNumber().then(function () {
+        for (const e of UnreadPrivateMessagesNumber) {
+            if (e.number > 0)
+                GetPrivateMessageMessages(true, false, e.senderId, false);
+        }
+    });
+
     $(".emoji-chat").click(function () {
         let selectionStart = $('#ChatInput').prop("selectionStart");
         let text = $('#ChatInput').val();

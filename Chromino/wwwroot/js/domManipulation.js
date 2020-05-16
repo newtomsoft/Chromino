@@ -343,17 +343,6 @@ function RefreshColorPlayer(player) {
     }
 }
 
-function RefreshPlayersOnline() {
-    $("#TestPlayersLogged").text("");
-    Players.forEach(p => RefreshPlayerOnline(p.name, p.online));
-}
-
-function RefreshPlayerOnline(name, online) {
-    if (online) {
-        $("#TestPlayersLogged").text($("#TestPlayersLogged").text() + name + ", ");
-    }
-}
-
 function RefreshPlayersStatusIndicator() {
     Players.forEach(p => RefreshPlayerStatus(p));
 }

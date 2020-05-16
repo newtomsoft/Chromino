@@ -43,7 +43,7 @@ function ChatAddMessage(recipientId) {
     else {
         type = 'private';
         id = recipientId,
-        message = $('#PrivateMessageInput').val();
+            message = $('#PrivateMessageInput').val();
     }
     if (message != "") {
         $.ajax({
@@ -73,10 +73,14 @@ function GetPrivateMessageMessages(onlyNewMessages, show, opponentId, reset) {
     });
 }
 
-function GetNewPrivatesMessagesNumber(){
-    $.ajax({
-        url: '/Chat/GetNewPrivatesMessagesNumber',
-        success: function (data) { CallbackGetNewPrivatesMessagesNumber(data); }
+function GetNewPrivatesMessagesNumber() {
+    return new Promise(function (resolve) {
+        $.ajax({
+            url: '/Chat/GetNewPrivatesMessagesNumber',
+        }).done(function (data) {
+            CallbackGetNewPrivatesMessagesNumber(data);
+            resolve();
+        });
     });
 }
 
@@ -223,16 +227,16 @@ function AgainstFriends() {
     });
 }
 
-function SendersIdUnreadMessagesNumber() {
-    $.ajax({
-        url: '/Social/GetSendersIdUnreadMessagesNumber',
-        success: function (data) { CallbackSendersIdUnreadMessagesNumber(data) },
-    });
-}
+//function SendersIdUnreadMessagesNumber() {
+//    $.ajax({
+//        url: '/Social/GetSendersIdUnreadMessagesNumber',
+//        success: function (data) { CallbackSendersIdUnreadMessagesNumber(data) },
+//    });
+//}
 
 function GetPlayersIdNames() {
     $.ajax({
-        url: '/Player/IdsNames',
+        url: '/Player/HumansIdsNames',
         success: function (data) { CallbackGetPlayersIdNames(data) },
     });
 }

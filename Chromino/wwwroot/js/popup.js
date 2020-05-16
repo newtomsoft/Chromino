@@ -57,7 +57,6 @@ function SwitchToPrivateMessage() {
     $('#PrivateMessagePenpalName').html("");
     $('#PrivateMessagePenpalStatus').html("");
     RefreshPenpalTitleInPopupPrivateMessage(true);
-    RefreshPenpalsList();
     $('#ChatDiv').hide();
     $('#PrivateMessageDiv').show();
     $('#PenpalsList').show();
@@ -79,15 +78,16 @@ function SelectPenpal(penpalIdTab) {
     SelectPrivateMessageTab(penpalId);
 }
 
-function RefreshPenpalsList() {
+function MakePenpalsList() {
     $('.selectPenpal').remove();
-    HumansAll.forEach(p => RefreshPenpalList(p));
+    HumansAll.forEach(p => MakePenpalList(p));
     UpdateClickRun();
 }
 
-function RefreshPenpalList(player) {
+function MakePenpalList(player) {
     let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
-    let toAdd = `<div class="selectPenpal"><span run='Chat ${player.id}'> ${player.name}${spanPlayerId}</span></div>`;
+    let spanUnreadMessages = `<span class='unread-messages'></span>`;
+    let toAdd = `<div id='Penpal_${player.id}' class="selectPenpal"><span run='Chat ${player.id}'> ${player.name}${spanPlayerId}</span>${spanUnreadMessages}</div>`;
     $(toAdd).appendTo('#PenpalsList');
     RefreshColorPlayer(player);
 }
