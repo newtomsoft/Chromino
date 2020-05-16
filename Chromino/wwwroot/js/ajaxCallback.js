@@ -313,18 +313,14 @@ function ChangePlayerTurn() {
 function CallbackGetGuids(data) {
     Guids = data.guids;
 }
-//todo check
+
 function CallbackAgainstFriends(data) {
     ShowGamesAgainstFriendsNumber(data.picturesGame.length);
 }
-//todo check
-function ShowGamesAgainstFriendsNumber(number) {
-    $("#AgainstFriendsNumber").text(number);
-    $("#AgainstFriendsNumber").show();
-}
-
-//function CallbackSendersIdUnreadMessagesNumber(data) {
-//    let toto = data.unreadMessagesSenders;
+//todo future feature
+//function ShowGamesAgainstFriendsNumber(number) {
+//    $("#AgainstFriendsNumber").text(number);
+//    $("#AgainstFriendsNumber").show();
 //}
 
 function CallbackGetPlayersIdNames(data) {
