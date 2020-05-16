@@ -6,6 +6,7 @@
 /Chromino/wwwroot/image/game
 
 #env files
+/Chromino/appsettings.StagingMin.json
 /Chromino/appsettings.Staging.json
 /Chromino/appsettings.Production.json
 /Batch/appsettings.Production.json
@@ -344,3 +345,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
