@@ -60,17 +60,17 @@ function RefreshInStack() {
 function UpdateInHandNumberDom(player) {
     let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
     let playerName = player.id == PlayerId ? "Vous" : player.name;
-    let playerWithStatus = player.id != PlayerId && !player.isBot ? `<span run='Chat ${player.id}'> ${playerName}${spanPlayerId}</span>` : playerName;
-    let have = player.id == PlayerId ? "avez" : " a";
-    $('#Player_' + player.id).removeClass();
+    let playerWithStatus = player.id != PlayerId && !player.isBot ? `<span run='Chat ${player.id}'>${playerName}${spanPlayerId}</span>` : playerName;
+    let have = player.id == PlayerId ? "&nbsp;avez" : "&nbsp;a";
+    $(`#Player_${player.id}`).removeClass();
     switch (player.chrominosNumber) {
         case 0:
-            $('#Player_' + player.id).addClass("winner");
-            $('#Player_' + player.id).html(`${playerWithStatus} ${have} terminé`);
+            $(`#Player_${player.id}`).addClass("winner");
+            $(`#Player_${player.id}`).html(`${playerWithStatus}${have} terminé`);
             break;
         case 1:
-            $('#Player_' + player.id).addClass("opponentLastChromino");
-            let divToAdd = `${playerWithStatus} ${have} &nbsp`;
+            $(`#Player_${player.id}`).addClass("opponentLastChromino");
+            let divToAdd = `${playerWithStatus}${have} &nbsp`;
             for (let i = 0; i < 3; i++) {
                 let classOpenSides;
                 switch (i) {
@@ -86,10 +86,10 @@ function UpdateInHandNumberDom(player) {
                 }
                 divToAdd += `<div class="Square ${classOpenSides} ${player.lastChrominoColors[i]}"></div>`;
             }
-            $('#Player_' + player.id).html(divToAdd);
+            $(`#Player_${player.id}`).html(divToAdd);
             break;
         default:
-            $('#Player_' + player.id).html(`${playerWithStatus} ${have} ${player.chrominosNumber} chrominos en main`);
+            $(`#Player_${player.id}`).html(`${playerWithStatus}${have} ${player.chrominosNumber} chrominos en main`);
             break
     }
 }
