@@ -8,7 +8,7 @@ var IsGameFinish;
 var HaveDrawn;
 var Memo;
 var MemosNumber;
-var UnreadPrivateMessagesNumber = new Array;
+var UnreadPrivatesMessagesNumber = new Array;
 var TimeoutPut = null;
 var ToPut = false;
 var PositionLastChromino;
@@ -85,7 +85,7 @@ function InitDom() {
     MemoGet();
     GetChatMessages(false);
     GetNewPrivatesMessagesNumber().then(function () {
-        for (const e of UnreadPrivateMessagesNumber) {
+        for (const e of UnreadPrivatesMessagesNumber) {
             if (e.number > 0)
                 GetPrivateMessageMessages(true, false, e.senderId, false);
         }

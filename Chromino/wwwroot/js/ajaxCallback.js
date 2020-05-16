@@ -83,14 +83,14 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
         $('#PrivateMessagePopupContent').html($('#PrivateMessagePopupContent').html() + formattedMessages);
         ScrollPrivateMessage();
     }
-    let index = UnreadPrivateMessagesNumber.findIndex(x => x.senderId == opponentId);
-    UnreadPrivateMessagesNumber[index].number = data.newMessagesNumber;
+    let index = UnreadPrivatesMessagesNumber.findIndex(x => x.senderId == opponentId);
+    UnreadPrivatesMessagesNumber[index].number = data.newMessagesNumber;
     let unreadPrivateMessagesNumber = 0;
-    for (const e of UnreadPrivateMessagesNumber) {
+    for (const e of UnreadPrivatesMessagesNumber) {
         unreadPrivateMessagesNumber += e.number;
     }
     if (show || data.newMessagesNumber == 0) {
-        UnreadPrivateMessagesNumber[index].number = 0;
+        UnreadPrivatesMessagesNumber[index].number = 0;
         unreadPrivateMessagesNumber -= data.newMessagesNumber;
         $(`#Penpal_${opponentId}`).children('.unread-messages').html("");
     }
@@ -110,12 +110,11 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
     }
 }
 
-
 function CallbackGetNewPrivatesMessagesNumber(data) {
     let unreadPrivateMessagesNumber = 0;
-    for (const e of data) {
-        UnreadPrivateMessagesNumber.push({ senderId: e.sendersId, number: e.newMessagesNumber });
-        unreadPrivateMessagesNumber += e.newMessagesNumber;
+    for (let element of data) {
+        UnreadPrivatesMessagesNumber.push({ senderId: element.sendersId, number: element.newMessagesNumber });
+        unreadPrivateMessagesNumber += element.newMessagesNumber;
     }
     if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
