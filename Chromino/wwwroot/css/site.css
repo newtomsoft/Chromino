@@ -1,4 +1,14 @@
-﻿a.navbar-brand {
+﻿:root {
+    --color-blue: #3AC2EE;
+    --color-green: #4CAE44;
+    --color-purple: #571B6D;
+    --color-red: #FA2C2E;
+    --color-yellow: #FFEB47;
+    --color-free: white;
+    --color-possible: palegreen;
+}
+
+a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -734,16 +744,6 @@ figcaption {
     flex-shrink: 0;
 }
 
-:root {
-    --color-blue: #3AC2EE;
-    --color-green: #4CAE44;
-    --color-purple: #571B6D;
-    --color-red: #FA2C2E;
-    --color-yellow: #FFEB47;
-    --color-free: white;
-    --color-possible: palegreen;
-}
-
 .Blue {
     background-color: var(--color-blue);
 }
@@ -767,11 +767,6 @@ figcaption {
 .Cameleon {
     background-image: url('/image/Cameleon.svg');
     background-size: contain;
-}
-
-.Free {
-    background-color: var(--color-free);
-    background-image: none;
 }
 
 .Possible {
@@ -1118,8 +1113,8 @@ html {
 }
 
 body {
-    /* Margin bottom by footer height */
     margin-bottom: 60px;
+    background-color: var(--color-free);
 }
 
 .footer {
