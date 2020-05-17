@@ -63,7 +63,7 @@ namespace ChrominoApp.Controllers
         /// <param name="onlyNewMessages">true pour obtenir uniquement les messages non lus</param>
         /// <param name="show">true pour remettre à 0 le compteur de nouveaux messages</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult GetMessages(int gameId, bool onlyNewMessages, bool show)
         {
             DateTime now = DateTime.Now;
@@ -86,13 +86,14 @@ namespace ChrominoApp.Controllers
             return new JsonResult(new { messages, newMessagesNumber });
         }
 
+        [HttpGet]
         public JsonResult GetPrivatesMessages(int opponentId, bool onlyNewMessages, bool show)
         {
             DateTime now = DateTime.Now;
             DateTime dateLatestRead = PrivateMessageDal.GetDateLatestReadMessage(opponentId, PlayerId);
             DateTime dateMin = onlyNewMessages ? dateLatestRead : DateTime.MinValue;
             List<PrivateMessage> privatesMessages = PrivateMessageDal.GetMessages(PlayerId, opponentId, dateMin, DateTime.MaxValue);
-            int newMessagesNumber = onlyNewMessages ? privatesMessages.Count() : PrivateMessageDal.NewMessagesNumber(PlayerId, opponentId, dateLatestRead);
+            int newMessagesNumber = onlyNewMessages ? privatesMessages.Count : PrivateMessageDal.NewMessagesNumber(PlayerId, opponentId, dateLatestRead);
             string playerName = "Vous";
             string opponentName = PlayerDal.Name(opponentId);
             Dictionary<int, string> playerId_PlayerName = new Dictionary<int, string>();
@@ -111,6 +112,7 @@ namespace ChrominoApp.Controllers
             return new JsonResult(new { messages, newMessagesNumber });
         }
 
+        [HttpGet]
         public JsonResult GetNewPrivatesMessagesNumber()
         {
             Dictionary<int, DateTime> recipientsId_dates = PrivateMessageDal.GetLatestReadMessageRecipientsId_Dates(PlayerId);

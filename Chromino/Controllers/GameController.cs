@@ -62,7 +62,7 @@ namespace Controllers
             listPseudos.Reverse();
             string[] pseudosNotNull = listPseudos.Where(c => c != null).ToArray();
 
-            List<string> errors = new List<String>();
+            List<string> errors = new List<string>();
             List<Player> players = new List<Player>(8);
             for (int i = 0; i < pseudosNotNull.Length; i++)
             {
@@ -150,7 +150,7 @@ namespace Controllers
             if (id == 0)
                 return RedirectToAction("GameNotFound");
             Player player = PlayerDal.Details(PlayerId);
-            bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin");
+            bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin").ConfigureAwait(true);
             GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin);
             if (gameVM != null)
                 return View(gameVM);
@@ -196,7 +196,7 @@ namespace Controllers
         /// <param name="id">Id de la partie</param>
         /// <param name="botId">Id du bot</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult PlayBot(int id, int botId)
         {
             PlayReturn playReturn;
@@ -232,7 +232,7 @@ namespace Controllers
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult DrawChromino(int gameId)
         {
             if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
@@ -252,7 +252,7 @@ namespace Controllers
         /// </summary>
         /// <param name="gameId">Id du jeu</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public JsonResult SkipTurn(int gameId)
         {
             if (GamePlayerDal.PlayerTurn(gameId).Id != PlayerId)
@@ -268,7 +268,7 @@ namespace Controllers
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult Help(int gameId)
         {
             bool status = PlayerDal.DecreaseHelp(PlayerId);
@@ -305,7 +305,6 @@ namespace Controllers
         {
             const int horizontal = (int)Orientation.Horizontal;
             const int vertical = (int)Orientation.Vertical;
-
             Player thisPlayer = PlayerDal.Details(PlayerId);
             bool isAdmin = await UserManager.IsInRoleAsync(thisPlayer, "Admin").ConfigureAwait(true);
             bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
@@ -333,7 +332,7 @@ namespace Controllers
         /// </summary>
         /// <param name="gameId">id du jeu</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult End(int gameId)
         {
             if (GameDal.IsFinished(gameId) && !GamePlayerDal.IsViewFinished(gameId, PlayerId))
@@ -366,7 +365,7 @@ namespace Controllers
         /// <param name="gameId">id du jeu</param>
         /// <param name="playerId">id du joueur qui vient de jouer</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public IActionResult InfosAfterPlaying(int gameId, int playerId)
         {
             List<string> lastChrominoColors = ColorsLastChromino(gameId, playerId);

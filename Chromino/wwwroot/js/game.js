@@ -50,11 +50,13 @@ var GamesSinglesNumber;
 var GamesFinishWithFriendsNumber;
 var GamesFinishWithBotdNumber;
 
-$(document).ready(function () {
-    if (GameId === 0)
-        InitIndexDom();
-    else
+$(document).ready(async function () {
+    if (GameId !== 0) {
+        await GetGameInfos();
         InitGameDom();
+    }
+    else
+        InitIndexDom();
     CallSignalR(Guid);
     if (GameId !== 0)
         RefreshDom();
@@ -68,7 +70,6 @@ function InitIndexDom() {
 }
 
 function InitGameDom() {
-    GetGameInfos();
     ShowButtonChat();
     RefreshButtonNextGame();
     DoAction("Welcome");
@@ -133,13 +134,13 @@ function InitGameDom() {
     });
     UpdateClickRun();
     $('#ChatInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
-    $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($("#PrivateMessageAdd").attr('recipientId')); } });
-    $("#MemoAdd").click(MemoAdd);
-    $("#ChatAdd").click(function () { ChatAddMessage(); });
-    $("#PrivateMessageAdd").click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
-    $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
-    $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
-    $("#GameArea").click(function () { ShowHistoryLatestMove(); });
+    $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($('#PrivateMessageAdd').attr('recipientId')); } });
+    $('#MemoAdd').click(MemoAdd);
+    $('#ChatAdd').click(function () { ChatAddMessage(); });
+    $('#PrivateMessageAdd').click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
+    $('[tip]:not([run])').click(function () { ShowTip(this.attributes['tip'].value); });
+    $('#TipClose').click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
+    $('#GameArea').click(function () { ShowHistoryLatestMove(); });
     GetContactsIdNames().then(function () { MakePenpalsList() });
 }
 

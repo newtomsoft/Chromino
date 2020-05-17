@@ -58,7 +58,6 @@ function ChatAddMessage(recipientId) {
 function GetChatMessages(onlyNewMessages, show) {
     $.ajax({
         url: '/Chat/GetMessages',
-        type: 'POST',
         data: { gameId: GameId, onlyNewMessages: onlyNewMessages, show: show },
         success: function (data) { CallbackGetChatMessages(data, onlyNewMessages, show); }
     });
@@ -67,7 +66,6 @@ function GetChatMessages(onlyNewMessages, show) {
 function GetPrivateMessageMessages(onlyNewMessages, show, opponentId, reset) {
     $.ajax({
         url: '/Chat/GetPrivatesMessages',
-        type: 'POST',
         data: { opponentId: opponentId, onlyNewMessages: onlyNewMessages, show: show },
         success: function (data) { CallbackGetPrivateMessageMessages(data, opponentId, show, reset); }
     });
@@ -88,7 +86,6 @@ function Help() {
     if ($(".Possible").length == 0) {
         $.ajax({
             url: '/Game/Help',
-            type: 'POST',
             data: { gameId: GameId },
             success: function (data) { CallbackHelp(data); }
         });
@@ -99,7 +96,6 @@ function SkipTurn() {
     HideButtonPlayChromino();
     $.ajax({
         url: '/Game/SkipTurn',
-        type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackSkipTurn(data); },
     });
@@ -108,7 +104,6 @@ function SkipTurn() {
 function DrawChromino() {
     $.ajax({
         url: '/Game/DrawChromino',
-        type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackDrawChromino(data); },
     });
@@ -117,41 +112,34 @@ function DrawChromino() {
 function End() {
     $.ajax({
         url: '/Game/End',
-        type: 'POST',
         data: { gameId: GameId },
         success: function (data) { CallbackEnd(data); },
     });
 }
 
 function GetGameInfos() {
-    $.ajax({
-        url: '/Game/Infos',
-        type: 'POST',
-        async: false,
-        data: { gameId: GameId },
-        success: function (data) { CallbackGameInfos(data); },
+    return new Promise(function (resolve) {
+        $.ajax({
+            url: '/Game/Infos',
+            data: { gameId: GameId }
+        }).done(function (data) {
+            CallbackGameInfos(data);
+            resolve();
+        });
     });
 }
 
 function GetInfosAfterPlaying() {
-    $.ajax({
-        url: '/Game/InfosAfterPlaying',
-        type: 'POST',
-        async: false,
-        data: { gameId: GameId, playerId: PlayerTurn.id },
-        success: function (data) { TEST(data); },
+    return new Promise(function (resolve) {
+        $.ajax({
+            url: '/Game/InfosAfterPlaying',
+            data: { gameId: GameId, playerId: PlayerTurn.id }
+        }).done(function (data) {
+            resolve(data);
+        });
     });
-}
 
-//TODO DETTE TECHNIQUE
-var TESTlastChrominoColors;
-var TESTfinish;
-function TEST(data) {
-    TESTlastChrominoColors = data.lastChrominoColors;
-    TESTfinish = data.finish;
 }
-// !TODO DETTE TECHNIQUE
-
 
 function PlayingBot(botId) {
     if (!IsGameFinish) {
@@ -160,7 +148,6 @@ function PlayingBot(botId) {
         ShowWorkInProgress();
         $.ajax({
             url: '/Game/PlayBot',
-            type: 'POST',
             data: { id: GameId, botId: botId },
             success: function (data) { CallbackBotPlayed(data, botId); },
         });
