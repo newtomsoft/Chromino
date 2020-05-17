@@ -29,7 +29,6 @@ namespace Data.DAL
             return Details(gameId, playerId) != null ? true : false;
         }
 
-
         public List<GamePlayer> GamePlayers(int gameId)
         {
             List<GamePlayer> gamesPlayer = (from gp in Ctx.GamesPlayers
@@ -215,7 +214,6 @@ namespace Data.DAL
 
         public List<Game> GamesWithNotReadMessages(int playerId)
         {
-
             var games = (from c in Ctx.Chats
                          join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
                          join game in Ctx.Games on gp.GameId equals game.Id
