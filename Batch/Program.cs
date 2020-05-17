@@ -24,6 +24,7 @@ namespace Batch
         private static ChrominoInHandLastDal ChrominoInHandLastDal;
         private static GoodPositionDal GoodPositionDal;
         private static SquareDal SquareDal;
+        private static ContactDal ContactDal;
         private static string Option;
         private static Dictionary<string, Action> Methods;
 
@@ -31,6 +32,7 @@ namespace Batch
         {
             Methods = new Dictionary<string, Action>
             {
+                //{ "CreateContacts", CreateContacts },
                 { "AddBots", AddBots },
                 { "AddTips", AddTips },
                 { "AddPlayErrors", AddPlayErrors },
@@ -41,9 +43,7 @@ namespace Batch
                 { "ClearTurnWhenGameFinish", ClearTurnWhenGameFinish},
                 { "DeleteOldSinglesGames", DeleteOldSinglesGames},
             };
-
             Init(args);
-
             if (Option == "")
                 foreach (KeyValuePair<string, Action> key_value in Methods)
                     key_value.Value();
@@ -57,7 +57,7 @@ namespace Batch
 
         private static void Init(string[] args)
         {
-            Option = args.Length > 0 ? args[0] : String.Empty;
+            Option = args.Length > 0 ? args[0] : string.Empty;
             Console.WriteLine("**************************");
             Console.WriteLine("***** Batch Chromino *****");
             Console.WriteLine($"* le {DateTime.Now.ToString("dd/MM/yyyy à HH:mm").Replace(':', 'h')}  *");
@@ -83,8 +83,8 @@ namespace Batch
             ChrominoInHandLastDal = new ChrominoInHandLastDal(Ctx);
             GoodPositionDal = new GoodPositionDal(Ctx);
             SquareDal = new SquareDal(Ctx);
+            ContactDal = new ContactDal(Ctx);
         }
-
         private static void AddBots()
         {
             Console.WriteLine();
@@ -111,7 +111,6 @@ namespace Batch
                 }
             }
         }
-
         private static void DeleteGuests()
         {
             Console.WriteLine();
@@ -227,7 +226,6 @@ namespace Batch
                 return false;
             }
         }
-
         private static void ClearTurnWhenGameFinish()
         {
             Console.WriteLine();
@@ -244,13 +242,11 @@ namespace Batch
             }
             Ctx.SaveChanges();
         }
-
         private static void DeleteOldSinglesGames()
         {
 
 
         }
-
         private static void AddTips()
         {
             Console.WriteLine();
@@ -346,7 +342,6 @@ namespace Batch
             List<Tip> tips = new List<Tip> { home, info, help, chat, memo, next, draw, skip, handChrominos, validateChromino, history, play, cameleon, welcome };
             AddTipsInDb(tips);
         }
-
         private static void AddTipsInDb(List<Tip> tips)
         {
             foreach (var tip in tips)
@@ -373,7 +368,6 @@ namespace Batch
                 }
             }
         }
-
         private static void AddPlayErrors()
         {
             Console.WriteLine();
@@ -429,7 +423,6 @@ namespace Batch
             List<PlayError> errors = new List<PlayError> { differentColorsAround, notFree, notMinTwoSameColors, lastChrominoIsCameleon, notPlayerTurn, errorGameFinish, cantDraw2TimesInARow, noMoreChrominosInStack };
             AddPlayErrorsInDb(errors);
         }
-
         private static void AddPlayErrorsInDb(List<PlayError> errors)
         {
             foreach (var error in errors)
@@ -446,6 +439,24 @@ namespace Batch
                 else
                 {
                     Console.WriteLine($"  (erreur {error.Name} déjà présent en base)");
+                }
+            }
+        }
+        private static void CreateContacts()
+        {
+            Console.WriteLine();
+            Console.WriteLine("ajout des contacts initiaux");
+            List<Player> players = PlayerDal.List();
+            foreach (var player in players)
+            {
+                List<Game> games = GamePlayerDal.Games(player.Id);
+                foreach (var game in games)
+                {
+                    List<GamePlayer> gamePlayers = GamePlayerDal.GamePlayers(game.Id);
+                    foreach (var gamePlayer in gamePlayers)
+                    {
+                        ContactDal.Add(player.Id, gamePlayer.PlayerId);
+                    }
                 }
             }
         }
