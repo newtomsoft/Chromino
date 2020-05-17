@@ -13,7 +13,6 @@
         if (!Players[i].isBot && Players[i].id != PlayerId)
             HumansOpponentsId.push(Players[i].id.toString());
     }
-
     XMin = data.gameVM.xMin;
     YMin = data.gameVM.yMin;
     Guid = data.gameVM.game.guid;
@@ -295,11 +294,17 @@ function UpdateInHandNumber(playerId, value, lastChrominoColors = undefined) {
 
 function RefreshVar(data) {
     if (data !== undefined) {
-        if (data.finish !== undefined) IsGameFinish = data.finish;
+        if (data.finish !== undefined)
+            IsGameFinish = data.finish;
         ChangePlayerTurn();
     }
-    if (PlayerTurn.id != PlayerId)
+    if (PlayerTurn.id != PlayerId) {
         HaveDrawn = false;
+        document.documentElement.style.setProperty('--color-free', '#E9ECEFA3');
+    }
+    else {
+        document.documentElement.style.setProperty('--color-free', 'white');
+    }
     if (IsGameFinish) {
         ShowInfoPopup = true;
         End();
