@@ -1,11 +1,11 @@
 ﻿:root {
-    --color-blue: #3AC2EE;
-    --color-green: #4CAE44;
-    --color-purple: #571B6D;
-    --color-red: #FA2C2E;
-    --color-yellow: #FFEB47;
-    --color-free: white;
-    --color-possible: palegreen;
+    --blue: #3AC2EE;
+    --green: #4CAE44;
+    --purple: #571B6D;
+    --red: #FA2C2E;
+    --yellow: #FFEB47;
+    --free: #FFFFFF;
+    --possible: palegreen;
 }
 
 a.navbar-brand {
@@ -32,7 +32,7 @@ a {
     background-color: yellow;
     font-size: xx-large;
     text-align: center;
-    color: var(--color-red);
+    color: var(--red);
     width: 80%;
     position: absolute;
     margin-left: auto;
@@ -317,7 +317,7 @@ textarea {
 }
 
 .ongame {
-    color: var(--color-green);
+    color: var(--green);
 }
 
 .online {
@@ -399,7 +399,7 @@ textarea {
 }
 
 .player-status-ongame, .penpal-status-ongame {
-    background-color: var(--color-green);
+    background-color: var(--green);
 }
 
 .player-status-online, .penpal-status-online {
@@ -407,7 +407,7 @@ textarea {
 }
 
 .player-status-offline, .penpal-status-offline {
-    background-color: var(--color-red);
+    background-color: var(--red);
 }
 
 .player-status-bot, .penpal-status-bot {
@@ -415,7 +415,7 @@ textarea {
 }
 
 .player-status-thisplayer, .penpal-status-thisplayer {
-    background-color: var(--color-blue);
+    background-color: var(--blue);
 }
 
 #PenpalInfos {
@@ -474,15 +474,15 @@ textarea {
 }
 
 .notification-red {
-    background-color: var(--color-red);
+    background-color: var(--red);
 }
 
 .notification-green {
-    background-color: var(--color-green);
+    background-color: var(--green);
 }
 
 .notification-blue {
-    background-color: var(--color-blue);
+    background-color: var(--blue);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -492,7 +492,7 @@ textarea {
 }
 
 .text-error {
-    color: var(--color-red);
+    color: var(--red);
 }
 
 .minorInfo {
@@ -745,23 +745,23 @@ figcaption {
 }
 
 .Blue {
-    background-color: var(--color-blue);
+    background-color: var(--blue);
 }
 
 .Green {
-    background-color: var(--color-green);
+    background-color: var(--green);
 }
 
 .Purple {
-    background-color: var(--color-purple);
+    background-color: var(--purple);
 }
 
 .Red {
-    background-color: var(--color-red);
+    background-color: var(--red);
 }
 
 .Yellow {
-    background-color: var(--color-yellow);
+    background-color: var(--yellow);
 }
 
 .Cameleon {
@@ -770,7 +770,7 @@ figcaption {
 }
 
 .Possible {
-    background-color: var(--color-possible);
+    background-color: var(--possible);
 }
 
 .OpenRight {
@@ -1114,7 +1114,7 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: var(--color-free);
+    background-color: var(--free);
 }
 
 .footer {

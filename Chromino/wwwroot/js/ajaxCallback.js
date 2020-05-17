@@ -300,10 +300,32 @@ function RefreshVar(data) {
     }
     if (PlayerTurn.id != PlayerId) {
         HaveDrawn = false;
-        document.documentElement.style.setProperty('--color-free', '#E9ECEFA3');
+        const blueWait = '#07A7D0';
+        const greenWait = '#298626';
+        const purpleWait = '#380B49';
+        const redWait = '#A7000B';
+        const yellowWait = '#F4E136';
+        const freeWait = '#E0E1E2';  
+        document.documentElement.style.setProperty('--blue', blueWait);
+        document.documentElement.style.setProperty('--green', greenWait);
+        document.documentElement.style.setProperty('--purple', purpleWait);
+        document.documentElement.style.setProperty('--red', redWait);
+        document.documentElement.style.setProperty('--yellow', yellowWait);
+        document.documentElement.style.setProperty('--free', freeWait);
     }
     else {
-        document.documentElement.style.setProperty('--color-free', 'white');
+        const blue = '#3AC2EE';
+        const green = '#4CAE44';
+        const purple = '#571B6D';
+        const red = '#FA2C2E';
+        const yellow = '#FFEB47';
+        const free = '#FFFFFF';  
+        document.documentElement.style.setProperty('--blue', blue);
+        document.documentElement.style.setProperty('--green', green);
+        document.documentElement.style.setProperty('--purple', purple);
+        document.documentElement.style.setProperty('--red', red);
+        document.documentElement.style.setProperty('--yellow', yellow);
+        document.documentElement.style.setProperty('--free', free);
     }
     if (IsGameFinish) {
         ShowInfoPopup = true;
