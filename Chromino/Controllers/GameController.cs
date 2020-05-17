@@ -74,7 +74,11 @@ namespace Controllers
                 else if (players.Contains(player))
                     errors.Add($"Le joueur {pseudosNotNull[i]} est ajouté plusieurs fois dans la partie");
                 else
+                {
                     players.Add(player);
+                    ContactDal.Add(PlayerId, player.Id);
+                    ContactDal.Add(player.Id, PlayerId);
+                }
             }
 
             if (botsNumber + players.Count > MaxPlayers)
