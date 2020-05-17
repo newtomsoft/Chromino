@@ -3,12 +3,11 @@
     playersId.forEach(id => Players[Players.findIndex(p => p.id == id)][status] = true);
     HumansAll.forEach(h => h[status] = false);
     for (const id of playersId) {
-        index = HumansAll.findIndex(h => h.id == id);
+        let index = HumansAll.findIndex(h => h.id == id);
         if (index != -1)
             HumansAll[index][status] = true;
     }
     RefreshColorsPlayers();
-    RefreshPlayersOnline();
     RefreshPlayersStatusIndicator();
     RefreshPenpalTitleInPopupPrivateMessage();
 }

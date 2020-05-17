@@ -93,6 +93,7 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
         UnreadPrivatesMessagesNumber[index].number = 0;
         unreadPrivateMessagesNumber -= data.newMessagesNumber;
         $(`#Penpal_${opponentId}`).children('.unread-messages').html("");
+        $(`#Penpal_${opponentId}`).remove(); //todo supprimer quand liste correctement filtrée
     }
     else if (data.newMessagesNumber == 1) {
         $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (1 message non lus)`);
@@ -112,9 +113,15 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
 
 function CallbackGetNewPrivatesMessagesNumber(data) {
     let unreadPrivateMessagesNumber = 0;
-    for (const e of data) {
-        UnreadPrivatesMessagesNumber.push({ senderId: e.sendersId, number: e.newMessagesNumber });
-        unreadPrivateMessagesNumber += e.newMessagesNumber;
+    //comment due to bug in BundlerMinifier. todo wait resolve issue
+    //for (const e of data) {
+    //    UnreadPrivatesMessagesNumber.push({ senderId: e.sendersId, number: e.newMessagesNumber });
+    //    unreadPrivateMessagesNumber += e.newMessagesNumber;
+    //}
+    //replace by this "for loop"
+    for (let i = 0; i < data.length; i++) {
+        UnreadPrivatesMessagesNumber.push({ senderId: data[i].sendersId, number: data[i].newMessagesNumber });
+        unreadPrivateMessagesNumber += data[i].newMessagesNumber;
     }
     if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");

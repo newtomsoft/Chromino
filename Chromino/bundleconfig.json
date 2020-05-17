@@ -6,14 +6,12 @@
       "wwwroot/css/wait.css"
     ],
     "minify": {
-      "enabled": true
+      "enabled": true 
     }
   },
   {
     "outputFileName": "wwwroot/js/game.min.js",
     "inputFiles": [
-      "wwwroot/js/jquery.draggableTouch.js",
-      "wwwroot/js/jquery.popupoverlay.js",
       "wwwroot/js/game.js",
       "wwwroot/js/popup.js",
       "wwwroot/js/swipRefresh.js",
@@ -27,7 +25,7 @@
     ],
     "minify": {
       "enabled": true,
-      "renameLocals": true
+      "renameLocals": false
     },
     "sourceMap": false
   }

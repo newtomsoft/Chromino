@@ -91,10 +91,11 @@ namespace ChrominoGame
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment() || env.IsStaging())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Home/Error");
+#if DEBUG
+            app.UseDeveloperExceptionPage();
+#else
+            app.UseExceptionHandler("/Home/Error");
+#endif
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseRouting();

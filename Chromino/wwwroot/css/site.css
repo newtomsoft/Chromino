@@ -22,7 +22,7 @@ a {
     background-color: yellow;
     font-size: xx-large;
     text-align: center;
-    color: red;
+    color: var(--color-red);
     width: 80%;
     position: absolute;
     margin-left: auto;
@@ -307,7 +307,7 @@ textarea {
 }
 
 .ongame {
-    color: green;
+    color: var(--color-green);
 }
 
 .online {
@@ -397,7 +397,7 @@ textarea {
 }
 
 .player-status-offline, .penpal-status-offline {
-    background-color: red;
+    background-color: var(--color-red);
 }
 
 .player-status-bot, .penpal-status-bot {
@@ -482,7 +482,7 @@ textarea {
 }
 
 .text-error {
-    color: red;
+    color: var(--color-red);
 }
 
 .minorInfo {
