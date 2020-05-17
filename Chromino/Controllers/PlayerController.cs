@@ -69,9 +69,9 @@ namespace Controllers
         }
 
         [Authorize]
-        public IActionResult HumansIdsNames(List<int> ids)
+        public IActionResult ContactsIdsNames(List<int> ids)
         {
-            var players = PlayerDal.HumansIdsNames();
+            var players = ContactDal.ContactsId_Names(PlayerId);
             return new JsonResult(new { players });
         }
     }

@@ -93,7 +93,6 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
         UnreadPrivatesMessagesNumber[index].number = 0;
         unreadPrivateMessagesNumber -= data.newMessagesNumber;
         $(`#Penpal_${opponentId}`).children('.unread-messages').html("");
-        $(`#Penpal_${opponentId}`).remove(); //todo supprimer quand liste correctement filtrée
     }
     else if (data.newMessagesNumber == 1) {
         $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (1 message non lus)`);
@@ -329,11 +328,10 @@ function CallbackAgainstFriends(data) {
 //    $("#AgainstFriendsNumber").show();
 //}
 
-function CallbackGetPlayersIdNames(data) {
-    HumansAll = new Array;
+function CallbackGetContactsIdNames(data) {
+    Contacts = new Array;
     for (const player of data.players) {
         if (player.id != PlayerId)
-            HumansAll.push({ id: player.id, name: player.name })
+            Contacts.push({ id: player.id, name: player.name })
     }
-    MakePenpalsList();
 }

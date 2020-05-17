@@ -234,9 +234,13 @@ function AgainstFriends() {
 //    });
 //}
 
-function GetPlayersIdNames() {
-    $.ajax({
-        url: '/Player/HumansIdsNames',
-        success: function (data) { CallbackGetPlayersIdNames(data) },
+function GetContactsIdNames() {
+    return new Promise(function (resolve) {
+        $.ajax({
+            url: '/Player/ContactsIdsNames'
+        }).done(function (data) {
+            CallbackGetContactsIdNames(data);
+            resolve();
+        });
     });
 }

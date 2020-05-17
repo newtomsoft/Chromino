@@ -10,12 +10,6 @@
     string playerName = guest ? "joueur sans compte" : UserManager.GetUserName(User);
     string classAvailable = guest ? "not-available" : "";
 }
-@section Scripts
-{
-    <script>
-        var IndexGamesLoad = true;
-    </script>
-}
 <div class="text-center">
     <h2>Bienvenue @playerName</h2>
 </div>

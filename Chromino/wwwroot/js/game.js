@@ -1,4 +1,5 @@
-﻿var Guid;
+﻿var GameId = 0;
+var Guid;
 var Orientation;
 var GameAreaLinesNumber;
 var GameAreaColumnsNumber;
@@ -28,7 +29,7 @@ var PlayerId;
 var PlayerTurn;
 var PlayersNumber;
 var Players;
-var HumansAll;
+var Contacts;
 var HumansId;
 var Penpal;
 var HumansOpponentsId;
@@ -48,21 +49,26 @@ var GamesWithUnreadMessagesNumber;
 var GamesSinglesNumber;
 var GamesFinishWithFriendsNumber;
 var GamesFinishWithBotdNumber;
-var IndexGamesLoad = true;
 
 $(document).ready(function () {
-    AddFeatureNewGame(); // todo desactiver quand pas nécessaire
-    GetGuids(); // idem
-    InitDom();
+    if (GameId === 0)
+        InitIndexDom();
+    else
+        InitGameDom();
     CallSignalR(Guid);
-    RefreshDom();
+    if (GameId !== 0)
+        RefreshDom();
     //SendersIdUnreadMessagesNumber();
-    GetPlayersIdNames(); //temp
-    if (IndexGamesLoad)
-        GetGames();
+
 });
 
-function InitDom() {
+function InitIndexDom() {
+    AddFeatureNewGame();
+    GetGuids();
+    GetGames();
+}
+
+function InitGameDom() {
     GetGameInfos();
     ShowButtonChat();
     RefreshButtonNextGame();
@@ -134,6 +140,7 @@ function InitDom() {
     $("#PrivateMessageAdd").click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
     $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
+    GetContactsIdNames().then(function () { MakePenpalsList() });
 }
 
 function UpdateClickRun() {
