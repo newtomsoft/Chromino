@@ -37,7 +37,7 @@ function SelectPrivateMessageTab(penpalId) {
     SwitchToPrivateMessage();
     $('#PenpalsList').hide();
     $('#PrivateMessagePopupContent').show();
-    let penpal = HumansAll.find(p => p.id == penpalId);
+    let penpal = Contacts.find(p => p.id == penpalId);
     let onlyNewMessage = false;
     let reset = true;
     if (Penpal === penpal) {
@@ -80,7 +80,7 @@ function SelectPenpal(penpalIdTab) {
 
 function MakePenpalsList() {
     $('.selectPenpal').remove();
-    HumansAll.forEach(p => MakePenpalList(p));
+    Contacts.forEach(p => MakePenpalList(p));
     UpdateClickRun();
 }
 

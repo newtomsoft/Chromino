@@ -1,11 +1,11 @@
 ﻿function ReceivePlayersStatus(status, playersId) {
     Players.forEach(player => player[status] = false);
     playersId.forEach(id => Players[Players.findIndex(p => p.id == id)][status] = true);
-    HumansAll.forEach(h => h[status] = false);
+    Contacts.forEach(h => h[status] = false);
     for (const id of playersId) {
-        let index = HumansAll.findIndex(h => h.id == id);
+        let index = Contacts.findIndex(h => h.id == id);
         if (index != -1)
-            HumansAll[index][status] = true;
+            Contacts[index][status] = true;
     }
     RefreshColorsPlayers();
     RefreshPlayersStatusIndicator();
