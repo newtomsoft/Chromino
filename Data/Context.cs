@@ -23,6 +23,7 @@ namespace Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<PrivateMessage> PrivatesMessages { get; set; }
         public DbSet<PrivateMessageLatestRead> PrivatesMessagesLatestRead { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options)
         {
