@@ -25,6 +25,7 @@ namespace Controllers
         protected GamePlayerDal GamePlayerDal { get; }
         protected SquareDal SquareDal { get; }
         protected GoodPositionDal GoodPositionDal { get; }
+        protected ContactDal ContactDal { get; }
 
         protected int PlayerId { get => int.Parse(UserManager.GetUserId(User) ?? "0"); }
         protected string PlayerPseudo { get => UserManager.GetUserName(User) ?? ""; }
@@ -42,6 +43,7 @@ namespace Controllers
             GamePlayerDal = new GamePlayerDal(Ctx);
             SquareDal = new SquareDal(Ctx);
             GoodPositionDal = new GoodPositionDal(Ctx);
+            ContactDal = new ContactDal(Ctx);
         }
 
         /// <summary>
