@@ -59,7 +59,6 @@ $(document).ready(function () {
     if (GameId !== 0)
         RefreshDom();
     //SendersIdUnreadMessagesNumber();
-
 });
 
 function InitIndexDom() {
@@ -140,6 +139,7 @@ function InitGameDom() {
     $("#PrivateMessageAdd").click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
     $("[tip]:not([run])").click(function () { ShowTip(this.attributes['tip'].value); });
     $("#TipClose").click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
+    $("#GameArea").click(function () { ShowHistoryLatestMove(); });
     GetContactsIdNames().then(function () { MakePenpalsList() });
 }
 
