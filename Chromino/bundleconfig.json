@@ -12,6 +12,7 @@
   {
     "outputFileName": "wwwroot/js/game.min.js",
     "inputFiles": [
+      "wwwroot/js/globalVar.js",
       "wwwroot/js/game.js",
       "wwwroot/js/popup.js",
       "wwwroot/js/swipRefresh.js",
