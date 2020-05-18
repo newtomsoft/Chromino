@@ -17,11 +17,16 @@ namespace Data.DAL
 
         public GamePlayer Details(int gameId, int playerId)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
-                                     where gp.GameId == gameId && gp.PlayerId == playerId
-                                     select gp).FirstOrDefault();
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp).FirstOrDefault();
+        }
 
-            return gamePlayer;
+        public int Id(int gameId, int playerId)
+        {
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.Id).FirstOrDefault();
         }
 
         public bool IsPlayerIdIn(int gameId, int playerId)
@@ -31,59 +36,48 @@ namespace Data.DAL
 
         public List<GamePlayer> GamePlayers(int gameId)
         {
-            List<GamePlayer> gamesPlayer = (from gp in Ctx.GamesPlayers
-                                            where gp.GameId == gameId
-                                            select gp).ToList();
-
-            return gamesPlayer;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId
+                    select gp).ToList();
         }
 
         public List<int> PlayersId(int gameId)
         {
-            List<int> ids = (from gp in Ctx.GamesPlayers
-                             where gp.GameId == gameId
-                             select gp.PlayerId).ToList();
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId
+                    select gp.PlayerId).ToList();
 
-            return ids;
         }
 
         public Dictionary<int, string> PlayersIdName(int gameId)
         {
-            var result = (from gp in Ctx.GamesPlayers
-                          join p in Ctx.Players on gp.PlayerId equals p.Id
-                          where gp.GameId == gameId
-                          select new { id = p.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
-
-            return result;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    where gp.GameId == gameId
+                    select new { id = p.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
         }
 
         public Dictionary<int, string> GamePlayersIdPlayerName(int gameId)
         {
-            var result = (from gp in Ctx.GamesPlayers
-                          join p in Ctx.Players on gp.PlayerId equals p.Id
-                          where gp.GameId == gameId
-                          select new { id = gp.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
-
-            return result;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    where gp.GameId == gameId
+                    select new { id = gp.Id, name = p.UserName }).ToDictionary(x => x.id, x => x.name);
         }
 
         public List<int> WinnersId(int gameId)
         {
-            List<int> ids = (from gp in Ctx.GamesPlayers
-                             where gp.GameId == gameId && gp.Win == true
-                             select gp.PlayerId).ToList();
-
-            return ids;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.Win == true
+                    select gp.PlayerId).ToList();
         }
 
         public int PlayerId(int gameId, string playerPseudo)
         {
-            int playerId = (from gp in Ctx.GamesPlayers
-                            join p in Ctx.Players on gp.PlayerId equals p.Id
-                            where gp.GameId == gameId && p.UserName == playerPseudo
-                            select p.Id).FirstOrDefault();
-
-            return playerId;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    where gp.GameId == gameId && p.UserName == playerPseudo
+                    select p.Id).FirstOrDefault();
         }
 
         public void Add(int gameId, List<Player> players)
@@ -100,31 +94,25 @@ namespace Data.DAL
 
         public List<Player> Players(int gameId)
         {
-            List<Player> players = (from gp in Ctx.GamesPlayers
-                                    join p in Ctx.Players on gp.PlayerId equals p.Id
-                                    where gp.GameId == gameId
-                                    select p).ToList();
-
-            return players;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    where gp.GameId == gameId
+                    select p).ToList();
         }
 
         public int PlayersNumber(int gameId)
         {
-            int playersNumber = (from gp in Ctx.GamesPlayers
-                                 where gp.GameId == gameId
-                                 select gp.Id).Count();
-
-            return playersNumber;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId
+                    select gp.Id).Count();
         }
 
         public List<int> BotsId(int gameId)
         {
-            List<int> botsId = (from gp in Ctx.GamesPlayers
-                                join p in Ctx.Players on gp.PlayerId equals p.Id
-                                where gp.GameId == gameId && p.Bot
-                                select p.Id).ToList();
-
-            return botsId;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    where gp.GameId == gameId && p.Bot
+                    select p.Id).ToList();
         }
 
         public void AddPoints(int gameId, int playerId, int points)
@@ -139,35 +127,29 @@ namespace Data.DAL
 
         public List<Game> GamesWaitTurn(int playerId)
         {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && !gp.ViewFinished && !gp.Turn
-                                orderby g.PlayedDate descending
-                                select g).AsNoTracking().ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && !gp.ViewFinished && !gp.Turn
+                    orderby g.PlayedDate descending
+                    select g).AsNoTracking().ToList();
         }
 
         public List<Game> GamesWon(int playerId)
         {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == true
-                                orderby g.PlayedDate descending
-                                select g).AsNoTracking().ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == true
+                    orderby g.PlayedDate descending
+                    select g).AsNoTracking().ToList();
         }
 
         public List<Game> GamesLost(int playerId)
         {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == false
-                                orderby g.PlayedDate descending
-                                select g).AsNoTracking().ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && gp.ViewFinished && gp.Win == false
+                    orderby g.PlayedDate descending
+                    select g).AsNoTracking().ToList();
         }
 
         public List<Game> GamesAgainstBotsOnly(int playerId)
@@ -185,14 +167,12 @@ namespace Data.DAL
                                  where g.Humain == 0
                                  select g.Id;
 
-            var games = (from gp in Ctx.GamesPlayers
-                         join gnh in idGamesNoHuman on gp.GameId equals gnh
-                         join g in Ctx.Games on gp.GameId equals g.Id
-                         where gp.PlayerId == playerId && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
-                         orderby g.PlayedDate
-                         select g).ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join gnh in idGamesNoHuman on gp.GameId equals gnh
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && !gp.ViewFinished && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
+                    orderby g.PlayedDate
+                    select g).ToList();
         }
 
         public List<Game> MultiGamesAgainstAtLeast1HumanToPlay(int playerId)
@@ -203,26 +183,22 @@ namespace Data.DAL
                                where !p.Bot && p.Id != playerId
                                select g).Distinct().AsNoTracking();
 
-            var games = (from gp in Ctx.GamesPlayers
-                         join g in firstFilter on gp.GameId equals g.Id
-                         where gp.PlayerId == playerId && (gp.Turn || g.Status == GameStatus.Finished && !gp.ViewFinished) && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
-                         orderby g.PlayedDate
-                         select g).AsNoTracking().ToHashSet().ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join g in firstFilter on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && (gp.Turn || g.Status == GameStatus.Finished && !gp.ViewFinished) && g.Status != GameStatus.SingleFinished && g.Status != GameStatus.SingleInProgress
+                    orderby g.PlayedDate
+                    select g).AsNoTracking().ToHashSet().ToList();
         }
 
         public List<Game> GamesWithNotReadMessages(int playerId)
         {
-            var games = (from c in Ctx.Chats
-                         join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
-                         join game in Ctx.Games on gp.GameId equals game.Id
-                         join gp2 in Ctx.GamesPlayers on game.Id equals gp2.GameId
-                         join p in Ctx.Players on gp2.PlayerId equals p.Id
-                         where p.Id == playerId && c.Date > gp2.LatestReadMessage
-                         select game).Distinct().ToList();
-
-            return games;
+            return (from c in Ctx.Chats
+                    join gp in Ctx.GamesPlayers on c.GamePlayerId equals gp.Id
+                    join game in Ctx.Games on gp.GameId equals game.Id
+                    join gp2 in Ctx.GamesPlayers on game.Id equals gp2.GameId
+                    join p in Ctx.Players on gp2.PlayerId equals p.Id
+                    where p.Id == playerId && c.Date > gp2.LatestReadMessage
+                    select game).Distinct().ToList();
         }
 
         public int FirstIdMultiGameToPlay(int playerId)
@@ -233,13 +209,11 @@ namespace Data.DAL
 
         public List<Game> SingleGamesFinished(int playerId)
         {
-            List<Game> singleGames = (from gp in Ctx.GamesPlayers
-                                      join g in Ctx.Games on gp.GameId equals g.Id
-                                      where gp.PlayerId == playerId && g.Status == GameStatus.SingleFinished
-                                      orderby g.PlayedDate descending
-                                      select g).AsNoTracking().ToList();
-
-            return singleGames;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && g.Status == GameStatus.SingleFinished
+                    orderby g.PlayedDate descending
+                    select g).AsNoTracking().ToList();
         }
 
         public IQueryable<GamePlayer> List()
@@ -250,24 +224,20 @@ namespace Data.DAL
 
         public List<Game> SingleGamesInProgress(int playerId)
         {
-            List<Game> singleGames = (from gp in Ctx.GamesPlayers
-                                      join g in Ctx.Games on gp.GameId equals g.Id
-                                      where gp.PlayerId == playerId && g.Status == GameStatus.SingleInProgress
-                                      orderby g.PlayedDate
-                                      select g).AsNoTracking().ToList();
-
-            return singleGames;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId && g.Status == GameStatus.SingleInProgress
+                    orderby g.PlayedDate
+                    select g).AsNoTracking().ToList();
         }
 
         public List<Game> Games(int playerId)
         {
-            List<Game> games = (from gp in Ctx.GamesPlayers
-                                join g in Ctx.Games on gp.GameId equals g.Id
-                                where gp.PlayerId == playerId
-                                orderby g.CreateDate
-                                select g).AsNoTracking().ToList();
-
-            return games;
+            return (from gp in Ctx.GamesPlayers
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.PlayerId == playerId
+                    orderby g.CreateDate
+                    select g).AsNoTracking().ToList();
         }
 
         public Player PlayerTurn(int gameId)
@@ -298,11 +268,9 @@ namespace Data.DAL
 
         public bool IsPreviouslyDraw(int gameId, int playerId)
         {
-            bool previouslyDraw = (from gp in Ctx.GamesPlayers
-                                   where gp.GameId == gameId && gp.PlayerId == playerId
-                                   select gp.PreviouslyDraw).FirstOrDefault();
-
-            return previouslyDraw;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.PreviouslyDraw).FirstOrDefault();
         }
 
         public bool IsViewFinished(int gameId, int playerId)
@@ -365,20 +333,16 @@ namespace Data.DAL
 
         public bool IsSkip(int gameId, int playerId)
         {
-            bool skip = (from gp in Ctx.GamesPlayers
-                         where gp.GameId == gameId && gp.PlayerId == playerId
-                         select gp.PreviouslyPass).FirstOrDefault();
-
-            return skip;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.PreviouslyPass).FirstOrDefault();
         }
 
         public bool? GetWon(int gameId, int playerId)
         {
-            GamePlayer gamePlayer = (from gp in Ctx.GamesPlayers
-                                     where gp.GameId == gameId && gp.PlayerId == playerId
-                                     select gp).FirstOrDefault();
-
-            return gamePlayer.Win;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.Win).FirstOrDefault();
         }
 
         public void SetWon(int gameId, int playerId, bool won = true)
@@ -417,12 +381,10 @@ namespace Data.DAL
         /// <returns></returns>
         public int LastPlayerIdInRound(int gameId)
         {
-            int playerId = (from gp in Ctx.GamesPlayers
-                            where gp.GameId == gameId
-                            orderby gp.Id descending
-                            select gp.PlayerId).FirstOrDefault();
-
-            return playerId;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId
+                    orderby gp.Id descending
+                    select gp.PlayerId).FirstOrDefault();
         }
 
         /// <summary>
@@ -434,12 +396,9 @@ namespace Data.DAL
         public List<int> NextPlayersIdInTurn(int gameId, int playerId)
         {
             int gamePlayerId = Details(gameId, playerId).Id;
-
-            List<int> playersId = (from gp in Ctx.GamesPlayers
-                                   where gp.GameId == gameId && gp.Id > gamePlayerId
-                                   select gp.PlayerId).ToList();
-
-            return playersId;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.Id > gamePlayerId
+                    select gp.PlayerId).ToList();
         }
 
         /// <summary>
@@ -497,32 +456,25 @@ namespace Data.DAL
 
         public List<GamePlayer> ListBotsTurn()
         {
-            var gamePlayers = (from gp in Ctx.GamesPlayers
-                               join p in Ctx.Players on gp.PlayerId equals p.Id
-                               join g in Ctx.Games on gp.GameId equals g.Id
-                               where gp.Turn && p.Bot && g.Status != GameStatus.Finished
-                               select gp).AsNoTracking().ToList();
-
-            return gamePlayers;
+            return (from gp in Ctx.GamesPlayers
+                    join p in Ctx.Players on gp.PlayerId equals p.Id
+                    join g in Ctx.Games on gp.GameId equals g.Id
+                    where gp.Turn && p.Bot && g.Status != GameStatus.Finished
+                    select gp).AsNoTracking().ToList();
         }
 
         public IQueryable<int> GamesId(int playerId)
         {
-
-            var gamesId = from gp in Ctx.GamesPlayers
-                          where gp.PlayerId == playerId
-                          select gp.GameId;
-
-            return gamesId;
+            return from gp in Ctx.GamesPlayers
+                   where gp.PlayerId == playerId
+                   select gp.GameId;
         }
 
         public DateTime GetLatestReadMessage(int gameId, int playerId)
         {
-            var result = (from gp in Ctx.GamesPlayers
-                          where gp.GameId == gameId && gp.PlayerId == playerId
-                          select gp.LatestReadMessage).FirstOrDefault();
-
-            return result;
+            return (from gp in Ctx.GamesPlayers
+                    where gp.GameId == gameId && gp.PlayerId == playerId
+                    select gp.LatestReadMessage).FirstOrDefault();
         }
 
         public void SetDateLatestReadMessage(int playerId, int gameId, DateTime date)
