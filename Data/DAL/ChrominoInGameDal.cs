@@ -29,7 +29,7 @@ namespace Data.DAL
         public int Count(int gameId)
         {
             int nbChrominos = (from cg in Ctx.ChrominosInGame
-                               where cg.GameId == gameId
+                               where cg.GameId == gameId && cg.ChrominoId != null
                                select cg).Count();
 
             return nbChrominos;
@@ -49,8 +49,6 @@ namespace Data.DAL
 
             return nbChrominos - chrominoInHandDal.ChrominosNumber(gameId) - Count(gameId);
         }
-
-
 
         public ChrominoInGame FirstToGame(int gameId)
         {
@@ -99,8 +97,6 @@ namespace Data.DAL
 
             return chrominoInGame;
         }
-
-
 
         public void Add(ChrominoInGame chrominoInGame)
         {
