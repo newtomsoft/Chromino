@@ -71,9 +71,11 @@ namespace ChrominoApp.Controllers
             DateTime dateMin = onlyNewMessages ? dateLatestRead : DateTime.MinValue;
             DateTime dateMax = onlyNewMessages ? DateTime.MaxValue : dateLatestRead;
             List<Chat> chats = ChatDal.GetMessages(gameId, dateMin, dateMax);
-            int newMessagesNumber = onlyNewMessages ? chats.Count() : ChatDal.NewMessagesNumber(gameId, dateLatestRead);
+            int newMessagesNumber = onlyNewMessages ? chats.Count : ChatDal.NewMessagesNumber(gameId, dateLatestRead);
             Dictionary<int, string> gamePlayerId_PlayerName = GamePlayerDal.GamePlayersIdPlayerName(gameId);
-            gamePlayerId_PlayerName[GamePlayerDal.Details(gameId, PlayerId).Id] = "Vous";
+            int gamePlayerId = GamePlayerDal.Id(gameId, PlayerId);
+            if (gamePlayerId != 0)
+                gamePlayerId_PlayerName[gamePlayerId] = "Vous";
             var messages = (from c in chats
                             select new
                             {
