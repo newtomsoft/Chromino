@@ -24,7 +24,7 @@ namespace Controllers
         private SignInManager<Player> SignInManager { get; set; }
         private RoleManager<IdentityRole<int>> RoleManager { get; set; }
 
-        public PlayerController(Context context, UserManager<Player> userManager, SignInManager<Player> signInManager, RoleManager<IdentityRole<int>> roleManager ) : base(context, userManager, null)
+        public PlayerController(Context context, UserManager<Player> userManager, SignInManager<Player> signInManager, RoleManager<IdentityRole<int>> roleManager) : base(context, userManager, null)
         {
             SignInManager = signInManager;
             RoleManager = roleManager;
@@ -71,7 +71,7 @@ namespace Controllers
         [Authorize]
         public IActionResult ContactsIdsNames(List<int> ids)
         {
-            var players = ContactDal.ContactsId_Names(PlayerId);
+            object players = User.IsInRole("Admin") ? PlayerDal.HumansIdsNames(PlayerId) : ContactDal.ContactsId_Names(PlayerId);
             return new JsonResult(new { players });
         }
     }

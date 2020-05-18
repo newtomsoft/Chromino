@@ -36,13 +36,6 @@ namespace Data.DAL
             }
         }
 
-        public List<int> List(int playerId)
-        {
-            return (from c in Ctx.Contacts
-                    where c.PlayerId == playerId
-                    select c.ContactPlayerId).ToList();
-        }
-
         public object ContactsId_Names(int playerId)
         {
             return (from c in Ctx.Contacts
