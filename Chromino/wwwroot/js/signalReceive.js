@@ -13,7 +13,6 @@
     OrderPenpalList();
 }
 
-
 function ReceiveChatMessageSent(guid) {
     if (guid != Guid)
         return;
