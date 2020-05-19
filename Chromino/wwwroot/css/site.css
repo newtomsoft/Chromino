@@ -104,6 +104,8 @@ a {
             }
 
 #PenpalsList, #PrivateMessagePopupContent, #ChatPopupContent {
+    display: flex;
+    flex-direction: column;
     height: 254px;
     background-color: whitesmoke;
     font-size: smaller;
@@ -426,11 +428,12 @@ textarea {
 }
 
 .penpal-status {
-    position: absolute;
+    position: relative;
     width: 8px;
     height: 8px;
     border-radius: 8px;
-    line-height: 8px;
+    display: inline-block;
+    bottom: 8px;
 }
 
 #ErrorText1 {

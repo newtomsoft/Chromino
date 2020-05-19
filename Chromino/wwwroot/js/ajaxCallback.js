@@ -83,21 +83,25 @@ function CallbackGetPrivateMessageMessages(data, opponentId, show, reset) {
         ScrollPrivateMessage();
     }
     let index = UnreadPrivatesMessagesNumber.findIndex(x => x.senderId == opponentId);
+    let newMessagesNumber = data.newMessagesNumber;
     UnreadPrivatesMessagesNumber[index].number = data.newMessagesNumber;
     let unreadPrivateMessagesNumber = 0;
     for (const e of UnreadPrivatesMessagesNumber) {
         unreadPrivateMessagesNumber += e.number;
     }
-    if (show || data.newMessagesNumber == 0) {
+    if (show || newMessagesNumber == 0) {
         UnreadPrivatesMessagesNumber[index].number = 0;
-        unreadPrivateMessagesNumber -= data.newMessagesNumber;
+        unreadPrivateMessagesNumber -= newMessagesNumber;
         $(`#Penpal_${opponentId}`).children('.unread-messages').html("");
+        OrderPenpalList(opponentId, 0);
     }
-    else if (data.newMessagesNumber == 1) {
-        $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (1 message non lus)`);
+    else if (newMessagesNumber == 1) {
+        $(`#Penpal_${opponentId}`).children('.unread-messages').html(` (1 message non lus)`);
+        OrderPenpalList(opponentId, -1);
     }
     else {
-        $(`#Penpal_${opponentId}`).children('.unread-messages').html(`  (${data.newMessagesNumber} message non lus)`);
+        $(`#Penpal_${opponentId}`).children('.unread-messages').html(` (${newMessagesNumber} message non lus)`);
+        OrderPenpalList(opponentId, -newMessagesNumber);
     }
     if (unreadPrivateMessagesNumber == 0) {
         $("#NotifPrivateMessage").text("0");
@@ -305,7 +309,7 @@ function RefreshVar(data) {
         const purpleWait = '#380B49';
         const redWait = '#A7000B';
         const yellowWait = '#F4E136';
-        const freeWait = '#E0E1E2';  
+        const freeWait = '#E0E1E2';
         document.documentElement.style.setProperty('--blue', blueWait);
         document.documentElement.style.setProperty('--green', greenWait);
         document.documentElement.style.setProperty('--purple', purpleWait);
@@ -319,7 +323,7 @@ function RefreshVar(data) {
         const purple = '#571B6D';
         const red = '#FA2C2E';
         const yellow = '#FFEB47';
-        const free = '#FFFFFF';  
+        const free = '#FFFFFF';
         document.documentElement.style.setProperty('--blue', blue);
         document.documentElement.style.setProperty('--green', green);
         document.documentElement.style.setProperty('--purple', purple);
