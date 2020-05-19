@@ -4,6 +4,8 @@ Official real game by Asmodee is here :  https://fr.asmodee.com/fr/games/chromin
 But no inline game so this is one :)
 
 How To :
-- clone projet,
-- in Data directory lunch command "dotnet ef database update"
-- build, lunch, enjoy ;-)
+- Clone projet,
+- In Data directory execute command "dotnet ef database update"
+- Build and run Batch Project (to make chrominos and bots)
+- Build and run ChrominoWeb project
+- Enjoy !
