@@ -19,7 +19,7 @@ function ClosePopup(popup) {
 }
 
 function RefreshPenpalTitleInPopupPrivateMessage(reset) {
-    if (reset === true)
+    if (reset === true || Penpal === undefined)
         $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status");
     else if (Penpal.ongame)
         $('#PrivateMessagePenpalStatus').removeClass().addClass("penpal-status penpal-status-ongame");
@@ -85,9 +85,9 @@ function MakePenpalsList() {
 }
 
 function MakePenpalList(player) {
-    let spanPlayerId = `<span player-id='${player.id}' class='penpal-status'></span>`;
+    let spanStatus = `<span player-id='${player.id}' class='penpal-status'></span>`;
     let spanUnreadMessages = `<span class='unread-messages'></span>`;
-    let toAdd = `<div id='Penpal_${player.id}' class="selectPenpal"><span run='Chat ${player.id}'> ${player.name}${spanPlayerId}</span>${spanUnreadMessages}</div>`;
+    let toAdd = `<div id='Penpal_${player.id}' class="selectPenpal"><span run='Chat ${player.id}'> ${player.name}${spanStatus}</span>${spanUnreadMessages}</div>`;
     $(toAdd).appendTo('#PenpalsList');
     RefreshColorPlayer(player);
 }
@@ -100,4 +100,17 @@ function ScrollChat() {
 function ScrollPrivateMessage() {
     if ($('#PrivateMessagePopupContent').is(':visible'))
         $('#PrivateMessagePopupContent').scrollTop($('#PrivateMessagePopupContent')[0].scrollHeight);
+}
+
+function OrderPenpalList(penpalId, orderNumber) {
+    if (penpalId !== undefined && orderNumber !== undefined)
+        $(`#Penpal_${penpalId}`).css("order", `${orderNumber}`);
+    else
+        for (const contact of Contacts) {
+            let index = UnreadPrivatesMessagesNumber.findIndex(x => x.senderId == contact.id);
+            if (UnreadPrivatesMessagesNumber[index].number == 0 && !contact.online && !contact.ongame)
+                $(`#Penpal_${contact.id}`).css("order", '1');
+            else if (UnreadPrivatesMessagesNumber[index].number == 0)
+                $(`#Penpal_${contact.id}`).css("order", '0');
+        }
 }
