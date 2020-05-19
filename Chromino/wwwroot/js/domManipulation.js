@@ -297,12 +297,12 @@ function ShowHistoryLatestMove() {
 }
 
 function ShowWorkInProgress() {
-    $('*').css('cursor', 'wait');
+    $(':root').css('cursor', 'wait');
     $('#Waiting').show();
 }
 
 function ShowWorkIsFinish() {
-    $('*').css('cursor', '');
+    $(':root').css('cursor', '');
     $('#Waiting').hide();
 }
 
