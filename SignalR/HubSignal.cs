@@ -48,13 +48,6 @@ namespace SignalR.Hubs
             await Clients.Group(guid).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid].ToHashSet().ToList());
         }
 
-        public async Task SendRemoveFromGame(string guid)
-        {
-            GameGuid_PlayersId[guid].Remove(int.Parse(Context.UserIdentifier));
-            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid].ToHashSet().ToList());
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, guid);
-        }
-
         public async Task SendPrivateMessageSent(string playerId) => await Clients.Users(playerId).SendAsync("ReceivePrivateMessageMessageSent", int.Parse(Context.UserIdentifier));
 
         public async Task SendChatMessageSent(string guid, List<string> playersId) => await Clients.Users(playersId).SendAsync("ReceiveChatMessageSent", guid);

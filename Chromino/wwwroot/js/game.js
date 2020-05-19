@@ -62,7 +62,7 @@ function InitGameDom() {
         $('#PrivateMessageInput').focus();
     });
     MakePlayersStatusIndicators();
-    $(window).on("unload", function () { SendRemoveFromGame(); });
+    //$(window).on("unload", function () { SendRemoveFromGame(); });
     $("#ButtonPreviousChromino").click(function () {
         if (Tips.find(x => x.name == "HistoryChrominos") == undefined) {
             if (IndexMove < HistoryChrominos.length - 1) {

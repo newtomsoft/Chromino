@@ -2,10 +2,6 @@
     ConnectionHubGame.invoke("SendAddToGame", Guid).catch(function (err) { return console.error(err.toString()); });
 };
 
-function SendRemoveFromGame() {
-    ConnectionHubGame.invoke("SendRemoveFromGame", Guid).catch(function (err) { return console.error(err.toString()); });
-};
-
 function SendChatMessageSent() {
     ConnectionHubGame.invoke("SendChatMessageSent", Guid, HumansId).catch(function (err) { return console.error(err.toString()); });
 };
