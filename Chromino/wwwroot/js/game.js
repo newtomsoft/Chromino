@@ -5,7 +5,7 @@
     }
     else
         InitIndexDom();
-    CallSignalR(Guid);
+    CallSignalR();
     if (GameId !== 0)
         RefreshDom();
     //SendersIdUnreadMessagesNumber();

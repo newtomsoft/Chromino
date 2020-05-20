@@ -1,5 +1,6 @@
 ﻿function SendAddToGame() {
-    ConnectionHubGame.invoke("SendAddToGame", Guid).catch(function (err) { return console.error(err.toString()); });
+    let guid = Guid !== undefined ? Guid : "NoGame";  
+    ConnectionHubGame.invoke("SendAddToGame", guid).catch(function (err) { return console.error(err.toString()); });
 };
 
 function SendChatMessageSent() {

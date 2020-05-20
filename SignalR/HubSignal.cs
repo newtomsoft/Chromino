@@ -11,25 +11,32 @@ namespace SignalR.Hubs
     public class HubSignal : Hub
     {
         static public List<int> LoggedPlayersId { get; set; }
-        static public Dictionary<string, List<int>> GameGuid_PlayersId { get; set; }
+        static private Dictionary<string, List<int>> GameGuid_PlayersId { get; set; }
+        static private Dictionary<string, string> ContextId_GameGuid { get; set; }
 
         public override Task OnConnectedAsync()
         {
             (LoggedPlayersId ??= new List<int>()).Add(int.Parse(Context.UserIdentifier));
-            Clients.All.SendAsync("ReceivePlayersLogged", LoggedPlayersId.ToHashSet().ToList());
+            Clients.All.SendAsync("ReceivePlayersLogged", LoggedPlayersId.ToHashSet());
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            int id = int.Parse(Context.UserIdentifier);
-            while (LoggedPlayersId.Remove(id)) ;
-            Clients.All.SendAsync("ReceivePlayersLogged", LoggedPlayersId.ToHashSet().ToList());
+            int playerId = int.Parse(Context.UserIdentifier);
+            LoggedPlayersId.Remove(playerId);
+            Clients.All.SendAsync("ReceivePlayersLogged", LoggedPlayersId.ToHashSet());
+
             if (GameGuid_PlayersId != null)
-                foreach (var guid_ids in GameGuid_PlayersId)
-                    while (guid_ids.Value.Remove(id))
-                        Clients.Group(guid_ids.Key).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid_ids.Key].ToHashSet().ToList());
-          
+            {
+                string guid = ContextId_GameGuid[Context.ConnectionId];
+                GameGuid_PlayersId[guid].Remove(playerId);
+                Clients.Group(guid).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid].ToHashSet());
+
+            }
+            if (ContextId_GameGuid != null)
+                ContextId_GameGuid.Remove(Context.ConnectionId);
+
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -41,11 +48,14 @@ namespace SignalR.Hubs
         public async Task SendAddToGame(string guid)
         {
             GameGuid_PlayersId ??= new Dictionary<string, List<int>>();
-            if (!GameGuid_PlayersId.ContainsKey(guid))
-                GameGuid_PlayersId.Add(guid, new List<int>());
+            GameGuid_PlayersId.TryAdd(guid, new List<int>());
             GameGuid_PlayersId[guid].Add(int.Parse(Context.UserIdentifier));
+
+            ContextId_GameGuid ??= new Dictionary<string, string>();
+            ContextId_GameGuid[Context.ConnectionId] = guid;
+
             await Groups.AddToGroupAsync(Context.ConnectionId, guid);
-            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid].ToHashSet().ToList());
+            await Clients.Group(guid).SendAsync("ReceivePlayersInGame", GameGuid_PlayersId[guid].ToHashSet());
         }
 
         public async Task SendPrivateMessageSent(string playerId) => await Clients.Users(playerId).SendAsync("ReceivePrivateMessageMessageSent", int.Parse(Context.UserIdentifier));
