@@ -413,5 +413,8 @@ function RefreshGameColors() {
 }
 
 function WaikUpPlayer() {
-    // todo
+    if (PlayerTurn.id == PlayerId) {
+        $('#WaikUpPlayer')[0].play();
+        window.navigator.vibrate(200);
+    }
 }
