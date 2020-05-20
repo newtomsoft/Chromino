@@ -21,7 +21,7 @@
     InStack = data.gameVM.chrominosInStack;
     HelpNumber = data.gameVM.player.help;
     IsGameFinish = data.gameVM.isGameFinish;
-    HaveDrawn = data.gameVM.haveDrew;
+    HaveDrew = data.gameVM.haveDrew;
     MemosNumber = data.gameVM.memosNumber;
     data.gameVM.playErrors.forEach(pe => PlayErrors.push({ name: pe.name, description: pe.description, illustrationPictureClass: pe.illustrationPictureClass, illustrationPictureCaption: pe.illustrationPictureCaption }));
     data.gameVM.tips.forEach(tip => Tips.push({ id: tip.id, name: tip.name, headPictureClass: tip.headPictureClass, description: tip.description, illustrationPictureClass: tip.illustrationPictureClass }));
@@ -195,7 +195,7 @@ function CallbackDrawChromino(data) {
         ErrorReturn(data.errorReturn);
     }
     else {
-        HaveDrawn = true;
+        HaveDrew = true;
         ShowInfoPopup = false;
         AddChrominoInHand(data);
         DecreaseInStack();
@@ -297,39 +297,15 @@ function UpdateInHandNumber(playerId, value, lastChrominoColors = undefined) {
 }
 
 function RefreshVar(data) {
-    if (data !== undefined) {
+    if (data !== "initGame") {
         if (data.finish !== undefined)
             IsGameFinish = data.finish;
         ChangePlayerTurn();
+        WaikUpPlayer();
     }
+    RefreshGameColors();
     if (PlayerTurn.id != PlayerId) {
-        HaveDrawn = false;
-        const blueWait = '#07A7D0';
-        const greenWait = '#298626';
-        const purpleWait = '#380B49';
-        const redWait = '#A7000B';
-        const yellowWait = '#F4E136';
-        const freeWait = '#E0E1E2';
-        document.documentElement.style.setProperty('--blue', blueWait);
-        document.documentElement.style.setProperty('--green', greenWait);
-        document.documentElement.style.setProperty('--purple', purpleWait);
-        document.documentElement.style.setProperty('--red', redWait);
-        document.documentElement.style.setProperty('--yellow', yellowWait);
-        document.documentElement.style.setProperty('--free', freeWait);
-    }
-    else {
-        const blue = '#3AC2EE';
-        const green = '#4CAE44';
-        const purple = '#571B6D';
-        const red = '#FA2C2E';
-        const yellow = '#FFEB47';
-        const free = '#FFFFFF';
-        document.documentElement.style.setProperty('--blue', blue);
-        document.documentElement.style.setProperty('--green', green);
-        document.documentElement.style.setProperty('--purple', purple);
-        document.documentElement.style.setProperty('--red', red);
-        document.documentElement.style.setProperty('--yellow', yellow);
-        document.documentElement.style.setProperty('--free', free);
+        HaveDrew = false;
     }
     if (IsGameFinish) {
         ShowInfoPopup = true;

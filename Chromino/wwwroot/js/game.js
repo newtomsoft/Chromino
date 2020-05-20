@@ -21,7 +21,7 @@ function InitGameDom() {
     ShowButtonChat();
     RefreshButtonNextGame();
     DoAction("Welcome");
-    RefreshVar();
+    RefreshVar("initGame");
     Players.forEach(function (player) { UpdateInHandNumberDom(player); });
     RefreshInfoPopup();
     $(document).click(function () {

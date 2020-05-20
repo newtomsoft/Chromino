@@ -242,7 +242,7 @@ function RefreshButtonsDrawSkip() {
         $('#ButtonDrawChromino').hide();
         $('#ButtonSkipTurn').hide();
     }
-    else if (InStack > 0 && (!HaveDrawn || PlayersNumber == 1)) {
+    else if (InStack > 0 && (!HaveDrew || PlayersNumber == 1)) {
         $('#ButtonDrawChromino').show();
         $('#ButtonSkipTurn').hide();
     }
@@ -379,4 +379,39 @@ function MakePlayersStatusIndicators() {
 function MakePlayerStatusIndicator(player, index) {
     let toAdd = `<span id="PlayerStatus_${player.id}" tip="PrivateMessage" class="player-status player-status-${index}"><span id="InfoPlayerStatus_${player.id}" class="info-player-status"></span></span>`;
     $(toAdd).appendTo('#ButtonInfo');
+}
+
+function RefreshGameColors() {
+    if (PlayerTurn.id != PlayerId) {
+        const blueWait = '#07A7D0';
+        const greenWait = '#298626';
+        const purpleWait = '#380B49';
+        const redWait = '#A7000B';
+        const yellowWait = '#F4E136';
+        const freeWait = '#E0E1E2';
+        document.documentElement.style.setProperty('--blue', blueWait);
+        document.documentElement.style.setProperty('--green', greenWait);
+        document.documentElement.style.setProperty('--purple', purpleWait);
+        document.documentElement.style.setProperty('--red', redWait);
+        document.documentElement.style.setProperty('--yellow', yellowWait);
+        document.documentElement.style.setProperty('--free', freeWait);
+    }
+    else {
+        const blue = '#3AC2EE';
+        const green = '#4CAE44';
+        const purple = '#571B6D';
+        const red = '#FA2C2E';
+        const yellow = '#FFEB47';
+        const free = '#FFFFFF';
+        document.documentElement.style.setProperty('--blue', blue);
+        document.documentElement.style.setProperty('--green', green);
+        document.documentElement.style.setProperty('--purple', purple);
+        document.documentElement.style.setProperty('--red', red);
+        document.documentElement.style.setProperty('--yellow', yellow);
+        document.documentElement.style.setProperty('--free', free);
+    }
+}
+
+function WaikUpPlayer() {
+    // todo
 }

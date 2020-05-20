@@ -6,7 +6,7 @@ var GameAreaColumnsNumber;
 var InStack;
 var HelpNumber;
 var IsGameFinish;
-var HaveDrawn;
+var HaveDrew;
 var Memo;
 var MemosNumber;
 var UnreadPrivatesMessagesNumber = new Array;
