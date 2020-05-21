@@ -43,8 +43,8 @@
         if (move == 0)
             break;
     }
-    MakeGameArea(data.gameVM.squares, data.colors);
-    MakeHand(data.gameVM.playerChrominosVM, data.colors);
+    InitGameArea(data.gameVM.squares, data.colors);
+    InitHand(data.gameVM.playerChrominosVM, data.colors);
 }
 
 function CallbackGetChatMessages(data, onlyNewMessages, show) {
