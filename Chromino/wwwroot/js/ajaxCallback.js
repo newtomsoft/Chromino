@@ -43,8 +43,10 @@
         if (move == 0)
             break;
     }
+    GameId = data.gameVM.game.id;
     InitGameArea(data.gameVM.squares, data.colors);
     InitHand(data.gameVM.playerChrominosVM, data.colors);
+    InitPlayersInPopupInfo(data.gameVM.pseudosIds);
 }
 
 function CallbackGetChatMessages(data, onlyNewMessages, show) {

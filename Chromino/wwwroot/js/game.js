@@ -1,5 +1,6 @@
 ﻿$(document).ready(async function () {
-    if (GameId !== 0) {
+    let pathname = window.location.pathname;
+    if (pathname.startsWith(GamePath) && (GameId = parseInt(pathname.slice(GamePath.length))) !== NaN) {
         await GetGameInfos();
         InitGameDom();
     }

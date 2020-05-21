@@ -1,3 +1,4 @@
+var GamePath = "/Game/Show/";
 var GameId = 0;
 var Guid;
 var Orientation;

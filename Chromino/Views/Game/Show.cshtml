@@ -11,7 +11,6 @@
 @section ScriptJs
 {
     <script>
-    GameId = @Model.Game.Id;
     var ShowInfoPopup = @showInfoPopup.ToJs();
     </script>
 }
@@ -53,10 +52,7 @@
         <div id="Askrematch-text" class="askrematch"></div>
         <button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch askrematch"></button>
     </div>
-    @foreach (var pseudoId in Model.PseudosIds)
-    {
-        <div id="Player_@pseudoId.Value"></div>
-    }
+    <div id="PopupInfoPseudos"></div>
     <br />
     <p id="InStack" class="minorInfo"></p>
 </div>

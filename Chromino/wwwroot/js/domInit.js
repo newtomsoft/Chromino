@@ -49,3 +49,10 @@ function InitHand(playerChrominosVM, colors) {
     if (handDiv != "")
         $(handDiv).appendTo('#Hand');
 }
+
+function InitPlayersInPopupInfo(pseudosIds) {
+    let handDiv = "";
+    for (const pseudo in pseudosIds)
+        handDiv += `<div id="Player_${pseudosIds[pseudo]}"></div>`;
+    $(handDiv).appendTo('#PopupInfoPseudos');
+}
