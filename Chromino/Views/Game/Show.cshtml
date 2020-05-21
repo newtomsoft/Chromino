@@ -4,7 +4,6 @@
 @using Tool
 @model GameVM
 @{
-    const string classFree = "Free";
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
     bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
@@ -43,39 +42,7 @@
 </div>
 <div id="PlayerHistoryPseudo"></div>
 <div id="InfoGame"></div>
-<div id="GameArea">
-    @for (int j = 0; j < Model.LinesNumber; j++)
-    {
-        <div id="Line_@j" class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
-            {
-                int index = i + j * Model.ColumnsNumber;
-                ColorCh color = Model.Squares[index].Color;
-                if (color != ColorCh.None)
-                {
-                    string classOpenSides = "Square Open";
-                    if (Model.Squares[index].OpenRight) classOpenSides += "Right";
-                    if (Model.Squares[index].OpenBottom) classOpenSides += "Bottom";
-                    if (Model.Squares[index].OpenLeft) classOpenSides += "Left";
-                    if (Model.Squares[index].OpenTop) classOpenSides += "Top";
-                    string classColor = color.ToString();
-                    string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
-                    <div id="Square_@index" @tip class="@classOpenSides @classColor"></div>
-                }
-                else
-                {
-                    string classColor = classFree;
-                    string classCloseEdge = "Square";
-                    if (i < Model.ColumnsNumber - 1 && Model.Squares[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseRight";
-                    if (j < Model.LinesNumber - 1 && Model.Squares[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
-                    if (i > 0 && Model.Squares[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
-                    if (j > 0 && Model.Squares[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
-                    <div id="Square_@index" class="@classCloseEdge @classColor"></div>
-                }
-            }
-        </div>
-    }
-</div>
+<div id="GameArea"></div>
 <div id="Hand" tip="Hand">
     @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
     {

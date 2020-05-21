@@ -323,8 +323,15 @@ namespace Controllers
                 }
                 playersInfos.Add(new { id, isBot, name, chrominosNumber, lastChrominoColors });
             }
+            List<object> colors = new List<object>();
+            foreach (ColorCh color in (ColorCh[])Enum.GetValues(typeof(ColorCh)))
+            {
+                int id = (int)color;
+                string name = color.ToString();
+                colors.Add(new {id, name } );
+            }
             GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
-            return new JsonResult(new { gameVM, opponentsAllBots, playersInfos, horizontal, vertical });
+            return new JsonResult(new { gameVM, opponentsAllBots, playersInfos, horizontal, vertical, colors });
         }
 
         /// <summary>
