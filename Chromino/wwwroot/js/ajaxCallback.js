@@ -44,6 +44,7 @@
             break;
     }
     MakeGameArea(data.gameVM.squares, data.colors);
+    MakeHand(data.gameVM.playerChrominosVM, data.colors);
 }
 
 function CallbackGetChatMessages(data, onlyNewMessages, show) {

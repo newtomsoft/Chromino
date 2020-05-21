@@ -450,3 +450,20 @@ function MakeGameArea(squares, colors) {
     }
     $(gameAreaDiv).appendTo('#GameArea');
 }
+
+function MakeHand(playerChrominosVM, colors) {
+    let cameleonColor = colors.find(x => x.name == "Cameleon");
+    let handDiv = "";
+    for (const chrominoVM of playerChrominosVM) {
+        handDiv += `<div id="${chrominoVM.chrominoId}" class="handPlayerChromino">`;
+        for (let i = 0; i < 3; i++) {
+            let colorId = chrominoVM.squares[i].color;
+            let tip = colorId == cameleonColor.id ? "tip=Camelon" : "";
+            let classColor = colors.find(x => x.id == colorId).name;
+            handDiv += `<div ${tip} class="Square ${classColor}"></div>`;
+        }
+        handDiv += '</div>';
+    }
+    if (handDiv != "")
+        $(handDiv).appendTo('#Hand');
+}

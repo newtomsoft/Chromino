@@ -43,20 +43,7 @@
 <div id="PlayerHistoryPseudo"></div>
 <div id="InfoGame"></div>
 <div id="GameArea"></div>
-<div id="Hand" tip="Hand">
-    @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
-    {
-        <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
-            @for (int i = 0; i < 3; i++)
-            {
-                ColorCh color = chrominoVM.Squares[i].Color;
-                string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
-                string classColor = color.ToString();
-                <div @tip class="Square @classColor"></div>
-            }
-        </div>
-    }
-</div>
+<div id="Hand" tip="Hand"></div>
 <div id="PopupInfo" class="popup" style="display:none">
     <div class="div-head img-infogame" title="information"></div>
     <div id="PopupInfoHead"></div>
