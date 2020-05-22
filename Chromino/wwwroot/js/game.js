@@ -21,7 +21,7 @@ function InitIndexDom() {
 function InitGameDom() {
     ShowButtonChat();
     RefreshButtonNextGame();
-    DoAction("Welcome");
+    Run("Welcome");
     RefreshVar("initGame");
     Players.forEach(function (player) { UpdateInHandNumberDom(player); });
     RefreshInfoPopup();
@@ -96,9 +96,9 @@ function InitGameDom() {
 function UpdateClickRun() {
     $('[run]').css('cursor', 'pointer');
     $('[run]:not([tip])').off("click");
-    $('[run]:not([tip])').click(function () { DoAction(this.attributes['run'].value); });
+    $('[run]:not([tip])').click(function () { Run(this.attributes['run'].value); });
     $('[run][tip]').off("click");
-    $('[run][tip]').click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
+    $('[run][tip]').click(function () { if (!ShowTip(this.attributes['tip'].value)) Run(this.attributes['run'].value); });
 }
 
 function GetGames() {
@@ -460,7 +460,7 @@ function IsChrominoInGameArea(chromino) {
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
-        DoAction("ValidateChromino");
+        Run("ValidateChromino");
     }, 4000);
 
 }
@@ -492,7 +492,7 @@ function ShowTipFeature(isCheck, hasCloseButton) {
     ShowPopup('#TipPopup', hasCloseButton);
 }
 
-function DoAction(actionWithArgs) {
+function Run(actionWithArgs) {
     let actionWithArgsTab = actionWithArgs.split(" ");
     let functionName = actionWithArgsTab[0];
     actionWithArgsTab.shift();
