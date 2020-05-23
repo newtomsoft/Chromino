@@ -16,7 +16,7 @@
 function ReceiveChatMessageSent(guid) {
     if (guid != Guid)
         return;
-    if ($('#ChatPopupContent').is(":visible"))
+    if ($('#GameMessagePopupContent').is(":visible"))
         GetChatMessages(true, true);
     else
         GetChatMessages(true);

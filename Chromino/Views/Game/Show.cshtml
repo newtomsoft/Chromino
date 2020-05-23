@@ -1,20 +1,6 @@
-﻿@using Data.Models
-@using Data.ViewModel
-@using Data.Enumeration
-@using Tool
-@model GameVM
-@{
-    const string classFree = "Free";
+﻿@{
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
-    bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
-}
-@section ScriptJs
-{
-    <script>
-    GameId = @Model.Game.Id;
-    var ShowInfoPopup = @showInfoPopup.ToJs();
-    </script>
 }
 <audio id="WaikUpPlayer" src="~/audio/YourTurn.mpeg" preload="auto"></audio>
 <div id="toolbar">
@@ -44,69 +30,8 @@
 </div>
 <div id="PlayerHistoryPseudo"></div>
 <div id="InfoGame"></div>
-<div id="GameArea">
-    @for (int j = 0; j < Model.LinesNumber; j++)
-    {
-        <div id="Line_@j" class="gameLineArea">
-            @for (int i = 0; i < Model.ColumnsNumber; i++)
-            {
-                int index = i + j * Model.ColumnsNumber;
-                ColorCh color = Model.Squares[index].Color;
-                if (color != ColorCh.None)
-                {
-                    string classOpenSides = "Square Open";
-                    if (Model.Squares[index].OpenRight) classOpenSides += "Right";
-                    if (Model.Squares[index].OpenBottom) classOpenSides += "Bottom";
-                    if (Model.Squares[index].OpenLeft) classOpenSides += "Left";
-                    if (Model.Squares[index].OpenTop) classOpenSides += "Top";
-                    string classColor = color.ToString();
-                    string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
-                    <div id="Square_@index" @tip class="@classOpenSides @classColor"></div>
-                }
-                else
-                {
-                    string classColor = classFree;
-                    string classCloseEdge = "Square";
-                    if (i < Model.ColumnsNumber - 1 && Model.Squares[i + 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseRight";
-                    if (j < Model.LinesNumber - 1 && Model.Squares[i + (j + 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseBottom";
-                    if (i > 0 && Model.Squares[i - 1 + j * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseLeft";
-                    if (j > 0 && Model.Squares[i + (j - 1) * Model.ColumnsNumber].Color != ColorCh.None) classCloseEdge += " CloseTop";
-                    <div id="Square_@index" class="@classCloseEdge @classColor"></div>
-                }
-            }
-        </div>
-    }
-</div>
-<div id="Hand" tip="Hand">
-    @foreach (ChrominoVM chrominoVM in Model.PlayerChrominosVM)
-    {
-        <div id="@chrominoVM.ChrominoId" class="handPlayerChromino">
-            @for (int i = 0; i < 3; i++)
-            {
-                ColorCh color = chrominoVM.Squares[i].Color;
-                string tip = color == ColorCh.Cameleon ? "tip=Camelon" : "";
-                string classColor = color.ToString();
-                <div @tip class="Square @classColor"></div>
-            }
-        </div>
-    }
-</div>
-<div id="PopupInfo" class="popup" style="display:none">
-    <div class="div-head img-infogame" title="information"></div>
-    <div id="PopupInfoHead"></div>
-    <form id="FormRematch" asp-action="Rematch" hidden>
-    </form>
-    <div id="Askrematch" style="display:none">
-        <div id="Askrematch-text" class="askrematch"></div>
-        <button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch askrematch"></button>
-    </div>
-    @foreach (var pseudoId in Model.PseudosIds)
-    {
-        <div id="Player_@pseudoId.Value"></div>
-    }
-    <br />
-    <p id="InStack" class="minorInfo"></p>
-</div>
+<div id="GameArea"></div>
+<div id="Hand" tip="Hand"></div>
 <div id="Waiting" class="cssload-container-general" style="display:none">
     <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_1"> </div></div>
     <div class="cssload-internal"><div class="cssload-ballcolor cssload-ball_2"> </div></div>

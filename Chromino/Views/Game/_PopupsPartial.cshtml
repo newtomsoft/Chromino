@@ -1,4 +1,17 @@
-﻿<div id="PopupError" class="popup" style="display:none">
+﻿<div id="PopupInfo" class="popup" style="display:none">
+    <div class="div-head img-infogame" title="information"></div>
+    <div id="PopupInfoHead"></div>
+    <form id="FormRematch" asp-action="Rematch" hidden>
+    </form>
+    <div id="Askrematch" style="display:none">
+        <div id="Askrematch-text" class="askrematch"></div>
+        <button type="submit" form="FormRematch" class="btn btn-toolbar img-rematch askrematch"></button>
+    </div>
+    <div id="PopupInfoPseudos"></div>
+    <br />
+    <p id="InStack" class="minorInfo"></p>
+</div>
+<div id="PopupError" class="popup" style="display:none">
     <div class="div-head div-error" title="erreur"></div>
     <p id="ErrorText"></p>
     <div class="illustrations">
@@ -18,19 +31,19 @@
         <li><a id="ChatTab" run="SwitchToChat" class="selected" href="#">Partie</a></li>
         <li><a id="PrivateMessageTab" run="SwitchToPrivateMessage" href="#">Contacts</a></li>
     </ul>
-    <div id="ChatDiv">
+    <div id="GameMessageDiv">
         <div class="div-head img-chat" title="chat"></div>
         <div>
-            <div id="ChatPopupContent"></div>
+            <div id="GameMessagePopupContent"></div>
             <div class="form-group">
-                <input id="ChatInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
+                <input id="GameMessageInput" name="chat" class="form-control" placeholder="Ajouter un message (pour tous)" required />
                 <div class="emojis">
                     <span class="emoji emoji-chat">🖐️</span><span class="emoji emoji-chat">👍</span><span class="emoji emoji-chat">👎</span><span class="emoji emoji-chat">😀</span><span class="emoji emoji-chat">😇</span><span class="emoji emoji-chat">😎</span><span class="emoji emoji-chat">😁</span><span class="emoji emoji-chat">😜</span><span class="emoji emoji-chat">😂</span>
                 </div>
                 <div class="emojis">
                     <span class="emoji emoji-chat">😉</span><span class="emoji emoji-chat">😘</span><span class="emoji emoji-chat">😍</span><span class="emoji emoji-chat">😕</span><span class="emoji emoji-chat">😡</span><span class="emoji emoji-chat">😱</span><span class="emoji emoji-chat">😤</span><span class="emoji emoji-chat">😢</span><span class="emoji emoji-chat">😭</span>
                 </div>
-                <button id="ChatAdd" class="btn btn-primary">Envoyer</button>
+                <button id="GameMessageAdd" class="btn btn-primary">Envoyer</button>
             </div>
         </div>
     </div>

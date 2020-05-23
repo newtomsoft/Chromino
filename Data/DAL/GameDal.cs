@@ -141,5 +141,10 @@ namespace Data.DAL
             Ctx.Games.RemoveRange(result);
             return Ctx.SaveChanges();
         }
+
+        public bool IsExist(int gameId)
+        {
+            return Details(gameId) != null ? true : false;
+        }
     }
 }

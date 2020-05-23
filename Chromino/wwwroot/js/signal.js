@@ -1,8 +1,8 @@
 ﻿var ConnectionHubGame;
-function CallSignalR(guid) {
+function CallSignalR() {
     ConnectionHubGame = new signalR.HubConnectionBuilder().withUrl("/hubGame").withAutomaticReconnect().build();
     ConnectionHubGame.start()
-        .then(function () { if (guid !== undefined) SendAddToGame(); })
+        .then(function () { SendAddToGame(); })
         .catch(function (err) {
             return console.error(err.toString());
         });

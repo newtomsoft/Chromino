@@ -38,7 +38,7 @@ function ChatAddMessage(recipientId) {
     if (recipientId === undefined) {
         type = 'chatGame';
         id = GameId;
-        message = $('#ChatInput').val();
+        message = $('#GameMessageInput').val();
     }
     else {
         type = 'private';

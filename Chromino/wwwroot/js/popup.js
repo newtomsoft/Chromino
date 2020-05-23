@@ -57,7 +57,7 @@ function SwitchToPrivateMessage() {
     $('#PrivateMessagePenpalName').html("");
     $('#PrivateMessagePenpalStatus').html("");
     RefreshPenpalTitleInPopupPrivateMessage(true);
-    $('#ChatDiv').hide();
+    $('#GameMessageDiv').hide();
     $('#PrivateMessageDiv').show();
     $('#PenpalsList').show();
     $('#PrivateMessagePopupContent').hide();
@@ -67,7 +67,7 @@ function SwitchToPrivateMessage() {
 
 function SwitchToChat() {
     $('#PrivateMessageDiv').hide();
-    $('#ChatDiv').show();
+    $('#GameMessageDiv').show();
     $('#PrivateMessageTab').removeClass('selected');
     $('#ChatTab').addClass('selected');
     GetChatMessages(true, true);
@@ -93,8 +93,8 @@ function MakePenpalList(player) {
 }
 
 function ScrollChat() {
-    if ($('#ChatPopupContent').is(":visible"))
-        $('#ChatPopupContent').scrollTop($('#ChatPopupContent')[0].scrollHeight);
+    if ($('#GameMessagePopupContent').is(":visible"))
+        $('#GameMessagePopupContent').scrollTop($('#GameMessagePopupContent')[0].scrollHeight);
 }
 
 function ScrollPrivateMessage() {

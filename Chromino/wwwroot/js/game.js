@@ -1,11 +1,14 @@
 ﻿$(document).ready(async function () {
-    if (GameId !== 0) {
+    let url = new URL(window.location.href);
+    if (url.pathname.startsWith(GameShowUrl) && (GameId = parseInt(url.pathname.slice(GameShowUrl.length))) !== NaN) {
+        if (url.searchParams.get("info") == "show")
+            ShowInfoPopup = true;
         await GetGameInfos();
         InitGameDom();
     }
     else
         InitIndexDom();
-    CallSignalR(Guid);
+    CallSignalR();
     if (GameId !== 0)
         RefreshDom();
     //SendersIdUnreadMessagesNumber();
@@ -20,7 +23,7 @@ function InitIndexDom() {
 function InitGameDom() {
     ShowButtonChat();
     RefreshButtonNextGame();
-    DoAction("Welcome");
+    Run("Welcome");
     RefreshVar("initGame");
     Players.forEach(function (player) { UpdateInHandNumberDom(player); });
     RefreshInfoPopup();
@@ -46,12 +49,12 @@ function InitGameDom() {
     });
 
     $(".emoji-chat").click(function () {
-        let selectionStart = $('#ChatInput').prop("selectionStart");
-        let text = $('#ChatInput').val();
+        let selectionStart = $('#GameMessageInput').prop("selectionStart");
+        let text = $('#GameMessageInput').val();
         let textBefore = text.substring(0, selectionStart);
         let textAfter = text.substring(selectionStart, text.length);
-        $('#ChatInput').val(textBefore + $(this).html() + textAfter);
-        $('#ChatInput').focus();
+        $('#GameMessageInput').val(textBefore + $(this).html() + textAfter);
+        $('#GameMessageInput').focus();
     });
     $(".emoji-privatemessage").click(function () {
         let selectionStart = $('#PrivateMessageInput').prop("selectionStart");
@@ -81,10 +84,10 @@ function InitGameDom() {
         }
     });
     UpdateClickRun();
-    $('#ChatInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
+    $('#GameMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
     $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($('#PrivateMessageAdd').attr('recipientId')); } });
     $('#MemoAdd').click(MemoAdd);
-    $('#ChatAdd').click(function () { ChatAddMessage(); });
+    $('#GameMessageAdd').click(function () { ChatAddMessage(); });
     $('#PrivateMessageAdd').click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
     $('[tip]:not([run])').click(function () { ShowTip(this.attributes['tip'].value); });
     $('#TipClose').click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });
@@ -95,9 +98,9 @@ function InitGameDom() {
 function UpdateClickRun() {
     $('[run]').css('cursor', 'pointer');
     $('[run]:not([tip])').off("click");
-    $('[run]:not([tip])').click(function () { DoAction(this.attributes['run'].value); });
+    $('[run]:not([tip])').click(function () { Run(this.attributes['run'].value); });
     $('[run][tip]').off("click");
-    $('[run][tip]').click(function () { if (!ShowTip(this.attributes['tip'].value)) DoAction(this.attributes['run'].value); });
+    $('[run][tip]').click(function () { if (!ShowTip(this.attributes['tip'].value)) Run(this.attributes['run'].value); });
 }
 
 function GetGames() {
@@ -459,7 +462,7 @@ function IsChrominoInGameArea(chromino) {
 function ScheduleValidateChromino() {
     clearTimeout(TimeoutValidateChromino);
     TimeoutValidateChromino = setTimeout(function () {
-        DoAction("ValidateChromino");
+        Run("ValidateChromino");
     }, 4000);
 
 }
@@ -491,7 +494,7 @@ function ShowTipFeature(isCheck, hasCloseButton) {
     ShowPopup('#TipPopup', hasCloseButton);
 }
 
-function DoAction(actionWithArgs) {
+function Run(actionWithArgs) {
     let actionWithArgsTab = actionWithArgs.split(" ");
     let functionName = actionWithArgsTab[0];
     actionWithArgsTab.shift();

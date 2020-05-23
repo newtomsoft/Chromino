@@ -105,7 +105,7 @@ namespace Data.Core
                     pseudosIds.Add(pseudoChromino.Key, PlayerDal.Details(pseudoChromino.Key).Id);
 
                 List<Chromino> playerChrominos;
-                if (!GamePlayerDal.IsPlayerIdIn(GameId, playerId)) // si le joueur n'est pas dans la partie, il regarde la main du joueur dont c'est le tour de jouer
+                if (!GamePlayerDal.IsPlayerIn(GameId, playerId)) // si le joueur n'est pas dans la partie, il regarde la main du joueur dont c'est le tour de jouer
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerTurn.Id);
                 else
                     playerChrominos = ChrominoDal.PlayerChrominos(GameId, playerId);
