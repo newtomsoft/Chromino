@@ -1,6 +1,4 @@
-﻿using Data.Enumeration;
-using Data.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

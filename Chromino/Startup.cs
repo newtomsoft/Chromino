@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SignalR.Hubs;
 using System;
 using Tool;
-using SignalR.Hubs;
 
 namespace ChrominoGame
 {
