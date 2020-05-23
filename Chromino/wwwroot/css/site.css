@@ -771,7 +771,11 @@ figcaption {
     background-image: url('/image/Cameleon.svg');
     background-size: contain;
 }
-
+/*.Free must be after other colors*/
+.Free {
+    background-color: var(--free);
+}
+/*.Possible must be after .Free*/
 .Possible {
     background-color: var(--possible);
 }
