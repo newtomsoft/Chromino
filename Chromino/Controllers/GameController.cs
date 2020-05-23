@@ -30,9 +30,9 @@ namespace Controllers
         /// <returns></returns>
         public IActionResult ShowNextToPlay()
         {
-            TempData["ShowInfo"] = true;
+            string info = "show";
             int id = GamePlayerDal.FirstIdMultiGameToPlay(PlayerId);
-            return id == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id });
+            return id == 0 ? RedirectToAction("Index", "Home") : RedirectToAction("Show", new { id, info });
         }
 
         /// <summary>
@@ -56,12 +56,10 @@ namespace Controllers
             const int MaxPlayers = 8;
             if (pseudos == null || pseudos.Length == 0)
                 return View();
-
             List<string> listPseudos = pseudos.ToList();
             listPseudos.Add(PlayerPseudo);
             listPseudos.Reverse();
             string[] pseudosNotNull = listPseudos.Where(c => c != null).ToArray();
-
             List<string> errors = new List<string>();
             List<Player> players = new List<Player>(8);
             for (int i = 0; i < pseudosNotNull.Length; i++)
@@ -80,7 +78,6 @@ namespace Controllers
                     ContactDal.Add(player.Id, PlayerId);
                 }
             }
-
             if (botsNumber + players.Count > MaxPlayers)
                 errors.Add($"Le nombre de joueurs est supérieur à {MaxPlayers}. Il ne faut pas chercher à dépasser les bornes des limites ! ;-)");
             else if (botsNumber < 0)
@@ -95,8 +92,8 @@ namespace Controllers
             }
             for (int i = 1; i < botsNumber + 1; i++)
                 players.Add(PlayerDal.Details("bot" + i));
-            CreateGame(players, out int gameId);
-            return RedirectToAction("Show", new { id = gameId });
+            CreateGame(players, out int id);
+            return RedirectToAction("Show", new { id });
         }
 
         /// <summary>
@@ -110,8 +107,8 @@ namespace Controllers
             List<Player> players = new List<Player>(botsNumber + 1) { PlayerDal.Details(PlayerId) };
             for (int iBot = 1; iBot <= botsNumber; iBot++)
                 players.Add(PlayerDal.Details("bot" + iBot));
-            CreateGame(players, out int gameId);
-            return RedirectToAction("Show", new { id = gameId });
+            CreateGame(players, out int id);
+            return RedirectToAction("Show", new { id });
         }
 
         /// <summary>
@@ -122,8 +119,8 @@ namespace Controllers
         public IActionResult NewSingle()
         {
             List<Player> players = new List<Player> { PlayerDal.Details(PlayerId) };
-            CreateGame(players, out int gameId);
-            return RedirectToAction("Show", new { id = gameId });
+            CreateGame(players, out int id);
+            return RedirectToAction("Show", new { id });
         }
 
         /// <summary>
@@ -136,8 +133,8 @@ namespace Controllers
             List<Player> players = new List<Player>();
             foreach (string name in playersName)
                 players.Add(PlayerDal.Details(name));
-            CreateGame(players, out int gameId);
-            return RedirectToAction("Show", new { id = gameId });
+            CreateGame(players, out int id);
+            return RedirectToAction("Show", new { id });
         }
 
         /// <summary>
@@ -149,13 +146,9 @@ namespace Controllers
         {
             if (id == 0)
                 return RedirectToAction("GameNotFound");
-            Player player = PlayerDal.Details(PlayerId);
-            bool isAdmin = await UserManager.IsInRoleAsync(player, "Admin").ConfigureAwait(true);
-            GameVM gameVM = new GameBI(Ctx, Env, id).GameVM(PlayerId, isAdmin);
-            if (gameVM != null)
-                return View(gameVM);
-            else
-                return RedirectToAction("GameNotFound");
+            return View();
+            //todo tester si id valable
+            //return RedirectToAction("GameNotFound");
         }
 
         /// <summary>
@@ -328,7 +321,7 @@ namespace Controllers
             {
                 int id = (int)color;
                 string name = color.ToString();
-                colors.Add(new {id, name } );
+                colors.Add(new { id, name });
             }
             GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
             return new JsonResult(new { gameVM, opponentsAllBots, playersInfos, horizontal, vertical, colors });
@@ -352,16 +345,14 @@ namespace Controllers
                         return new JsonResult(new { askRematch = true });
                     return new JsonResult(new { askRematch = false });
                 }
-                else if (GamePlayerDal.WinnersId(gameId).Count > 1) // draw game
+                if (GamePlayerDal.WinnersId(gameId).Count > 1) // draw game
                 {
                     playerBI.WinGame(PlayerId, true);
                     return new JsonResult(null);
                 }
-                else // only 1 winner
-                {
-                    playerBI.WinGame(PlayerId);
-                    return new JsonResult(null);
-                }
+                // only 1 winner
+                playerBI.WinGame(PlayerId);
+                return new JsonResult(null);
             }
             return new JsonResult(new { dejavu = true });
         }

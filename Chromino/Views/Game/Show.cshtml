@@ -1,18 +1,6 @@
-﻿@using Data.Models
-@using Data.ViewModel
-@using Data.Enumeration
-@using Tool
-@model GameVM
-@{
+﻿@{
     Layout = "_LayoutShow.cshtml";
     ViewData["Title"] = "Chromino - Jouer";
-    bool showInfoPopup = TempData["ShowInfo"] != null ? true : false;
-}
-@section ScriptJs
-{
-    <script>
-    var ShowInfoPopup = @showInfoPopup.ToJs();
-    </script>
 }
 <div id="toolbar">
     <form id="FormHome" asp-action="Index" asp-controller="Home" style="display:none"></form>

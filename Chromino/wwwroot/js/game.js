@@ -1,6 +1,8 @@
 ﻿$(document).ready(async function () {
-    let pathname = window.location.pathname;
-    if (pathname.startsWith(GamePath) && (GameId = parseInt(pathname.slice(GamePath.length))) !== NaN) {
+    let url = new URL(window.location.href);
+    if (url.pathname.startsWith(GameShowUrl) && (GameId = parseInt(url.pathname.slice(GameShowUrl.length))) !== NaN) {
+        if (url.searchParams.get("info") == "show")
+            ShowInfoPopup = true;
         await GetGameInfos();
         InitGameDom();
     }
