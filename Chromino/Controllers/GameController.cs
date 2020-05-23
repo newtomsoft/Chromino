@@ -144,11 +144,9 @@ namespace Controllers
         /// <returns></returns>
         public async Task<IActionResult> ShowAsync(int id)
         {
-            if (id == 0)
+            if (!GameDal.IsExist(id) || !GamePlayerDal.IsPlayerIn(id, PlayerId) && !IsAdmin)
                 return RedirectToAction("GameNotFound");
             return View();
-            //todo tester si id valable
-            //return RedirectToAction("GameNotFound");
         }
 
         /// <summary>
@@ -299,7 +297,6 @@ namespace Controllers
             const int horizontal = (int)Orientation.Horizontal;
             const int vertical = (int)Orientation.Vertical;
             Player thisPlayer = PlayerDal.Details(PlayerId);
-            bool isAdmin = await UserManager.IsInRoleAsync(thisPlayer, "Admin").ConfigureAwait(true);
             bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
             List<object> playersInfos = new List<object>();
             foreach (int id in GamePlayerDal.PlayersId(gameId))
@@ -323,7 +320,7 @@ namespace Controllers
                 string name = color.ToString();
                 colors.Add(new { id, name });
             }
-            GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, isAdmin);
+            GameVM gameVM = new GameBI(Ctx, Env, gameId).GameVM(PlayerId, IsAdmin);
             return new JsonResult(new { gameVM, opponentsAllBots, playersInfos, horizontal, vertical, colors });
         }
 
