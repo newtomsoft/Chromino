@@ -103,7 +103,7 @@ a {
                 background-color: #fff;
             }
 
-#PenpalsList, #PrivateMessagePopupContent, #ChatPopupContent {
+#PenpalsList, #PrivateMessagePopupContent, #GameMessagePopupContent {
     display: flex;
     flex-direction: column;
     height: 254px;

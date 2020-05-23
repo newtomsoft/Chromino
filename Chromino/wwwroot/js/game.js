@@ -49,12 +49,12 @@ function InitGameDom() {
     });
 
     $(".emoji-chat").click(function () {
-        let selectionStart = $('#ChatInput').prop("selectionStart");
-        let text = $('#ChatInput').val();
+        let selectionStart = $('#GameMessageInput').prop("selectionStart");
+        let text = $('#GameMessageInput').val();
         let textBefore = text.substring(0, selectionStart);
         let textAfter = text.substring(selectionStart, text.length);
-        $('#ChatInput').val(textBefore + $(this).html() + textAfter);
-        $('#ChatInput').focus();
+        $('#GameMessageInput').val(textBefore + $(this).html() + textAfter);
+        $('#GameMessageInput').focus();
     });
     $(".emoji-privatemessage").click(function () {
         let selectionStart = $('#PrivateMessageInput').prop("selectionStart");
@@ -84,10 +84,10 @@ function InitGameDom() {
         }
     });
     UpdateClickRun();
-    $('#ChatInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
+    $('#GameMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage(); } });
     $('#PrivateMessageInput').on('keydown', function (e) { if (e.which == 13) { ChatAddMessage($('#PrivateMessageAdd').attr('recipientId')); } });
     $('#MemoAdd').click(MemoAdd);
-    $('#ChatAdd').click(function () { ChatAddMessage(); });
+    $('#GameMessageAdd').click(function () { ChatAddMessage(); });
     $('#PrivateMessageAdd').click(function () { ChatAddMessage(this.attributes['recipientId'].value); });
     $('[tip]:not([run])').click(function () { ShowTip(this.attributes['tip'].value); });
     $('#TipClose').click(function () { TipClosePopup('#TipPopup', '#TipDontShowAgain'); });

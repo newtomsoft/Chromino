@@ -59,7 +59,7 @@ function CallbackGetChatMessages(data, onlyNewMessages, show) {
         formattedMessages += '</div>';
     }
     if (show || !onlyNewMessages)
-        $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessages);
+        $('#GameMessagePopupContent').html($('#GameMessagePopupContent').html() + formattedMessages);
     ScrollChat();
     if (show || data.newMessagesNumber == 0) {
         $("#NotifChat").text("0");
@@ -145,11 +145,11 @@ function CallbackChatAddMessage(data, type) {
     formattedMessage += `<span class="messagedate">(${data.message.date})</span>`;
     formattedMessage += `<span class="message">${data.message.message}</span>`;
     formattedMessage += '</div>';
-    $('#ChatInput').val("");
+    $('#GameMessageInput').val("");
     $('#PrivateMessageInput').val("");
 
     if (type == 'chatGame') {
-        $('#ChatPopupContent').html($('#ChatPopupContent').html() + formattedMessage);
+        $('#GameMessagePopupContent').html($('#GameMessagePopupContent').html() + formattedMessage);
         ScrollChat();
         SendChatMessageSent(Guid, Players);
     }
