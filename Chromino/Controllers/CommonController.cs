@@ -29,6 +29,7 @@ namespace Controllers
 
         protected int PlayerId { get => int.Parse(UserManager.GetUserId(User) ?? "0"); }
         protected string PlayerPseudo { get => UserManager.GetUserName(User) ?? ""; }
+        protected bool IsAdmin { get => UserManager.IsInRoleAsync(PlayerDal.Details(PlayerId), "Admin").Result; }
 
         public CommonController(Context context, UserManager<Player> userManager, IWebHostEnvironment env)
         {
