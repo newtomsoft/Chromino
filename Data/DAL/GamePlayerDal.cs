@@ -29,7 +29,7 @@ namespace Data.DAL
                     select gp.Id).FirstOrDefault();
         }
 
-        public bool IsPlayerIdIn(int gameId, int playerId)
+        public bool IsPlayerIn(int gameId, int playerId)
         {
             return Details(gameId, playerId) != null ? true : false;
         }
