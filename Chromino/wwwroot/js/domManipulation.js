@@ -415,7 +415,7 @@ function RefreshGameColors() {
 function WaikUpPlayer() {
     if (PlayerTurn.id == PlayerId) {
         $('#WaikUpPlayer')[0].play();
-        window.navigator.vibrate(150, 75, 150);
+        window.navigator.vibrate(100, 100, 100);
         ClosePopup(".popup");
     }
 }
