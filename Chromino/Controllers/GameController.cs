@@ -142,7 +142,7 @@ namespace Controllers
         /// </summary>
         /// <param name="id">Id de la partie</param>
         /// <returns></returns>
-        public async Task<IActionResult> ShowAsync(int id)
+        public IActionResult ShowAsync(int id)
         {
             if (!GameDal.IsExist(id) || !GamePlayerDal.IsPlayerIn(id, PlayerId) && !IsAdmin)
                 return RedirectToAction("GameNotFound");
@@ -292,11 +292,10 @@ namespace Controllers
             return View();
         }
 
-        public async Task<IActionResult> Infos(int gameId)
+        public IActionResult Infos(int gameId)
         {
             const int horizontal = (int)Orientation.Horizontal;
             const int vertical = (int)Orientation.Vertical;
-            Player thisPlayer = PlayerDal.Details(PlayerId);
             bool opponentsAllBots = GamePlayerDal.IsAllBots(gameId, PlayerId);
             List<object> playersInfos = new List<object>();
             foreach (int id in GamePlayerDal.PlayersId(gameId))
