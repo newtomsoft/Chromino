@@ -2,6 +2,8 @@ using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SignalR.Hubs;
 using System;
+using System.Text;
 using Tool;
 
 namespace ChrominoGame
@@ -25,7 +28,10 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddHttpsRedirection(option => option.HttpsPort = 443);
+
             services.AddSignalR();
+            #region apiAddAuthentication
             string googleClientId = Configuration["apis:google:ClientId"];
             string googleClientSecret = Configuration["apis:google:ClientSecret"];
             if (googleClientId != null && googleClientSecret != null)
@@ -56,13 +62,13 @@ namespace ChrominoGame
                     options.AppSecret = facebookAppSecret;
                 });
             }
-
+            #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
             builder.AddRazorRuntimeCompilation();
 #endif
             services.AddControllersWithViews();
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")), ServiceLifetime.Scoped);
             services.AddIdentity<Player, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -79,14 +85,14 @@ namespace ChrominoGame
             .AddErrorDescriber<ChrominoIdentityErrorDescriber>();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
-            //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            //services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
+            services.AddSession();
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(20);
+            //    //options.Cookie.HttpOnly = true;
+            //    //options.Cookie.IsEssential = true;
+            //});
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -95,9 +101,10 @@ namespace ChrominoGame
             app.UseDeveloperExceptionPage();
 #else
             app.UseExceptionHandler("/Home/Error");
+            //app.UseHsts();
 #endif
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseSession();
             app.UseAuthentication();
