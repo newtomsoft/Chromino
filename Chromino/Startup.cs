@@ -62,7 +62,7 @@ namespace ChrominoGame
             builder.AddRazorRuntimeCompilation();
 #endif
             services.AddControllersWithViews();
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultContext")), ServiceLifetime.Scoped);
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")), ServiceLifetime.Scoped);
             services.AddIdentity<Player, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
