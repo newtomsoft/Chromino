@@ -28,8 +28,6 @@ namespace ChrominoGame
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddHttpsRedirection(option => option.HttpsPort = 443);
-
             services.AddSignalR();
             #region apiAddAuthentication
             string googleClientId = Configuration["apis:google:ClientId"];
@@ -85,14 +83,7 @@ namespace ChrominoGame
             .AddErrorDescriber<ChrominoIdentityErrorDescriber>();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
-            //services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
             services.AddSession();
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromMinutes(20);
-            //    //options.Cookie.HttpOnly = true;
-            //    //options.Cookie.IsEssential = true;
-            //});
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -101,9 +92,7 @@ namespace ChrominoGame
             app.UseDeveloperExceptionPage();
 #else
             app.UseExceptionHandler("/Home/Error");
-            //app.UseHsts();
 #endif
-            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseSession();
