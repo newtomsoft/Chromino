@@ -5,7 +5,7 @@
     int gamesNumber = Model.Count;
 }
 
-<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+<p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
 
 @if (gamesNumber > 0)
 {
@@ -26,13 +26,13 @@
         <h3>Vous avez 1 partie d'entrainement en cours</h3>
         <p>La partie sera supprimée au bout d'une semaine sans activité</p>
         <partial name="_ThumbnailPartial" model="Model" />
-        <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+        <p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
         break;
     default:
         <h3>Vous avez @gamesNumber parties d'entrainement en cours</h3>
         <p>Les parties sont supprimées au bout d'une semaine sans activité</p>
         <partial name="_ThumbnailPartial" model="Model" />
-        <p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+        <p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
         break;
 }
 <br />

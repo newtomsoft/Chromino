@@ -19,7 +19,7 @@
         displays[i] = displayNone;
 }
 
-<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+<p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
 
 @if (gamesNumber > 0)
 {
@@ -106,7 +106,7 @@
     </div>
 </div>
 
-<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+<p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
