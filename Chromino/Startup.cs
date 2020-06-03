@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SignalR.Hubs;
-using System;
 using Tool;
 
 namespace ChrominoGame
@@ -26,6 +24,7 @@ namespace ChrominoGame
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
+            #region apiAddAuthentication
             string googleClientId = Configuration["apis:google:ClientId"];
             string googleClientSecret = Configuration["apis:google:ClientSecret"];
             if (googleClientId != null && googleClientSecret != null)
@@ -56,7 +55,37 @@ namespace ChrominoGame
                     options.AppSecret = facebookAppSecret;
                 });
             }
-
+            string linkedinAppId = Configuration["apis:linkedin:ClientId"];
+            string linkedinAppSecret = Configuration["apis:linkedin:ClientSecret"];
+            if (linkedinAppId != null && linkedinAppSecret != null)
+            {
+                services.AddAuthentication().AddLinkedIn(options =>
+                {
+                    options.ClientId = linkedinAppId;
+                    options.ClientSecret = linkedinAppSecret;
+                });
+            };
+            string githubAppId = Configuration["apis:github:ClientId"];
+            string githubAppSecret = Configuration["apis:github:ClientSecret"];
+            if (githubAppId != null && githubAppSecret != null)
+            {
+                services.AddAuthentication().AddGitHub(options =>
+                {
+                    options.ClientId = githubAppId;
+                    options.ClientSecret = githubAppSecret;
+                });
+            };
+            string discordAppId = Configuration["apis:discord:ClientId"];
+            string discordAppSecret = Configuration["apis:discord:ClientSecret"];
+            if (discordAppId != null && discordAppSecret != null)
+            {
+                services.AddAuthentication().AddDiscord(options =>
+                {
+                    options.ClientId = discordAppId;
+                    options.ClientSecret = discordAppSecret;
+                });
+            };
+            #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
             builder.AddRazorRuntimeCompilation();
@@ -79,14 +108,8 @@ namespace ChrominoGame
             .AddErrorDescriber<ChrominoIdentityErrorDescriber>();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
-            //services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddSession();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -97,7 +120,6 @@ namespace ChrominoGame
             app.UseExceptionHandler("/Home/Error");
 #endif
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseSession();
             app.UseAuthentication();

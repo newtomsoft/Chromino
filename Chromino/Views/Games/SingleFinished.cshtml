@@ -5,7 +5,7 @@
     int gamesNumber = Model.Count;
 }
 
-<p><a asp-controller="Games" asp-action="Index">Retour</a></p>
+<p><a asp-area="" asp-controller="Games" asp-action="Index">Retour</a></p>
 
 @switch (gamesNumber)
 {
@@ -26,5 +26,5 @@
     <a asp-controller="Game" asp-action="New"><input type="button" class="btn btn-primary" value="Nouvelle partie" /></a>
 </p>
 <p>
-    <a asp-controller="Games" asp-action="Index">Retour</a>
+    <a asp-area="" asp-controller="Games" asp-action="Index">Retour</a>
 </p>
