@@ -318,6 +318,41 @@ textarea {
     background-image: url('/image/example/LastTurnCameleon.svg');
 }
 
+
+.btn-externalLogin {
+    position: relative;
+    flex-shrink: 1;
+    height: 60px;
+    width: 60px;
+    margin: 6px;
+    padding: 3px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-position:center;
+}
+
+.img-Google {
+    background-image: url('/image/button/Google.svg');
+}
+
+.img-LinkedIn {
+    background-image: url('/image/button/LinkedIn.svg');
+}
+
+.img-Facebook {
+    background-image: url('/image/button/Facebook.svg');
+}
+
+.img-GitHub {
+    background-image: url('/image/button/GitHub.svg');
+}
+
+.img-Twitter {
+    background-image: url('/image/button/Twitter.svg');
+}
+
+
 .ongame {
     color: var(--green);
 }

@@ -2,16 +2,11 @@ using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SignalR.Hubs;
-using System;
-using System.Text;
 using Tool;
 
 namespace ChrominoGame
@@ -60,6 +55,26 @@ namespace ChrominoGame
                     options.AppSecret = facebookAppSecret;
                 });
             }
+            string linkedinAppId = Configuration["apis:linkedin:ClientId"];
+            string linkedinAppSecret = Configuration["apis:linkedin:ClientSecret"];
+            if (linkedinAppId != null && linkedinAppSecret != null)
+            {
+                services.AddAuthentication().AddLinkedIn(options =>
+                {
+                    options.ClientId = linkedinAppId;
+                    options.ClientSecret = linkedinAppSecret;
+                });
+            };
+            string githubAppId = Configuration["apis:github:ClientId"];
+            string githubAppSecret = Configuration["apis:github:ClientSecret"];
+            if (githubAppId != null && githubAppSecret != null)
+            {
+                services.AddAuthentication().AddGitHub(options =>
+                {
+                    options.ClientId = githubAppId;
+                    options.ClientSecret = githubAppSecret;
+                });
+            };
             #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
@@ -83,6 +98,7 @@ namespace ChrominoGame
             .AddErrorDescriber<ChrominoIdentityErrorDescriber>();
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/Identity/Account/Login");
             services.AddSession();
         }
 
