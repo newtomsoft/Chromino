@@ -75,6 +75,16 @@ namespace ChrominoGame
                     options.ClientSecret = githubAppSecret;
                 });
             };
+            string discordAppId = Configuration["apis:discord:ClientId"];
+            string discordAppSecret = Configuration["apis:discord:ClientSecret"];
+            if (discordAppId != null && discordAppSecret != null)
+            {
+                services.AddAuthentication().AddDiscord(options =>
+                {
+                    options.ClientId = discordAppId;
+                    options.ClientSecret = discordAppSecret;
+                });
+            };
             #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG

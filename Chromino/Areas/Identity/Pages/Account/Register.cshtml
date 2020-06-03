@@ -23,12 +23,12 @@
                         <button type="submit" class="btn btn-externalaccount img-@provider.Name" name="provider" value="@provider.Name" title="Connexion avec @provider.DisplayName"></button>
                     }
                 </form>
-                <hr />
             }
         </section>
     </div>
     <div class="col-md-4">
         <section>
+            <hr />
             <h4>En remplissant le formulaire</h4>
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
