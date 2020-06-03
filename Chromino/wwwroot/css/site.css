@@ -318,18 +318,22 @@ textarea {
     background-image: url('/image/example/LastTurnCameleon.svg');
 }
 
+.external-account {
+    display: flex;
+    flex-flow: wrap;
+}
 
-.btn-externalLogin {
+.btn-externalaccount {
     position: relative;
     flex-shrink: 1;
-    height: 60px;
-    width: 60px;
-    margin: 6px;
-    padding: 3px;
+    height: 65px;
+    width: 65px;
+    margin: 12px;
+    padding: 1px;
     background-size: contain;
     background-repeat: no-repeat;
     background-origin: content-box;
-    background-position:center;
+    background-position: center;
 }
 
 .img-Google {

@@ -7,11 +7,26 @@
 
 <h1>@ViewData["Title"]</h1>
 <div class="row">
+    <div class="col-md-4 col-md-offset-2">
+        <section>
+            @if ((Model.ExternalLogins?.Count ?? 0) != 0)
+            {
+                <hr />
+                <h4>Avec un compte externe</h4>
+                <form id="external-account" class="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    @foreach (var provider in Model.ExternalLogins)
+                    {
+                        <button type="submit" class="btn btn-externalaccount img-@provider.Name" name="provider" value="@provider.Name" title="Connexion avec @provider.DisplayName"></button>
+                    }
+                </form>
+                <hr />
+            }
+        </section>
+    </div>
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h4>Identifiez-vous pour jouer</h4>
-                <hr />
+                <h4>Avec votre compte chromino</h4>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.PlayerName"></label>
@@ -37,32 +52,18 @@
                 <div class="form-group">
                     <p><a id="forgot-password" asp-page="./ForgotPassword">Mot de passe oublié ?</a></p>
                     <p><a asp-page="./Register">Créer un compte joueur</a></p>
-                    <p><a asp-action="NoAccount" asp-controller="Player" asp-area="">Jouer sans compte</a></p>
                 </div>
             </form>
+            <hr />
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            @if ((Model.ExternalLogins?.Count ?? 0) != 0)
-            {
-                <h4>S'identifier avec un autre site internet</h4>
-                <hr />
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                    <div>
-                        <p>
-                            @foreach (var provider in Model.ExternalLogins)
-                            {
-                                <button type="submit" class="btn btn-externalLogin img-@provider.Name" name="provider" value="@provider.Name" title="Connexion avec @provider.DisplayName"></button>
-                            }
-                        </p>
-                    </div>
-                </form>
-            }
-        </section>
+    <div class="col-md-4 col-md-offset-2">
+        <h4>Sans compte</h4>
+        <p>Les fonctionnalités seront limitées et vous ne pourrez pas jouer entre ami·es</p>
+        <p><a asp-action="NoAccount" asp-controller="Player" asp-area="">Jouer sans compte</a></p>
     </div>
-</div>
 
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

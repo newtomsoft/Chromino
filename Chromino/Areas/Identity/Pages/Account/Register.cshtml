@@ -11,54 +11,52 @@
 }
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.PlayerName"></label>
-                <input asp-for="Input.PlayerName" class="form-control" />
-                <span asp-validation-for="Input.PlayerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Valider</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
+    <div class="col-md-4 col-md-offset-2">
         <section>
-
             @if ((Model.ExternalLogins?.Count ?? 0) != 0)
             {
-                <h4>Création automatique avec un autre site internet</h4>
                 <hr />
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                    <div>
-                        <p>
-                            @foreach (var provider in Model.ExternalLogins)
-                            {
-                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                            }
-                        </p>
-                    </div>
+                <h4>En 1 clic avec un autre compte</h4>
+                <form id="external-account" class="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    @foreach (var provider in Model.ExternalLogins)
+                    {
+                        <button type="submit" class="btn btn-externalaccount img-@provider.Name" name="provider" value="@provider.Name" title="Connexion avec @provider.DisplayName"></button>
+                    }
                 </form>
+                <hr />
             }
         </section>
     </div>
+    <div class="col-md-4">
+        <section>
+            <h4>En remplissant le formulaire</h4>
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.PlayerName"></label>
+                    <input asp-for="Input.PlayerName" class="form-control" />
+                    <span asp-validation-for="Input.PlayerName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="form-control" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </form>
+        </section>
+    </div>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
