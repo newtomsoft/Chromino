@@ -360,6 +360,18 @@ textarea {
     background-image: url('/image/button/Discord.svg');
 }
 
+.img-Slack {
+    background-image: url('/image/button/Slack.svg');
+}
+
+.img-Spotify {
+    background-image: url('/image/button/Spotify.svg');
+}
+
+.img-Deezer {
+    background-image: url('/image/button/Deezer.svg');
+}
+
 .ongame {
     color: var(--green);
 }

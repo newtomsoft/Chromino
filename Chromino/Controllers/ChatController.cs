@@ -51,7 +51,7 @@ namespace ChrominoApp.Controllers
             {
                 playerName = "Vous",
                 date = DateTime.Now.ToString("dd/MM HH:mm").Replace(':', 'h'),
-                message = message,
+                message,
             };
             return new JsonResult(new { message = newMessage });
         }

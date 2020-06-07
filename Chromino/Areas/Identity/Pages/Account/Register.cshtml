@@ -17,7 +17,7 @@
             {
                 <hr />
                 <h4>En 1 clic avec un autre compte</h4>
-                <form id="external-account" class="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                <form id="external-account" class="external-account form-horizontal" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     @foreach (var provider in Model.ExternalLogins)
                     {
                         <button type="submit" class="btn btn-externalaccount img-@provider.Name" name="provider" value="@provider.Name" title="Connexion avec @provider.DisplayName"></button>

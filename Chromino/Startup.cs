@@ -85,6 +85,36 @@ namespace ChrominoGame
                     options.ClientSecret = discordAppSecret;
                 });
             };
+            string slackAppId = Configuration["apis:slack:ClientId"];
+            string slackAppSecret = Configuration["apis:slack:ClientSecret"];
+            if (slackAppId != null && slackAppSecret != null)
+            {
+                services.AddAuthentication().AddSlack(options =>
+                {
+                    options.ClientId = slackAppId;
+                    options.ClientSecret = slackAppSecret;
+                });
+            };
+            string deezerAppId = Configuration["apis:deezer:ClientId"];
+            string deezerAppSecret = Configuration["apis:deezer:ClientSecret"];
+            if (deezerAppId != null && deezerAppSecret != null)
+            {
+                services.AddAuthentication().AddDeezer(options =>
+                {
+                    options.ClientId = deezerAppId;
+                    options.ClientSecret = deezerAppSecret;
+                });
+            };
+            string spotifyAppId = Configuration["apis:spotify:ClientId"];
+            string spotifyAppSecret = Configuration["apis:spotify:ClientSecret"];
+            if (spotifyAppId != null && spotifyAppSecret != null)
+            {
+                services.AddAuthentication().AddSpotify(options =>
+                {
+                    options.ClientId = spotifyAppId;
+                    options.ClientSecret = spotifyAppSecret;
+                });
+            };
             #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG
