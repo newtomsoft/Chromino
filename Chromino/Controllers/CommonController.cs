@@ -3,7 +3,6 @@ using Data.DAL;
 using Data.Models;
 using Data.ViewModel;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
