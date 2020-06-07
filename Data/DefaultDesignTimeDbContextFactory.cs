@@ -19,7 +19,7 @@ namespace Data
                                .SetBasePath(path)
                                .AddJsonFile($"appsettings.{env}.json");
             IConfigurationRoot config = builder.Build();
-            string connectionString = config.GetConnectionString("DefaultContext");
+            string connectionString = config.GetConnectionString("AdminDbContext");
             DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
             return new Context(optionBuilder.Options);
