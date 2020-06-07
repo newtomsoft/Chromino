@@ -369,7 +369,6 @@ namespace Controllers
         private void CreateGame(List<Player> players, out int gameId)
         {
             List<Player> randomPlayers = players.RandomSort();
-            ChrominoDal.CreateChrominos();
             gameId = GameDal.Add().Id;
             GamePlayerDal.Add(gameId, randomPlayers);
             new GameBI(Ctx, Env, gameId).BeginGame(randomPlayers.Count);
