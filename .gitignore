@@ -347,3 +347,4 @@ ASALocalRun/
 healthchecksdb
 
 Chromino/appsettings.DevLinux.json
+Batch/appsettings.DevLinux.json
