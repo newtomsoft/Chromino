@@ -19,6 +19,7 @@ namespace Batch
         private static GamePlayerDal GamePlayerDal;
         private static GameDal GameDal;
         private static PlayerDal PlayerDal;
+        private static ChrominoDal ChrominoDal;
         private static ChrominoInGameDal ChrominoInGameDal;
         private static ChrominoInHandDal ChrominoInHandDal;
         private static ChrominoInHandLastDal ChrominoInHandLastDal;
@@ -32,7 +33,7 @@ namespace Batch
         {
             Methods = new Dictionary<string, Action>
             {
-                //{ "CreateContacts", CreateContacts },
+                { "CreateChrominos", CreateChrominos },
                 { "AddBots", AddBots },
                 { "AddTips", AddTips },
                 { "AddPlayErrors", AddPlayErrors },
@@ -71,7 +72,7 @@ namespace Batch
                                .SetBasePath(path)
                                .AddJsonFile($"appsettings.{env}.json");
             IConfigurationRoot config = builder.Build();
-            string connectionString = config.GetConnectionString("UserDbContext");
+            string connectionString = config.GetConnectionString("AdminDbContext");
             DbContextOptionsBuilder<Context> optionBuilder = new DbContextOptionsBuilder<Context>();
             optionBuilder.UseSqlServer(connectionString);
             Ctx = new Context(optionBuilder.Options);
@@ -84,7 +85,15 @@ namespace Batch
             GoodPositionDal = new GoodPositionDal(Ctx);
             SquareDal = new SquareDal(Ctx);
             ContactDal = new ContactDal(Ctx);
+            ChrominoDal = new ChrominoDal(Ctx);
         }
+        private static void CreateChrominos()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Création des chrominos");
+            ChrominoDal.CreateChrominos();
+        }
+
         private static void AddBots()
         {
             Console.WriteLine();

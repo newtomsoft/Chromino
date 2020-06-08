@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Data.Migrations
 {
@@ -98,7 +98,7 @@ namespace Data.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "Name",
-                newName: "DomElementId", 
+                newName: "DomElementId",
                 table: "Tip");
         }
     }

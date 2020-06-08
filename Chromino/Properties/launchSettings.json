@@ -35,6 +35,13 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "StagingMin"
       }
+    },
+    "DevLinux": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "DevLinux"
+      }
     }
   }
 }

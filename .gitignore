@@ -346,3 +346,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+Chromino/appsettings.DevLinux.json
+Batch/appsettings.DevLinux.json

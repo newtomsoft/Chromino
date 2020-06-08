@@ -1,19 +1,12 @@
 ﻿using ChrominoGame.Models;
 using Data;
-using Data.Core;
-using Data.DAL;
 using Data.Models;
-using Data.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace Controllers
 {
