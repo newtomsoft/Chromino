@@ -323,7 +323,6 @@ namespace ChrominoBI
         /// <summary>
         /// return true si l'id du joueur est l'id du dernier joueur dans le tour
         /// </summary>
-        /// <param name="playerId">id du joueur courant</param>
         /// <returns></returns>
         protected bool IsRoundLastPlayer()
         {

@@ -34,7 +34,6 @@ namespace Data.Core
         private PlayerDal PlayerDal { get; }
         private GamePlayerDal GamePlayerDal { get; }
         private GameDal GameDal { get; }
-        private GoodPositionDal GoodPositionDal { get; }
         private TipDal TipDal { get; }
         private PlayErrorDal PlayErrorDal { get; }
 
@@ -50,7 +49,6 @@ namespace Data.Core
             SquareDal = new SquareDal(ctx);
             PlayerDal = new PlayerDal(ctx);
             GamePlayerDal = new GamePlayerDal(ctx);
-            GoodPositionDal = new GoodPositionDal(ctx);
             TipDal = new TipDal(ctx);
             PlayErrorDal = new PlayErrorDal(ctx);
             GoodPositionBI = new GoodPositionBI(ctx, GameId);
