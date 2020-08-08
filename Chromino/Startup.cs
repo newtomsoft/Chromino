@@ -53,6 +53,7 @@ namespace ChrominoGame
                 {
                     options.AppId = facebookAppId;
                     options.AppSecret = facebookAppSecret;
+                    options.CallbackPath = "/signin-facebook";
                 });
             }
             string linkedinAppId = Configuration["apis:linkedin:ClientId"];
@@ -64,7 +65,7 @@ namespace ChrominoGame
                     options.ClientId = linkedinAppId;
                     options.ClientSecret = linkedinAppSecret;
                 });
-            };
+            }
             string githubAppId = Configuration["apis:github:ClientId"];
             string githubAppSecret = Configuration["apis:github:ClientSecret"];
             if (githubAppId != null && githubAppSecret != null)
@@ -74,7 +75,7 @@ namespace ChrominoGame
                     options.ClientId = githubAppId;
                     options.ClientSecret = githubAppSecret;
                 });
-            };
+            }
             string discordAppId = Configuration["apis:discord:ClientId"];
             string discordAppSecret = Configuration["apis:discord:ClientSecret"];
             if (discordAppId != null && discordAppSecret != null)
@@ -84,7 +85,7 @@ namespace ChrominoGame
                     options.ClientId = discordAppId;
                     options.ClientSecret = discordAppSecret;
                 });
-            };
+            }
             string slackAppId = Configuration["apis:slack:ClientId"];
             string slackAppSecret = Configuration["apis:slack:ClientSecret"];
             if (slackAppId != null && slackAppSecret != null)
@@ -94,7 +95,7 @@ namespace ChrominoGame
                     options.ClientId = slackAppId;
                     options.ClientSecret = slackAppSecret;
                 });
-            };
+            }
             string deezerAppId = Configuration["apis:deezer:ClientId"];
             string deezerAppSecret = Configuration["apis:deezer:ClientSecret"];
             if (deezerAppId != null && deezerAppSecret != null)
@@ -104,7 +105,7 @@ namespace ChrominoGame
                     options.ClientId = deezerAppId;
                     options.ClientSecret = deezerAppSecret;
                 });
-            };
+            }
             string spotifyAppId = Configuration["apis:spotify:ClientId"];
             string spotifyAppSecret = Configuration["apis:spotify:ClientSecret"];
             if (spotifyAppId != null && spotifyAppSecret != null)
@@ -114,7 +115,7 @@ namespace ChrominoGame
                     options.ClientId = spotifyAppId;
                     options.ClientSecret = spotifyAppSecret;
                 });
-            };
+            }
             #endregion
             IMvcBuilder builder = services.AddRazorPages();
 #if DEBUG

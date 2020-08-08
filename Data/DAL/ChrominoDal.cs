@@ -107,7 +107,7 @@ namespace Data.DAL
                        where c.Id == id && c.SecondColor == ColorCh.Cameleon
                        select c.Id).FirstOrDefault();
 
-            return idC != 0 ? true : false;
+            return idC != 0;
         }
 
         /// <summary>
