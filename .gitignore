@@ -348,3 +348,4 @@ healthchecksdb
 
 Chromino/appsettings.DevLinux.json
 Batch/appsettings.DevLinux.json
+/Chromino/appsettings.Docker.json

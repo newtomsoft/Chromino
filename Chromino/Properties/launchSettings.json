@@ -42,6 +42,16 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevLinux"
       }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Docker"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }
