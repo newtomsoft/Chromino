@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>83bf0338-4c68-40c0-8daa-f89aa4ad0a5c</UserSecretsId>
     <Configurations>Debug;Release</Configurations>
     <RootNamespace>ChrominoApp</RootNamespace>
