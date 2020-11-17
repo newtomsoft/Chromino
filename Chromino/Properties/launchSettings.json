@@ -8,10 +8,11 @@
     }
   },
   "profiles": {
-    "Production": {
+    "Production - SqlServer": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "PERSISTENCE": "SqlServer",
         "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
