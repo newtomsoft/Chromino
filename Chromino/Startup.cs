@@ -3,7 +3,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Newtomsoft.Tools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalR.Hubs;
@@ -124,9 +124,9 @@ namespace ChrominoGame
             services.AddControllersWithViews();
 
 
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")), ServiceLifetime.Scoped);
-            
-            
+            //services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")), ServiceLifetime.Scoped);
+            EntityFrameworkTools<Context>.AddDbContext(services, Configuration);
+
             services.AddIdentity<Player, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
